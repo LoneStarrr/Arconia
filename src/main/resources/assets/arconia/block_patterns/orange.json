@@ -1,0 +1,49 @@
+{
+  "pattern": [
+    "       +++++++     ",
+    "     +++======+    ",
+    "    +===+======+   ",
+    "     +++=++====+   ",
+    "    3333+==++==+   ",
+    "   33...3++==+=+   ",
+    "  3......33+==++   ",
+    "   33..33443+==+   ",
+    "  .-O..-O..4.++=+  ",
+    "  .........4.33+   ",
+    "  3.....44..443    ",
+    "  3.4444-44443     ",
+    "  344---44443      ",
+    "  34433344443      ",
+    "   344444443       ",
+    "   334444443       ",
+    "     334433        ",
+    "       33          "
+  ],
+  "blocks": {
+    " ": {
+      "blockId": "minecraft:air"
+    },
+    "+": {
+      "blockId": "minecraft:green_concrete"
+    },
+    "=": {
+      "blockId": "minecraft:green_concrete_powder"
+    },
+    "3": {
+      "blockId": "minecraft:orange_concrete"
+    },
+    "4": {
+      "blockId": "minecraft:orange_concrete_powder"
+    },
+    ".": {
+      "blockId": "minecraft:white_terracotta"
+    },
+    "-": {
+      "blockId": "minecraft:white_wool"
+    },
+    "O": {
+      "blockId": "minecraft:grass_block"
+    }
+  }
+}
+

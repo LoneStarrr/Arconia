@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+for clr in red orange yellow green blue indigo violet
+do
+    cat << EOF > ${clr}_rainbow_crop.json
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "arconia:${clr}_rainbow_crop",
+              "properties": {
+                "age": "4"
+              }
+            }
+          ],
+          "name": "arconia:${clr}_rainbow_seed"
+        }
+      ]
+    },
+    {
+      "rolls": 1.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:apply_bonus",
+              "enchantment": "minecraft:fortune",
+              "formula": "minecraft:binomial_with_bonus_count",
+              "parameters": {
+                "extra": 3,
+                "probability": 0.5714286
+              }
+            }
+          ],
+          "name": "arconia:${clr}_rainbow_essence"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "arconia:${clr}_rainbow_crop",
+          "properties": {
+            "age": "4"
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "function": "minecraft:explosion_decay"
+    }
+  ]
+}
+EOF
+done

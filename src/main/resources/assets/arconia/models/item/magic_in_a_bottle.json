@@ -1,0 +1,58 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "arconia:item/magic_in_a_bottle",
+    "layer1": "arconia:item/magic_in_a_bottle_overlay"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "arconia:filled": 0.12
+      },
+      "model": "arconia:item/magic_in_a_bottle_filled1"
+    },
+    {
+      "predicate": {
+        "arconia:filled": 0.25
+      },
+      "model": "arconia:item/magic_in_a_bottle_filled2"
+    },
+    {
+      "predicate": {
+        "arconia:filled": 0.37
+      },
+      "model": "arconia:item/magic_in_a_bottle_filled3"
+    },
+    {
+      "predicate": {
+        "arconia:filled": 0.5
+      },
+      "model": "arconia:item/magic_in_a_bottle_filled4"
+    },
+    {
+      "predicate": {
+        "arconia:filled": 0.62
+      },
+      "model": "arconia:item/magic_in_a_bottle_filled5"
+    },
+    {
+      "predicate": {
+        "arconia:filled": 0.75
+      },
+      "model": "arconia:item/magic_in_a_bottle_filled6"
+    },
+    {
+      "predicate": {
+        "arconia:filled": 0.87
+      },
+      "model": "arconia:item/magic_in_a_bottle_filled7"
+    },
+    {
+      "predicate": {
+        "arconia:filled": 1
+      },
+      "model": "arconia:item/magic_in_a_bottle_filled8"
+    }
+  ]
+}
+

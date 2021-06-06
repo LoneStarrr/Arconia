@@ -1,0 +1,25 @@
+{
+  "pools": [
+    {
+      "name": "tier_violet_generator_items",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:netherite_ingot",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:nether_star",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:elytra",
+          "weight": 10
+        }
+      ]
+    }
+  ]
+}

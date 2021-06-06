@@ -1,0 +1,199 @@
+package lonestarrr.arconia.common.block.tile;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.client.gui.crate.RainbowCrateContainer;
+import lonestarrr.arconia.common.block.tile.crate.RainbowCrateItemStackHandler;
+import lonestarrr.arconia.common.network.ModPackets;
+import lonestarrr.arconia.common.network.RainbowCratePacket;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Tile entity for rainbow crates, managing the crate's inventory.
+ */
+public class RainbowCrateTileEntity extends TileEntity implements INamedContainerProvider, ITickableTileEntity {
+    public static final int ROWS = 8;
+    public static final int COLUMNS = 13;
+    public static final int NUM_SLOTS = ROWS * COLUMNS; // TODO This should be tiered - have fun refactoring
+    private static final Map<RainbowColor, Integer> slotLimitPerTier = new HashMap<>(7);
+
+    private final RainbowCrateItemStackHandler inventory;
+    private final LazyOptional<ItemStackHandler> itemCap;
+    private final RainbowColor tier;
+
+    private int tickCount = 0;
+    private int ticksSinceLastChange = 0;
+
+    static {
+        // Each crate's slot can actually contain more than 64 items. The higher the tier, the higher the max.
+        // TODO: How about an "infinity" tier? Would be a cool reward for whatever 'end game' thing I can come up with
+        slotLimitPerTier.put(RainbowColor.RED, 64);
+        slotLimitPerTier.put(RainbowColor.ORANGE, 256);
+        slotLimitPerTier.put(RainbowColor.YELLOW, 1024);
+        slotLimitPerTier.put(RainbowColor.GREEN, 4096);
+        slotLimitPerTier.put(RainbowColor.BLUE, 16384);
+        slotLimitPerTier.put(RainbowColor.INDIGO, 65536);
+        slotLimitPerTier.put(RainbowColor.VIOLET, 262144);
+    }
+
+    public RainbowCrateTileEntity(RainbowColor tier) {
+        super(ModTiles.getRainbowCrateTileEntityType(tier));
+        this.tier = tier;
+        this.inventory = createInventory(tier);
+        this.itemCap = LazyOptional.of(() -> inventory);
+    }
+
+    public static RainbowCrateItemStackHandler createInventory(RainbowColor tier) {
+        return new RainbowCrateItemStackHandler(NUM_SLOTS, slotLimitPerTier.get(tier));
+    }
+
+    public RainbowCrateItemStackHandler getInventory() {
+        // Used by client GUI to render the hidden inventory capacity
+        return inventory;
+    }
+
+    @Override
+    public CompoundNBT write(CompoundNBT compound) {
+        compound.put("inventory", inventory.serializeNBT());
+        return super.write(compound);
+    }
+
+    @Override
+    public void read(BlockState state, CompoundNBT compound) {
+        inventory.deserializeNBT(compound.getCompound("inventory"));
+        super.read(state, compound);
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return itemCap.cast();
+        }
+        return super.getCapability(cap, side);
+    }
+
+    public void dropAllContents(World world, BlockPos pos) {
+        // TODO implement me - that will be fun with giant stacks, so best to instead preserve inventory through nbt data on the itemstack
+    }
+
+    // The following two methods are used to make the TileEntity perform as a NamedContainerProvider, i.e.
+    //  1) Provide a name used when displaying the container, and
+    //  2) Creating an instance of container on the server, and linking it to the inventory items stored within the TileEntity
+
+    @Override
+    public ITextComponent getDisplayName() {
+        return new TranslationTextComponent("container." + Arconia.MOD_ID + ".rainbow_crate");
+    }
+
+    /**
+     * Creates a temporary container that is only used to support the player UI with the combined inventories of
+     * the player and the crate.
+     * @param windowID
+     * @param playerInventory
+     * @param playerEntity
+     * @return
+     */
+    @Override
+    public Container createMenu(int windowID, PlayerInventory playerInventory, PlayerEntity playerEntity) {
+        return new RainbowCrateContainer(tier, windowID, playerInventory, inventory);
+    }
+
+    @Override
+    public void tick() {
+        // Only manage the inventory on server worlds - data required on the client side is sent through network
+        // packets
+        if (world.isRemote()) {
+            return;
+        }
+
+        // Increase time between ticks if no changes are detected - and vice versa - lag friendly and a better UX
+        final int maxTicks = 20;
+        this.ticksSinceLastChange++;
+        int doWorkAt = Math.min(ticksSinceLastChange / 2, maxTicks);
+        if (++(this.tickCount) >= doWorkAt) {
+            this.tickCount = 0;
+            // Send internal inventory data to relevant clients as that data is not synced as part of the standard
+            // UI
+            // TODO Can this be smarter? E.g. only send it to client worlds that have the UI open?
+            boolean updates = this.inventory.tick();
+            if (updates) {
+                CompoundNBT data = new CompoundNBT();
+                data = this.write(data);
+                ModPackets.sendToNearby(world, pos, new RainbowCratePacket(pos, data));
+                ticksSinceLastChange = 0;
+            }
+        }
+    }
+
+    /**
+     * Data from the server world is synchronized to client worlds of nearby players to render the UI. This is
+     * required as the inventory contains additional information that is not already synced as part of the Container
+     * being used to render the UI.
+     *
+     * @param internalItemCounts Item counts, per slot, of the hidden internal inventory
+     */
+    public void receiveServerSideInventoryData(int[] internalItemCounts) {
+        if (world.isRemote()) {
+            this.inventory.receiveServerSideInventoryData(internalItemCounts);
+        }
+    }
+    // Network code below is to sync the server TileEntity data to the client
+
+    @Override
+    @Nullable
+    public SUpdateTileEntityPacket getUpdatePacket()
+    {
+        CompoundNBT nbtTagCompound = new CompoundNBT();
+        write(nbtTagCompound);
+        int tileEntityType = 42;  // arbitrary number; only used for vanilla TileEntities.  You can use it, or not, as you want.
+        return new SUpdateTileEntityPacket(this.pos, tileEntityType, nbtTagCompound);
+    }
+
+    // I thought this would be triggered whenever the inv is updated (e.g. hopper) but nope..
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        read(world.getBlockState(pkt.getPos()), pkt.getNbtCompound());
+    }
+
+    /* Creates a tag containing all of the TileEntity information, used by vanilla to transmit from server to client
+     */
+    @Override
+    public CompoundNBT getUpdateTag()
+    {
+        CompoundNBT nbtTagCompound = new CompoundNBT();
+        write(nbtTagCompound);
+        return nbtTagCompound;
+    }
+
+    // Triggered when loading the world (and probably chunk loading)
+    @Override
+    public void handleUpdateTag(BlockState state, CompoundNBT tag)
+    {
+        read(state, tag);
+    }
+
+}

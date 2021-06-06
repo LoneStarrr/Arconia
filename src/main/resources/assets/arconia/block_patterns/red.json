@@ -1,0 +1,30 @@
+{
+  "pattern": [
+    "           ",
+    "   OOOOO   ",
+    "  OO.OOOO  ",
+    " O.OOO.O.O ",
+    " OOOOOOOOO ",
+    " OO.OOOOOO ",
+    "  OOOOOOO  ",
+    "     ::    ",
+    "    ::     ",
+    "    ::     ",
+    "           "
+  ],
+  "blocks": {
+    " ": {
+      "blockId": "minecraft:air"
+    },
+    "O": {
+      "blockId": "minecraft:cobblestone"
+    },
+    ".": {
+      "blockId": "minecraft:dirt"
+    },
+    ":": {
+      "blockId": "minecraft:diorite"
+    }
+  }
+}
+

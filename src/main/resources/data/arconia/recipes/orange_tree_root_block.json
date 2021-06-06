@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "rrr",
+    "rsr",
+    "rrr"
+  ],
+  "key":
+  {
+    "r":
+    {
+      "item": "arconia:orange_colored_tree_root"
+    },
+    "s":
+    {
+      "item": "arconia:orange_money_tree_sapling"
+    }
+  },
+  "result":
+  {
+    "item": "arconia:orange_tree_root_block"
+  }
+}

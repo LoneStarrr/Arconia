@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "arconia:three_leaf_clover"
+    },
+    "title": {
+      "translate": "advancements.main.root.title"
+    },
+    "description": {
+      "translate": "advancements.main.root.desc"
+    },
+    "background": "arconia:textures/block/tree_root_block_sides.png",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "clover": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "arconia:three_leaf_clover"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,1 @@
+This directory contains 2D patterns of blocks that the player must build to advance in this mod. The completed/ directory containers variants of the patterns in this directory that will be substituted upon completion.

@@ -1,0 +1,35 @@
+{
+  "pools": [
+    {
+      "name": "tier1_generator_items",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:sand",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:cobblestone",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:gravel",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:dirt",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:grass",
+          "weight": 10
+        }
+      ]
+    }
+  ]
+}

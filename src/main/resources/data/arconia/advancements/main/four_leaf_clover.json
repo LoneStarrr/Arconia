@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "arconia:four_leaf_clover"
+    },
+    "title": {
+      "translate": "advancements.main.four_leaf_clover.title"
+    },
+    "description": {
+      "translate": "advancements.main.four_leaf_clover.desc"
+    },
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "arconia:main/root",
+  "criteria": {
+    "fourleafclover": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "arconia:four_leaf_clover"
+          }
+        ]
+      }
+    }
+  }
+}
