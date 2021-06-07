@@ -32,6 +32,8 @@ public class ColorHandler {
         }, Item.getItemFromBlock(ModBlocks.resourceGenBlock));
 
         //magic in a bottle is colored differently based on ItemStack NBT data
+        //'color' corresponds to the layer in the model (layer0 -> color 0, etc)
+        //layer 0 is not dynamically colored, only layer1 is
         items.register((stack, color) -> {
             // only the overlay is colored - each layer is a tint index
             if (color == 0) {
@@ -60,12 +62,10 @@ public class ColorHandler {
             items.register((stack, color) -> {
                 return getRainbowColor(tier);
             }, ModItems.getArconiumEssence(tier));
-
         }
     }
 
     // A lot of blocks / items are tiered by rainbow color. Tint index corresponds to RainbowColor's ordinal value.
-    // Unused currently - did not look great on the money leaves
     public static int getRainbowColor(RainbowColor tier) {
         int color; // ARGB
         int alfa = 0;

@@ -1,5 +1,6 @@
 package lonestarrr.arconia.data;
 
+import lonestarrr.arconia.data.client.ModItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -22,6 +23,7 @@ public class DataGenerators {
         }
         if (evt.includeClient()) {
             evt.getGenerator().addProvider(new ModBlockStateProvider(evt.getGenerator(), helper));
+            evt.getGenerator().addProvider(new ModItemModelProvider(evt.getGenerator(), helper));
         }
             Arconia.logger.info("**** DataGenerators executed");
     }

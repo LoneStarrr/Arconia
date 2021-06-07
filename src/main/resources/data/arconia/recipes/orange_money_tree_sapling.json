@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "arconia:oak_sapling"
+      "item": "minecraft:oak_sapling"
     },
     {
       "item": "minecraft:orange_dye"
