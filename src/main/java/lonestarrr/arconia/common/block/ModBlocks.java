@@ -24,6 +24,7 @@ public class ModBlocks {
     private static final Map<RainbowColor, ResourceTreeLeaves> resourceTreeLeaves = new HashMap<>();
     private static final Map<RainbowColor, ResourceTreeSapling> resourceTreeSaplings = new HashMap<>();
     private static final Map<RainbowColor, ResourceTreeRootBlock> treeRootBlocks = new HashMap<>();
+    private static final Map<RainbowColor, ArconiumBlock> arconiumBlocks = new HashMap<>();
 
     public static final CloverBlock clover = new CloverBlock();
     public static final PotBlock pot = new PotBlock();
@@ -64,6 +65,10 @@ public class ModBlocks {
             RainbowCropBlock crop = new RainbowCropBlock(color);
             register(r, crop, color.getTierName() + BlockNames.RAINBOW_CROP_SUFFIX);
             rainbowCrops.put(color, crop);
+
+            ArconiumBlock arconiumBlock = new ArconiumBlock(color);
+            register(r, arconiumBlock, color.getTierName() + BlockNames.ARCONIUM_BLOCK_SUFFIX);
+            arconiumBlocks.put(color, arconiumBlock);
         }
     }
 
@@ -97,25 +102,31 @@ public class ModBlocks {
         for (ResourceTreeLeaves leaves: resourceTreeLeaves.values()) {
             registerBlockItem(r, leaves, builder);
         }
+
+        for (ArconiumBlock arconiumBlock: arconiumBlocks.values()) {
+            registerBlockItem(r, arconiumBlock, builder);
+        }
     }
 
     public static RainbowCropBlock getRainbowCrop(RainbowColor tier) {
         return rainbowCrops.get(tier);
     }
 
-    public static RainbowCrateBlock getRainbowCrateBlockByTier(RainbowColor tier) {
+    public static ArconiumBlock getArconiumBlock(RainbowColor tier) { return arconiumBlocks.get(tier); }
+
+    public static RainbowCrateBlock getRainbowCrateBlock(RainbowColor tier) {
         return rainbowCrates.get(tier);
     }
 
-    public static ResourceTreeRootBlock getPatternLootBlockByTier(RainbowColor tier) {
+    public static ResourceTreeRootBlock getPatternLootBlock(RainbowColor tier) {
         return treeRootBlocks.get(tier);
     }
 
-    public static ResourceTreeSapling getMoneyTreeSaplingByTier(RainbowColor tier) {
+    public static ResourceTreeSapling getMoneyTreeSapling(RainbowColor tier) {
         return resourceTreeSaplings.get(tier);
     }
 
-    public static ResourceTreeLeaves getMoneyTreeLeavesByTier(RainbowColor tier) {
+    public static ResourceTreeLeaves getMoneyTreeLeaves(RainbowColor tier) {
         return resourceTreeLeaves.get(tier);
     }
 

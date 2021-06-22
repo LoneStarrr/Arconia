@@ -11,9 +11,10 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.RainbowCropBlock;
-import lonestarrr.arconia.common.block.ResourceGenBlock;
 import lonestarrr.arconia.common.core.BlockNames;
 import lonestarrr.arconia.common.core.RainbowColor;
+import org.lwjgl.system.CallbackI;
+
 import static lonestarrr.arconia.common.core.helper.ResourceLocationHelper.prefix;
 
 import javax.annotation.Nonnull;
@@ -40,6 +41,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         registerSaplings();
         registerCrates();
         registerCrops();
+        registerArconiumBlocks();
     }
 
     private void registerCrops() {
@@ -68,7 +70,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     private void registerCrates() {
         for (RainbowColor color: RainbowColor.values()) {
-            Block block = ModBlocks.getRainbowCrateBlockByTier(color);
+            Block block = ModBlocks.getRainbowCrateBlock(color);
             String name = Registry.BLOCK.getKey(block).getPath();
             ResourceLocation top = prefix("block/rainbow_crate_" + color.getTierName() + "_top");
             ResourceLocation sides = prefix("block/rainbow_crate_" + color.getTierName() + "_sides");
@@ -80,7 +82,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     private void registerSaplings() {
         for (RainbowColor color: RainbowColor.values()) {
-            Block block = ModBlocks.getMoneyTreeSaplingByTier(color);
+            Block block = ModBlocks.getMoneyTreeSapling(color);
             String name = Registry.BLOCK.getKey(block).getPath();
             String texturePath = "block/" + color.getTierName() + BlockNames.SAPLING_SUFFIX;
             ModelFile model = models().withExistingParent(name, "block/cross")
@@ -106,12 +108,22 @@ public class ModBlockStateProvider extends BlockStateProvider {
         //Money tree leaves
         //TODO: single texture for all, use tints to dynamically color - like TreeRoots (probably use a manual model file)
         for (RainbowColor color: RainbowColor.values()) {
-            Block leafBlock = ModBlocks.getMoneyTreeLeavesByTier(color);
+            Block leafBlock = ModBlocks.getMoneyTreeLeaves(color);
             String leafName = Registry.BLOCK.getKey(leafBlock).getPath();
             ModelFile leafModel = models().withExistingParent(leafName, "block/leaves")
                     .texture("all", prefix("block/" + color.getTierName() + BlockNames.LEAVES_SUFFIX));
             simpleBlock(leafBlock, leafModel);
             itemModels().withExistingParent(leafName, prefix("block/" + leafName));
+        }
+    }
+
+    private void registerArconiumBlocks() {
+        for (RainbowColor color: RainbowColor.values()) {
+            Block block = ModBlocks.getArconiumBlock(color);
+            String name = Registry.BLOCK.getKey(block).getPath();
+            ModelFile model = models().cubeAll(name, prefix("block/" + color.getTierName() + BlockNames.ARCONIUM_BLOCK_SUFFIX));
+            simpleBlock(block, model);
+            itemModels().withExistingParent(name, prefix("block/" + name));
         }
     }
 }

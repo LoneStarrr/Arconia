@@ -38,8 +38,8 @@ public class ClientProxy implements IProxy {
 
         for (RainbowColor tier: RainbowColor.values()) {
             RenderTypeLookup.setRenderLayer(ModBlocks.getRainbowCrop(tier), cutout);
-            RenderTypeLookup.setRenderLayer(ModBlocks.getMoneyTreeLeavesByTier(tier), cutout);
-            RenderTypeLookup.setRenderLayer(ModBlocks.getMoneyTreeSaplingByTier(tier), cutout);
+            RenderTypeLookup.setRenderLayer(ModBlocks.getMoneyTreeLeaves(tier), cutout);
+            RenderTypeLookup.setRenderLayer(ModBlocks.getMoneyTreeSapling(tier), cutout);
             // gleaned from Blocks.GRASS_BLOCK - this is for overlaying the top with a rainbow tint
             RenderTypeLookup.setRenderLayer(ModBlocks.getResourceTreeRootBlock(tier), RenderType.getCutoutMipped());
             RenderTypeLookup.setRenderLayer(ModBlocks.orb, RenderType.getTranslucent());

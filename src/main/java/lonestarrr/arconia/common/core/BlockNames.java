@@ -15,6 +15,7 @@ public final class BlockNames {
     public static final String PEDESTAL = "pedestal";
     public static final String CENTER_PEDESTAL = "center_pedestal";
     public static final String ORB = "orb";
+    public static final String ARCONIUM_BLOCK_SUFFIX = "_arconium_block";
 
     // Money Tree blocks
     public static final String MONEY_TREE_SAPLING = "money_tree_sapling";

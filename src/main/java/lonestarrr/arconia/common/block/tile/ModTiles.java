@@ -39,7 +39,7 @@ public class ModTiles {
         for (RainbowColor tier: RainbowColor.values()) {
             TileEntityType<ResourceTreeRootTileEntity> teType =
                     TileEntityType.Builder.create(() -> new ResourceTreeRootTileEntity(tier),
-                            ModBlocks.getPatternLootBlockByTier(tier)).build(null);
+                            ModBlocks.getPatternLootBlock(tier)).build(null);
             lootBlockTileEntityTypes.put(tier, teType);
             register(r, teType, tier.getTierName() + "_pattern_lootblock_tile_entity");
         }
@@ -48,7 +48,7 @@ public class ModTiles {
         for (RainbowColor tier: RainbowColor.values()) {
             TileEntityType<RainbowCrateTileEntity> teType =
                     TileEntityType.Builder.create(() -> new RainbowCrateTileEntity(tier),
-                            ModBlocks.getRainbowCrateBlockByTier(tier)).build(null);
+                            ModBlocks.getRainbowCrateBlock(tier)).build(null);
             rainbowCrateTileEntityTypes.put(tier, teType);
             register(r, teType, tier.getTierName() + "_rainbow_crate_tile_entity");
         }
