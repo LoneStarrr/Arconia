@@ -8,6 +8,9 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraftforge.common.util.INBTSerializable;
 import lonestarrr.arconia.common.Arconia;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * All the colors of the rainbow - used by various blocks and items
  */
@@ -33,6 +36,7 @@ public enum RainbowColor {
 
     }
 
+    @Nonnull
     public String getTierName() {
         return this.tierName;
     }
@@ -43,6 +47,18 @@ public enum RainbowColor {
      */
     public int getTier() {
         return tier;
+    }
+
+    /**
+     *
+     * @return The next tier, or null if this is the maximum tier
+     */
+    @Nullable
+    public RainbowColor getNextTier() {
+        if (tier == RainbowColor.VIOLET.tier) {
+            return null;
+        }
+        return RainbowColor.values()[this.ordinal() + 1];
     }
 
     public String getUnlocalizedName() {

@@ -80,7 +80,7 @@ do
                   ]
                 }
               ],
-              "name": "arconia:tree_root"
+              "name": "arconia:${clr}_colored_tree_root"
             }
           ]
         }

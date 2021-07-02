@@ -1,8 +1,11 @@
 package lonestarrr.arconia.common.block.tile;
 
+import lonestarrr.arconia.common.block.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.LeavesBlock;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -34,6 +37,8 @@ import lonestarrr.arconia.common.block.ResourceTreeRootBlock;
 import lonestarrr.arconia.common.block.RainbowCrateBlock;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.Structures;
+import org.apache.logging.log4j.core.jmx.Server;
+import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,9 +52,12 @@ public class ResourceTreeRootTileEntity extends TileEntity implements ITickableT
     private LootTable lootTable;
     private RainbowColor tier;
     private int tickCount;
-    private LootDispenser dispenser;
+    private LeafDropLootDispenser dispenser;
     private final Random rand = new Random();
     private static final Logger LOGGER = LogManager.getLogger();
+    private BlockState nextTierLeafBlock;
+    private boolean hasNextTier;
+    private LeafChanger leafChanger;
 
     public ResourceTreeRootTileEntity(RainbowColor tier) {
         this(ResourceTreeRootBlock.getTileEntityTypeByTier(tier), tier);
@@ -58,6 +66,13 @@ public class ResourceTreeRootTileEntity extends TileEntity implements ITickableT
     public ResourceTreeRootTileEntity(TileEntityType<?> tileEntityTypeIn, RainbowColor tier) {
         super(tileEntityTypeIn);
         this.tier = tier;
+        RainbowColor nextTier = tier.getNextTier();
+        hasNextTier =false;
+
+        if (nextTier != null) {
+            hasNextTier = true;
+            nextTierLeafBlock = ModBlocks.getMoneyTreeLeaves(nextTier).getDefaultState();
+        }
     }
 
     public RainbowColor getTier() {
@@ -68,28 +83,30 @@ public class ResourceTreeRootTileEntity extends TileEntity implements ITickableT
     public void tick() {
         tickCount++;
 
-        if (!world.isRemote()) {
-            if (dispenser == null) {
-                updateDispenser();
+        if (world.isRemote) {
+            return;
+        }
+
+        if (dispenser == null) {
+            dispenser = new LeafDropLootDispenser(this, (ServerWorld) world, LOOT_DROP_INTERVAL);
+        }
+        dispenser.tick();
+
+        if (hasNextTier) {
+            if (leafChanger == null) {
+                leafChanger = new LeafChanger(this, (ServerWorld) world, nextTierLeafBlock);
+                // TODO persist state
             }
-            dispenser.tick();
+            leafChanger.tick();
         }
     }
 
     private void sendUpdates() {
-        if (world != null && !world.isRemote()) {
+        if (world != null && !world.isRemote) {
             world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
             markDirty();
         }
     }
-
-    private void updateDispenser() {
-        if (world.isRemote()) {
-            return;
-        }
-
-        this.dispenser = new LeafDropLootDispenser(this, (ServerWorld) world, LOOT_DROP_INTERVAL);
-   }
 
     @Override
     public CompoundNBT write(CompoundNBT compound) {
@@ -136,11 +153,101 @@ public class ResourceTreeRootTileEntity extends TileEntity implements ITickableT
     }
 }
 
-interface LootDispenser {
-    public void tick();
+/**
+ * Randomly changes leaves to the next tier's tree leaves
+ */
+class LeafChanger {
+    public static final int MAX_LEAVES_CHANGED = 10;
+    public static final int MAX_INTERVALS = 100;
+
+    private final ResourceTreeRootTileEntity tile;
+    private final BlockState toChangeTo;
+
+    // Parameters determining speed/chance, tiered
+    // TODO modconfig
+    private final long changeInterval; // Number of ticks in between attempts to upgrade a leaf
+    private final double changeChance; // Chance % a leaf will be upgraded for each attempt
+    private final ServerWorld world;
+
+    // State
+    private int leavesChanged;
+    private int intervalCount;
+    private long lastInterval;
+    private LinkedList<BlockPos> nearbyLeaves;
+
+    public LeafChanger(@Nonnull ResourceTreeRootTileEntity tile, @Nonnull ServerWorld world, @Nonnull BlockState toChangeTo) {
+        this.tile = tile;
+        this.world = world;
+        final int tierNum = tile.getTier().getTier(); // higher tier -> higher ordinal, 1..
+        changeInterval = 60 * 20 * (long) Math.pow(1.5, tierNum - 1);
+        changeChance = Math.max(5, 100 - tierNum * 15) / 100d;
+        this.toChangeTo = toChangeTo; // Block to change leaf into - should be the next tier's leaf block
+    }
+
+    public void tick() {
+        if (nearbyLeaves == null) {
+            nearbyLeaves = findNearbyLeavePositions();
+        }
+
+        if (leavesChanged == MAX_LEAVES_CHANGED || intervalCount == MAX_INTERVALS || nearbyLeaves.size() == 0) {
+            return;
+        }
+
+        long now = world.getGameTime();
+        if (now - lastInterval < changeInterval) {
+            return;
+        }
+
+        lastInterval = now;
+        intervalCount++;
+
+        if (Math.random() > changeChance) {
+            return;
+        }
+        Block leafBlock = ModBlocks.getMoneyTreeLeaves(tile.getTier());
+
+        // Keep popping blocks until we find a leaf block to replace (should some have disappeared)
+        while (nearbyLeaves.size() > 0) {
+            BlockPos toChange = nearbyLeaves.pop();
+            BlockState state = world.getBlockState(toChange);
+            if (state.getBlock().equals(leafBlock)) {
+                BlockState newState = toChangeTo
+                        .with(LeavesBlock.DISTANCE, state.get(LeavesBlock.DISTANCE))
+                        .with(LeavesBlock.PERSISTENT, state.get(LeavesBlock.PERSISTENT));
+                world.setBlockState(toChange, newState, 3);
+                leavesChanged++;
+                break;
+            }
+        }
+    }
+
+    /**
+     * Find nearby leaves
+     * @return
+     *  A list of block positions of nearby leaves, in randomized order
+     */
+    private LinkedList<BlockPos> findNearbyLeavePositions() {
+        List<BlockPos> result = new ArrayList<>();
+
+        // Find leaves of the matching tier to potentially change. Any nearby leaf not manually placed will do
+        final int scanRadius = 3;
+        final int scanHeight = 10;
+        BlockPos startPos = tile.getPos().add(-scanRadius, 0, -scanRadius);
+        BlockPos endPos = tile.getPos().add(scanRadius, scanHeight, scanRadius);
+        Block leafBlock = ModBlocks.getMoneyTreeLeaves(tile.getTier());
+        for (BlockPos scanPos : BlockPos.getAllInBoxMutable(startPos, endPos)) {
+            BlockState state = tile.getWorld().getBlockState(scanPos);
+            if (state.getBlock().equals(leafBlock) && !state.get(LeavesBlock.PERSISTENT)) {
+                result.add(scanPos.toImmutable());
+            }
+        }
+
+        Collections.shuffle(result);
+        return new LinkedList<>(result);
+    }
 }
 
-class LeafDropLootDispenser implements LootDispenser {
+class LeafDropLootDispenser {
     private static final int MAX_LEAVES = 20; // How many leaves to look for to drop loot from
     private static final int LEAF_SCAN_INTERVAL = 200; // How often to check for leaf updates
 

@@ -23,6 +23,21 @@ public class VanillaRecipeProvider extends RecipeProvider {
         //addCriterion - makes recipe visible only after you have attained a specific (set of)item(s)
         registerArconiumBlocks(consumer);
         registerArconiumIngots(consumer);
+        registerTreeRootBlocks(consumer);
+    }
+
+    private void registerTreeRootBlocks(Consumer<IFinishedRecipe> consumer) {
+        for (RainbowColor tier: RainbowColor.values()) {
+            Item treeRoot = ModItems.getColoredRoot(tier);
+            Item treeRootBlock = ModBlocks.getResourceTreeRootBlock(tier).asItem();
+            ShapedRecipeBuilder.shapedRecipe(treeRootBlock)
+                    .key('R', treeRoot)
+                    .patternLine("RRR")
+                    .patternLine("RRR")
+                    .patternLine("RRR")
+                    .addCriterion("has_item", hasItem(treeRoot))
+                    .build(consumer);
+        }
     }
 
     private void registerArconiumIngots(Consumer<IFinishedRecipe> consumer) {
