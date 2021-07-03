@@ -110,10 +110,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
         for (RainbowColor color: RainbowColor.values()) {
             Block leafBlock = ModBlocks.getMoneyTreeLeaves(color);
             String leafName = Registry.BLOCK.getKey(leafBlock).getPath();
-            ModelFile leafModel = models().withExistingParent(leafName, "block/leaves")
-                    .texture("all", prefix("block/" + color.getTierName() + BlockNames.LEAVES_SUFFIX));
+            ModelFile leafModel = models().getExistingFile(prefix("block/resource_tree_leaves"));
             simpleBlock(leafBlock, leafModel);
-            itemModels().withExistingParent(leafName, prefix("block/" + leafName));
+            itemModels().withExistingParent(leafName, prefix("block/resource_tree_leaves"));
         }
     }
 

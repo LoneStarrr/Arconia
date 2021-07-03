@@ -61,6 +61,41 @@ public enum RainbowColor {
         return RainbowColor.values()[this.ordinal() + 1];
     }
 
+    /**
+     * Many items and blocks are colored dynamically based on rainbow tier. Each tier has a corresponding RGB color value
+     * @param tier
+     * @return RGB color value asociated with the tier
+     */
+    public static int getColorRGB(RainbowColor tier) {
+        int color; // ARGB
+        int alfa = 0;
+
+        switch (tier.getTier()) {
+            case 1: // RED
+                color = 0xff << 16;
+                break;
+            case 2: // ORANGE
+                color = 0xff << 16 | 0xa5 << 8;
+                break;
+            case 3: // YELLOW
+                color = 0xff << 16 | 0xff << 8;
+                break;
+            case 4: // GREEN
+                color = 0xff << 8;
+//                color = 8431445; // birch
+                break;
+            case 5: // BLUE
+                color = 0xff << 8 | 0xff;
+                break;
+            case 6: // INDIGO
+                color = 0x42 << 16 | 0x82;
+                break;
+            default: // VIOLET
+                color = 0xff << 16 | 0xff;
+        }
+        return color | alfa << 24;
+    }
+
     public String getUnlocalizedName() {
         return this.unlocalizedName;
     }

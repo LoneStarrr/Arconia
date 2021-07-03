@@ -24,8 +24,9 @@ import java.util.OptionalDouble;
 import java.util.Random;
 
 public class RainbowLightningProjector {
+
     /**
-     * Render a rainbow lightning effect with a given block position at the center. Similar to end dragon death effect, but with colors.
+     * Render a lightning effect with a given block position at the center. Similar to end dragon death effect, but with cycling rainbow colors.
      *
      * @param pos
      * @param beamLength
@@ -34,6 +35,20 @@ public class RainbowLightningProjector {
      * @param buffer
      */
     public static void renderRainbowLighting(BlockPos pos, float beamLength, int beamCount, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
+        renderRainbowLighting(pos, beamLength, beamCount, matrixStack, buffer, null);
+    }
+
+    /**
+     * Render a lightning effect using a single color
+     *
+     * @param pos
+     * @param beamLength
+     * @param beamCount
+     * @param matrixStack
+     * @param buffer
+     * @param color The color to use, or null if it should cycle through all rainbow colors
+     */
+    public static void renderRainbowLighting(BlockPos pos, float beamLength, int beamCount, MatrixStack matrixStack, IRenderTypeBuffer buffer, Color color) {
         matrixStack.push();
         matrixStack.translate(pos.getX(), pos.getY(), pos.getZ());
         matrixStack.translate(0.5f, 0.5f, 0.5f);
@@ -76,8 +91,10 @@ public class RainbowLightningProjector {
             vertices[5].set(0f, -0.10f * beamLengthRnd, 0.4f * beamLengthRnd, 0.4f);
 
             // Every beam cycles through the colors of the rainbow, with some random offset
-            float hue = rand.nextFloat() + (ticks % 256) / 256f;
-            Color color = Color.getHSBColor(hue, 1f, 1f);
+            if (color == null) {
+                float hue = rand.nextFloat() + (ticks % 256) / 256f;
+                color = Color.getHSBColor(hue, 1f, 1f);
+            }
             float colorR = color.getRed() / 255f;
             float colorG = color.getGreen() / 255f;
             float colorB = color.getBlue() / 255f;

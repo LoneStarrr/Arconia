@@ -40,7 +40,7 @@ do
               }
             }
           ],
-          "name": "arconia:${clr}_rainbow_essence"
+          "name": "arconia:${clr}_arconium_essence"
         }
       ],
       "conditions": [

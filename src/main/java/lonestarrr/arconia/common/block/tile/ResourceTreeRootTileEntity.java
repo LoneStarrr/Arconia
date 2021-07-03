@@ -47,6 +47,9 @@ import java.util.*;
 import static java.lang.Math.floor;
 import static java.lang.Math.max;
 
+/**
+ * Runs the Resource Tree logic - dispensing loot and all that good stuff
+ */
 public class ResourceTreeRootTileEntity extends TileEntity implements ITickableTileEntity {
     private static final int LOOT_DROP_INTERVAL = 100; // How often to drop loot
     private LootTable lootTable;

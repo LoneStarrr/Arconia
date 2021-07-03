@@ -1,5 +1,6 @@
 package lonestarrr.arconia.client.core.handler;
 
+import lonestarrr.arconia.common.block.ResourceTreeLeaves;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.BlockColors;
@@ -40,60 +41,37 @@ public class ColorHandler {
                 return 0xffffff;
             }
             MagicInABottle bottle = (MagicInABottle)stack.getItem();
-            return getRainbowColor(bottle.getTier(stack));
+            return RainbowColor.getColorRGB(bottle.getTier(stack));
         }, ModItems.magicInABottle);
 
         for (RainbowColor tier: RainbowColor.values()) {
-            // tree root tops are modified using the corresponding rainbow color.
+            // Tree root tops are modified using the corresponding rainbow color.
             ResourceTreeRootBlock treeRoot = ModBlocks.getResourceTreeRootBlock(tier);
             colorBlocks.register(treeRoot, treeRoot);
-            //taken from minecraft's ItemColors
+            // Taken from minecraft's ItemColors
             items.register((stack, color) -> {
                 BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
                 return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, color);
             }, Item.getItemFromBlock(treeRoot));
 
-            //colored tree roots
+            // Colored tree leaves
+            ResourceTreeLeaves treeLeaf = ModBlocks.getMoneyTreeLeaves(tier);
+            colorBlocks.register(treeLeaf, treeLeaf);
+            // Taken from minecraft's ItemColors
             items.register((stack, color) -> {
-                return getRainbowColor(((ColoredRoot)(stack.getItem())).getTier());
+                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
+                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, color);
+            }, Item.getItemFromBlock(treeLeaf));
+
+            // Colored tree roots
+            items.register((stack, color) -> {
+                return RainbowColor.getColorRGB(((ColoredRoot)(stack.getItem())).getTier());
             }, ModItems.getColoredRoot(tier));
 
-            //colored arconium essence
+            // Colored arconium essence
             items.register((stack, color) -> {
-                return getRainbowColor(tier);
+                return RainbowColor.getColorRGB(tier);
             }, ModItems.getArconiumEssence(tier));
         }
     }
-
-    // A lot of blocks / items are tiered by rainbow color. Tint index corresponds to RainbowColor's ordinal value.
-    public static int getRainbowColor(RainbowColor tier) {
-        int color; // ARGB
-        int alfa = 0;
-
-        switch (tier.getTier()) {
-            case 1: // RED
-                color = 0xff << 16;
-                break;
-            case 2: // ORANGE
-                color = 0xff << 16 | 0xa5 << 8;
-                break;
-            case 3: // YELLOW
-                color = 0xff << 16 | 0xff << 8;
-                break;
-            case 4: // GREEN
-                color = 0xff << 8;
-//                color = 8431445; // birch
-                break;
-            case 5: // BLUE
-                color = 0xff << 8 | 0xff;
-                break;
-            case 6: // INDIGO
-                color = 0x42 << 16 | 0x82;
-                break;
-            default: // VIOLET
-                color = 0xff << 16 | 0xff;
-        }
-        return color | alfa << 24;
-    }
-
 }
