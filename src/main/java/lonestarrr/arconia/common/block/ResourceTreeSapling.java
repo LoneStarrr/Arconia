@@ -3,19 +3,22 @@ package lonestarrr.arconia.common.block;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.trees.Tree;
+import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.IBlockReader;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.world.trees.MoneyTree;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import java.util.regex.Pattern;
 
 /**
  * Sapling that sprouts a money tree
  */
-public class ResourceTreeSapling extends SaplingBlock {
+public class ResourceTreeSapling extends SaplingBlock implements IBlockColor {
     private final RainbowColor tier;
 
     public ResourceTreeSapling(@Nonnull RainbowColor tier) {
@@ -45,5 +48,12 @@ public class ResourceTreeSapling extends SaplingBlock {
 
         ResourceTreeRootBlock rootBlock = (ResourceTreeRootBlock) block;
         return rootBlock.getTier().ordinal() >= this.tier.ordinal();
+    }
+
+    @Override
+    public int getColor(
+            BlockState blockState, @Nullable IBlockDisplayReader iBlockDisplayReader, @Nullable BlockPos blockPos, int tintIndex) {
+        // Colors are not dependent on tint index, but on rainbow tier (though may use tintIndex later for less saturated versions)
+        return RainbowColor.getColorRGB(tier);
     }
 }

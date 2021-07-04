@@ -46,40 +46,52 @@ public class ColorHandler {
             ResourceTreeRootBlock treeRoot = ModBlocks.getResourceTreeRootBlock(tier);
             colorBlocks.register(treeRoot, treeRoot);
             // Taken from minecraft's ItemColors
-            items.register((stack, color) -> {
+            items.register((stack, layer) -> {
                 BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
-                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, color);
+                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
             }, Item.getItemFromBlock(treeRoot));
 
-            // Colored tree leaves
+            // Tree leaves
             ResourceTreeLeaves treeLeaf = ModBlocks.getMoneyTreeLeaves(tier);
             colorBlocks.register(treeLeaf, treeLeaf);
             // Taken from minecraft's ItemColors
-            items.register((stack, color) -> {
+            items.register((stack, layer) -> {
                 BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
-                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, color);
+                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
             }, Item.getItemFromBlock(treeLeaf));
+
+            // Tree saplings
+            ResourceTreeSapling treeSapling = ModBlocks.getMoneyTreeSapling(tier);
+            colorBlocks.register(treeSapling, treeSapling);
+            // Taken from minecraft's ItemColors - for saplings, only layer0 is dynamically colored
+            items.register((stack, layer) -> {
+                if (layer != 0) {
+                    return 0xFFFFFF;
+                }
+                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
+                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
+            }, Item.getItemFromBlock(treeSapling));
 
             // Arconium blocks
             ArconiumBlock arconiumBlock = ModBlocks.getArconiumBlock(tier);
             colorBlocks.register(arconiumBlock, arconiumBlock);
             // Taken from minecraft's ItemColors
-            items.register((stack, color) -> {
+            items.register((stack, layer) -> {
                 BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
-                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, color);
+                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
             }, Item.getItemFromBlock(arconiumBlock));
 
             // Rainbow crates
             RainbowCrateBlock crateBlock = ModBlocks.getRainbowCrateBlock(tier);
             colorBlocks.register(crateBlock, crateBlock);
             // Taken from minecraft's ItemColors
-            items.register((stack, color) -> {
+            items.register((stack, layer) -> {
                 BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
-                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, color);
+                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
             }, Item.getItemFromBlock(crateBlock));
 
             // Colored tree roots
-            items.register((stack, color) -> {
+            items.register((stack, layer) -> {
                 return RainbowColor.getColorRGB(((ColoredRoot)(stack.getItem())).getTier());
             }, ModItems.getColoredRoot(tier));
 

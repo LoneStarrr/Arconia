@@ -113,15 +113,18 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private void registerSaplings() {
+        final String texturePath = "block/sapling_white";
+        // Model is a copy of minecraft's block/cross, with added gold speckles overlay and tint index.
+        ModelFile model = models().getExistingFile(prefix("block/cross_sapling"));
+
         for (RainbowColor color: RainbowColor.values()) {
             Block block = ModBlocks.getMoneyTreeSapling(color);
             String name = Registry.BLOCK.getKey(block).getPath();
-            String texturePath = "block/" + color.getTierName() + BlockNames.SAPLING_SUFFIX;
-            ModelFile model = models().withExistingParent(name, "block/cross")
-                    .texture("cross", prefix(texturePath));
             simpleBlock(block, model);
+            // Item model here does not use the block model, but instead the flat texture(s)
             itemModels().withExistingParent(name, "item/generated")
-                    .texture("layer0", prefix(texturePath));
+                    .texture("layer0", prefix(texturePath))
+                    .texture("layer1", prefix("block/sapling_speckles"));
         }
     }
 
