@@ -2,6 +2,7 @@ package lonestarrr.arconia.common.block;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -18,6 +19,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.extensions.IForgeContainerType;
@@ -44,7 +46,7 @@ import java.util.Map;
  * Tiered crates. Who does not like a lil' extra storage?
  */
 @Mod.EventBusSubscriber(modid = Arconia.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class RainbowCrateBlock extends ContainerBlock {
+public class RainbowCrateBlock extends ContainerBlock implements IBlockColor {
     private static final Map<RainbowColor,ContainerType<RainbowCrateContainer>> containerTypes =
             new HashMap<>(RainbowColor.values().length);
 
@@ -147,6 +149,14 @@ public class RainbowCrateBlock extends ContainerBlock {
     public RainbowColor getTier() {
         return this.tier;
     }
+
+    @Override
+    public int getColor(
+            BlockState blockState, @Nullable IBlockDisplayReader iBlockDisplayReader, @Nullable BlockPos blockPos, int tintIndex) {
+        // Colors are not dependent on tint index, but on rainbow tier (though may use tintIndex later for less saturated versions)
+        return RainbowColor.getColorRGB(tier);
+    }
+
 
     @SubscribeEvent
     public static void registerContainers(final RegistryEvent.Register<ContainerType<?>> event)

@@ -2,6 +2,7 @@ package lonestarrr.arconia.data.client;
 
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
@@ -69,14 +70,45 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private void registerCrates() {
+        // Experiment building model fully programmatically - seems more work than just writing the .json without clear benefits
+        final String modelName = "block/rainbow_crate";
+        ModelFile model = models().withExistingParent(modelName, "block/block")
+                .texture("outline", prefix("block/rainbow_crate_woodgrain_outline"))
+                .texture("rainbow", prefix("block/rainbow_crate_rainbow_overlay"))
+                .texture("woodgrain", prefix("block/rainbow_crate_woodgrain"))
+                .texture("particle", "#woodgrain")
+                .element() //First layer - dynamically colored
+                .from(0, 0, 0)
+                .to(16,16,16)
+                .face(Direction.DOWN).uvs(0, 0, 16, 16).texture("#woodgrain").cullface(Direction.DOWN).tintindex(0).end()
+                .face(Direction.UP).uvs(0, 0, 16, 16).texture("#woodgrain").cullface(Direction.UP).tintindex(0).end()
+                .face(Direction.NORTH).uvs(0, 0, 16, 16).texture("#woodgrain").cullface(Direction.NORTH).tintindex(0).end()
+                .face(Direction.SOUTH).uvs(0, 0, 16, 16).texture("#woodgrain").cullface(Direction.SOUTH).tintindex(0).end()
+                .face(Direction.WEST).uvs(0, 0, 16, 16).texture("#woodgrain").cullface(Direction.WEST).tintindex(0).end()
+                .face(Direction.EAST).uvs(0, 0, 16, 16).texture("#woodgrain").cullface(Direction.EAST).tintindex(0).end()
+                .end()
+                .element()
+                .from(0, 0, 0)
+                .to(16,16,16)
+                .face(Direction.DOWN).uvs(0, 0, 16, 16).texture("#outline").cullface(Direction.DOWN).end()
+                .face(Direction.UP).uvs(0, 0, 16, 16).texture("#outline").cullface(Direction.UP).end()
+                .face(Direction.NORTH).uvs(0, 0, 16, 16).texture("#outline").cullface(Direction.NORTH).end()
+                .face(Direction.SOUTH).uvs(0, 0, 16, 16).texture("#outline").cullface(Direction.SOUTH).end()
+                .face(Direction.WEST).uvs(0, 0, 16, 16).texture("#outline").cullface(Direction.WEST).end()
+                .face(Direction.EAST).uvs(0, 0, 16, 16).texture("#outline").cullface(Direction.EAST).end()
+                .end()
+                .element()
+                .from(0, 0, 0)
+                .to(16,16,16)
+                .face(Direction.UP).uvs(0, 0, 16, 16).texture("#rainbow").cullface(Direction.UP).end()
+                .end();
+
         for (RainbowColor color: RainbowColor.values()) {
             Block block = ModBlocks.getRainbowCrateBlock(color);
             String name = Registry.BLOCK.getKey(block).getPath();
-            ResourceLocation top = prefix("block/rainbow_crate_" + color.getTierName() + "_top");
-            ResourceLocation sides = prefix("block/rainbow_crate_" + color.getTierName() + "_sides");
-            ModelFile model = models().cubeTop("block/" + name, sides, top);
+
             horizontalBlock(block, model);
-            itemModels().withExistingParent(name, prefix("block/" + name));
+            itemModels().withExistingParent(name, prefix(modelName));
         }
     }
 
@@ -120,9 +152,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
         for (RainbowColor color: RainbowColor.values()) {
             Block block = ModBlocks.getArconiumBlock(color);
             String name = Registry.BLOCK.getKey(block).getPath();
-            ModelFile model = models().cubeAll(name, prefix("block/" + color.getTierName() + BlockNames.ARCONIUM_BLOCK_SUFFIX));
+            //ModelFile model = models().cubeAll(name, prefix("block/arconium_block"));
+            ModelFile model = models().getExistingFile(prefix("block/arconium_block"));
             simpleBlock(block, model);
-            itemModels().withExistingParent(name, prefix("block/" + name));
+            itemModels().withExistingParent(name, prefix("block/arconium_block"));
         }
     }
 }

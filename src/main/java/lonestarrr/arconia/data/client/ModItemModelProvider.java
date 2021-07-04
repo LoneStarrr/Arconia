@@ -34,7 +34,7 @@ public class ModItemModelProvider extends ItemModelProvider {
             Item item = ModItems.getArconiumIngot(color);
             String name = Registry.ITEM.getKey(item).getPath();
             withExistingParent(name, GENERATED)
-                    .texture("layer0", prefix("item/arconium_ingot_" + color.getTierName()));
+                    .texture("layer0", prefix("item/arconium_ingot_white"));
         }
     }
 }
