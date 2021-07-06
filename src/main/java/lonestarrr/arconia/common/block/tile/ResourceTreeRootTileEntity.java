@@ -52,7 +52,9 @@ import static java.lang.Math.max;
  */
 public class ResourceTreeRootTileEntity extends TileEntity implements ITickableTileEntity {
     private static final int LOOT_DROP_INTERVAL = 100; // How often to drop loot
-    private LootTable lootTable;
+
+    private static final String TAG_LEAF_CHANGER = "leafChanger";
+
     private RainbowColor tier;
     private int tickCount;
     private LeafDropLootDispenser dispenser;
@@ -70,12 +72,14 @@ public class ResourceTreeRootTileEntity extends TileEntity implements ITickableT
         super(tileEntityTypeIn);
         this.tier = tier;
         RainbowColor nextTier = tier.getNextTier();
-        hasNextTier =false;
+        hasNextTier = false;
 
         if (nextTier != null) {
             hasNextTier = true;
             nextTierLeafBlock = ModBlocks.getMoneyTreeLeaves(nextTier).getDefaultState();
+            leafChanger = new LeafChanger(this, nextTierLeafBlock);
         }
+        dispenser = new LeafDropLootDispenser(this, LOOT_DROP_INTERVAL);
     }
 
     public RainbowColor getTier() {
@@ -90,17 +94,12 @@ public class ResourceTreeRootTileEntity extends TileEntity implements ITickableT
             return;
         }
 
-        if (dispenser == null) {
-            dispenser = new LeafDropLootDispenser(this, (ServerWorld) world, LOOT_DROP_INTERVAL);
-        }
         dispenser.tick();
 
-        if (hasNextTier) {
-            if (leafChanger == null) {
-                leafChanger = new LeafChanger(this, (ServerWorld) world, nextTierLeafBlock);
-                // TODO persist state
+        if (leafChanger != null) {
+            if (leafChanger.tick()) {
+                markDirty();
             }
-            leafChanger.tick();
         }
     }
 
@@ -114,7 +113,9 @@ public class ResourceTreeRootTileEntity extends TileEntity implements ITickableT
     @Override
     public CompoundNBT write(CompoundNBT compound) {
         if (!world.isRemote()) {
-            /// write data if I have any
+            if (leafChanger != null) {
+                compound.put(TAG_LEAF_CHANGER, leafChanger.write());
+            }
         }
         return super.write(compound);
     }
@@ -122,6 +123,11 @@ public class ResourceTreeRootTileEntity extends TileEntity implements ITickableT
     @Override
     public void read(BlockState state, CompoundNBT compound) {
         super.read(state, compound);
+        if (compound.contains(TAG_LEAF_CHANGER)) {
+            if (leafChanger != null) {
+                leafChanger.read(compound.getCompound(TAG_LEAF_CHANGER));
+            }
+        }
     }
 
     @Override
@@ -159,9 +165,14 @@ public class ResourceTreeRootTileEntity extends TileEntity implements ITickableT
 /**
  * Randomly changes leaves to the next tier's tree leaves
  */
-class LeafChanger {
+class
+LeafChanger {
     public static final int MAX_LEAVES_CHANGED = 10;
     public static final int MAX_INTERVALS = 100;
+
+    private static final String TAG_LEAVES_CHANGED = "leavesChanged";
+    private static final String TAG_INTERVAL_COUNT = "intervalCount";
+
 
     private final ResourceTreeRootTileEntity tile;
     private final BlockState toChangeTo;
@@ -170,7 +181,6 @@ class LeafChanger {
     // TODO modconfig
     private final long changeInterval; // Number of ticks in between attempts to upgrade a leaf
     private final double changeChance; // Chance % a leaf will be upgraded for each attempt
-    private final ServerWorld world;
 
     // State
     private int leavesChanged;
@@ -178,34 +188,46 @@ class LeafChanger {
     private long lastInterval;
     private LinkedList<BlockPos> nearbyLeaves;
 
-    public LeafChanger(@Nonnull ResourceTreeRootTileEntity tile, @Nonnull ServerWorld world, @Nonnull BlockState toChangeTo) {
+    public LeafChanger(@Nonnull ResourceTreeRootTileEntity tile, @Nonnull BlockState toChangeTo) {
         this.tile = tile;
-        this.world = world;
         final int tierNum = tile.getTier().getTier(); // higher tier -> higher ordinal, 1..
         changeInterval = 60 * 20 * (long) Math.pow(1.5, tierNum - 1);
         changeChance = Math.max(5, 100 - tierNum * 15) / 100d;
         this.toChangeTo = toChangeTo; // Block to change leaf into - should be the next tier's leaf block
     }
 
-    public void tick() {
+    /**
+     *
+     * @return True if state was changed that should be persisted
+     */
+    public boolean tick() {
+        World world = tile.getWorld();
+        if (world.isRemote) {
+            return false;
+        }
+
         if (nearbyLeaves == null) {
             nearbyLeaves = findNearbyLeavePositions();
         }
 
         if (leavesChanged == MAX_LEAVES_CHANGED || intervalCount == MAX_INTERVALS || nearbyLeaves.size() == 0) {
-            return;
+            return false;
         }
 
+
         long now = world.getGameTime();
-        if (now - lastInterval < changeInterval) {
-            return;
+        if (lastInterval == 0) {
+            lastInterval = world.getGameTime();
+            return false;
+        } else if (now - lastInterval < changeInterval) {
+            return false;
         }
 
         lastInterval = now;
         intervalCount++;
 
         if (Math.random() > changeChance) {
-            return;
+            return true;
         }
         Block leafBlock = ModBlocks.getMoneyTreeLeaves(tile.getTier());
 
@@ -222,6 +244,8 @@ class LeafChanger {
                 break;
             }
         }
+
+        return true;
     }
 
     /**
@@ -248,13 +272,24 @@ class LeafChanger {
         Collections.shuffle(result);
         return new LinkedList<>(result);
     }
+
+    protected CompoundNBT write() {
+        CompoundNBT result = new CompoundNBT();
+        result.putInt(TAG_LEAVES_CHANGED, leavesChanged);
+        result.putInt(TAG_INTERVAL_COUNT, intervalCount);
+        return result;
+    }
+
+    protected void read(CompoundNBT nbt) {
+        leavesChanged = nbt.getInt(TAG_LEAVES_CHANGED);
+        intervalCount = nbt.getInt(TAG_INTERVAL_COUNT);
+    }
 }
 
 class LeafDropLootDispenser {
     private static final int MAX_LEAVES = 20; // How many leaves to look for to drop loot from
     private static final int LEAF_SCAN_INTERVAL = 200; // How often to check for leaf updates
 
-    final private ServerWorld world;
     private List<BlockPos> foundLeaves = new ArrayList<>(MAX_LEAVES);
     private int lastLeafScanTick;
     private int tickCount = 0;
@@ -262,8 +297,7 @@ class LeafDropLootDispenser {
     final private ResourceTreeRootTileEntity tileEntity;
     final private Random rand;
 
-    public LeafDropLootDispenser(ResourceTreeRootTileEntity tileEntity, ServerWorld world, int dropInterval) {
-        this.world = world;
+    public LeafDropLootDispenser(ResourceTreeRootTileEntity tileEntity, int dropInterval) {
         this.dropInterval = dropInterval;
         this.tileEntity = tileEntity;
         lastLeafScanTick = -10000;
@@ -274,6 +308,11 @@ class LeafDropLootDispenser {
      * Loot is dropped from a leaf at an interval
      */
     public void tick() {
+        World world = tileEntity.getWorld();
+        if (world.isRemote) {
+            return;
+        }
+
         tickCount++;
 
         if (tickCount % dropInterval != 0) {
@@ -329,7 +368,7 @@ class LeafDropLootDispenser {
         BlockPos.Mutable pos = new BlockPos.Mutable();
         while (++y < maxY) {
             pos.setPos(x, y, z);
-            BlockState bs = world.getBlockState(pos);
+            BlockState bs = tileEntity.getWorld().getBlockState(pos);
             if (bs.isAir()) {
                 lastBlockWasAir = true;
                 continue;
@@ -351,7 +390,7 @@ class LeafDropLootDispenser {
     }
 
     private boolean isValidLeaf(BlockPos pos, RainbowColor minTier) {
-        BlockState state = world.getBlockState(pos);
+        BlockState state = tileEntity.getWorld().getBlockState(pos);
         if (!(state.getBlock() instanceof ResourceTreeLeaves)) {
             return false;
         }
@@ -365,7 +404,8 @@ class LeafDropLootDispenser {
      * @param leafPos Block position that contains a money tree leaf
      */
     private void dispenseLoot(ResourceGenTileEntity generator, BlockPos leafPos) {
-        if (world.isRemote()) {
+        World world = tileEntity.getWorld();
+        if (world.isRemote) {
             return;
         }
 

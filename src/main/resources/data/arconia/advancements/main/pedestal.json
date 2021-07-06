@@ -1,29 +1,30 @@
 {
   "display": {
     "icon": {
-      "item": "arconia:three_leaf_clover"
+      "item": "arconia:center_pedestal"
     },
     "title": {
-      "translate": "advancements.main.root.title"
+      "translate": "advancements.main.pedestal.title"
     },
     "description": {
-      "translate": "advancements.main.root.desc"
+      "translate": "advancements.main.pedestal.desc"
     },
-    "background": "arconia:textures/block/tree_root_block_sides.png",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
+  "parent": "arconia:main/tree_root_block",
   "criteria": {
-    "clover": {
+    "pedestal": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "arconia:three_leaf_clover"
+            "item": "arconia:center_pedestal"
           }
         ]
       }
     }
   }
 }
+

@@ -68,30 +68,30 @@ public enum RainbowColor {
      */
     public static int getColorRGB(RainbowColor tier) {
         int color; // ARGB
-        int alfa = 0;
+        final int alfa = 0;
 
         switch (tier.getTier()) {
             case 1: // RED
-                color = 0xff << 16;
+                color = 0xFF0000;
                 break;
             case 2: // ORANGE
-                color = 0xff << 16 | 0xa5 << 8;
+                color = 0xFF7F00;
                 break;
             case 3: // YELLOW
-                color = 0xff << 16 | 0xff << 8;
+                color = 0xFFFF00;
                 break;
             case 4: // GREEN
-                color = 0xff << 8;
+                color = 0x00FF00;
 //                color = 8431445; // birch
                 break;
             case 5: // BLUE
-                color = 0xff << 8 | 0xff;
+                color = 0x0000FF;
                 break;
             case 6: // INDIGO
-                color = 0x42 << 16 | 0x82;
+                color = 0x2E2B5F;
                 break;
             default: // VIOLET
-                color = 0xff << 16 | 0xff;
+                color = 0x8B00FF;
         }
         return color | alfa << 24;
     }

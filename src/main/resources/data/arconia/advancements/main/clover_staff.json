@@ -14,7 +14,7 @@
   },
   "parent": "arconia:main/four_leaf_clover",
   "criteria": {
-    "fourleafclover": {
+    "clover_staff": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
