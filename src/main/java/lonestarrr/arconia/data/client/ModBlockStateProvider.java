@@ -41,33 +41,33 @@ public class ModBlockStateProvider extends BlockStateProvider {
         registerTreeRoots();
         registerSaplings();
         registerCrates();
-        registerCrops();
+//        registerCrops();
         registerArconiumBlocks();
     }
 
-    private void registerCrops() {
-        // The first few stages of each crop are identical
-        ModelFile modelStage0 = models().withExistingParent("block/rainbow_crop_stage0", "block/cross").texture("cross", prefix("block/rainbow_crop_stage0"));
-        ModelFile modelStage1 = models().withExistingParent("block/rainbow_crop_stage1", "block/cross").texture("cross", prefix("block/rainbow_crop_stage1"));
-        ModelFile modelStage2 = models().withExistingParent("block/rainbow_crop_stage2", "block/cross").texture("cross", prefix("block/rainbow_crop_stage2"));
-
-        for (RainbowColor color: RainbowColor.values()) {
-            Block block = ModBlocks.getRainbowCrop(color);
-            String name = Registry.BLOCK.getKey(block).getPath();
-            // TODO later stages should also be generic models using overlay with tints instead (doing that for tree roots already)
-            ModelFile modelStage3 = models().withExistingParent("block/" + color.getTierName() + "_rainbow_crop_stage3", "block/cross")
-                    .texture("cross", prefix("block/" + color.getTierName() + "_rainbow_crop_stage3"));
-            ModelFile modelStage4 = models().withExistingParent("block/" + color.getTierName() + "_rainbow_crop_stage4", "block/cross")
-                    .texture("cross", prefix("block/" + color.getTierName() + "_rainbow_crop_stage4"));
-            getVariantBuilder(block)
-                    .partialState().with(RainbowCropBlock.CROP_AGE, 0).addModels(new ConfiguredModel(modelStage0))
-                    .partialState().with(RainbowCropBlock.CROP_AGE, 1).addModels(new ConfiguredModel(modelStage1))
-                    .partialState().with(RainbowCropBlock.CROP_AGE, 2).addModels(new ConfiguredModel(modelStage2))
-                    .partialState().with(RainbowCropBlock.CROP_AGE, 3).addModels(new ConfiguredModel(modelStage3))
-                    .partialState().with(RainbowCropBlock.CROP_AGE, 4).addModels(new ConfiguredModel(modelStage4));
-            // No item models for crops. They have seeds instead.
-        }
-    }
+//    private void registerCrops() {
+//        // The first few stages of each crop are identical
+//        ModelFile modelStage0 = models().withExistingParent("block/rainbow_crop_stage0", "block/cross").texture("cross", prefix("block/rainbow_crop_stage0"));
+//        ModelFile modelStage1 = models().withExistingParent("block/rainbow_crop_stage1", "block/cross").texture("cross", prefix("block/rainbow_crop_stage1"));
+//        ModelFile modelStage2 = models().withExistingParent("block/rainbow_crop_stage2", "block/cross").texture("cross", prefix("block/rainbow_crop_stage2"));
+//
+//        for (RainbowColor color: RainbowColor.values()) {
+//            Block block = ModBlocks.getRainbowCrop(color);
+//            String name = Registry.BLOCK.getKey(block).getPath();
+//            // TODO later stages should also be generic models using overlay with tints instead (doing that for tree roots already)
+//            ModelFile modelStage3 = models().withExistingParent("block/" + color.getTierName() + "_rainbow_crop_stage3", "block/cross")
+//                    .texture("cross", prefix("block/" + color.getTierName() + "_rainbow_crop_stage3"));
+//            ModelFile modelStage4 = models().withExistingParent("block/" + color.getTierName() + "_rainbow_crop_stage4", "block/cross")
+//                    .texture("cross", prefix("block/" + color.getTierName() + "_rainbow_crop_stage4"));
+//            getVariantBuilder(block)
+//                    .partialState().with(RainbowCropBlock.CROP_AGE, 0).addModels(new ConfiguredModel(modelStage0))
+//                    .partialState().with(RainbowCropBlock.CROP_AGE, 1).addModels(new ConfiguredModel(modelStage1))
+//                    .partialState().with(RainbowCropBlock.CROP_AGE, 2).addModels(new ConfiguredModel(modelStage2))
+//                    .partialState().with(RainbowCropBlock.CROP_AGE, 3).addModels(new ConfiguredModel(modelStage3))
+//                    .partialState().with(RainbowCropBlock.CROP_AGE, 4).addModels(new ConfiguredModel(modelStage4));
+//            // No item models for crops. They have seeds instead.
+//        }
+//    }
 
     private void registerCrates() {
         // Experiment building model fully programmatically - seems more work than just writing the .json without clear benefits

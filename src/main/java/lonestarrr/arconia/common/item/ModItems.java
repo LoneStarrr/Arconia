@@ -67,17 +67,18 @@ public final class ModItems {
             register(r, arconiumIngot, tier.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX);
             arconiumIngots.put(tier, arconiumIngot);
 
+            // TODO decide the fate of seeds and crops
             // Seeds are a special case. They are created through BlockItem and thus associated with the crop.
-            RainbowCropBlock crop = ModBlocks.getRainbowCrop(tier);
-            Item seed = new BlockNamedItem(crop, builder);
-            register(r, seed, crop.getSeedResourceName());
-            rainbowSeeds.put(tier, seed);
+//            RainbowCropBlock crop = ModBlocks.getRainbowCrop(tier);
+//            Item seed = new BlockNamedItem(crop, builder);
+//            register(r, seed, crop.getSeedResourceName());
+//            rainbowSeeds.put(tier, seed);
         }
     }
 
-    public static final Item getRainbowSeed(RainbowColor tier) {
-        return rainbowSeeds.get(tier);
-    }
+//    public static final Item getRainbowSeed(RainbowColor tier) {
+//        return rainbowSeeds.get(tier);
+//    }
 
     public static final Item getArconiumEssence(RainbowColor tier) {
         return arconiumEssences.get(tier);

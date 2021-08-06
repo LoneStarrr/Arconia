@@ -9,6 +9,9 @@ import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.item.Item;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraftforge.common.Tags;
 
 import java.util.function.Consumer;
 
@@ -24,6 +27,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
         registerArconiumBlocks(consumer);
         registerArconiumIngots(consumer);
         registerTreeRootBlocks(consumer);
+        registerCrates(consumer);
     }
 
     private void registerTreeRootBlocks(Consumer<IFinishedRecipe> consumer) {
@@ -68,4 +72,20 @@ public class VanillaRecipeProvider extends RecipeProvider {
                     .build(consumer);
         }
     }
+
+    private void registerCrates(Consumer<IFinishedRecipe> consumer) {
+        for (RainbowColor tier: RainbowColor.values()) {
+            Block block = ModBlocks.getRainbowCrateBlock(tier);
+            ShapedRecipeBuilder.shapedRecipe(block)
+                    .key('I', ModItems.getArconiumIngot(tier))
+                    .key('C', Tags.Items.CHESTS)
+                    .key('P', ItemTags.PLANKS)
+                    .patternLine("IPI")
+                    .patternLine("PCP")
+                    .patternLine("IPI")
+                    .addCriterion("has_item", hasItem(ModItems.getArconiumIngot(tier)))
+                    .build(consumer);
+        }
+    }
+
 }

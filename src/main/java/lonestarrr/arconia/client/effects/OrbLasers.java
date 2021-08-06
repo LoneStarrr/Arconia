@@ -33,7 +33,7 @@ public class OrbLasers {
             return;
         }
 
-        int beamColor = RainbowColor.getColorRGB(RainbowColor.RED);
+        int beamColor = RainbowColor.RED.getColorValue();
         long startTick = world.getGameTime();
         Vector3d orbPosExact = new Vector3d(orbPos.getX() + 0.5, orbPos.getY() + 0.5, orbPos.getZ() + 0.5);
         Vector3d itemPosExact = new Vector3d(itemPos.getX(), itemPos.getY(), itemPos.getZ());

@@ -37,7 +37,7 @@ public class ClientProxy implements IProxy {
         RenderTypeLookup.setRenderLayer(ModBlocks.clover, cutout);
 
         for (RainbowColor tier: RainbowColor.values()) {
-            RenderTypeLookup.setRenderLayer(ModBlocks.getRainbowCrop(tier), cutout);
+//            RenderTypeLookup.setRenderLayer(ModBlocks.getRainbowCrop(tier), cutout);
             RenderTypeLookup.setRenderLayer(ModBlocks.getMoneyTreeLeaves(tier), cutout);
             RenderTypeLookup.setRenderLayer(ModBlocks.getMoneyTreeSapling(tier), cutout);
             // Crates are solid, but use overlapping textures with gaps

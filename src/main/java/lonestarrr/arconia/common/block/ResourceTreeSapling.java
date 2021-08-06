@@ -54,6 +54,6 @@ public class ResourceTreeSapling extends SaplingBlock implements IBlockColor {
     public int getColor(
             BlockState blockState, @Nullable IBlockDisplayReader iBlockDisplayReader, @Nullable BlockPos blockPos, int tintIndex) {
         // Colors are not dependent on tint index, but on rainbow tier (though may use tintIndex later for less saturated versions)
-        return RainbowColor.getColorRGB(tier);
+        return tier.getColorValue();
     }
 }

@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = Arconia.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModBlocks {
-    private static final Map<RainbowColor, RainbowCropBlock> rainbowCrops = new HashMap<>();
+//    private static final Map<RainbowColor, RainbowCropBlock> rainbowCrops = new HashMap<>();
     private static final Map<RainbowColor, RainbowCrateBlock> rainbowCrates = new HashMap<>();
     private static final Map<RainbowColor, ResourceTreeLeaves> resourceTreeLeaves = new HashMap<>();
     private static final Map<RainbowColor, ResourceTreeSapling> resourceTreeSaplings = new HashMap<>();
@@ -62,9 +62,10 @@ public class ModBlocks {
             register(r, sapling, color.getTierName() + BlockNames.SAPLING_SUFFIX);
             resourceTreeSaplings.put(color, sapling);
 
-            RainbowCropBlock crop = new RainbowCropBlock(color);
-            register(r, crop, color.getTierName() + BlockNames.RAINBOW_CROP_SUFFIX);
-            rainbowCrops.put(color, crop);
+            // TODO decide on the fate of crops. They are not dynamically colored and they ugly
+//            RainbowCropBlock crop = new RainbowCropBlock(color);
+//            register(r, crop, color.getTierName() + BlockNames.RAINBOW_CROP_SUFFIX);
+//            rainbowCrops.put(color, crop);
 
             ArconiumBlock arconiumBlock = new ArconiumBlock(color);
             register(r, arconiumBlock, color.getTierName() + BlockNames.ARCONIUM_BLOCK_SUFFIX);
@@ -108,18 +109,14 @@ public class ModBlocks {
         }
     }
 
-    public static RainbowCropBlock getRainbowCrop(RainbowColor tier) {
-        return rainbowCrops.get(tier);
-    }
+//    public static RainbowCropBlock getRainbowCrop(RainbowColor tier) {
+//        return rainbowCrops.get(tier);
+//    }
 
     public static ArconiumBlock getArconiumBlock(RainbowColor tier) { return arconiumBlocks.get(tier); }
 
     public static RainbowCrateBlock getRainbowCrateBlock(RainbowColor tier) {
         return rainbowCrates.get(tier);
-    }
-
-    public static ResourceTreeRootBlock getPatternLootBlock(RainbowColor tier) {
-        return treeRootBlocks.get(tier);
     }
 
     public static ResourceTreeSapling getMoneyTreeSapling(RainbowColor tier) {

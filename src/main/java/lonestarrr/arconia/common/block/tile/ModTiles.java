@@ -21,7 +21,7 @@ public class ModTiles {
     public static final TileEntityType<PedestalTileEntity> PEDESTAL = TileEntityType.Builder.create(PedestalTileEntity::new, ModBlocks.pedestal).build(null);
     public static final TileEntityType<CenterPedestalTileEntity> CENTER_PEDESTAL = TileEntityType.Builder.create(CenterPedestalTileEntity::new, ModBlocks.centerPedestal).build(null);
     public static final TileEntityType<OrbTileEntity> ORB = TileEntityType.Builder.create(OrbTileEntity::new, ModBlocks.orb).build(null);
-    private static final Map<RainbowColor, TileEntityType<ResourceTreeRootTileEntity>> lootBlockTileEntityTypes = new HashMap<>(RainbowColor.values().length);
+    private static final Map<RainbowColor, TileEntityType<ResourceTreeRootTileEntity>> treeRootBlockTileEntityTypes = new HashMap<>(RainbowColor.values().length);
     private static final Map<RainbowColor, TileEntityType<RainbowCrateTileEntity>> rainbowCrateTileEntityTypes =
             new HashMap<>(RainbowColor.values().length);
 
@@ -35,12 +35,12 @@ public class ModTiles {
         register(r, CENTER_PEDESTAL, BlockNames.CENTER_PEDESTAL);
         register(r, ORB, BlockNames.ORB);
 
-        // loot blocks (generating the resource tree loot)
+        // tree root blocks (generating the resource tree loot)
         for (RainbowColor tier: RainbowColor.values()) {
             TileEntityType<ResourceTreeRootTileEntity> teType =
                     TileEntityType.Builder.create(() -> new ResourceTreeRootTileEntity(tier),
-                            ModBlocks.getPatternLootBlock(tier)).build(null);
-            lootBlockTileEntityTypes.put(tier, teType);
+                            ModBlocks.getResourceTreeRootBlock(tier)).build(null);
+            treeRootBlockTileEntityTypes.put(tier, teType);
             register(r, teType, tier.getTierName() + "_pattern_lootblock_tile_entity");
         }
 
@@ -57,8 +57,8 @@ public class ModTiles {
 
     }
 
-    public static TileEntityType<ResourceTreeRootTileEntity> getLootBlockTileEntityType(RainbowColor tier) {
-        return lootBlockTileEntityTypes.get(tier);
+    public static TileEntityType<ResourceTreeRootTileEntity> getTreeRootBlockTileEntityType(RainbowColor tier) {
+        return treeRootBlockTileEntityTypes.get(tier);
     }
 
     public static TileEntityType<RainbowCrateTileEntity> getRainbowCrateTileEntityType(RainbowColor tier) {

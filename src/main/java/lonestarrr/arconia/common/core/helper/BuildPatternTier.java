@@ -26,8 +26,6 @@ public class BuildPatternTier {
         tmpResources.put(RainbowColor.YELLOW, "yellow.json");
         tmpResources.put(RainbowColor.GREEN, "green.json");
         tmpResources.put(RainbowColor.BLUE, "blue.json");
-        tmpResources.put(RainbowColor.INDIGO, "indigo.json");
-        tmpResources.put(RainbowColor.VIOLET, "violet.json");
         buildPatternResources = Collections.unmodifiableMap(tmpResources);
     }
 

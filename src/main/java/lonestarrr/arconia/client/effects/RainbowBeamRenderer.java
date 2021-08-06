@@ -132,7 +132,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
         }
 
         // Each tier has its own specific beam color
-        int colorInt = RainbowColor.getColorRGB(tier);
+        int colorInt = tier.getColorValue();
         Color color = new Color(colorInt);
         matrixStack.push();
         RainbowLightningProjector.renderRainbowLighting(centerPos, 2, 12, matrixStack, buffer, color);

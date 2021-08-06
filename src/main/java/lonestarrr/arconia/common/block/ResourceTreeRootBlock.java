@@ -12,7 +12,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.IBlockReader;
-import lonestarrr.arconia.client.core.handler.ColorHandler;
 import lonestarrr.arconia.common.block.tile.ModTiles;
 import lonestarrr.arconia.common.block.tile.ResourceTreeRootTileEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
@@ -73,13 +72,13 @@ public class ResourceTreeRootBlock extends Block implements IBlockColor {
     }
 
     public static TileEntityType<ResourceTreeRootTileEntity> getTileEntityTypeByTier(RainbowColor tier) {
-        return ModTiles.getLootBlockTileEntityType(tier);
+        return ModTiles.getTreeRootBlockTileEntityType(tier);
     }
 
     @Override
     public int getColor(
             BlockState blockState, @Nullable IBlockDisplayReader iBlockDisplayReader, @Nullable BlockPos blockPos, int tintIndex) {
         // Colors are not dependent on tint index, but on rainbow tier (though may use tintIndex later for less saturated versions)
-        return RainbowColor.getColorRGB(tier);
+        return tier.getColorValue();
     }
 }

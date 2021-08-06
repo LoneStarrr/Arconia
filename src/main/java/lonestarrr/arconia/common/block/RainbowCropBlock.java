@@ -83,25 +83,17 @@ public class RainbowCropBlock extends CropsBlock {
         return 4;
     }
 
-    @Override
-    protected IItemProvider getSeedsItem() {
-        return ModItems.getRainbowSeed(this.color);
-    }
+//    @Override
+//    protected IItemProvider getSeedsItem() {
+//        return ModItems.getRainbowSeed(this.color);
+//    }
 
     @Override
     public ItemStack getItem(IBlockReader worldIn, BlockPos pos, BlockState state) {
         return new ItemStack(ModItems.getArconiumEssence(this.color));
     }
 
-    public String getSeedResourceName() {
-        return color.getTierName() + ItemNames.RAINBOW_SEED_SUFFIX;
-    }
-
-    /* TODO how's this work in 1.14+?
-    @Override
-    public AxisAlignedBB getBoundingBox(BlockState state, BlockAccess source, BlockPos pos) {
-        //
-        return CROP_AABB[state.getValue(this.getAgeProperty()).intValue()];
-    }
-    */
+//    public String getSeedResourceName() {
+//        return color.getTierName() + ItemNames.RAINBOW_SEED_SUFFIX;
+//    }
 }

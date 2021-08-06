@@ -38,7 +38,7 @@ public class ColorHandler {
                 return 0xffffff;
             }
             MagicInABottle bottle = (MagicInABottle)stack.getItem();
-            return RainbowColor.getColorRGB(bottle.getTier(stack));
+            return bottle.getTier(stack).getColorValue();
         }, ModItems.magicInABottle);
 
         for (RainbowColor tier: RainbowColor.values()) {
@@ -92,17 +92,17 @@ public class ColorHandler {
 
             // Colored tree roots
             items.register((stack, layer) -> {
-                return RainbowColor.getColorRGB(((ColoredRoot)(stack.getItem())).getTier());
+                return ((ColoredRoot)(stack.getItem())).getTier().getColorValue();
             }, ModItems.getColoredRoot(tier));
 
             // Colored arconium essence
             items.register((stack, layer) -> {
-                return RainbowColor.getColorRGB(tier);
+                return tier.getColorValue();
             }, ModItems.getArconiumEssence(tier));
 
             // Colored arconium ingots
             items.register((stack, layer) -> {
-                return RainbowColor.getColorRGB(tier);
+                return tier.getColorValue();
             }, ModItems.getArconiumIngot(tier));
         }
     }
