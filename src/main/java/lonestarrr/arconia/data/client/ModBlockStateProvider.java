@@ -70,7 +70,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 //    }
 
     private void registerCrates() {
-        // Experiment building model fully programmatically - seems more work than just writing the .json without clear benefits
+        // Experiment building model fully programmatically - seems more work than just writing the .json without clear benefits other than validation
         final String modelName = "block/rainbow_crate";
         ModelFile model = models().withExistingParent(modelName, "block/block")
                 .texture("outline", prefix("block/rainbow_crate_woodgrain_outline"))

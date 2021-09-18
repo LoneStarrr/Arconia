@@ -4,7 +4,7 @@
 
 for clr in red orange yellow green blue light_blue purple magenta pink
 do
-    cat << EOF > ${clr}_arconium_block.json
+    cat << EOF > ${clr}_rainbow_crate.json
 {
   "type": "minecraft:block",
   "pools": [
@@ -13,7 +13,7 @@ do
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "arconia:${clr}_arconium_block"
+          "name": "arconia:${clr}_rainbow_crate"
         }
       ]
     }

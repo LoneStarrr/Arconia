@@ -35,7 +35,7 @@
                   ]
                 }
               ],
-              "name": "arconia:indigo_money_tree_leaves"
+              "name": "arconia:pink_money_tree_leaves"
             },
             {
               "type": "minecraft:item",
@@ -54,7 +54,7 @@
                   ]
                 }
               ],
-              "name": "arconia:indigo_money_tree_sapling"
+              "name": "arconia:pink_money_tree_sapling"
             },
             {
               "type": "minecraft:item",
@@ -73,7 +73,7 @@
                   ]
                 }
               ],
-              "name": "arconia:indigo_colored_tree_root"
+              "name": "arconia:pink_colored_tree_root"
             }
           ]
         }

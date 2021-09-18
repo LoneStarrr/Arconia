@@ -35,7 +35,7 @@
                   ]
                 }
               ],
-              "name": "arconia:violet_money_tree_leaves"
+              "name": "arconia:light_blue_money_tree_leaves"
             },
             {
               "type": "minecraft:item",
@@ -54,7 +54,7 @@
                   ]
                 }
               ],
-              "name": "arconia:violet_money_tree_sapling"
+              "name": "arconia:light_blue_money_tree_sapling"
             },
             {
               "type": "minecraft:item",
@@ -73,7 +73,7 @@
                   ]
                 }
               ],
-              "name": "arconia:violet_colored_tree_root"
+              "name": "arconia:light_blue_colored_tree_root"
             }
           ]
         }
