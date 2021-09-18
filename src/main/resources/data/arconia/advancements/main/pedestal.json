@@ -1,0 +1,30 @@
+{
+  "display": {
+    "icon": {
+      "item": "arconia:center_pedestal"
+    },
+    "title": {
+      "translate": "advancements.main.pedestal.title"
+    },
+    "description": {
+      "translate": "advancements.main.pedestal.desc"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "arconia:main/tree_root_block",
+  "criteria": {
+    "pedestal": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "arconia:center_pedestal"
+          }
+        ]
+      }
+    }
+  }
+}
+

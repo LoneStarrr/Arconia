@@ -62,7 +62,7 @@ public class ModFeatures {
         for (RainbowColor tier: RainbowColor.values()) {
             BaseTreeFeatureConfig treeConfig = (new BaseTreeFeatureConfig.Builder(
                     new SimpleBlockStateProvider(Blocks.OAK_LOG.getDefaultState()),
-                    new SimpleBlockStateProvider(ModBlocks.getMoneyTreeLeavesByTier(tier).getDefaultState()),
+                    new SimpleBlockStateProvider(ModBlocks.getMoneyTreeLeaves(tier).getDefaultState()),
                     new BlobFoliagePlacer(FeatureSpread.func_242252_a(2), FeatureSpread.func_242252_a(0), 3),
                     new StraightTrunkPlacer(5, 2, 0), new TwoLayerFeature(1, 0, 1))).setIgnoreVines().build();
             ConfiguredFeature<BaseTreeFeatureConfig, ?> treeConfigured = Feature.TREE.withConfiguration(treeConfig);

@@ -2,6 +2,8 @@ package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import lonestarrr.arconia.client.core.handler.ColorHandler;
+import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
@@ -39,6 +41,8 @@ import java.util.Random;
 
 /**
  * Draws pretty visual effects related to the resource tree
+ *
+ * TODO deprecated - remove me
  */
 @Mod.EventBusSubscriber(modid=Arconia.MOD_ID, value= Dist.CLIENT, bus=Mod.EventBusSubscriber.Bus.MOD)
 public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTileEntity>  {
@@ -79,12 +83,13 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
             IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
         BlockPos startPos = tileEntity.getPos();
         BlockPos treeBasePos = startPos.up(2);
+        RainbowColor tier = tileEntity.getTier();
 
 //        renderWaveAnimated(startPos, endPos, matrixStack, buffer);
 //          renderWaveLines(startPos, endPos, matrixStack, buffer);
 //        renderSineSprite(startPos, endPos, matrixStack, buffer);
 //          renderBeam(startPos, endPos, matrixStack, buffer);
-        renderRainbowLightning(startPos, treeBasePos, matrixStack, buffer);
+        renderRainbowLightning(startPos, treeBasePos, tier, matrixStack, buffer);
     }
 
     private static double vectorLength(Vector3f v) {
@@ -100,7 +105,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
      * @param matrixStack
      * @param buffer
      */
-    private void renderRainbowLightning(BlockPos tePos, BlockPos treeBasePos, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
+    private void renderRainbowLightning(BlockPos tePos, BlockPos treeBasePos, RainbowColor tier, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
         // Find the top of the tree trunk - that's where we want to generate the effect from
         final int maxLogCount = 7;
         final Block logBlock = Blocks.OAK_LOG;
@@ -126,11 +131,12 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
             return;
         }
 
+        // Each tier has its own specific beam color
+        int colorInt = tier.getColorValue();
+        Color color = new Color(colorInt);
         matrixStack.push();
-        RainbowLightningProjector.renderRainbowLighting(centerPos, 3, 16, matrixStack, buffer);
-
+        RainbowLightningProjector.renderRainbowLighting(centerPos, 2, 12, matrixStack, buffer, color);
         matrixStack.pop();
-
     }
 
     /**

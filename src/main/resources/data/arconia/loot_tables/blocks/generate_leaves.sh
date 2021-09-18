@@ -2,7 +2,7 @@
 
 # Lazy man's data generators - bite me
 
-for clr in red orange yellow green blue indigo violet
+for clr in red orange yellow green blue light_blue purple magenta pink
 do
     cat << EOF > ${clr}_money_tree_leaves.json
 {
@@ -80,7 +80,7 @@ do
                   ]
                 }
               ],
-              "name": "arconia:tree_root"
+              "name": "arconia:${clr}_colored_tree_root"
             }
           ]
         }

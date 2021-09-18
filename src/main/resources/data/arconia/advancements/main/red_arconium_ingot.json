@@ -1,0 +1,31 @@
+{
+  "display": {
+    "icon": {
+      "item": "arconia:red_arconium_ingot"
+    },
+    "title": {
+      "translate": "advancements.main.red_arconium_ingot.title"
+    },
+    "description": {
+      "translate": "advancements.main.red_arconium_ingot.desc"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "arconia:main/red_root_of_essence",
+  "criteria": {
+    "red_arconium_ingot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "arconia:red_arconium_ingot"
+          }
+        ]
+      }
+    }
+  }
+}
+
+

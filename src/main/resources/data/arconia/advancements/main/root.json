@@ -11,7 +11,8 @@
     },
     "background": "arconia:textures/block/tree_root_block_sides.png",
     "show_toast": true,
-    "announce_to_chat": true
+    "announce_to_chat": true,
+    "hidden": false
   },
   "criteria": {
     "clover": {

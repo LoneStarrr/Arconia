@@ -1,5 +1,8 @@
 package lonestarrr.arconia.data;
 
+import lonestarrr.arconia.data.client.ModItemModelProvider;
+import lonestarrr.arconia.data.client.ModLanguageProvider;
+import lonestarrr.arconia.data.recipes.VanillaRecipeProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -19,10 +22,13 @@ public class DataGenerators {
         ExistingFileHelper helper = evt.getExistingFileHelper();
         if (evt.includeServer()) {
             evt.getGenerator().addProvider(new PedestalProvider(evt.getGenerator()));
+            evt.getGenerator().addProvider(new VanillaRecipeProvider(evt.getGenerator()));
         }
         if (evt.includeClient()) {
             evt.getGenerator().addProvider(new ModBlockStateProvider(evt.getGenerator(), helper));
+            evt.getGenerator().addProvider(new ModItemModelProvider(evt.getGenerator(), helper));
+            evt.getGenerator().addProvider(new ModLanguageProvider(evt.getGenerator(), "en_us"));
         }
-            Arconia.logger.info("**** DataGenerators executed");
+        Arconia.logger.info("**** DataGenerators executed");
     }
 }

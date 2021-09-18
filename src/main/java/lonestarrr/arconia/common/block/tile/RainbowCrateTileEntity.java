@@ -50,13 +50,11 @@ public class RainbowCrateTileEntity extends TileEntity implements INamedContaine
     static {
         // Each crate's slot can actually contain more than 64 items. The higher the tier, the higher the max.
         // TODO: How about an "infinity" tier? Would be a cool reward for whatever 'end game' thing I can come up with
-        slotLimitPerTier.put(RainbowColor.RED, 64);
-        slotLimitPerTier.put(RainbowColor.ORANGE, 256);
-        slotLimitPerTier.put(RainbowColor.YELLOW, 1024);
-        slotLimitPerTier.put(RainbowColor.GREEN, 4096);
-        slotLimitPerTier.put(RainbowColor.BLUE, 16384);
-        slotLimitPerTier.put(RainbowColor.INDIGO, 65536);
-        slotLimitPerTier.put(RainbowColor.VIOLET, 262144);
+        int capacity = 64;
+        for (RainbowColor tier: RainbowColor.values()) {
+                slotLimitPerTier.put(tier, capacity);
+                capacity *= 4;
+        }
     }
 
     public RainbowCrateTileEntity(RainbowColor tier) {

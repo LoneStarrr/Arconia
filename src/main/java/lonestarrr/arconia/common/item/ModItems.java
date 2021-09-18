@@ -31,6 +31,7 @@ public final class ModItems {
     private static final Map<RainbowColor, Item> arconiumEssences = new HashMap<>();
     private static final Map<RainbowColor, Item> rainbowSeeds = new HashMap<>();
     private static final Map<RainbowColor, ColoredRoot> coloredRoots = new HashMap<>();
+    private static final Map<RainbowColor, Item> arconiumIngots = new HashMap<>();
 
     public static Item.Properties defaultBuilder() {
         // TODO make my own creative tab. With blackjack, and hookers.
@@ -62,20 +63,29 @@ public final class ModItems {
             register(r, coloredRoot, tier.getTierName() + ItemNames.COLORED_TREE_ROOT_SUFFIX);
             coloredRoots.put(tier, coloredRoot);
 
+            Item arconiumIngot = new Item(builder);
+            register(r, arconiumIngot, tier.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX);
+            arconiumIngots.put(tier, arconiumIngot);
+
+            // TODO decide the fate of seeds and crops
             // Seeds are a special case. They are created through BlockItem and thus associated with the crop.
-            RainbowCropBlock crop = ModBlocks.getRainbowCrop(tier);
-            Item seed = new BlockNamedItem(crop, builder);
-            register(r, seed, crop.getSeedResourceName());
-            rainbowSeeds.put(tier, seed);
+//            RainbowCropBlock crop = ModBlocks.getRainbowCrop(tier);
+//            Item seed = new BlockNamedItem(crop, builder);
+//            register(r, seed, crop.getSeedResourceName());
+//            rainbowSeeds.put(tier, seed);
         }
     }
 
-    public static final Item getRainbowSeed(RainbowColor tier) {
-        return rainbowSeeds.get(tier);
-    }
+//    public static final Item getRainbowSeed(RainbowColor tier) {
+//        return rainbowSeeds.get(tier);
+//    }
 
     public static final Item getArconiumEssence(RainbowColor tier) {
         return arconiumEssences.get(tier);
+    }
+
+    public static final Item getArconiumIngot(RainbowColor tier) {
+        return arconiumIngots.get(tier);
     }
 
     public static final ColoredRoot getColoredRoot(RainbowColor tier) {
