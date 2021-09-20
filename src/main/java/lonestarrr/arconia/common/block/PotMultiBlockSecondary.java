@@ -3,6 +3,7 @@ package lonestarrr.arconia.common.block;
 import lonestarrr.arconia.common.block.tile.CenterPedestalTileEntity;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryTileEntity;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -24,6 +25,10 @@ import javax.annotation.Nullable;
 public class PotMultiBlockSecondary extends Block {
     public PotMultiBlockSecondary() {
         super(Block.Properties.create(Material.IRON, MaterialColor.BLACK).hardnessAndResistance(2.0F).notSolid());
+    }
+
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.INVISIBLE;
     }
 
     @Override
