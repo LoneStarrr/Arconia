@@ -21,6 +21,8 @@ public class ModTiles {
     public static final TileEntityType<PedestalTileEntity> PEDESTAL = TileEntityType.Builder.create(PedestalTileEntity::new, ModBlocks.pedestal).build(null);
     public static final TileEntityType<CenterPedestalTileEntity> CENTER_PEDESTAL = TileEntityType.Builder.create(CenterPedestalTileEntity::new, ModBlocks.centerPedestal).build(null);
     public static final TileEntityType<OrbTileEntity> ORB = TileEntityType.Builder.create(OrbTileEntity::new, ModBlocks.orb).build(null);
+    public static final TileEntityType<PotMultiBlockPrimaryTileEntity> POT_MULTIBLOCK_PRIMARY = TileEntityType.Builder.create(PotMultiBlockPrimaryTileEntity::new, ModBlocks.potMultiBlockPrimary).build(null);
+    public static final TileEntityType<PotMultiBlockSecondaryTileEntity> POT_MULTIBLOCK_SECONDARY = TileEntityType.Builder.create(PotMultiBlockSecondaryTileEntity::new, ModBlocks.potMultiBlockSecondary).build(null);
     private static final Map<RainbowColor, TileEntityType<ResourceTreeRootTileEntity>> treeRootBlockTileEntityTypes = new HashMap<>(RainbowColor.values().length);
     private static final Map<RainbowColor, TileEntityType<RainbowCrateTileEntity>> rainbowCrateTileEntityTypes =
             new HashMap<>(RainbowColor.values().length);
@@ -34,6 +36,8 @@ public class ModTiles {
         register(r, PEDESTAL, BlockNames.PEDESTAL);
         register(r, CENTER_PEDESTAL, BlockNames.CENTER_PEDESTAL);
         register(r, ORB, BlockNames.ORB);
+        register(r, POT_MULTIBLOCK_PRIMARY, BlockNames.POT_MULTIBLOCK_PRIMARY);
+        register(r, POT_MULTIBLOCK_SECONDARY, BlockNames.POT_MULTIBLOCK_SECONDARY);
 
         // tree root blocks (generating the resource tree loot)
         for (RainbowColor tier: RainbowColor.values()) {

@@ -32,6 +32,8 @@ public class ModBlocks {
     public static final Pedestal pedestal = new Pedestal();
     public static final CenterPedestal centerPedestal = new CenterPedestal();
     public static final Orb orb = new Orb();
+    public static final PotMultiBlockPrimary potMultiBlockPrimary = new PotMultiBlockPrimary(); //no associated item
+    public static final PotMultiBlockSecondary potMultiBlockSecondary = new PotMultiBlockSecondary(); //no associated item
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -43,6 +45,8 @@ public class ModBlocks {
         register(r, pedestal, BlockNames.PEDESTAL);
         register(r, centerPedestal, BlockNames.CENTER_PEDESTAL);
         register(r, orb, BlockNames.ORB);
+        register(r, potMultiBlockPrimary, BlockNames.POT_MULTIBLOCK_PRIMARY);
+        register(r, potMultiBlockSecondary, BlockNames.POT_MULTIBLOCK_SECONDARY);
 
         // RainbowColor tiered colorBlocks
         for (RainbowColor color: RainbowColor.values()) {
