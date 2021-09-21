@@ -5,6 +5,7 @@ import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,6 +16,8 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -24,11 +27,7 @@ import javax.annotation.Nullable;
  */
 public class PotMultiBlockSecondary extends Block {
     public PotMultiBlockSecondary() {
-        super(Block.Properties.create(Material.IRON, MaterialColor.BLACK).hardnessAndResistance(2.0F).notSolid());
-    }
-
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.INVISIBLE;
+        super(Block.Properties.create(Material.BARRIER).hardnessAndResistance(2.0F).notSolid());
     }
 
     @Override
@@ -40,6 +39,24 @@ public class PotMultiBlockSecondary extends Block {
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new PotMultiBlockSecondaryTileEntity();
+    }
+
+    // inspired by Barrier block
+    @Override
+    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+        return true;
+    }
+
+    // inspired by Barrier block
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.INVISIBLE;
+    }
+
+    // inspired by Barrier block
+    @OnlyIn(Dist.CLIENT)
+    public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return 1.0F;
     }
 
     @Override

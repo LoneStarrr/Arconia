@@ -35,6 +35,8 @@ public class ClientProxy implements IProxy {
         RenderType cutout = RenderType.getCutout();
 
         RenderTypeLookup.setRenderLayer(ModBlocks.clover, cutout);
+//        RenderTypeLookup.setRenderLayer(ModBlocks.potMultiBlockPrimary, RenderType.getTranslucent());
+//        RenderTypeLookup.setRenderLayer(ModBlocks.potMultiBlockSecondary, RenderType.getTranslucent());
 
         for (RainbowColor tier: RainbowColor.values()) {
 //            RenderTypeLookup.setRenderLayer(ModBlocks.getRainbowCrop(tier), cutout);
