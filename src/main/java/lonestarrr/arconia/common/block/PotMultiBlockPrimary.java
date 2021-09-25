@@ -8,8 +8,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -22,7 +26,7 @@ import javax.annotation.Nullable;
  */
 public class PotMultiBlockPrimary extends Block {
     public PotMultiBlockPrimary() {
-        super(Block.Properties.create(Material.IRON, MaterialColor.BLACK).hardnessAndResistance(2.0F));
+        super(Block.Properties.create(Material.IRON, MaterialColor.BLACK).hardnessAndResistance(4.0F));
     }
 
     @Override
@@ -101,6 +105,8 @@ public class PotMultiBlockPrimary extends Block {
         BlockPos corner = primaryPos.add(-1, 0, -1);
         BlockPos goldPos = primaryPos.up();
 
+        ItemStack goldBlock = new ItemStack(Blocks.GOLD_BLOCK, 0);
+        ItemStack cauldrons = new ItemStack(Blocks.CAULDRON, 0);
         for (int x = 0; x < 3; x++) {
             for (int z = 0; z < 3; z++) {
                 for (int y = 0; y < 2; y++) {
@@ -109,12 +115,28 @@ public class PotMultiBlockPrimary extends Block {
 
                     if (bs.getBlock().equals(ModBlocks.potMultiBlockSecondary) || bs.getBlock().equals(ModBlocks.potMultiBlockPrimary)) {
                         if (toReplace.equals(goldPos)) {
-                            world.setBlockState(toReplace, Blocks.GOLD_BLOCK.getDefaultState(), 3);
+                            goldBlock.setCount(1);
                         } else {
-                            world.setBlockState(toReplace, Blocks.CAULDRON.getDefaultState(), 3);
+                            cauldrons.setCount(cauldrons.getCount() + 1);
                         }
+                        world.setBlockState(toReplace, Blocks.AIR.getDefaultState());
                     }
                 }
+            }
+        }
+
+        boolean playedSound = false;
+        for (ItemStack item: new ItemStack[] { goldBlock, cauldrons }) {
+            if (item.getCount() == 0) {
+                continue;
+            }
+            ItemEntity entity = new ItemEntity(world, goldPos.getX(), goldPos.getY(), goldPos.getZ(), item);
+            entity.setMotion(0, 0.1, 0);
+            entity.setNoPickupDelay();
+            world.addEntity(entity);
+            if (!playedSound) {
+                world.playSound(null, goldPos, SoundEvents.BLOCK_NETHERITE_BLOCK_BREAK, SoundCategory.BLOCKS, 1, 1);
+                playedSound = true;
             }
         }
     }

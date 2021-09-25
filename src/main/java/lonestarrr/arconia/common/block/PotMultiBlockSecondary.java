@@ -26,8 +26,17 @@ import javax.annotation.Nullable;
  * will render the large model
  */
 public class PotMultiBlockSecondary extends Block {
+    private static final VoxelShape[] shapes;
+    private static final VoxelShape defaultShape = makeCuboidShape(0, 0,0, 16, 16, 16);
+    private static final int MAX_SHAPE_IDX = 2 << 2 | 2; // see calcShapeIndex()
+
+    static {
+        shapes = calculateShapes();
+    }
+
     public PotMultiBlockSecondary() {
-        super(Block.Properties.create(Material.BARRIER).hardnessAndResistance(2.0F).notSolid());
+
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(4.0F).notSolid());
     }
 
     @Override
@@ -70,19 +79,21 @@ public class PotMultiBlockSecondary extends Block {
         BlockPos primaryPos = secondaryTE.getPrimaryPos();
         if (primaryPos != null) {
             PotMultiBlockPrimary.breakMultiBlock(world, primaryPos);
-            // TODO doesn't that actually mess with this, e.g. the block being harvested right now sets the block to air? Yup. Best to just dump these blocks as
-            // entities then
         }
-        // TODO also add this on the primary block!
     }
 
-    // TODO aabb based on where the primary block is
-
+    /**
+     * The shape is determined on the position of this multiblock block relative to the center primary block, since this multiblock isn't a simple cuboid.
+     * @param state
+     * @param worldIn
+     * @param pos
+     * @param context
+     * @return
+     */
     @Override
     public VoxelShape getShape(
             BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         TileEntity te = worldIn.getTileEntity(pos);
-        VoxelShape defaultShape = makeCuboidShape(0, 0,0, 16, 16, 16);
         if (te == null || !(te instanceof PotMultiBlockSecondaryTileEntity)) {
             return defaultShape;
         }
@@ -94,6 +105,28 @@ public class PotMultiBlockSecondary extends Block {
 
         int deltaX = primaryPos.getX() - pos.getX();
         int deltaZ = primaryPos.getZ() - pos.getZ();
+        return shapes[calcShapeIndex(deltaX, deltaZ)];
+    }
+
+    private static int calcShapeIndex(final int deltaX, final int deltaZ) {
+        int dx = (deltaX > 0 ? 2 : deltaX < 0 ? 0 : 1);
+        int dz = (deltaZ > 0 ? 2 : deltaZ < 0 ? 0 : 1);
+        return dx << 2 | dz;
+    }
+
+    // Precalculates all possible shapes for the multiblock blocks as the getShape() method gets called frequently
+    private static VoxelShape[] calculateShapes() {
+        VoxelShape[] shapes = new VoxelShape[MAX_SHAPE_IDX + 1];
+        for (int deltaX = -1; deltaX <2; deltaX++) {
+            for (int deltaZ = -1; deltaZ < 2; deltaZ++) {
+                int idx = calcShapeIndex(deltaX, deltaZ);
+                shapes[idx] = calculateShape(deltaX, deltaZ);
+            }
+        }
+        return shapes;
+    }
+
+    private static VoxelShape calculateShape(int deltaX, int deltaZ) {
         final int PADDING = 5;
         int x1 = 0, x2 = 16, y1 = 0, y2 = 16, z1 = 0, z2 = 16;
 
