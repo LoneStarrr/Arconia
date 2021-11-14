@@ -15,6 +15,7 @@ public final class BlockNames {
     public static final String PEDESTAL = "pedestal";
     public static final String CENTER_PEDESTAL = "center_pedestal";
     public static final String ORB = "orb";
+    public static final String HAT = "hat";
     public static final String POT_MULTIBLOCK_PRIMARY = "pot_multiblock_primary";
     public static final String POT_MULTIBLOCK_SECONDARY = "pot_multiblock_secondary";
     public static final String ARCONIUM_BLOCK_SUFFIX = "_arconium_block";

@@ -1,5 +1,7 @@
 package lonestarrr.arconia.common.item;
 
+import lonestarrr.arconia.common.block.Hat;
+import lonestarrr.arconia.common.block.tile.HatTileEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -55,7 +57,8 @@ public class ColoredRoot extends Item {
     /**
      * Colored roots can be enchanted through a ritual with a specific item. Once enchanted, right-clicking the root near an activated resource tree will
      * have that tree produce this resource.
-     * @param item Item to be generated
+     * @param coloredRootStack colored root to set resource on
+     * @param resourceItem resource to set
      *
      * Data is stored in NBT so that it can be used for any item from any mod by only adding a pedestal ritual recipe.
      */
@@ -65,8 +68,8 @@ public class ColoredRoot extends Item {
     }
 
     /**
-     * Tiered tree roots enchanted through a pedestal crafting ritual with a specific resource are able to turn regular grass into resource generators
-     * for a Resource Tree.
+     * Tiered tree roots enchanted through a pedestal crafting ritual with a specific resource are able to assign this resource to a placed down
+     * hat. The hat can then 'draw' this resource from a nearby active and linked pot of gold.
      * @param context
      * @return
      */
@@ -77,30 +80,24 @@ public class ColoredRoot extends Item {
         BlockPos pos = context.getPos();
         ItemStack heldItem = player.getHeldItem(context.getHand());
 
-        if (heldItem.getItem() != this || world.getBlockState(pos).getBlock() != Blocks.GRASS_BLOCK) {
+        if (heldItem.getItem() != this || world.getBlockState(pos).getBlock() != ModBlocks.hat) {
             return ActionResultType.PASS;
         }
 
         ItemStack resource = getResourceItem(heldItem); // Item to be produced
 
-        if (resource.isEmpty() || !findNearbyTreeRoot(world, pos)) {
+        if (resource.isEmpty()) {
             return ActionResultType.PASS;
         }
 
-        world.setBlockState(pos, ModBlocks.resourceGenBlock.getDefaultState(), 2);
-        TileEntity te = world.getTileEntity(pos);
-        if (te != null && te instanceof ResourceGenTileEntity) {
-            ResourceGenTileEntity rte = (ResourceGenTileEntity) te;
-            // TODO do based on nbt data on provided itemstack
-            rte.setTierAndItem(tier, resource);
+        boolean resourceSet = Hat.setResourceGenerated(world, pos, tier, resource);
+        if (resourceSet) {
             if (heldItem.getCount() > 1) {
                 heldItem.shrink(1);
                 player.setHeldItem(context.getHand(), heldItem);
             } else {
                 player.setHeldItem(context.getHand(), ItemStack.EMPTY);
             }
-        } else {
-            Arconia.logger.warn("No tile entity for resource block I just placed?");
         }
 
         return ActionResultType.SUCCESS;

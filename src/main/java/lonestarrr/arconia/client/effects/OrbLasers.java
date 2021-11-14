@@ -41,7 +41,7 @@ public class OrbLasers {
         beams.add(beam);
     }
 
-    @SubscribeEvent
+//    @SubscribeEvent
     public static void render(RenderWorldLastEvent event) {
         World world = Minecraft.getInstance().world;
 

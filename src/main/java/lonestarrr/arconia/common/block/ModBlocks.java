@@ -32,6 +32,7 @@ public class ModBlocks {
     public static final Pedestal pedestal = new Pedestal();
     public static final CenterPedestal centerPedestal = new CenterPedestal();
     public static final Orb orb = new Orb();
+    public static final Hat hat = new Hat(); // TODO hat
     public static final PotMultiBlockPrimary potMultiBlockPrimary = new PotMultiBlockPrimary(); //no associated item
     public static final PotMultiBlockSecondary potMultiBlockSecondary = new PotMultiBlockSecondary(); //no associated item
 
@@ -45,6 +46,7 @@ public class ModBlocks {
         register(r, pedestal, BlockNames.PEDESTAL);
         register(r, centerPedestal, BlockNames.CENTER_PEDESTAL);
         register(r, orb, BlockNames.ORB);
+        register(r, hat, BlockNames.HAT);
         register(r, potMultiBlockPrimary, BlockNames.POT_MULTIBLOCK_PRIMARY);
         register(r, potMultiBlockSecondary, BlockNames.POT_MULTIBLOCK_SECONDARY);
 
@@ -89,8 +91,7 @@ public class ModBlocks {
         registerBlockItem(r, pedestal, builder);
         registerBlockItem(r, centerPedestal, builder);
         registerBlockItem(r, orb, builder); // TODO replace me with actual item?
-
-
+        registerBlockItem(r, hat, builder);
 
         for (ResourceTreeRootBlock root: treeRootBlocks.values()) {
             registerBlockItem(r, root, builder);

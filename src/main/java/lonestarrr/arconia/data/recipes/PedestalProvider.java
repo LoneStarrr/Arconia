@@ -138,13 +138,13 @@ public class PedestalProvider extends RecipeProvider {
      * @return
      */
     private static FinishedRecipe makeEnchantedColoredRoot(ColoredRoot item, IItemProvider resourceItem, int durationTicks, Ingredient... ingredients) {
-        ItemStack output = new ItemStack(item);
-        ColoredRoot.setResourceItem(output, resourceItem);
+        ItemStack coloredRoot = new ItemStack(item);
+        ColoredRoot.setResourceItem(coloredRoot, resourceItem);
         ResourceLocation rootID = Registry.ITEM.getKey(item);
         ResourceLocation itemID = Registry.ITEM.getKey(resourceItem.asItem());
         ResourceLocation recipeID = new ResourceLocation(rootID.getNamespace(), "pedestal/" + rootID.getPath() + "/" + itemID.getNamespace() + "_" + itemID.getPath());
         Arconia.logger.info("***** Recipe ID: " + recipeID);
-        return new FinishedRecipe(recipeID, output, durationTicks, ingredients);
+        return new FinishedRecipe(recipeID, coloredRoot, durationTicks, ingredients);
     }
 
     /**

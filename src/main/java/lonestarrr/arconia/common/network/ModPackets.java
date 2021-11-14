@@ -26,6 +26,8 @@ public class ModPackets {
                 RainbowCratePacket::decode, RainbowCratePacket.Handler::handle);
         HANDLER.registerMessage(id++, OrbLaserPacket.class, OrbLaserPacket::encode,
                 OrbLaserPacket::decode, OrbLaserPacket.Handler::handle);
+        HANDLER.registerMessage(id++, PotItemTransferPacket.class, PotItemTransferPacket::encode,
+                PotItemTransferPacket::decode, PotItemTransferPacket.Handler::handle);
     }
 
     /**

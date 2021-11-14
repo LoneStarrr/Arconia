@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common;
 
+import lonestarrr.arconia.common.core.command.ArconiaCommand;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -67,17 +68,7 @@ public class Arconia {
 
     private void registerCommands(RegisterCommandsEvent event) {
         FractalTreeCommand.register(event.getDispatcher());
+        ArconiaCommand.register(event.getDispatcher());
         logger.info("Registered commands");
-    }
-
-    @SubscribeEvent
-    public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
-        // TODO This needs some more work - also put block names in a constant like botania does
-        // https://github.com/Vazkii/Botania/search?q=TileEnderEye&unscoped_q=TileEnderEye
-        // https://mcforge.readthedocs.io/en/1.14.x/tileentities/tileentity/
-        /*
-        IForgeRegistry<TileEntityType<?>> r = event.getRegistry();
-        r.register(TileEntityType.Builder.create(TileEntityRainbowCrop::new, Blocks.block_rainbow_crop_red).build(null));
-         */
     }
 }

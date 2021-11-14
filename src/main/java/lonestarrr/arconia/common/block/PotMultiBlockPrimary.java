@@ -58,8 +58,6 @@ public class PotMultiBlockPrimary extends Block {
             return false;
         }
 
-        // TODO lighting looks off - guess the invisible block above it does not pass light?
-
         // The user touched a gold block that is 1 y-pos above the center of the multiblock to be formed, if all the required blocks in the world
         // have been placed. They will be replaced by the special multiblock blocks that are otherwise not obtainable
         if (!canFormMultiBlock(world, goldPos)) {
@@ -77,7 +75,6 @@ public class PotMultiBlockPrimary extends Block {
                     if (toReplace.equals(primaryPos)) {
                         continue;
                     }
-//                    world.setBlockState(toReplace, Blocks.BARRIER.getDefaultState(), 3); TODO debug
                     world.setBlockState(toReplace, ModBlocks.potMultiBlockSecondary.getDefaultState(), 3);
                     TileEntity te = world.getTileEntity(toReplace);
                     if (te == null || !(te instanceof PotMultiBlockSecondaryTileEntity)) {
