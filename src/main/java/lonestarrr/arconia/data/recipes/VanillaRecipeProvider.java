@@ -9,6 +9,7 @@ import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraftforge.common.Tags;
@@ -28,6 +29,18 @@ public class VanillaRecipeProvider extends RecipeProvider {
         registerArconiumIngots(consumer);
         registerTreeRootBlocks(consumer);
         registerCrates(consumer);
+        registerMisc(consumer);
+    }
+
+    private void registerMisc(Consumer<IFinishedRecipe> consumer) {
+        ShapedRecipeBuilder.shapedRecipe(ModBlocks.hat)
+                .key('W', Items.GREEN_WOOL)
+                .key('H', Items.GOLDEN_HELMET)
+                .patternLine("WWW")
+                .patternLine("WHW")
+                .patternLine("   ")
+                .addCriterion("has_item", hasItem(Items.GOLDEN_HELMET))
+                .build(consumer);
     }
 
     private void registerTreeRootBlocks(Consumer<IFinishedRecipe> consumer) {

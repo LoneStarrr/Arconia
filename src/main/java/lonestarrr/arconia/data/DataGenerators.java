@@ -28,6 +28,7 @@ public class DataGenerators {
             evt.getGenerator().addProvider(new ModBlockStateProvider(evt.getGenerator(), helper));
             evt.getGenerator().addProvider(new ModItemModelProvider(evt.getGenerator(), helper));
             evt.getGenerator().addProvider(new ModLanguageProvider(evt.getGenerator(), "en_us"));
+            // AdvancementProvider exists, but it's hardcoded for vanilla advancements only
         }
         Arconia.logger.info("**** DataGenerators executed");
     }

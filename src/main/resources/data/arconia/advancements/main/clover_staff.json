@@ -4,10 +4,10 @@
       "item": "arconia:clover_staff"
     },
     "title": {
-      "translate": "advancements.main.clover_staff.title"
+      "translate": "advancement.arconia.main.clover_staff.title"
     },
     "description": {
-      "translate": "advancements.main.clover_staff.desc"
+      "translate": "advancement.arconia.main.clover_staff.desc"
     },
     "show_toast": true,
     "announce_to_chat": true

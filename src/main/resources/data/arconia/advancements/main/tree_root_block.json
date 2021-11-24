@@ -4,10 +4,10 @@
       "item": "arconia:red_tree_root_block"
     },
     "title": {
-      "translate": "advancements.main.tree_root_block.title"
+      "translate": "advancement.arconia.main.tree_root_block.title"
     },
     "description": {
-      "translate": "advancements.main.tree_root_block.desc"
+      "translate": "advancement.arconia.main.tree_root_block.desc"
     },
     "show_toast": true,
     "announce_to_chat": true,

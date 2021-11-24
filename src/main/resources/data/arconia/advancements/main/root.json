@@ -4,10 +4,10 @@
       "item": "arconia:three_leaf_clover"
     },
     "title": {
-      "translate": "advancements.main.root.title"
+      "translate": "advancement.arconia.main.root.title"
     },
     "description": {
-      "translate": "advancements.main.root.desc"
+      "translate": "advancement.arconia.main.root.desc"
     },
     "background": "arconia:textures/block/tree_root_block_sides.png",
     "show_toast": true,

@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common.item;
 
+import lonestarrr.arconia.common.advancements.PotOfGoldTrigger;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.PotMultiBlockPrimary;
 import lonestarrr.arconia.common.block.PotMultiBlockSecondary;
@@ -7,6 +8,8 @@ import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryTileEntity;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -17,6 +20,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 /**
  * Staff. Magic's wrench. Because every mod needs a staff or wrench.
@@ -33,11 +37,12 @@ public class CloverStaff extends Item {
     public ActionResultType onItemUse(ItemUseContext context) {
         BlockPos pos = context.getPos();
         World world = context.getWorld();
+        PlayerEntity player = context.getPlayer();
         ItemStack staff = context.getItem();
 
         BlockState bs = world.getBlockState(pos);
         if (bs.getBlock() == Blocks.GOLD_BLOCK) {
-            return attemptFormMultiblock(world, pos) ? ActionResultType.SUCCESS : ActionResultType.FAIL;
+            return attemptFormMultiblock(player, world, pos) ? ActionResultType.SUCCESS : ActionResultType.FAIL;
         } else if (bs.getBlock() == ModBlocks.potMultiBlockSecondary) {
             BlockPos potPos = storePotCoordinate(world, pos, staff);
             if (potPos != null) {
@@ -109,12 +114,16 @@ public class CloverStaff extends Item {
         return null;
     }
 
-    private static boolean attemptFormMultiblock(World world, BlockPos pos) {
+    private static boolean attemptFormMultiblock(PlayerEntity player, World world, BlockPos pos) {
         // Might be an attempt to form a pot of gold multiblock
         if (world.isRemote) {
             return PotMultiBlockPrimary.canFormMultiBlock(world, pos);
         } else {
-            return PotMultiBlockPrimary.formMultiBlock(world, pos);
+            boolean formed = PotMultiBlockPrimary.formMultiBlock(world, pos);
+            if (formed) {
+                PotOfGoldTrigger.INSTANCE.trigger((ServerPlayerEntity) player, (ServerWorld) world, pos);
+            }
+            return formed;
         }
 
     }

@@ -4,16 +4,16 @@
       "item": "arconia:center_pedestal"
     },
     "title": {
-      "translate": "advancements.main.pedestal.title"
+      "translate": "advancement.arconia.main.pedestal.title"
     },
     "description": {
-      "translate": "advancements.main.pedestal.desc"
+      "translate": "advancement.arconia.main.pedestal.desc"
     },
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "arconia:main/tree_root_block",
+  "parent": "arconia:main/root",
   "criteria": {
     "pedestal": {
       "trigger": "minecraft:inventory_changed",

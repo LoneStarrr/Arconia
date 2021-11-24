@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common;
 
+import lonestarrr.arconia.common.advancements.ModCriterialTriggers;
 import lonestarrr.arconia.common.core.command.ArconiaCommand;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.MinecraftForge;
@@ -45,6 +46,8 @@ public class Arconia {
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
         forgeBus.addListener(EventPriority.HIGH, this::biomeSetup);
         forgeBus.addListener(EventPriority.HIGH, this::registerCommands);
+
+        ModCriterialTriggers.init();
     }
 
     @SubscribeEvent

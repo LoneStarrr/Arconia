@@ -57,6 +57,7 @@ public class ModLanguageProvider extends LanguageProvider {
         add(ModBlocks.clover, "Clover Plant");
         add(ModBlocks.pot, "Pot");
         add(ModBlocks.orb, "Orb");
+        add(ModBlocks.hat, "Leprechaun Hat");
         add(ModBlocks.pedestal, "Pedestal");
         add(ModBlocks.centerPedestal, "Center Pedestal");
     }
@@ -72,20 +73,22 @@ public class ModLanguageProvider extends LanguageProvider {
 
     private void registerAdvancements() {
         Stream.of(new String[][] {
-                { "advancements.main.root.title", "Arconia" },
-                { "advancements.main.root.desc", "Punch a defenseless clover plant" },
-                { "advancements.main.four_leaf_clover.title", "Luck is on your side" },
-                { "advancements.main.four_leaf_clover.desc", "Punch clover plants until you get lucky" },
-                { "advancements.main.clover_staff.title", "You're a wizard now" },
-                { "advancements.main.clover_staff.desc", "Make a clover staff to increase your luck punching clovers" },
-                { "advancements.main.tree_root_block.title", "I'm rooting for you" },
-                { "advancements.main.tree_root_block.desc", "I wonder what happens if you put this under one of those red trees" },
-                { "advancements.main.pedestal.title", "Oh no, yet another altar" },
-                { "advancements.main.pedestal.desc", "Setup an altar to perform colorful rituals" },
-                { "advancements.main.red_root_of_essence.title", "Arconium?" },
-                { "advancements.main.red_root_of_essence.desc", "Imbue magical properties onto a tree root using the altar" },
-                { "advancements.main.red_arconium_ingot.title", "The first of many" },
-                { "advancements.main.red_arconium_ingot.desc", "Craft your first arconium ingot" },
+                { "advancement.arconia.main.root.title", "Arconia" },
+                { "advancement.arconia.main.root.desc", "Punch a defenseless clover plant" },
+                { "advancement.arconia.main.four_leaf_clover.title", "Luck is on your side" },
+                { "advancement.arconia.main.four_leaf_clover.desc", "Punch clover plants until you get lucky" },
+                { "advancement.arconia.main.clover_staff.title", "You're a wizard now" },
+                { "advancement.arconia.main.clover_staff.desc", "Make a clover staff to increase your luck punching clovers" },
+                { "advancement.arconia.main.tree_root_block.title", "I'm rooting for you" },
+                { "advancement.arconia.main.tree_root_block.desc", "I wonder what happens if you put this under one of those red trees" },
+                { "advancement.arconia.main.pedestal.title", "Oh no, yet another altar" },
+                { "advancement.arconia.main.pedestal.desc", "Setup an altar to perform colorful rituals" },
+                { "advancement.arconia.main.red_root_of_essence.title", "Arconium?" },
+                { "advancement.arconia.main.red_root_of_essence.desc", "Imbue magical properties onto a tree root using the altar" },
+                { "advancement.arconia.main.red_arconium_ingot.title", "The first of many" },
+                { "advancement.arconia.main.red_arconium_ingot.desc", "Craft your first arconium ingot" },
+                { "advancement.arconia.main.pot_of_gold.title", "Rainbow not included" },
+                { "advancement.arconia.main.pot_of_gold.desc", "Build a pot of gold" },
         }).forEach(adv -> add(adv[0], adv[1]));
     }
 
