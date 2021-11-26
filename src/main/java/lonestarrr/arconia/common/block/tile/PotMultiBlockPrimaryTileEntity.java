@@ -113,7 +113,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
                 if (!sent.isEmpty()) {
                     //            coinCount--; TODO enable me once coin collection works
                     markDirty();
-                    PotItemTransferPacket packet = new PotItemTransferPacket(hatPos, pos, sent);
+                    PotItemTransferPacket packet = new PotItemTransferPacket(hatPos, pos.up(2), sent);
                     ModPackets.sendToNearby(world, pos, packet);
                     hatsSentTo++;
                 }

@@ -10,7 +10,8 @@
       "translate": "advancement.arconia.main.clover_staff.desc"
     },
     "show_toast": true,
-    "announce_to_chat": true
+    "announce_to_chat": true,
+    "hidden": false
   },
   "parent": "arconia:main/four_leaf_clover",
   "criteria": {

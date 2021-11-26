@@ -73,14 +73,14 @@ public class ModLanguageProvider extends LanguageProvider {
 
     private void registerAdvancements() {
         Stream.of(new String[][] {
-                { "advancement.arconia.main.root.title", "Arconia" },
-                { "advancement.arconia.main.root.desc", "Punch a defenseless clover plant" },
+                { "advancement.arconia.main.root.title", "Read the fine manual" },
+                { "advancement.arconia.main.root.desc", "Dig up dirt and find some memoirs" },
                 { "advancement.arconia.main.four_leaf_clover.title", "Luck is on your side" },
                 { "advancement.arconia.main.four_leaf_clover.desc", "Punch clover plants until you get lucky" },
                 { "advancement.arconia.main.clover_staff.title", "You're a wizard now" },
                 { "advancement.arconia.main.clover_staff.desc", "Make a clover staff to increase your luck punching clovers" },
                 { "advancement.arconia.main.tree_root_block.title", "I'm rooting for you" },
-                { "advancement.arconia.main.tree_root_block.desc", "I wonder what happens if you put this under one of those red trees" },
+                { "advancement.arconia.main.tree_root_block.desc", "Craft a root tree block" },
                 { "advancement.arconia.main.pedestal.title", "Oh no, yet another altar" },
                 { "advancement.arconia.main.pedestal.desc", "Setup an altar to perform colorful rituals" },
                 { "advancement.arconia.main.red_root_of_essence.title", "Arconium?" },

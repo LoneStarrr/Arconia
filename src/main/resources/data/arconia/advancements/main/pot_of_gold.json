@@ -10,7 +10,8 @@
       "translate": "advancement.arconia.main.pot_of_gold.desc"
     },
     "show_toast": true,
-    "announce_to_chat": true
+    "announce_to_chat": true,
+    "hidden": false
   },
   "parent": "arconia:main/clover_staff",
   "criteria": {

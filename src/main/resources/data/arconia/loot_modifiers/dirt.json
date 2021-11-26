@@ -1,0 +1,11 @@
+{
+  "conditions": [
+    {
+      "condition": "block_state_property",
+      "block":"minecraft:dirt"
+    },
+    {
+      "condition": "arconia:player_needs_guidebook"
+    }
+  ]
+}
