@@ -21,6 +21,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
     private static final int MAX_HATS = 50;
     private static final float MAX_HAT_DISTANCE = 16; // Max straight-line distance
     private static final String TAG_HAT_POSITIONS = "hat_positions";
+    private static final String TAG_COIN_COUNT = "coin_count";
 
     private int coinCount;
     public static final int TICK_INTERVAL = 5;
@@ -36,8 +37,10 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         ticksElapsed = 0;
     }
 
-    public void addCoins(int count) {
+    public int addCoins(int count) {
         coinCount += count;
+        markDirty();
+        return count;
     }
 
     public boolean linkHat(BlockPos hatPos) {
@@ -86,36 +89,43 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         // For now, assume 1 coin = 1 resource, regardless of other parameters
         BlockPos particlePos = pos.up(2);
         Vector3d particleVec = new Vector3d(particlePos.getX(), particlePos.getY(), particlePos.getZ());
-        particleVec.add(0.5, 0.5, 0.5);
+        particleVec.add(0.5, 1.5, 0.5);
 
         if (world == null || hatPositions.size() == 0) {
             world.addParticle(ParticleTypes.POOF, particleVec.x, particleVec.y, particleVec.z, 0, 0, 0);
             return;
         }
 
-        Collections.shuffle(hatPositions);
-        int hatsToSendTo = 4;
         int hatsSentTo = 0;
         List<BlockPos> hatsToRemove = new ArrayList<>(hatPositions.size());
 
-        for (BlockPos hatPos: hatPositions) {
-            if (hatsSentTo >= hatsToSendTo) {
-                break;
-            }
+        if (coinCount > 0) {
+            Collections.shuffle(hatPositions);
+            int hatsToSendTo = 4;
 
-            // TODO consider chunk loading if the hat is in a chunk that is not loaded?
-            HatTileEntity hatEntity = getHatEntity(hatPos);
-            if (hatEntity == null) {
-                // Hat's gone. Don't try this hat again.
-                hatsToRemove.add(hatPos);
-            } else {
-                ItemStack sent = hatEntity.generateResource(world);
-                if (!sent.isEmpty()) {
-                    //            coinCount--; TODO enable me once coin collection works
-                    markDirty();
-                    PotItemTransferPacket packet = new PotItemTransferPacket(hatPos, pos.up(2), sent);
-                    ModPackets.sendToNearby(world, pos, packet);
-                    hatsSentTo++;
+            for (BlockPos hatPos : hatPositions) {
+                if (coinCount <= 0) {
+                    break;
+                }
+
+                if (hatsSentTo >= hatsToSendTo) {
+                    break;
+                }
+
+                // TODO consider chunk loading if the hat is in a chunk that is not loaded?
+                HatTileEntity hatEntity = getHatEntity(hatPos);
+                if (hatEntity == null) {
+                    // Hat's gone. Don't try this hat again.
+                    hatsToRemove.add(hatPos);
+                } else {
+                    ItemStack sent = hatEntity.generateResource(world);
+                    if (!sent.isEmpty()) {
+                        coinCount--;
+                        markDirty();
+                        PotItemTransferPacket packet = new PotItemTransferPacket(hatPos, pos.up(2), sent);
+                        ModPackets.sendToNearby(world, pos, packet);
+                        hatsSentTo++;
+                    }
                 }
             }
         }
@@ -128,6 +138,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         for (BlockPos pos: hatsToRemove) {
             hatPositions.remove(pos);
         }
+
         if (hatsToRemove.size() > 0) {
             markDirty();
         }
@@ -144,6 +155,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
 
     public void writePacketNBT(CompoundNBT tag) {
         tag.putLongArray(TAG_HAT_POSITIONS, hatPositions.stream().map(pos -> pos.toLong()).collect(Collectors.toList()));
+        tag.putInt(TAG_COIN_COUNT, coinCount);
     }
 
     public void readPacketNBT(CompoundNBT tag) {
@@ -152,6 +164,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         for (long longPos: longPositions) {
             hatPositions.add(BlockPos.fromLong(longPos));
         }
+        this.coinCount = tag.getInt(TAG_COIN_COUNT);
     }
 
 }

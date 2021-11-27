@@ -1,6 +1,7 @@
 package lonestarrr.arconia.common.block;
 
 import lonestarrr.arconia.common.block.tile.CenterPedestalTileEntity;
+import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryTileEntity;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -9,15 +10,23 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.FakePlayer;
 
 import javax.annotation.Nullable;
 
@@ -37,6 +46,37 @@ public class PotMultiBlockSecondary extends Block {
     public PotMultiBlockSecondary() {
 
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(4.0F).notSolid());
+    }
+
+    @Override
+    public ActionResultType onBlockActivated(
+            BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        if (world.isRemote || hand != Hand.MAIN_HAND) {
+            return ActionResultType.PASS;
+        }
+
+        if (!(player instanceof ServerPlayerEntity) || player instanceof FakePlayer) {
+            return ActionResultType.PASS;
+        }
+
+        ItemStack itemUsed = player.inventory.getCurrentItem();
+        // We buy gold
+        if (itemUsed.isEmpty() || itemUsed.getItem() != Items.GOLD_INGOT) {
+            return ActionResultType.PASS;
+        }
+
+        PotMultiBlockPrimaryTileEntity primTile = getPrimaryTileEntity(world, pos);
+        if (primTile == null) {
+            return ActionResultType.PASS;
+        }
+
+        int coinsAdded = primTile.addCoins(1);
+        if (coinsAdded > 0) {
+            itemUsed.setCount(itemUsed.getCount() - coinsAdded);
+            world.playSound(null, pos, SoundEvents.BLOCK_CHAIN_PLACE, SoundCategory.BLOCKS, 1, 1.3f);
+            return ActionResultType.SUCCESS;
+        }
+        return ActionResultType.FAIL;
     }
 
     @Override
@@ -71,15 +111,30 @@ public class PotMultiBlockSecondary extends Block {
     @Override
     public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         super.onBlockHarvested(world, pos, state, player);
-        TileEntity te = world.getTileEntity(pos);
-        if (te == null || !(te instanceof PotMultiBlockSecondaryTileEntity)) {
-            return;
-        }
-        PotMultiBlockSecondaryTileEntity secondaryTE = (PotMultiBlockSecondaryTileEntity) te;
-        BlockPos primaryPos = secondaryTE.getPrimaryPos();
+
+        BlockPos primaryPos = getPrimaryBlockPos(world, pos);
         if (primaryPos != null) {
             PotMultiBlockPrimary.breakMultiBlock(world, primaryPos);
         }
+    }
+
+    private BlockPos getPrimaryBlockPos(World world, BlockPos pos) {
+        TileEntity te = world.getTileEntity(pos);
+        if (te == null || !(te instanceof PotMultiBlockSecondaryTileEntity)) {
+            return null;
+        }
+        PotMultiBlockSecondaryTileEntity secondaryTE = (PotMultiBlockSecondaryTileEntity) te;
+        return secondaryTE.getPrimaryPos();
+    }
+
+    private PotMultiBlockPrimaryTileEntity getPrimaryTileEntity(World world, BlockPos pos) {
+        BlockPos primaryPos = getPrimaryBlockPos(world, pos);
+        if (primaryPos == null) {
+            return null;
+        }
+
+        TileEntity te = world.getTileEntity(primaryPos);
+        return te != null && te instanceof PotMultiBlockPrimaryTileEntity ? (PotMultiBlockPrimaryTileEntity) te : null;
     }
 
     /**
