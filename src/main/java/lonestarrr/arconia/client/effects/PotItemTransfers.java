@@ -65,7 +65,6 @@ public class PotItemTransfers {
 //        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(bufferBuilder);
         IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 
-        // TODO add some random variation in speed, item rotation etc, otherwise it looks a bit boring with many items being flung simultaneously
         // Probably also add a random delay and don't fire them all at the same tick
         for (ItemTransfer transfer: transfers) {
             if (transfer.isComplete(event.getPartialTicks())) {
@@ -80,6 +79,8 @@ public class PotItemTransfers {
             }
 
             renderItemTransfer(transfer, event.getMatrixStack(), buffer, event.getPartialTicks());
+            // TODO: Temporary - testing rainbow rendering
+            RainbowRenderer.renderRainbow(transfer.potPos, transfer.hatPos, event.getMatrixStack(), buffer);
         }
         buffer.finish();
 
@@ -99,6 +100,8 @@ public class PotItemTransfers {
         Minecraft.getInstance().getItemRenderer()
                 .renderItem(transfer.itemStack, ItemCameraTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
         matrixStack.pop();
+        // TODO temporarily rendering a rainbow just to see what it looks like
+
     }
 }
 
