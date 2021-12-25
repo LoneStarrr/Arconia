@@ -5,7 +5,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
+import lonestarrr.arconia.common.block.GoldArconiumBlock;
 import lonestarrr.arconia.common.block.ModBlocks;
+import lonestarrr.arconia.common.core.BlockNames;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
@@ -28,6 +31,7 @@ import lonestarrr.arconia.common.item.ModItems;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * Registers recipes specific for the pedestal crafting ritual
@@ -122,10 +126,16 @@ public class PedestalProvider extends RecipeProvider {
         consumer.accept(makeEnchantedPinkColoredRoot(Items.PINK_DYE, Items.PINK_DYE));
         consumer.accept(makeEnchantedPinkColoredRoot(Items.ENDERMAN_SPAWN_EGG, Items.ENDER_CHEST));
 
+        RainbowColor.stream().forEach(color -> consumer.accept(makeGoldArconiumBlock(color)));
     }
 
-    private static FinishedRecipe make(IItemProvider item, int durationTicks, Ingredient... ingredients) {
-        return new FinishedRecipe(idFor(Registry.ITEM.getKey(item.asItem())), new ItemStack(item), durationTicks, ingredients);
+    private static FinishedRecipe makeGoldArconiumBlock(RainbowColor color) {
+        ItemStack output = new ItemStack(ModBlocks.getGoldArconiumBlock(color).asItem());
+        Ingredient goldBlock = Ingredient.fromItems(Blocks.GOLD_BLOCK.asItem());
+        Ingredient essence = Ingredient.fromItems(ModItems.getArconiumEssence(color));
+        ResourceLocation recipeId = id(color.getTierName() + BlockNames.GOLD_ARCONIUM_BLOCK_SUFFIX);
+        final int durationTicks = 100 + (color.getTier() * 100);
+        return new FinishedRecipe(recipeId, output, durationTicks, goldBlock, essence, essence, essence, essence);
     }
 
     /**
@@ -140,11 +150,11 @@ public class PedestalProvider extends RecipeProvider {
     private static FinishedRecipe makeEnchantedColoredRoot(ColoredRoot item, IItemProvider resourceItem, int durationTicks, Ingredient... ingredients) {
         ItemStack coloredRoot = new ItemStack(item);
         ColoredRoot.setResourceItem(coloredRoot, resourceItem);
-        ResourceLocation rootID = Registry.ITEM.getKey(item);
-        ResourceLocation itemID = Registry.ITEM.getKey(resourceItem.asItem());
-        ResourceLocation recipeID = new ResourceLocation(rootID.getNamespace(), "pedestal/" + rootID.getPath() + "/" + itemID.getNamespace() + "_" + itemID.getPath());
-        Arconia.logger.info("***** Recipe ID: " + recipeID);
-        return new FinishedRecipe(recipeID, coloredRoot, durationTicks, ingredients);
+        ResourceLocation rootId = Registry.ITEM.getKey(item);
+        ResourceLocation itemId = Registry.ITEM.getKey(resourceItem.asItem());
+        ResourceLocation recipeId = id(rootId.getPath() + "/" + itemId.getNamespace() + "_" + itemId.getPath());
+        Arconia.logger.info("***** Recipe ID: " + recipeId);
+        return new FinishedRecipe(recipeId, coloredRoot, durationTicks, ingredients);
     }
 
     /**
@@ -236,8 +246,8 @@ public class PedestalProvider extends RecipeProvider {
                 Ingredient.fromItems(ingredient));
     }
 
-    private static ResourceLocation idFor(ResourceLocation name) {
-        return new ResourceLocation(name.getNamespace(), "pedestal/" + name.getPath());
+    private static ResourceLocation id(String s) {
+        return new ResourceLocation(Arconia.MOD_ID, "pedestal/" + s);
     }
 
 

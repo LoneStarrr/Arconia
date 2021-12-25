@@ -37,6 +37,7 @@ public class ModLanguageProvider extends LanguageProvider {
         for (RainbowColor color : RainbowColor.values()) {
             String colorName = color.getUnlocalizedName();
             add(ModBlocks.getArconiumBlock(color), colorName + " Arconium Block");
+            add(ModBlocks.getGoldArconiumBlock(color), colorName + " Gold Arconium Block");
             add(ModBlocks.getMoneyTreeLeaves(color), colorName + " Resource Tree Leaves");
             add(ModBlocks.getMoneyTreeSapling(color), colorName + " Resource Tree Sapling");
             add(ModBlocks.getResourceTreeRootBlock(color), colorName + " Tree Root Block");
