@@ -1,18 +1,20 @@
 package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import jdk.internal.org.objectweb.asm.tree.LineNumberNode;
 import jdk.nashorn.internal.runtime.regexp.joni.exception.ValueException;
 import lonestarrr.arconia.common.core.helper.VectorHelper;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -26,11 +28,10 @@ import java.util.List;
 public class RainbowRenderer {
     public static void renderRainbow(Vector3d origin, Vector3d destination, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
         // for the test-integration from pot item transfer: matrix has already been translated to compensate for player pov
-        float radiusOuter = (float)origin.distanceTo(destination);
+        float radiusOuter = (float)origin.distanceTo(destination) / 2f;
         float radiusInner = radiusOuter * 0.8f;
         Quaternion rotation = VectorHelper.getRotation(origin, destination);
-        // TODO this should obviously be calculated only once per rendered rainbow
-        List<Vector3f> polygon = getRainbowPolygon(radiusOuter, radiusInner, 10, 0);
+        // TODO This is a concave (complex, non-simple) polygon - that needs special rendering
         float alpha = 0.5f;
         Color color = Color.RED;
         float colorR = color.getRed() / 255f;
@@ -41,17 +42,29 @@ public class RainbowRenderer {
         matrixStack.translate(origin.x, origin.y, origin.z);
         matrixStack.rotate(rotation);
 
-        IVertexBuilder builder = buffer.getBuffer(LightningRenderType.BEAM_TRIANGLE); //TODO define one here
+        IVertexBuilder builder = buffer.getBuffer(RainbowSegmentRenderType.RAINBOW_SEGMENT);
         Matrix4f positionMatrix = matrixStack.getLast().getMatrix();
 
-        for (Vector3f v: polygon) {
-            builder.pos(positionMatrix, v.getX(), v.getY(), v.getZ()).color(colorR, colorG, colorB, alpha).endVertex();
+
+        // TODO this should obviously be calculated only once per rendered rainbow
+        int numEdges = 50;
+        float z = 0;
+        float innerXOffset = radiusOuter - radiusInner;
+        List<Vector3f> outerArch = getRainbowArchVertices(radiusOuter, numEdges, z, 0);
+        List<Vector3f> innerArch = getRainbowArchVertices(radiusInner, numEdges, z, innerXOffset);
+        // Draw the rainbow in quad segments, as making a single large polygon would make it a concave (complex) polygon that cannot be rendered as-is
+
+        for (int i = 0; i < numEdges - 1; i++) {
+            Vector3f[] corners = {outerArch.get(i), outerArch.get(i + 1), innerArch.get(i +1), innerArch.get(i)};
+            for (Vector3f v: corners) {
+                builder.pos(positionMatrix, v.getX(), v.getY(), v.getZ()).color(colorR, colorG, colorB, alpha).endVertex();
+            }
         }
 
-        // FIXME How am I supposed to indicate with mode GL_POLYGON that I'm done drawing? Closing the polygon? Nope. This here works, but something
-        // tells me I am not supposed to be doing this this way..should I just forego the builder and directly call methods on buffer!?
-        LightningRenderType.BEAM_TRIANGLE.finish((BufferBuilder)builder, 0, 0, 0);
-        ((BufferBuilder)builder).begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_COLOR);
+        // FIXME How am I supposed to indicate that I'm done drawing? Closing the polygon? Nope. This here works, but something
+        // tells me I am not supposed to be doing this this way.
+        RainbowSegmentRenderType.RAINBOW_SEGMENT.finish((BufferBuilder)builder, 0, 0, 0);
+        ((BufferBuilder)builder).begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
         matrixStack.pop();
     }
@@ -60,51 +73,53 @@ public class RainbowRenderer {
      *
      * @param radius Radius of the circle
      * @param z Z coordinate for each vertex
+     * @param xOffset X offset for each vertex
      * @return A list of vertices that will draw a 2D rainbow arch originating at (0,0)
      */
-    private static List<Vector3f> getRainbowArchVertices(final float radius, final int numEdges, final float z) {
+    private static List<Vector3f> getRainbowArchVertices(final float radius, final int numEdges, final float z, final float xOffset) {
         // Formula for a circle: x^2 + y^2 = r^2 =>  y^2  = r^2 - x^2  =>  y = sqrt(r^2-x^2)
         // Circle starts with highest point at y=0, so compensate by offsetting with r: y = sqrt(r^2 - (x - r)^2)
-        List<Vector3f> result = new ArrayList<Vector3f>(numEdges + 1);
+        final int numVertices = numEdges + 1;
+        List<Vector3f> result = new ArrayList<Vector3f>(numVertices);
 
-        final float xIncrement = radius / numEdges;
+        final float diameter = 2 * radius;
+        final float xIncrement = diameter / numEdges;
         float x = 0;
         float y;
         float rSquared = radius * radius;
-        while (x <= radius) {
+
+        for (int i = 0; i < numVertices - 1; i++) {
             y = (float)Math.sqrt(rSquared - ((x - radius) * (x - radius)));
-            result.add(new Vector3f(x, y, z));
+            result.add(new Vector3f(x + xOffset, y, z));
             x += xIncrement;
         }
+        result.add(new Vector3f(x + xOffset, 0, z));
         return result;
+    }
+}
+
+/**
+ * Render type for rendering the rainbow in quad segments
+ */
+@OnlyIn(Dist.CLIENT)
+class RainbowSegmentRenderType extends RenderType {
+    public RainbowSegmentRenderType(
+            String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn,
+            boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
+        super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
     }
 
-    /**
-     *
-     * @param radiusOuter
-     * @param radiusInner Inner rainbow radius, must be smaller than outer
-     * @param numEdgesOuter
-     * @param z
-     * @return A closed polygon for a 2D rainbow
-     */
-    public static List<Vector3f> getRainbowPolygon(final float radiusOuter, final float radiusInner, final int numEdgesOuter, final float z) {
-        if (radiusInner >= radiusOuter) {
-            throw new ValueException(("Inner radius must be smaller than outer radius"));
-        }
-        final int numEdgesInner = (int)(radiusInner / radiusOuter * numEdgesOuter);
-        // polygon: outer arch vertices, edge connecting to reversed inner arch vertices, line connecting to starting point
-        List<Vector3f> outerArch = getRainbowArchVertices(radiusOuter, numEdgesOuter, z);
-        List<Vector3f> innerArch = getRainbowArchVertices(radiusInner, numEdgesInner, z);
-        Collections.reverse(innerArch);
-        List<Vector3f> result = outerArch;
-        // edge from right side of outer arch to right ride of inner arch
-//        result.add(new Vector3f(2 * radiusOuter, 0, z));
-        result.add(new Vector3f(2 * radiusOuter - (radiusOuter - radiusInner), 0, z));
-        // inner arch edges, reversed already, offset X by difference in radius sizes
-        innerArch.forEach(v -> result.add(new Vector3f(v.getX() + (radiusOuter - radiusInner), v.getY(), z)));
-        // edge from left side of outer arch to left ride of inner arch
-        result.add(new Vector3f(radiusOuter - radiusInner, 0, z));
-        result.add(new Vector3f(0, 0, z));
-        return result;
-    }
+    public static final RenderType RAINBOW_SEGMENT = makeType("rainbow_segment",
+            DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 32768,
+            RenderType.State.getBuilder()
+                    .layer(RenderState.field_239235_M_)
+                    .alpha(RenderState.ZERO_ALPHA)
+                    .transparency(TransparencyState.LIGHTNING_TRANSPARENCY)
+                    .lightmap(RenderState.LIGHTMAP_DISABLED)
+                    .shadeModel(RenderState.SHADE_ENABLED)
+                    .texture(RenderState.NO_TEXTURE)
+                    .writeMask(RenderState.COLOR_WRITE)
+                    .cull(RenderState.CULL_DISABLED)
+                    .build(false)
+    );
 }
