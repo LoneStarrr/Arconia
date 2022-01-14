@@ -135,7 +135,7 @@ public class PedestalProvider extends RecipeProvider {
         Ingredient essence = Ingredient.fromItems(ModItems.getArconiumEssence(color));
         ResourceLocation recipeId = id(color.getTierName() + BlockNames.GOLD_ARCONIUM_BLOCK_SUFFIX);
         final int durationTicks = 100 + (color.getTier() * 100);
-        return new FinishedRecipe(recipeId, output, durationTicks, goldBlock, essence, essence, essence, essence);
+        return new FinishedRecipe(recipeId, output, durationTicks, goldBlock, essence, essence, essence, essence, essence, essence);
     }
 
     /**

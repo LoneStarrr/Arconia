@@ -19,6 +19,10 @@ public class GoldArconiumBlock extends Block implements IBlockColor {
         this.tier = tier;
     }
 
+    public RainbowColor getTier() {
+        return tier;
+    }
+
     @Override
     public int getColor(
             BlockState blockState, @Nullable IBlockDisplayReader iBlockDisplayReader, @Nullable BlockPos blockPos, int tintIndex) {

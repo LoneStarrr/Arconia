@@ -1,6 +1,7 @@
 package lonestarrr.arconia.common.item;
 
 import lonestarrr.arconia.common.advancements.PotOfGoldTrigger;
+import lonestarrr.arconia.common.block.GoldArconiumBlock;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.PotMultiBlockPrimary;
 import lonestarrr.arconia.common.block.PotMultiBlockSecondary;
@@ -61,12 +62,22 @@ public class CloverStaff extends Item {
             if (!world.isRemote) {
                 boolean linkedHat = linkHatToPot(world, pos, staff);
                 if (linkedHat) {
+                    // TODO Use language keys
                     context.getPlayer().sendMessage(new StringTextComponent("Linked hat to pot of gold"), Util.DUMMY_UUID);
                 } else {
                     context.getPlayer().sendMessage(new StringTextComponent("Linking hat failed (did you select a pot of gold first?)"), Util.DUMMY_UUID);
                 }
             }
             return ActionResultType.CONSUME;
+        } else if (bs.getBlock() instanceof GoldArconiumBlock) {
+            if (!world.isRemote) {
+                boolean linked = linkGoldArconiumToPot(world, pos, staff);
+                if (linked) {
+                    context.getPlayer().sendMessage(new StringTextComponent("Linked block to pot of gold"), Util.DUMMY_UUID);
+                } else {
+                    context.getPlayer().sendMessage(new StringTextComponent("Linking block failed (did you select a pot of gold first?)"), Util.DUMMY_UUID);
+                }
+            }
         }
 
         return ActionResultType.PASS;
@@ -85,6 +96,21 @@ public class CloverStaff extends Item {
 
         PotMultiBlockPrimaryTileEntity potTE = (PotMultiBlockPrimaryTileEntity) te;
         return potTE.linkHat(hatPos);
+    }
+
+    private static boolean linkGoldArconiumToPot(World world, BlockPos goldArconiumPos, ItemStack staff) {
+        BlockPos potPos = getPotPosition(staff);
+        if (potPos == null) {
+            return false;
+        }
+
+        TileEntity te= world.getTileEntity(potPos);
+        if (te == null || !(te instanceof PotMultiBlockPrimaryTileEntity)) {
+            return  false;
+        }
+
+        PotMultiBlockPrimaryTileEntity potTE = (PotMultiBlockPrimaryTileEntity) te;
+        return potTE.linkGoldArconiumBlock(goldArconiumPos);
     }
 
     private static BlockPos getPotPosition(ItemStack staff) {
