@@ -80,7 +80,7 @@ public class PotItemTransfers {
 
             renderItemTransfer(transfer, event.getMatrixStack(), buffer, event.getPartialTicks());
             // TODO: Temporary - testing rainbow rendering
-            RainbowRenderer.renderRainbow(transfer.potPos, transfer.hatPos, event.getMatrixStack(), buffer);
+//            RainbowRenderer.renderRainbow(transfer.potPos, transfer.hatPos, event.getMatrixStack(), buffer);
         }
         buffer.finish();
 

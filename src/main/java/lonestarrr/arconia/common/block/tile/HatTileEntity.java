@@ -1,9 +1,11 @@
 package lonestarrr.arconia.common.block.tile;
 
 import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.common.block.GoldArconiumBlock;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.InventoryHelper;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -23,6 +25,8 @@ import javax.annotation.Nullable;
 public class HatTileEntity extends TileEntity {
     private RainbowColor tier;
     private ItemStack itemStack; // item to generate (should this be an ItemStack?)
+    private int resourceGenInterval;
+    private long lastGenTime;
     public long nextTickParticleRender = 0; // used by TE renderer to track particle rendering - not persisted
 
     public HatTileEntity() {
@@ -31,10 +35,19 @@ public class HatTileEntity extends TileEntity {
         this.itemStack = ItemStack.EMPTY;
     }
 
-    public void setTierAndItem(RainbowColor tier, ItemStack itemStack) {
+    public void setResourceGenerated(RainbowColor tier, ItemStack itemStack, int interval) {
         this.tier = tier;
         this.itemStack = itemStack.copy();
+        this.resourceGenInterval = interval;
+        this.lastGenTime = 0;
         markDirty();
+    }
+
+    /**
+     * @return Whether a resource to be generated has been associated with the hat
+     */
+    public boolean hasResourceGenerator() {
+        return !this.itemStack.isEmpty();
     }
 
     public final ItemStack getItemStack() {
@@ -63,7 +76,6 @@ public class HatTileEntity extends TileEntity {
             return ItemStack.EMPTY;
         }
 
-        int beforeCount = toGenerate.getCount();
         ItemStack sent = toGenerate.copy();
         ItemStack left = InventoryHelper.insertItem(inv, toGenerate, false);
         sent.setCount(sent.getCount() - left.getCount());
@@ -75,12 +87,17 @@ public class HatTileEntity extends TileEntity {
         if (!world.isRemote()) {
             compound.putInt("tier", tier.getTier());
             compound.put("item", this.itemStack.serializeNBT());
+            compound.putInt("interval", resourceGenInterval);
         }
         return super.write(compound);
     }
 
     @Override
     public void read(BlockState state, CompoundNBT nbt) {
+        ItemStack stack = ItemStack.EMPTY;
+        RainbowColor tier = RainbowColor.RED;
+        int interval = 1;
+
         try {
             int tierNum = nbt.getInt("tier");
             for (RainbowColor clr: RainbowColor.values()) {
@@ -88,13 +105,15 @@ public class HatTileEntity extends TileEntity {
                     tier = clr;
                 }
             }
-            itemStack = ItemStack.read(nbt.getCompound("item"));
-            Arconia.logger.debug("***** World remote = " + (world != null ? world.isRemote() : "null") + ", itemStack = " + itemStack);
+            stack = ItemStack.read(nbt.getCompound("item"));
+            if (!stack.isEmpty()) {
+                interval = nbt.getInt("interval");
+            }
+            Arconia.logger.debug("***** World remote = " + (world != null ? world.isRemote() : "null") + ", itemStack = " + stack);
         } catch(Exception e) {
             Arconia.logger.error("Failed to read tile entity data: " + e.getMessage(), e);
-            tier = RainbowColor.RED;
-            itemStack = ItemStack.EMPTY;
         }
+        setResourceGenerated(tier, stack, interval);
         super.read(state, nbt);
     }
 

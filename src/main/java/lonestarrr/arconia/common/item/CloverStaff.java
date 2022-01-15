@@ -69,15 +69,6 @@ public class CloverStaff extends Item {
                 }
             }
             return ActionResultType.CONSUME;
-        } else if (bs.getBlock() instanceof GoldArconiumBlock) {
-            if (!world.isRemote) {
-                boolean linked = linkGoldArconiumToPot(world, pos, staff);
-                if (linked) {
-                    context.getPlayer().sendMessage(new StringTextComponent("Linked block to pot of gold"), Util.DUMMY_UUID);
-                } else {
-                    context.getPlayer().sendMessage(new StringTextComponent("Linking block failed (did you select a pot of gold first?)"), Util.DUMMY_UUID);
-                }
-            }
         }
 
         return ActionResultType.PASS;
@@ -89,28 +80,13 @@ public class CloverStaff extends Item {
             return false;
         }
 
-        TileEntity te= world.getTileEntity(potPos);
+        TileEntity te = world.getTileEntity(potPos);
         if (te == null || !(te instanceof PotMultiBlockPrimaryTileEntity)) {
             return  false;
         }
 
         PotMultiBlockPrimaryTileEntity potTE = (PotMultiBlockPrimaryTileEntity) te;
         return potTE.linkHat(hatPos);
-    }
-
-    private static boolean linkGoldArconiumToPot(World world, BlockPos goldArconiumPos, ItemStack staff) {
-        BlockPos potPos = getPotPosition(staff);
-        if (potPos == null) {
-            return false;
-        }
-
-        TileEntity te= world.getTileEntity(potPos);
-        if (te == null || !(te instanceof PotMultiBlockPrimaryTileEntity)) {
-            return  false;
-        }
-
-        PotMultiBlockPrimaryTileEntity potTE = (PotMultiBlockPrimaryTileEntity) te;
-        return potTE.linkGoldArconiumBlock(goldArconiumPos);
     }
 
     private static BlockPos getPotPosition(ItemStack staff) {

@@ -31,6 +31,8 @@ import java.util.List;
 public class ColoredRoot extends Item {
     private RainbowColor tier;
     private static final String TAG_ITEM = "item";
+    private static final String TAG_INTERVAL = "interval";
+    private static final String TAG_COUNT = "count";
 
     public ColoredRoot(Properties builder, RainbowColor tier) {
         super(builder);
@@ -51,7 +53,35 @@ public class ColoredRoot extends Item {
             return ItemStack.EMPTY;
         }
 
-        return ItemStack.read(tag.getCompound("item"));
+        return ItemStack.read(tag.getCompound(TAG_ITEM));
+    }
+
+    /**
+     * @param stack
+     * @return Resource generation interval for enchanted root item
+     */
+    @Nonnull
+    public static int getResourceInterval(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag == null || !tag.contains(TAG_INTERVAL)) {
+            return 1;
+        }
+
+        return tag.getInt(TAG_INTERVAL);
+    }
+
+    /**
+     * @param stack
+     * @return Resource generation count for enchanted root item
+     */
+    @Nonnull
+    public static int getResourceCount(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag == null || !tag.contains(TAG_COUNT)) {
+            return 1;
+        }
+
+        return tag.getInt(TAG_COUNT);
     }
 
     /**
@@ -59,12 +89,20 @@ public class ColoredRoot extends Item {
      * have that tree produce this resource.
      * @param coloredRootStack colored root to set resource on
      * @param resourceItem resource to set
+     * @param interval Frequency with which resource is generated. An interval of 1 is fastest. Interval length is determined by the pot of gold and is typically
+     *                 no less than 5 ticks.
+     * @param count Number of items generated per event. Must not exceed item's max stack count
      *
      * Data is stored in NBT so that it can be used for any item from any mod by only adding a pedestal ritual recipe.
      */
-    public static void setResourceItem(@Nonnull ItemStack coloredRootStack, @Nonnull IItemProvider resourceItem) {
+    public static void setResourceItem(@Nonnull ItemStack coloredRootStack, @Nonnull IItemProvider resourceItem, @Nonnull int interval, @Nonnull int count) {
         CompoundNBT tag = coloredRootStack.getOrCreateTag();
-        tag.put(TAG_ITEM, new ItemStack(resourceItem, 1).serializeNBT());
+        ItemStack stack = new ItemStack(resourceItem);
+        int maxCount = resourceItem.asItem().getItemStackLimit(stack);
+        int stackCount = count > maxCount ? maxCount : count;
+        stack.setCount(stackCount);
+        tag.put(TAG_ITEM, stack.serializeNBT());
+        tag.putInt(TAG_INTERVAL, interval < 1 ? 1 : interval);
     }
 
     /**
@@ -90,7 +128,11 @@ public class ColoredRoot extends Item {
             return ActionResultType.PASS;
         }
 
-        boolean resourceSet = Hat.setResourceGenerated(world, pos, tier, resource);
+        int count = getResourceCount(heldItem);
+        int interval = getResourceInterval(heldItem);
+
+        boolean resourceSet = Hat.setResourceGenerated(world, pos, tier, resource, interval, count);
+
         if (resourceSet) {
             if (heldItem.getCount() > 1) {
                 heldItem.shrink(1);

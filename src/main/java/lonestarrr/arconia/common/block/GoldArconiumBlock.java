@@ -1,13 +1,17 @@
 package lonestarrr.arconia.common.block;
 
+import lonestarrr.arconia.common.block.tile.GoldArconiumTileEntity;
+import lonestarrr.arconia.common.block.tile.HatTileEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 
@@ -21,6 +25,17 @@ public class GoldArconiumBlock extends Block implements IBlockColor {
 
     public RainbowColor getTier() {
         return tier;
+    }
+
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return new GoldArconiumTileEntity(tier);
     }
 
     @Override

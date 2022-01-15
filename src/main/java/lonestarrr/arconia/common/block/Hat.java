@@ -2,20 +2,17 @@ package lonestarrr.arconia.common.block;
 
 import lonestarrr.arconia.common.block.tile.HatTileEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.core.helper.InventoryHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
 
@@ -52,13 +49,16 @@ public class Hat extends Block {
      * @param pos
      * @param tier
      * @param resource
+     * @param interval Frequency with which resource is generated. An interval of 1 is fastest. Interval length is determined by the pot of gold and is typically
+     *                 no less than 5 ticks.
+     * @param count Number of items generated per event.
      * @return True if a hat was placed in the world at the given location
      */
-    public static boolean setResourceGenerated(World world, BlockPos pos, RainbowColor tier, ItemStack resource) {
+    public static boolean setResourceGenerated(World world, BlockPos pos, RainbowColor tier, ItemStack resource, int interval, int count) {
         TileEntity te = world.getTileEntity(pos);
         if (te != null && te instanceof HatTileEntity) {
             HatTileEntity rte = (HatTileEntity) te;
-            rte.setTierAndItem(tier, resource);
+            rte.setResourceGenerated(tier, resource, interval);
             return true;
         }
         return false;

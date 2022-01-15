@@ -27,6 +27,7 @@ public class ModTiles {
     private static final Map<RainbowColor, TileEntityType<ResourceTreeRootTileEntity>> treeRootBlockTileEntityTypes = new HashMap<>(RainbowColor.values().length);
     private static final Map<RainbowColor, TileEntityType<RainbowCrateTileEntity>> rainbowCrateTileEntityTypes =
             new HashMap<>(RainbowColor.values().length);
+    private static final Map<RainbowColor, TileEntityType<GoldArconiumTileEntity>> goldArconiumTileEntityTypes = new HashMap<>(RainbowColor.values().length);
 
 
     @SubscribeEvent
@@ -59,7 +60,13 @@ public class ModTiles {
             register(r, teType, tier.getTierName() + "_rainbow_crate_tile_entity");
         }
 
-        Arconia.logger.info("************ registered tile entities");
+        // Gold arconium blocks
+        for (RainbowColor tier: RainbowColor.values()) {
+            TileEntityType<GoldArconiumTileEntity> teType = TileEntityType.Builder.create(() -> new GoldArconiumTileEntity(tier), ModBlocks.getGoldArconiumBlock(tier)).build(null);
+            goldArconiumTileEntityTypes.put(tier, teType);
+            register(r, teType, tier.getTierName() + "_gold_arconium_tile_entity");
+        }
+        Arconia.logger.info("************ Registered tile entities");
 
     }
 
@@ -69,5 +76,9 @@ public class ModTiles {
 
     public static TileEntityType<RainbowCrateTileEntity> getRainbowCrateTileEntityType(RainbowColor tier) {
         return rainbowCrateTileEntityTypes.get(tier);
+    }
+
+    public static TileEntityType<GoldArconiumTileEntity> getGoldArconiumTileEntityType(RainbowColor tier) {
+        return goldArconiumTileEntityTypes.get(tier);
     }
 }

@@ -35,18 +35,28 @@ import java.util.Stack;
 public class ArconiaCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         // Command structure:
-        //   /arconia <subcommand> <subcommand args
+        //   /arconia <subcommand> <subcommand args>
         dispatcher.register(
                 Commands.literal("arconia").then(
                         Commands.literal("enchant_root").then(
-                                Commands.argument("item_id", ItemArgument.item())
-                                        .executes(ctx -> enchantRoot(ctx, ItemArgument.getItem(ctx, "item_id")))
+                                Commands.argument("item_id", ItemArgument.item()).then(
+                                        Commands.argument("item_count", IntegerArgumentType.integer(1, 8)).then(
+                                                Commands.argument("generation_interval", IntegerArgumentType.integer(1, 100))
+                                                        .executes(ctx -> enchantRoot(
+                                                                ctx,
+                                                                ItemArgument.getItem(ctx, "item_id"),
+                                                                IntegerArgumentType.getInteger(ctx, "item_count"),
+                                                                IntegerArgumentType.getInteger(ctx, "generation_interval")
+                                                        ))
+                                        )
+                                )
                         )
                 )
         );
     }
 
-    private static int enchantRoot(CommandContext<CommandSource> ctx, ItemInput itemInput) throws CommandSyntaxException {
+    private static int enchantRoot(
+            CommandContext<CommandSource> ctx, ItemInput itemInput, int itemCount, int generationInterval) throws CommandSyntaxException {
         PlayerEntity player = ctx.getSource().asPlayer();
         Item resourceItem = itemInput.getItem();
 
@@ -57,7 +67,7 @@ public class ArconiaCommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        ColoredRoot.setResourceItem(rootItem, resourceItem);
+        ColoredRoot.setResourceItem(rootItem, resourceItem, generationInterval, itemCount);
         player.sendMessage(new StringTextComponent("Enchanted the colored root with resourceItem " + resourceItem.getRegistryName()), Util.DUMMY_UUID);
         return Command.SINGLE_SUCCESS;
     }
