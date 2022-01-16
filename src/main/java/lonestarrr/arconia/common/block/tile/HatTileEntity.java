@@ -10,6 +10,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
@@ -21,6 +22,7 @@ import javax.annotation.Nullable;
  */
 public class HatTileEntity extends TileEntity {
     private RainbowColor tier;
+    private BlockPos linkedPotPos;
     private ItemStack itemStack; // item to generate (should this be an ItemStack?)
     private int resourceGenInterval;
     private int resourceCoinCost;
@@ -30,6 +32,30 @@ public class HatTileEntity extends TileEntity {
         super(ModTiles.HAT);
         this.tier = RainbowColor.RED;
         this.itemStack = ItemStack.EMPTY;
+    }
+
+    /**
+     * @return Pot this hat is linked to, or null if not linked
+     */
+    public BlockPos getLinkedPot() {
+        return this.linkedPotPos;
+    }
+
+    /**
+     * Links hat to a pot of gold. No checks are performed to validate whether the pot is there and valid.
+     * @param potPos Block position of the pot's multiblock's primary block
+     */
+    public void linkToPot(BlockPos potPos) {
+        this.linkedPotPos = potPos;
+        markDirty();
+    }
+
+    /**
+     * Unlinks hat. No checks are performed whether the hat was already linked.
+     */
+    public void unlink() {
+        this.linkedPotPos = null;
+        markDirty();
     }
 
     public void setResourceGenerated(RainbowColor tier, ItemStack itemStack, int interval, int coinCost) {
@@ -90,6 +116,9 @@ public class HatTileEntity extends TileEntity {
             compound.put("item", this.itemStack.serializeNBT());
             compound.putInt("interval", resourceGenInterval);
             compound.putInt("coin_cost", resourceCoinCost);
+            if (this.linkedPotPos != null) {
+                compound.putLong("pot_pos", this.linkedPotPos.toLong());
+            }
         }
         return super.write(compound);
     }
@@ -112,6 +141,12 @@ public class HatTileEntity extends TileEntity {
             if (!stack.isEmpty()) {
                 interval = nbt.getInt("interval");
                 coinCost = nbt.getInt("coin_cost");
+            }
+
+            if (nbt.contains("pot_pos")) {
+                this.linkedPotPos = BlockPos.fromLong(nbt.getLong("pot_pos"));
+            } else {
+                this.linkedPotPos = null;
             }
             Arconia.logger.debug("***** World remote = " + (world != null ? world.isRemote() : "null") + ", itemStack = " + stack);
         } catch(Exception e) {

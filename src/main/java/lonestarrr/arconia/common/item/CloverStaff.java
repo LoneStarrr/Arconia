@@ -107,6 +107,10 @@ public class CloverStaff extends Item {
                             break;
                         case ALREADY_LINKED:
                             lang += ".alreadylinked";
+                            break;
+                        case LINKED_TO_OTHER_POT:
+                            lang += ".linked_other_pot";
+                            break;
                     }
                 }
             }

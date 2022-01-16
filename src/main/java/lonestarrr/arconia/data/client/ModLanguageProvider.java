@@ -104,6 +104,7 @@ public class ModLanguageProvider extends LanguageProvider {
         add("arconia.item.cloverstaff.linkhat.notfound", "Invalid hat");
         add("arconia.item.cloverstaff.linkhat.toomanyhats", "Too many hats have been linked already");
         add("arconia.item.cloverstaff.linkhat.alreadylinked", "The hat's already linked");
+        add("arconia.item.cloverstaff.linkhat.linked_other_pot", "The hat's already linked to another pot");
         add("arconia.item.cloverstaff.linkhat.unlinked", "Unlinked hat");
         add("arconia.item.cloverstaff.linkhat.unlink_failed", "Hat was not linked");
     }

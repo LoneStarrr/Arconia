@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common.block.tile;
 
+import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.item.ModItems;
 import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
@@ -51,6 +52,10 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
             throw new LinkHatException(LinkErrorCode.TOO_MANY_HATS);
         }
 
+        if (!pos.withinDistance(hatPos, MAX_HAT_DISTANCE)) {
+            throw new LinkHatException(LinkErrorCode.HAT_TOO_FAR);
+        }
+
         if (isHatLinked(hatPos)) {
             throw new LinkHatException(LinkErrorCode.ALREADY_LINKED);
         }
@@ -60,11 +65,17 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
             throw new LinkHatException(LinkErrorCode.HAT_NOT_FOUND);
         }
 
-        if (!pos.withinDistance(hatPos, MAX_HAT_DISTANCE)) {
-            throw new LinkHatException(LinkErrorCode.HAT_TOO_FAR);
+        HatTileEntity hatTE = (HatTileEntity)te;
+        BlockPos potPos = hatTE.getLinkedPot();
+        if (potPos != null) {
+            if (potPos.equals(pos)) {
+                throw new LinkHatException(LinkErrorCode.ALREADY_LINKED);
+            } else {
+                throw new LinkHatException(LinkErrorCode.LINKED_TO_OTHER_POT);
+            }
         }
-
         hats.add(new HatData(hatPos));
+        hatTE.linkToPot(pos);
         markDirty();
     }
 
@@ -73,6 +84,15 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
 
         if (hat != null) {
             hats.remove(hat);
+            markDirty();
+            TileEntity te = world.getTileEntity(hatPos);
+            if (te != null && te instanceof HatTileEntity) {
+                HatTileEntity hatTE = (HatTileEntity) te;
+                BlockPos linkedPot = hatTE.getLinkedPot();
+                if (linkedPot != null && linkedPot.equals(pos)) {
+                    hatTE.unlink();
+                }
+            }
             return true;
         }
         return false;
@@ -181,6 +201,13 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
                 // Hat's gone. Don't try this hat again.
                 hatsToRemove.add(hat);
                 continue;
+            } else {
+                BlockPos potPos = hatEntity.getLinkedPot();
+                if (potPos == null || !potPos.equals(pos)) {
+                    Arconia.logger.warn("Hat linked to pot at " + pos + " thinks it's not linked, or linked to another pot at " + potPos + ". Unlinking");
+                    hatsToRemove.add(hat);
+                    continue;
+                }
             }
 
             // TODO with increasing coin collection for higher tiers, it will very quickly hit a max number of coins spent generating resources because at
@@ -215,11 +242,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         }
 
         for (HatData hat: hatsToRemove) {
-            hats.remove(hat);
-        }
-
-        if (hatsToRemove.size() > 0) {
-            markDirty();
+            unlinkHat(hat.hatPos);
         }
     }
 
@@ -265,7 +288,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         this.coinCount = tag.getInt(TAG_COIN_COUNT);
     }
 
-    public enum LinkErrorCode { ALREADY_LINKED, TOO_MANY_HATS, HAT_NOT_FOUND, HAT_TOO_FAR }
+    public enum LinkErrorCode { ALREADY_LINKED, TOO_MANY_HATS, HAT_NOT_FOUND, HAT_TOO_FAR, LINKED_TO_OTHER_POT }
 
     public class LinkHatException extends Exception {
         public LinkErrorCode code;
