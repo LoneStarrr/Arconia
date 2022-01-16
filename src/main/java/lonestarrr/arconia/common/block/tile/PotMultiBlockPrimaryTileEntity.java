@@ -20,21 +20,22 @@ import java.util.stream.Collectors;
 
 public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements ITickableTileEntity {
     private static final int MAX_HATS = 50;
+    private static final int MAX_COIN_SUPPLIERS = 1; // How many hats may supply coins per coin collection tick?
     private static final float MAX_HAT_DISTANCE = 16; // Max straight-line distance
     private static final String TAG_HAT_POSITIONS = "hat_positions";
     private static final String TAG_COIN_COUNT = "coin_count";
 
     private int coinCount;
-    public static final int MIN_TICK_INTERVAL = 5;
-    private int ticksElapsed;
+    public static final int TICKS_PER_INTERVAL = 5;
+    private int intervalsElapsed = 0;
+    private long lastIntervalGameTime = 0;
 
-    private final List<BlockPos> hatPositions = new ArrayList<>();;
+    private final List<HatData> hats = new ArrayList<>();
 
     public PotMultiBlockPrimaryTileEntity() {
         super(ModTiles.POT_MULTIBLOCK_PRIMARY);
         // TODO check for valid structure at an interval, if not, destroy ourselves
         coinCount = 0;
-        ticksElapsed = 0;
     }
 
     public int addCoins(int count) {
@@ -44,11 +45,11 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
     }
 
     public boolean linkHat(BlockPos hatPos) {
-        if (hatPositions.size() >= MAX_HATS) {
+        if (hats.size() >= MAX_HATS) {
             return false;
         }
 
-        if (hatPositions.contains(hatPos)) {
+        if (isHatPositionLinked(hatPos)) {
             return false;
         }
 
@@ -61,9 +62,17 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
             return false;
         }
 
-        hatPositions.add(hatPos);
+        hats.add(new HatData(hatPos));
         markDirty();
         return true;
+    }
+
+    private boolean isHatPositionLinked(BlockPos pos) {
+        for (HatData hd: this.hats) {
+            if (hd.hatPos.equals(pos))
+                return true;
+        }
+        return false;
     }
 
     /**
@@ -86,10 +95,18 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
             return;
         }
 
-        if (++ticksElapsed < MIN_TICK_INTERVAL) {
+        // Track world game time to thwart tick accelerators
+        if (lastIntervalGameTime == 0) {
+            lastIntervalGameTime = world.getGameTime();
+        }
+
+        long now = world.getGameTime();
+        if (now - lastIntervalGameTime < TICKS_PER_INTERVAL) {
             return;
         }
-        ticksElapsed = 0;
+
+        lastIntervalGameTime = now;
+        intervalsElapsed++;
         tickHats();
     }
 
@@ -98,8 +115,10 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
      *
      * @param goldArconiumTE
      * @param goldArconiumPos
+     *
+     * @return Number of coins collected
      */
-    private void collectCoins(GoldArconiumTileEntity goldArconiumTE, BlockPos goldArconiumPos) {
+    private int collectCoins(GoldArconiumTileEntity goldArconiumTE, BlockPos goldArconiumPos) {
         // TODO interval for this should probably be independent of the item sending logic
         int coinCount = goldArconiumTE.collectCoins();
         if (coinCount > 0) {
@@ -113,6 +132,8 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
             world.setBlockState(goldArconiumPos, ModBlocks.getArconiumBlock(goldArconiumTE.getTier()).getDefaultState(), 3);
             world.playSound(null, pos, SoundEvents.BLOCK_METAL_BREAK, SoundCategory.BLOCKS, 1, 1);
         }
+
+        return coinCount;
     }
 
     /**
@@ -124,34 +145,49 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         Vector3d particleVec = new Vector3d(particlePos.getX(), particlePos.getY(), particlePos.getZ());
         particleVec.add(0.5, 1.5, 0.5);
 
-        if (world == null || hatPositions.size() == 0) {
+        if (world == null || hats.size() == 0) {
             world.addParticle(ParticleTypes.POOF, particleVec.x, particleVec.y, particleVec.z, 0, 0, 0);
             return;
         }
 
         int hatsSentTo = 0;
-        List<BlockPos> hatsToRemove = new ArrayList<>(hatPositions.size());
+        int hatsCollectedCoinsFrom = 0;
+        List<HatData> hatsToRemove = new ArrayList<>(hats.size());
 
-        Collections.shuffle(hatPositions);
+        Collections.shuffle(hats);
 
-        for (BlockPos hatPos : hatPositions) {
+        for (HatData hat : hats) {
+            BlockPos hatPos = hat.hatPos;
             // TODO consider chunk loading if the hat is in a chunk that is not loaded?
             HatTileEntity hatEntity = getHatEntity(hatPos);
             if (hatEntity == null) {
                 // Hat's gone. Don't try this hat again.
-                hatsToRemove.add(hatPos);
+                hatsToRemove.add(hat);
                 continue;
             }
 
-            if (hatEntity.hasResourceGenerator()) {
+            // TODO with increasing coin collection for higher tiers, it will very quickly hit a max number of coins spent generating resources because at
+            // most 1 coin per hat is expensed in this method. I guess resources should come with required coins per resource (which goes up per tier too).
+            // Or, it should attempt to spend more coins by diving available coins over the hats up to a per-tick limit?
+            if (!hatEntity.getResourceGenerated().isEmpty()) {
+                if (this.intervalsElapsed - hat.lastResourceGenInterval < hatEntity.getResourceGenInterval()) {
+                    continue;
+                }
                 if (coinCount > 0 && sendResourceToHat(hatEntity, hatPos)) {
                     hatsSentTo++;
+                    hat.lastResourceGenInterval = this.intervalsElapsed;
                 }
             } else {
+                // TODO I'm preventing sending more frequently than the dictated interval of the gold arconium block AND I limit to 1 coin collector, but..
+                // placing multiple of a lower tier can still speed it up because the limit is applied per pot tick, which is shorter than the coin collector's
+                // interval. I.e. one can always get coin collection down to 1 per pot tick by placing enough of them. Am I ok with that?
                 BlockPos goldArconiumPos = hatPos.down();
                 GoldArconiumTileEntity te = getGoldArconiumInWorld(goldArconiumPos);
-                if (te != null) {
-                    collectCoins(te, goldArconiumPos);
+                if (te != null && hatsCollectedCoinsFrom < MAX_COIN_SUPPLIERS && this.intervalsElapsed - hat.lastCoinCollectInterval >= te.getCoinGenerationInterval()) {
+                    if (collectCoins(te, goldArconiumPos) > 0) {
+                        hatsCollectedCoinsFrom++;
+                        hat.lastCoinCollectInterval = this.intervalsElapsed;
+                    }
                 }
             }
         }
@@ -161,8 +197,8 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
 
         }
 
-        for (BlockPos pos: hatsToRemove) {
-            hatPositions.remove(pos);
+        for (HatData hat: hatsToRemove) {
+            hats.remove(hat);
         }
 
         if (hatsToRemove.size() > 0) {
@@ -178,6 +214,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         ItemStack sent = hatEntity.generateResource(world);
         if (!sent.isEmpty()) {
             coinCount--;
+            // TODO maybe actually set world gametime? If someone links the hat to multiple pots, the tile entity will still not generate more resources than it should
             markDirty();
             PotItemTransferPacket packet = new PotItemTransferPacket(hatPos.add(0.5, 0.5, 0.5), pos.up(1).add(0.5, 0.5, 0.5), sent);
             ModPackets.sendToNearby(world, pos, packet);
@@ -196,17 +233,31 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
     }
 
     public void writePacketNBT(CompoundNBT tag) {
-        tag.putLongArray(TAG_HAT_POSITIONS, hatPositions.stream().map(pos -> pos.toLong()).collect(Collectors.toList()));
+        tag.putLongArray(TAG_HAT_POSITIONS, hats.stream().map(hat -> hat.hatPos.toLong()).collect(Collectors.toList()));
         tag.putInt(TAG_COIN_COUNT, coinCount);
     }
 
     public void readPacketNBT(CompoundNBT tag) {
         long[] longPositions = tag.getLongArray(TAG_HAT_POSITIONS);
-        hatPositions.clear();
+        hats.clear();
         for (long longPos: longPositions) {
-            hatPositions.add(BlockPos.fromLong(longPos));
+            hats.add(new HatData(BlockPos.fromLong(longPos)));
         }
         this.coinCount = tag.getInt(TAG_COIN_COUNT);
     }
+}
 
+/**
+ * Tracks resourcegen/coin collection data for hats. Tracked here rather than on the individual hats so multiple pots may potentially be linked against the
+ * same hat (is that smart though?)
+ */
+class HatData {
+    public HatData(BlockPos hatPos) {
+        this.hatPos = hatPos;
+        this.lastResourceGenInterval = 0; //not persisted
+        this.lastCoinCollectInterval = 0; //not persisted
+    }
+    public long lastResourceGenInterval;
+    public long lastCoinCollectInterval;
+    public BlockPos hatPos;
 }

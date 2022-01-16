@@ -37,6 +37,14 @@ public class GoldArconiumTileEntity extends TileEntity {
     }
 
     /**
+     * @return How frequently coins can be collected - interval length determined by collector (pot of gold)
+     */
+    public int getCoinGenerationInterval() {
+        int tierNum = tier.getTier();
+        return Math.max(1, 10 - tierNum);
+    }
+
+    /**
      * @return The number of coins collected. This depletes an internal 'gold store', and if the returned value is 0, it means either the store is exhausted,
      * or the minimum time interval allowed between coin collections has not been reached
      */

@@ -1,18 +1,15 @@
 package lonestarrr.arconia.common.block.tile;
 
 import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.GoldArconiumBlock;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.InventoryHelper;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
@@ -26,7 +23,6 @@ public class HatTileEntity extends TileEntity {
     private RainbowColor tier;
     private ItemStack itemStack; // item to generate (should this be an ItemStack?)
     private int resourceGenInterval;
-    private long lastGenTime;
     public long nextTickParticleRender = 0; // used by TE renderer to track particle rendering - not persisted
 
     public HatTileEntity() {
@@ -39,15 +35,16 @@ public class HatTileEntity extends TileEntity {
         this.tier = tier;
         this.itemStack = itemStack.copy();
         this.resourceGenInterval = interval;
-        this.lastGenTime = 0;
         markDirty();
     }
 
-    /**
-     * @return Whether a resource to be generated has been associated with the hat
-     */
-    public boolean hasResourceGenerator() {
-        return !this.itemStack.isEmpty();
+    @Nonnull
+    public ItemStack getResourceGenerated() {
+        return this.itemStack.copy(); //deals with isEmpty() smartly
+    }
+
+    public int getResourceGenInterval() {
+        return resourceGenInterval;
     }
 
     public final ItemStack getItemStack() {
