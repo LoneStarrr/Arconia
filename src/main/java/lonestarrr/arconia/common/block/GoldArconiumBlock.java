@@ -8,6 +8,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockDisplayReader;
@@ -44,5 +46,4 @@ public class GoldArconiumBlock extends Block implements IBlockColor {
         // Colors are not dependent on tint index, but on rainbow tier (though may use tintIndex later for less saturated versions)
         return tier.getColorValue();
     }
-
 }

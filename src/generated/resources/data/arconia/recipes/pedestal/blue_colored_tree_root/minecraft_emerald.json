@@ -6,24 +6,24 @@
         "id": "minecraft:emerald",
         "Count": 1
       },
-      "interval": 6,
-      "coin_cost": 16
+      "interval": 5,
+      "coin_cost": 32
     },
-    "item": "arconia:light_blue_colored_tree_root"
+    "item": "arconia:blue_colored_tree_root"
   },
   "durationTicks": 400,
   "ingredients": [
     {
-      "item": "arconia:light_blue_colored_tree_root"
+      "item": "arconia:blue_arconium_ingot"
     },
     {
       "item": "arconia:four_leaf_clover"
     },
     {
-      "item": "arconia:green_arconium_block"
+      "item": "minecraft:emerald"
     },
     {
-      "item": "minecraft:emerald_block"
+      "item": "arconia:blue_colored_tree_root"
     }
   ]
 }

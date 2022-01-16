@@ -4,10 +4,7 @@ import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.block.Block;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.RecipeProvider;
-import net.minecraft.data.ShapedRecipeBuilder;
+import net.minecraft.data.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.tags.ItemTags;
@@ -44,7 +41,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
     }
 
     private void registerTreeRootBlocks(Consumer<IFinishedRecipe> consumer) {
-        for (RainbowColor tier: RainbowColor.values()) {
+        for (RainbowColor tier : RainbowColor.values()) {
             Item treeRoot = ModItems.getColoredRoot(tier);
             Item treeRootBlock = ModBlocks.getResourceTreeRootBlock(tier).asItem();
             ShapedRecipeBuilder.shapedRecipe(treeRootBlock)
@@ -58,22 +55,19 @@ public class VanillaRecipeProvider extends RecipeProvider {
     }
 
     private void registerArconiumIngots(Consumer<IFinishedRecipe> consumer) {
-        for (RainbowColor tier: RainbowColor.values()) {
+        for (RainbowColor tier : RainbowColor.values()) {
             Item ingot = ModItems.getArconiumIngot(tier);
-            Item essence = ModItems.getArconiumEssence(tier);
+            Item arconiumBlock = ModBlocks.getArconiumBlock(tier).asItem();
 
-            ShapedRecipeBuilder.shapedRecipe(ingot)
-                    .key('E', essence)
-                    .patternLine("EEE")
-                    .patternLine("EEE")
-                    .patternLine("EEE")
-                    .addCriterion("has_item", hasItem(essence))
+            ShapelessRecipeBuilder.shapelessRecipe(ingot, 9)
+                    .addIngredient(arconiumBlock)
+                    .addCriterion("has_item", hasItem(arconiumBlock))
                     .build(consumer);
         }
     }
 
     private void registerArconiumBlocks(Consumer<IFinishedRecipe> consumer) {
-        for (RainbowColor tier: RainbowColor.values()) {
+        for (RainbowColor tier : RainbowColor.values()) {
             Block block = ModBlocks.getArconiumBlock(tier);
             Item ingot = ModItems.getArconiumIngot(tier);
             ShapedRecipeBuilder.shapedRecipe(block)
@@ -87,7 +81,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
     }
 
     private void registerCrates(Consumer<IFinishedRecipe> consumer) {
-        for (RainbowColor tier: RainbowColor.values()) {
+        for (RainbowColor tier : RainbowColor.values()) {
             Block block = ModBlocks.getRainbowCrateBlock(tier);
             ShapedRecipeBuilder.shapedRecipe(block)
                     .key('I', ModItems.getArconiumIngot(tier))

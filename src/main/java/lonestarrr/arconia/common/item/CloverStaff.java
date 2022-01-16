@@ -6,6 +6,7 @@ import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.PotMultiBlockPrimary;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryTileEntity;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryTileEntity;
+import lonestarrr.arconia.common.core.helper.LanguageHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,7 +19,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -29,7 +29,7 @@ import net.minecraft.world.server.ServerWorld;
  */
 public class CloverStaff extends Item {
     private static final String TAG_POT_POS = "pot_pos";
-    private static final String LANG_PREFIX = Arconia.MOD_ID + ".item.cloverstaff";
+    private static final String LANG_PREFIX = LanguageHelper.item("cloverstaff");
 
 
     public CloverStaff(Item.Properties builder) {
@@ -49,14 +49,13 @@ public class CloverStaff extends Item {
         } else if (bs.getBlock() == ModBlocks.potMultiBlockSecondary) {
             BlockPos potPos = storePotCoordinate(world, pos, staff);
             if (potPos != null) {
-                // TODO do nicer.. sound effect? Or at least use the language feature
                 if (!world.isRemote) {
-                    context.getPlayer().sendMessage(new StringTextComponent("Stored coordinate of the pot of gold at " + potPos), Util.DUMMY_UUID);
+                    context.getPlayer().sendMessage(new TranslationTextComponent(LANG_PREFIX + ".selectpot.success", potPos.getCoordinatesAsString()), Util.DUMMY_UUID);
                 }
                 return ActionResultType.SUCCESS;
             } else {
                 if (!world.isRemote) {
-                    context.getPlayer().sendMessage(new StringTextComponent("Invalid pot of gold multiblock structure?"), Util.DUMMY_UUID);
+                    context.getPlayer().sendMessage(new TranslationTextComponent(LANG_PREFIX + ".selectpot.failed"), Util.DUMMY_UUID);
                 }
             }
             return ActionResultType.PASS;

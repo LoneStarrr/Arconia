@@ -6,32 +6,24 @@
         "id": "minecraft:zombified_piglin_spawn_egg",
         "Count": 1
       },
-      "interval": 2,
-      "coin_cost": 256
+      "interval": 3,
+      "coin_cost": 128
     },
-    "item": "arconia:pink_colored_tree_root"
+    "item": "arconia:magenta_colored_tree_root"
   },
   "durationTicks": 800,
   "ingredients": [
     {
-      "item": "arconia:pink_colored_tree_root"
+      "item": "arconia:magenta_arconium_ingot"
     },
     {
       "item": "arconia:four_leaf_clover"
     },
-    [
-      {
-        "item": "arconia:pink_arconium_block"
-      },
-      {
-        "item": "arconia:pink_arconium_block"
-      },
-      {
-        "item": "arconia:pink_arconium_block"
-      }
-    ],
     {
       "item": "minecraft:music_disc_pigstep"
+    },
+    {
+      "item": "arconia:magenta_colored_tree_root"
     }
   ]
 }

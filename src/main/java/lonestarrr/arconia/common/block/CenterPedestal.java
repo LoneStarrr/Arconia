@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common.block;
 
+import lonestarrr.arconia.common.core.helper.LanguageHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -8,16 +9,14 @@ import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import lonestarrr.arconia.common.block.tile.CenterPedestalTileEntity;
@@ -32,6 +31,7 @@ import javax.annotation.Nullable;
  */
 public class CenterPedestal extends Block {
     public static final VoxelShape SHAPE;
+    private static final String LANG_PREFIX = LanguageHelper.block("center_pedestal");
 
     static {
         VoxelShape base0 = makeCuboidShape(2, 0, 2, 14, 1, 14);
@@ -92,7 +92,7 @@ public class CenterPedestal extends Block {
                 if (cte.startRitual()) {
                     world.playSound(null, pos, SoundEvents.BLOCK_NOTE_BLOCK_HARP, SoundCategory.AMBIENT, 1, 10);
                 } else {
-                    player.sendStatusMessage(new StringTextComponent("Nothing happened. Must be missing some items."), false);
+                    player.sendMessage(new TranslationTextComponent(LANG_PREFIX + ".ritual_start_failed"), Util.DUMMY_UUID);
                 }
             }
         }

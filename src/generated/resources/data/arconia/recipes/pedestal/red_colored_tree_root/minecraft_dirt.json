@@ -14,13 +14,16 @@
   "durationTicks": 200,
   "ingredients": [
     {
-      "item": "arconia:red_colored_tree_root"
+      "item": "arconia:red_arconium_ingot"
     },
     {
       "item": "arconia:four_leaf_clover"
     },
     {
       "item": "minecraft:dirt"
+    },
+    {
+      "item": "arconia:red_colored_tree_root"
     }
   ]
 }

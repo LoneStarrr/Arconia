@@ -1,16 +1,12 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "EEE",
-    "EEE",
-    "EEE"
-  ],
-  "key": {
-    "E": {
-      "item": "arconia:red_arconium_essence"
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "arconia:red_arconium_block"
     }
-  },
+  ],
   "result": {
-    "item": "arconia:red_arconium_ingot"
+    "item": "arconia:red_arconium_ingot",
+    "count": 9
   }
 }

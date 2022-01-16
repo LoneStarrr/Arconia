@@ -3,6 +3,7 @@ package lonestarrr.arconia.common.block.tile;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.InventoryHelper;
+import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -20,7 +21,7 @@ import javax.annotation.Nullable;
 /**
  * Hats linked to a pot of gold can produce a specific resource, and are tiered using RainbowColor. The tile entity stores the resource to be generated.
  */
-public class HatTileEntity extends TileEntity {
+public class HatTileEntity extends BaseTileEntity {
     private RainbowColor tier;
     private BlockPos linkedPotPos;
     private ItemStack itemStack; // item to generate (should this be an ItemStack?)
@@ -110,41 +111,40 @@ public class HatTileEntity extends TileEntity {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public void writePacketNBT(CompoundNBT tag) {
         if (!world.isRemote()) {
-            compound.putInt("tier", tier.getTier());
-            compound.put("item", this.itemStack.serializeNBT());
-            compound.putInt("interval", resourceGenInterval);
-            compound.putInt("coin_cost", resourceCoinCost);
+            tag.putInt("tier", tier.getTier());
+            tag.put("item", this.itemStack.serializeNBT());
+            tag.putInt("interval", resourceGenInterval);
+            tag.putInt("coin_cost", resourceCoinCost);
             if (this.linkedPotPos != null) {
-                compound.putLong("pot_pos", this.linkedPotPos.toLong());
+                tag.putLong("pot_pos", this.linkedPotPos.toLong());
             }
         }
-        return super.write(compound);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
+    public void readPacketNBT(CompoundNBT tag) {
         ItemStack stack = ItemStack.EMPTY;
         RainbowColor tier = RainbowColor.RED;
         int interval = 1;
         int coinCost = 1;
 
         try {
-            int tierNum = nbt.getInt("tier");
+            int tierNum = tag.getInt("tier");
             for (RainbowColor clr: RainbowColor.values()) {
                 if (clr.getTier() == tierNum) {
                     tier = clr;
                 }
             }
-            stack = ItemStack.read(nbt.getCompound("item"));
+            stack = ItemStack.read(tag.getCompound("item"));
             if (!stack.isEmpty()) {
-                interval = nbt.getInt("interval");
-                coinCost = nbt.getInt("coin_cost");
+                interval = tag.getInt("interval");
+                coinCost = tag.getInt("coin_cost");
             }
 
-            if (nbt.contains("pot_pos")) {
-                this.linkedPotPos = BlockPos.fromLong(nbt.getLong("pot_pos"));
+            if (tag.contains("pot_pos")) {
+                this.linkedPotPos = BlockPos.fromLong(tag.getLong("pot_pos"));
             } else {
                 this.linkedPotPos = null;
             }
@@ -153,33 +153,5 @@ public class HatTileEntity extends TileEntity {
             Arconia.logger.error("Failed to read tile entity data: " + e.getMessage(), e);
         }
         setResourceGenerated(tier, stack, interval, coinCost <= 0 ? 1: coinCost);
-        super.read(state, nbt);
     }
-
-    @Override
-    public CompoundNBT getUpdateTag() {
-        // sync server -> client, which needs the item to know how to render it in its tile entity renderer
-        return this.write(new CompoundNBT());
-    }
-
-    @Override
-    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
-        // Called on client to read server data
-        read(state, tag);
-    }
-
-    @Override
-    @Nullable
-    public SUpdateTileEntityPacket getUpdatePacket()
-    {
-        CompoundNBT nbtTagCompound = getUpdateTag();
-        int tileEntityType = -1;  // arbitrary number; only used for vanilla TileEntities.  You can use it, or not, as you want.
-        return new SUpdateTileEntityPacket(this.pos, tileEntityType, nbtTagCompound);
-    }
-
-    @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        read(this.getBlockState(), pkt.getNbtCompound());
-    }
-
 }

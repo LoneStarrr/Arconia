@@ -14,24 +14,16 @@
   "durationTicks": 800,
   "ingredients": [
     {
-      "item": "arconia:purple_colored_tree_root"
+      "item": "arconia:purple_arconium_ingot"
     },
     {
       "item": "arconia:four_leaf_clover"
     },
-    [
-      {
-        "item": "arconia:blue_arconium_block"
-      },
-      {
-        "item": "arconia:blue_arconium_block"
-      },
-      {
-        "item": "arconia:blue_arconium_block"
-      }
-    ],
     {
-      "item": "minecraft:chorus_flower"
+      "item": "minecraft:chorus_fruit"
+    },
+    {
+      "item": "arconia:purple_colored_tree_root"
     }
   ]
 }

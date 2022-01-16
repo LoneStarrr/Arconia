@@ -14,16 +14,16 @@
   "durationTicks": 400,
   "ingredients": [
     {
-      "item": "arconia:green_colored_tree_root"
+      "item": "arconia:yellow_arconium_ingot"
     },
     {
       "item": "arconia:four_leaf_clover"
     },
     {
-      "item": "arconia:yellow_arconium_block"
+      "item": "minecraft:green_wool"
     },
     {
-      "item": "minecraft:green_wool"
+      "item": "arconia:green_colored_tree_root"
     }
   ]
 }
