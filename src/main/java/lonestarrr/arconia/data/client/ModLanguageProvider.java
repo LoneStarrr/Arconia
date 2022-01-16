@@ -97,5 +97,14 @@ public class ModLanguageProvider extends LanguageProvider {
         add("jei.arconia.recipe_category.altar", "Altar");
         // label in crate GUI
         add("container.arconia.rainbow_crate", "Rainbow Crate");
+        // clover staff messages
+        add("arconia.item.cloverstaff.linkhat.invalidpot", "The selected pot of gold appears to be invalid or missing");
+        add("arconia.item.cloverstaff.linkhat.linked", "Linked hat");
+        add("arconia.item.cloverstaff.linkhat.toofar", "The hat is too far away to link");
+        add("arconia.item.cloverstaff.linkhat.notfound", "Invalid hat");
+        add("arconia.item.cloverstaff.linkhat.toomanyhats", "Too many hats have been linked already");
+        add("arconia.item.cloverstaff.linkhat.alreadylinked", "The hat's already linked");
+        add("arconia.item.cloverstaff.linkhat.unlinked", "Unlinked hat");
+        add("arconia.item.cloverstaff.linkhat.unlink_failed", "Hat was not linked");
     }
 }

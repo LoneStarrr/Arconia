@@ -15,11 +15,13 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements ITickableTileEntity {
-    private static final int MAX_HATS = 50;
+    private static final int MAX_HATS = 32;
     private static final int MAX_COIN_SUPPLIERS = 1; // How many hats may supply coins per coin collection tick?
     private static final float MAX_HAT_DISTANCE = 16; // Max straight-line distance
     private static final String TAG_HAT_POSITIONS = "hat_positions";
@@ -44,35 +46,50 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         return count;
     }
 
-    public boolean linkHat(BlockPos hatPos) {
+    public void linkHat(BlockPos hatPos) throws LinkHatException {
         if (hats.size() >= MAX_HATS) {
-            return false;
+            throw new LinkHatException(LinkErrorCode.TOO_MANY_HATS);
         }
 
-        if (isHatPositionLinked(hatPos)) {
-            return false;
+        if (isHatLinked(hatPos)) {
+            throw new LinkHatException(LinkErrorCode.ALREADY_LINKED);
         }
 
         TileEntity te = world.getTileEntity(hatPos);
         if (te == null || !(te instanceof HatTileEntity)) {
-            return false;
+            throw new LinkHatException(LinkErrorCode.HAT_NOT_FOUND);
         }
 
         if (!pos.withinDistance(hatPos, MAX_HAT_DISTANCE)) {
-            return false;
+            throw new LinkHatException(LinkErrorCode.HAT_TOO_FAR);
         }
 
         hats.add(new HatData(hatPos));
         markDirty();
-        return true;
     }
 
-    private boolean isHatPositionLinked(BlockPos pos) {
-        for (HatData hd: this.hats) {
-            if (hd.hatPos.equals(pos))
-                return true;
+    public boolean unlinkHat(BlockPos hatPos) {
+        HatData hat = getHatByPos(hatPos);
+
+        if (hat != null) {
+            hats.remove(hat);
+            return true;
         }
         return false;
+    }
+
+    public boolean isHatLinked(BlockPos pos) {
+        HatData hat = getHatByPos(pos);
+        return hat != null;
+    }
+
+    private HatData getHatByPos(BlockPos pos) {
+        for (HatData hd: this.hats) {
+            if (hd.hatPos.equals(pos)) {
+                return hd;
+            }
+        }
+        return null;
     }
 
     /**
@@ -246,6 +263,16 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
             hats.add(new HatData(BlockPos.fromLong(longPos)));
         }
         this.coinCount = tag.getInt(TAG_COIN_COUNT);
+    }
+
+    public enum LinkErrorCode { ALREADY_LINKED, TOO_MANY_HATS, HAT_NOT_FOUND, HAT_TOO_FAR }
+
+    public class LinkHatException extends Exception {
+        public LinkErrorCode code;
+
+        public LinkHatException(LinkErrorCode code) {
+            this.code = code;
+        }
     }
 }
 

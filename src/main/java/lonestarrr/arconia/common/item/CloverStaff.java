@@ -1,10 +1,9 @@
 package lonestarrr.arconia.common.item;
 
+import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.advancements.PotOfGoldTrigger;
-import lonestarrr.arconia.common.block.GoldArconiumBlock;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.PotMultiBlockPrimary;
-import lonestarrr.arconia.common.block.PotMultiBlockSecondary;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryTileEntity;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryTileEntity;
 import net.minecraft.block.BlockState;
@@ -20,6 +19,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
@@ -29,6 +29,8 @@ import net.minecraft.world.server.ServerWorld;
  */
 public class CloverStaff extends Item {
     private static final String TAG_POT_POS = "pot_pos";
+    private static final String LANG_PREFIX = Arconia.MOD_ID + ".item.cloverstaff";
+
 
     public CloverStaff(Item.Properties builder) {
         super(builder);
@@ -60,13 +62,12 @@ public class CloverStaff extends Item {
             return ActionResultType.PASS;
         } else if (bs.getBlock() == ModBlocks.hat) {
             if (!world.isRemote) {
-                boolean linkedHat = linkHatToPot(world, pos, staff);
-                if (linkedHat) {
-                    // TODO Use language keys
-                    context.getPlayer().sendMessage(new StringTextComponent("Linked hat to pot of gold"), Util.DUMMY_UUID);
-                } else {
-                    context.getPlayer().sendMessage(new StringTextComponent("Linking hat failed (did you select a pot of gold first?)"), Util.DUMMY_UUID);
+                BlockPos potPos = getPotPosition(staff);
+                if (potPos == null) {
+
+                    return ActionResultType.CONSUME;
                 }
+                linkOrUnlinkHat(world, pos, potPos, context);
             }
             return ActionResultType.CONSUME;
         }
@@ -74,19 +75,43 @@ public class CloverStaff extends Item {
         return ActionResultType.PASS;
     }
 
-    private static boolean linkHatToPot(World world, BlockPos hatPos, ItemStack staff) {
-        BlockPos potPos = getPotPosition(staff);
-        if (potPos == null) {
-            return false;
-        }
+    private static void linkOrUnlinkHat(World world, BlockPos hatPos, BlockPos potPos, ItemUseContext context) {
+        String lang = LANG_PREFIX + ".linkhat";
 
         TileEntity te = world.getTileEntity(potPos);
         if (te == null || !(te instanceof PotMultiBlockPrimaryTileEntity)) {
-            return  false;
+            lang += ".invalidpot";
+        } else {
+            // TODO the hat must track which pot it is linked to as well - to prevent double linking/unlinkin the wrong one
+            PotMultiBlockPrimaryTileEntity potTE = (PotMultiBlockPrimaryTileEntity) te;
+            if (potTE.isHatLinked(hatPos)) {
+                if (potTE.unlinkHat(hatPos)) {
+                    lang += ".unlinked";
+                } else {
+                    lang += ".unlink_failed";
+                }
+            } else {
+                try {
+                    potTE.linkHat(hatPos);
+                    lang += ".linked";
+                } catch (PotMultiBlockPrimaryTileEntity.LinkHatException exc) {
+                    switch (exc.code) {
+                        case HAT_TOO_FAR:
+                            lang += ".toofar";
+                            break;
+                        case HAT_NOT_FOUND:
+                            lang += ".notfound";
+                            break;
+                        case TOO_MANY_HATS:
+                            lang += ".toomanyhats";
+                            break;
+                        case ALREADY_LINKED:
+                            lang += ".alreadylinked";
+                    }
+                }
+            }
         }
-
-        PotMultiBlockPrimaryTileEntity potTE = (PotMultiBlockPrimaryTileEntity) te;
-        return potTE.linkHat(hatPos);
+        context.getPlayer().sendMessage(new TranslationTextComponent(lang), Util.DUMMY_UUID);
     }
 
     private static BlockPos getPotPosition(ItemStack staff) {
