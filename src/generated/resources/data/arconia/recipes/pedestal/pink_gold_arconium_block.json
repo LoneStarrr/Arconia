@@ -1,0 +1,30 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "item": "arconia:pink_gold_arconium_block"
+  },
+  "durationTicks": 1000,
+  "ingredients": [
+    {
+      "item": "minecraft:gold_block"
+    },
+    {
+      "item": "arconia:pink_arconium_essence"
+    },
+    {
+      "item": "arconia:pink_arconium_essence"
+    },
+    {
+      "item": "arconia:pink_arconium_essence"
+    },
+    {
+      "item": "arconia:pink_arconium_essence"
+    },
+    {
+      "item": "arconia:pink_arconium_essence"
+    },
+    {
+      "item": "arconia:pink_arconium_essence"
+    }
+  ]
+}

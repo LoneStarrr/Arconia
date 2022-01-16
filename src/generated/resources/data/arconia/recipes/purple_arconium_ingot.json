@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "EEE",
+    "EEE",
+    "EEE"
+  ],
+  "key": {
+    "E": {
+      "item": "arconia:purple_arconium_essence"
+    }
+  },
+  "result": {
+    "item": "arconia:purple_arconium_ingot"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "nbt": {
+      "item": {
+        "id": "minecraft:blaze_rod",
+        "Count": 1
+      },
+      "interval": 5,
+      "coin_cost": 32
+    },
+    "item": "arconia:blue_colored_tree_root"
+  },
+  "durationTicks": 400,
+  "ingredients": [
+    {
+      "item": "arconia:blue_colored_tree_root"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "arconia:light_blue_arconium_block"
+    },
+    {
+      "item": "minecraft:blaze_rod"
+    }
+  ]
+}

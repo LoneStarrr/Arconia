@@ -1,0 +1,30 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "item": "arconia:orange_gold_arconium_block"
+  },
+  "durationTicks": 300,
+  "ingredients": [
+    {
+      "item": "minecraft:gold_block"
+    },
+    {
+      "item": "arconia:orange_arconium_essence"
+    },
+    {
+      "item": "arconia:orange_arconium_essence"
+    },
+    {
+      "item": "arconia:orange_arconium_essence"
+    },
+    {
+      "item": "arconia:orange_arconium_essence"
+    },
+    {
+      "item": "arconia:orange_arconium_essence"
+    },
+    {
+      "item": "arconia:orange_arconium_essence"
+    }
+  ]
+}

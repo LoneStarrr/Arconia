@@ -51,14 +51,14 @@ public class Hat extends Block {
      * @param resource
      * @param interval Frequency with which resource is generated. An interval of 1 is fastest. Interval length is determined by the pot of gold and is typically
      *                 no less than 5 ticks.
-     * @param count Number of items generated per event.
+     * @param coinCost Number of coins it takes to generate the resource
      * @return True if a hat was placed in the world at the given location
      */
-    public static boolean setResourceGenerated(World world, BlockPos pos, RainbowColor tier, ItemStack resource, int interval, int count) {
+    public static boolean setResourceGenerated(World world, BlockPos pos, RainbowColor tier, ItemStack resource, int interval, int coinCost) {
         TileEntity te = world.getTileEntity(pos);
         if (te != null && te instanceof HatTileEntity) {
             HatTileEntity rte = (HatTileEntity) te;
-            rte.setResourceGenerated(tier, resource, interval);
+            rte.setResourceGenerated(tier, resource, interval, coinCost);
             return true;
         }
         return false;

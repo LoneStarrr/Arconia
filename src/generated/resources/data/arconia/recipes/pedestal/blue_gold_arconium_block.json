@@ -1,0 +1,30 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "item": "arconia:blue_gold_arconium_block"
+  },
+  "durationTicks": 700,
+  "ingredients": [
+    {
+      "item": "minecraft:gold_block"
+    },
+    {
+      "item": "arconia:blue_arconium_essence"
+    },
+    {
+      "item": "arconia:blue_arconium_essence"
+    },
+    {
+      "item": "arconia:blue_arconium_essence"
+    },
+    {
+      "item": "arconia:blue_arconium_essence"
+    },
+    {
+      "item": "arconia:blue_arconium_essence"
+    },
+    {
+      "item": "arconia:blue_arconium_essence"
+    }
+  ]
+}

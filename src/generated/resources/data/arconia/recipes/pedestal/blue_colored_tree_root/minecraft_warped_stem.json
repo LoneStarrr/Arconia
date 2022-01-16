@@ -1,0 +1,34 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "nbt": {
+      "item": {
+        "id": "minecraft:warped_stem",
+        "Count": 1
+      },
+      "interval": 5,
+      "coin_cost": 32
+    },
+    "item": "arconia:blue_colored_tree_root"
+  },
+  "durationTicks": 400,
+  "ingredients": [
+    {
+      "item": "arconia:blue_colored_tree_root"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "arconia:light_blue_arconium_block"
+    },
+    [
+      {
+        "item": "minecraft:warped_stem"
+      },
+      {
+        "item": "minecraft:warped_nylium"
+      }
+    ]
+  ]
+}

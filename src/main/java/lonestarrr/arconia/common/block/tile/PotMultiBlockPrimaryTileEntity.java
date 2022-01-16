@@ -211,10 +211,12 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
      * @return Whether resources were sent to the specified hat
      */
     private boolean sendResourceToHat(HatTileEntity hatEntity, BlockPos hatPos) {
+        if (coinCount < hatEntity.getResourceCoinCost()) {
+            return false;
+        }
         ItemStack sent = hatEntity.generateResource(world);
         if (!sent.isEmpty()) {
-            coinCount--;
-            // TODO maybe actually set world gametime? If someone links the hat to multiple pots, the tile entity will still not generate more resources than it should
+            coinCount -= hatEntity.getResourceCoinCost();
             markDirty();
             PotItemTransferPacket packet = new PotItemTransferPacket(hatPos.add(0.5, 0.5, 0.5), pos.up(1).add(0.5, 0.5, 0.5), sent);
             ModPackets.sendToNearby(world, pos, packet);

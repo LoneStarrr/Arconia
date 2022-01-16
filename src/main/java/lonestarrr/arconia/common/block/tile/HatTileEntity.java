@@ -23,6 +23,7 @@ public class HatTileEntity extends TileEntity {
     private RainbowColor tier;
     private ItemStack itemStack; // item to generate (should this be an ItemStack?)
     private int resourceGenInterval;
+    private int resourceCoinCost;
     public long nextTickParticleRender = 0; // used by TE renderer to track particle rendering - not persisted
 
     public HatTileEntity() {
@@ -31,10 +32,11 @@ public class HatTileEntity extends TileEntity {
         this.itemStack = ItemStack.EMPTY;
     }
 
-    public void setResourceGenerated(RainbowColor tier, ItemStack itemStack, int interval) {
+    public void setResourceGenerated(RainbowColor tier, ItemStack itemStack, int interval, int coinCost) {
         this.tier = tier;
         this.itemStack = itemStack.copy();
         this.resourceGenInterval = interval;
+        this.resourceCoinCost = coinCost <= 0 ? 1: coinCost;
         markDirty();
     }
 
@@ -46,6 +48,8 @@ public class HatTileEntity extends TileEntity {
     public int getResourceGenInterval() {
         return resourceGenInterval;
     }
+
+    public int getResourceCoinCost() { return resourceCoinCost; }
 
     public final ItemStack getItemStack() {
         return this.itemStack.copy();
@@ -85,6 +89,7 @@ public class HatTileEntity extends TileEntity {
             compound.putInt("tier", tier.getTier());
             compound.put("item", this.itemStack.serializeNBT());
             compound.putInt("interval", resourceGenInterval);
+            compound.putInt("coin_cost", resourceCoinCost);
         }
         return super.write(compound);
     }
@@ -94,6 +99,7 @@ public class HatTileEntity extends TileEntity {
         ItemStack stack = ItemStack.EMPTY;
         RainbowColor tier = RainbowColor.RED;
         int interval = 1;
+        int coinCost = 1;
 
         try {
             int tierNum = nbt.getInt("tier");
@@ -105,12 +111,13 @@ public class HatTileEntity extends TileEntity {
             stack = ItemStack.read(nbt.getCompound("item"));
             if (!stack.isEmpty()) {
                 interval = nbt.getInt("interval");
+                coinCost = nbt.getInt("coin_cost");
             }
             Arconia.logger.debug("***** World remote = " + (world != null ? world.isRemote() : "null") + ", itemStack = " + stack);
         } catch(Exception e) {
             Arconia.logger.error("Failed to read tile entity data: " + e.getMessage(), e);
         }
-        setResourceGenerated(tier, stack, interval);
+        setResourceGenerated(tier, stack, interval, coinCost <= 0 ? 1: coinCost);
         super.read(state, nbt);
     }
 

@@ -41,13 +41,16 @@ public class ArconiaCommand {
                         Commands.literal("enchant_root").then(
                                 Commands.argument("item_id", ItemArgument.item()).then(
                                         Commands.argument("item_count", IntegerArgumentType.integer(1, 8)).then(
-                                                Commands.argument("generation_interval", IntegerArgumentType.integer(1, 100))
-                                                        .executes(ctx -> enchantRoot(
-                                                                ctx,
-                                                                ItemArgument.getItem(ctx, "item_id"),
-                                                                IntegerArgumentType.getInteger(ctx, "item_count"),
-                                                                IntegerArgumentType.getInteger(ctx, "generation_interval")
-                                                        ))
+                                                Commands.argument("generation_interval", IntegerArgumentType.integer(1, 100)).then(
+                                                        Commands.argument("coin_cost", IntegerArgumentType.integer(1, 512))
+                                                            .executes(ctx -> enchantRoot(
+                                                                    ctx,
+                                                                    ItemArgument.getItem(ctx, "item_id"),
+                                                                    IntegerArgumentType.getInteger(ctx, "item_count"),
+                                                                    IntegerArgumentType.getInteger(ctx, "generation_interval"),
+                                                                    IntegerArgumentType.getInteger(ctx, "coin_cost")
+                                                            ))
+                                                )
                                         )
                                 )
                         )
@@ -56,7 +59,7 @@ public class ArconiaCommand {
     }
 
     private static int enchantRoot(
-            CommandContext<CommandSource> ctx, ItemInput itemInput, int itemCount, int generationInterval) throws CommandSyntaxException {
+            CommandContext<CommandSource> ctx, ItemInput itemInput, int itemCount, int generationInterval, int coinCost) throws CommandSyntaxException {
         PlayerEntity player = ctx.getSource().asPlayer();
         Item resourceItem = itemInput.getItem();
 
@@ -67,7 +70,7 @@ public class ArconiaCommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        ColoredRoot.setResourceItem(rootItem, resourceItem, generationInterval, itemCount);
+        ColoredRoot.setResourceItem(rootItem, resourceItem, generationInterval, itemCount, coinCost);
         player.sendMessage(new StringTextComponent("Enchanted the colored root with resourceItem " + resourceItem.getRegistryName()), Util.DUMMY_UUID);
         return Command.SINGLE_SUCCESS;
     }

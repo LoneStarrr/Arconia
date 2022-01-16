@@ -1,2 +1,0 @@
-# Don't store generated resources - generate them by running the runData gradle task instead
-generated/*

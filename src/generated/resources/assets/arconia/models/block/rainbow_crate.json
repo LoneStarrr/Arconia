@@ -1,0 +1,111 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "outline": "arconia:block/rainbow_crate_woodgrain_outline",
+    "rainbow": "arconia:block/rainbow_crate_rainbow_overlay",
+    "woodgrain": "arconia:block/rainbow_crate_woodgrain",
+    "particle": "#woodgrain"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#woodgrain",
+          "cullface": "down",
+          "tintindex": 0
+        },
+        "up": {
+          "texture": "#woodgrain",
+          "cullface": "up",
+          "tintindex": 0
+        },
+        "north": {
+          "texture": "#woodgrain",
+          "cullface": "north",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#woodgrain",
+          "cullface": "south",
+          "tintindex": 0
+        },
+        "west": {
+          "texture": "#woodgrain",
+          "cullface": "west",
+          "tintindex": 0
+        },
+        "east": {
+          "texture": "#woodgrain",
+          "cullface": "east",
+          "tintindex": 0
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#outline",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#outline",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#outline",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#outline",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#outline",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#outline",
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "#rainbow",
+          "cullface": "up"
+        }
+      }
+    }
+  ]
+}

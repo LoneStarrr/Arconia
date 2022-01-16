@@ -146,12 +146,13 @@ public class PedestalProvider extends RecipeProvider {
      * @param durationTicks time the crafting recipe will take to make the root
      * @param resourceGenCount Number of items to generate per resource generation event
      * @param resourceGenInterval Frequency with which resource is generated. An interval of 1 is fastest. Interval length is determined by the pot of gold and is typically no less than 5 ticks.
+     * @param resourceCoinCost How many coins it costs to generate this resource
      * @param ingredients
      * @return
      */
-    private static FinishedRecipe makeEnchantedColoredRoot(ColoredRoot item, IItemProvider resourceItem, int durationTicks, int resourceGenInterval, int resourceGenCount, Ingredient... ingredients) {
+    private static FinishedRecipe makeEnchantedColoredRoot(ColoredRoot item, IItemProvider resourceItem, int durationTicks, int resourceGenInterval, int resourceGenCount, int resourceCoinCost, Ingredient... ingredients) {
         ItemStack coloredRoot = new ItemStack(item);
-        ColoredRoot.setResourceItem(coloredRoot, resourceItem, resourceGenInterval, resourceGenCount);
+        ColoredRoot.setResourceItem(coloredRoot, resourceItem, resourceGenInterval, resourceGenCount, resourceCoinCost);
         ResourceLocation rootId = Registry.ITEM.getKey(item);
         ResourceLocation itemId = Registry.ITEM.getKey(resourceItem.asItem());
         ResourceLocation recipeId = id(rootId.getPath() + "/" + itemId.getNamespace() + "_" + itemId.getPath());
@@ -170,8 +171,9 @@ public class PedestalProvider extends RecipeProvider {
         final Ingredient clover = Ingredient.fromItems(ModItems.fourLeafClover);
         final int resourceGenInterval = 10;
         final int resourceGenCount = 1;
+        final int resourceCoinCost = 1;
 
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.RED), resourceItem, 200, resourceGenInterval, resourceGenCount, root, clover,
+        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.RED), resourceItem, 200, resourceGenInterval, resourceGenCount, resourceCoinCost, root, clover,
                 Ingredient.fromItems(ingredient));
     }
 
@@ -181,8 +183,9 @@ public class PedestalProvider extends RecipeProvider {
         final Ingredient arconium = Ingredient.fromItems(ModItems.getArconiumIngot(RainbowColor.RED));
         final int resourceGenInterval = 9;
         final int resourceGenCount = 1;
+        final int resourceCoinCost = 2;
 
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.ORANGE), resourceItem, 200, resourceGenInterval, resourceGenCount, root, clover, arconium,
+        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.ORANGE), resourceItem, 200, resourceGenInterval, resourceGenCount, resourceCoinCost, root, clover, arconium,
                 Ingredient.fromItems(ingredient));
     }
 
@@ -192,8 +195,9 @@ public class PedestalProvider extends RecipeProvider {
         final Ingredient arconium = Ingredient.fromItems(ModItems.getArconiumIngot(RainbowColor.ORANGE));
         final int resourceGenInterval = 8;
         final int resourceGenCount = 1;
+        final int resourceCoinCost = 4;
 
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.YELLOW), resourceItem, 200, resourceGenInterval, resourceGenCount, root, clover, arconium,
+        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.YELLOW), resourceItem, 200, resourceGenInterval, resourceGenCount, resourceCoinCost, root, clover, arconium,
                 Ingredient.fromItems(ingredient));
     }
 
@@ -203,8 +207,9 @@ public class PedestalProvider extends RecipeProvider {
         final Ingredient arconium = Ingredient.fromItems(ModBlocks.getArconiumBlock(RainbowColor.YELLOW).asItem());
         final int resourceGenInterval = 7;
         final int resourceGenCount = 1;
+        final int resourceCoinCost = 8;
 
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.GREEN), resourceItem, 400, resourceGenInterval, resourceGenCount, root, clover, arconium,
+        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.GREEN), resourceItem, 400, resourceGenInterval, resourceGenCount, resourceCoinCost, root, clover, arconium,
                 Ingredient.fromItems(ingredient));
     }
 
@@ -214,8 +219,9 @@ public class PedestalProvider extends RecipeProvider {
         final Ingredient arconium = Ingredient.fromItems(ModBlocks.getArconiumBlock(RainbowColor.GREEN).asItem());
         final int resourceGenInterval = 6;
         final int resourceGenCount = 1;
+        final int resourceCoinCost = 16;
 
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.LIGHT_BLUE), resourceItem, 400, resourceGenInterval, resourceGenCount, root, clover, arconium,
+        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.LIGHT_BLUE), resourceItem, 400, resourceGenInterval, resourceGenCount, resourceCoinCost, root, clover, arconium,
                 Ingredient.fromItems(ingredient));
     }
 
@@ -225,8 +231,9 @@ public class PedestalProvider extends RecipeProvider {
         final Ingredient arconium = Ingredient.fromItems(ModBlocks.getArconiumBlock(RainbowColor.LIGHT_BLUE).asItem());
         final int resourceGenInterval = 5;
         final int resourceGenCount = 1;
+        final int resourceCoinCost = 32;
 
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.BLUE), resourceItem, 400, resourceGenInterval, resourceGenCount, root, clover, arconium,
+        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.BLUE), resourceItem, 400, resourceGenInterval, resourceGenCount, resourceCoinCost, root, clover, arconium,
                 Ingredient.fromItems(ingredient));
     }
 
@@ -237,8 +244,9 @@ public class PedestalProvider extends RecipeProvider {
         final Ingredient arconium = Ingredient.fromItems(arconiumItem, arconiumItem, arconiumItem);
         final int resourceGenInterval = 4;
         final int resourceGenCount = 1;
+        final int resourceCoinCost = 64;
 
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.PURPLE), resourceItem, 800, resourceGenInterval, resourceGenCount, root, clover, arconium,
+        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.PURPLE), resourceItem, 800, resourceGenInterval, resourceGenCount, resourceCoinCost, root, clover, arconium,
                 Ingredient.fromItems(ingredient));
     }
 
@@ -249,8 +257,9 @@ public class PedestalProvider extends RecipeProvider {
         final Ingredient arconium = Ingredient.fromItems(arconiumItem, arconiumItem, arconiumItem);
         final int resourceGenInterval = 3;
         final int resourceGenCount = 1;
+        final int resourceCoinCost = 128;
 
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.MAGENTA), resourceItem, 800, resourceGenInterval, resourceGenCount, root, clover, arconium,
+        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.MAGENTA), resourceItem, 800, resourceGenInterval, resourceGenCount, resourceCoinCost, root, clover, arconium,
                 Ingredient.fromItems(ingredient));
     }
 
@@ -261,8 +270,9 @@ public class PedestalProvider extends RecipeProvider {
         final Ingredient arconium = Ingredient.fromItems(arconiumItem, arconiumItem, arconiumItem);
         final int resourceGenInterval = 2;
         final int resourceGenCount = 1;
+        final int resourceCoinCost = 256;
 
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.PINK), resourceItem, 800, resourceGenInterval, resourceGenCount, root, clover, arconium,
+        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.PINK), resourceItem, 800, resourceGenInterval, resourceGenCount, resourceCoinCost, root, clover, arconium,
                 Ingredient.fromItems(ingredient));
     }
 

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "EEE",
+    "EEE",
+    "EEE"
+  ],
+  "key": {
+    "E": {
+      "item": "arconia:light_blue_arconium_essence"
+    }
+  },
+  "result": {
+    "item": "arconia:light_blue_arconium_ingot"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WWW",
+    "WHW",
+    "   "
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:green_wool"
+    },
+    "H": {
+      "item": "minecraft:golden_helmet"
+    }
+  },
+  "result": {
+    "item": "arconia:hat"
+  }
+}

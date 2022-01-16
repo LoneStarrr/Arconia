@@ -1,0 +1,37 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "nbt": {
+      "item": {
+        "id": "minecraft:spider_spawn_egg",
+        "Count": 1
+      },
+      "interval": 2,
+      "coin_cost": 256
+    },
+    "item": "arconia:pink_colored_tree_root"
+  },
+  "durationTicks": 800,
+  "ingredients": [
+    {
+      "item": "arconia:pink_colored_tree_root"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    [
+      {
+        "item": "arconia:pink_arconium_block"
+      },
+      {
+        "item": "arconia:pink_arconium_block"
+      },
+      {
+        "item": "arconia:pink_arconium_block"
+      }
+    ],
+    {
+      "item": "minecraft:fermented_spider_eye"
+    }
+  ]
+}
