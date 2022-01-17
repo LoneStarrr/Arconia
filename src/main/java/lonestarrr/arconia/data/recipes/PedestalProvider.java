@@ -46,7 +46,7 @@ public class PedestalProvider extends RecipeProvider {
 
     @Override
     public String getName() {
-        return "ResourceTrees pedestal recipes";
+        return "Arconia pedestal recipes";
     }
 
     @Override
@@ -54,7 +54,7 @@ public class PedestalProvider extends RecipeProvider {
         registerColoredRootRecipes(consumer);
         registerGoldArconiumBlocks(consumer);
         // TODO have yet to implement visually different rendering based on it having infinite turned on
-        // registerInfiniteGoldArconiumBlocks(consumer);
+        registerInfiniteGoldArconiumBlocks(consumer);
     }
 
     /*
@@ -155,6 +155,7 @@ public class PedestalProvider extends RecipeProvider {
         durationTicks = 800;
         interval = 2;
         cost = 256;
+
         consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(RainbowColor.MAGENTA)), clover, Ingredient.fromItems(Items.PINK_WOOL)));
         for (Item item: new Item[] { Items.PINK_DYE }) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(item)));
@@ -180,12 +181,10 @@ public class PedestalProvider extends RecipeProvider {
     }
 
     private static FinishedRecipe makeInfiniteGoldArconiumBlock(RainbowColor color) {
-        ItemStack output = new ItemStack(ModBlocks.getGoldArconiumBlock(color).asItem());
-        CompoundNBT tag = output.getOrCreateTag();
-        tag.putBoolean(GoldArconiumTileEntity.TAG_INFINITE, true);
+        ItemStack output = new ItemStack(ModBlocks.getInfiniteGoldArconiumBlock(color).asItem());
         Ingredient goldArconiumBlock = Ingredient.fromItems(ModBlocks.getGoldArconiumBlock(color).asItem());
         Ingredient arconiumBlock = Ingredient.fromItems(ModBlocks.getArconiumBlock(color).asItem());
-        ResourceLocation recipeId = id(color.getTierName() + "_infinite" + BlockNames.GOLD_ARCONIUM_BLOCK_SUFFIX);
+        ResourceLocation recipeId = id(color.getTierName() + BlockNames.INFINITE_GOLD_ARCONIUM_BLOCK_SUFFIX);
         final int durationTicks = 100 + (color.getTier() * 100);
         return new FinishedRecipe(recipeId, output, durationTicks, goldArconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock);
     }

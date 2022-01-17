@@ -28,6 +28,7 @@ public class ModTiles {
     private static final Map<RainbowColor, TileEntityType<RainbowCrateTileEntity>> rainbowCrateTileEntityTypes =
             new HashMap<>(RainbowColor.values().length);
     private static final Map<RainbowColor, TileEntityType<GoldArconiumTileEntity>> goldArconiumTileEntityTypes = new HashMap<>(RainbowColor.values().length);
+    private static final Map<RainbowColor, TileEntityType<GoldArconiumTileEntity>> infiniteGoldArconiumTileEntityTypes = new HashMap<>(RainbowColor.values().length);
 
 
     @SubscribeEvent
@@ -42,7 +43,7 @@ public class ModTiles {
         register(r, POT_MULTIBLOCK_PRIMARY, BlockNames.POT_MULTIBLOCK_PRIMARY);
         register(r, POT_MULTIBLOCK_SECONDARY, BlockNames.POT_MULTIBLOCK_SECONDARY);
 
-        // tree root blocks (generating the resource tree loot)
+        // tree root blocks
         for (RainbowColor tier: RainbowColor.values()) {
             TileEntityType<ResourceTreeRootTileEntity> teType =
                     TileEntityType.Builder.create(() -> new ResourceTreeRootTileEntity(tier),
@@ -62,9 +63,16 @@ public class ModTiles {
 
         // Gold arconium blocks
         for (RainbowColor tier: RainbowColor.values()) {
-            TileEntityType<GoldArconiumTileEntity> teType = TileEntityType.Builder.create(() -> new GoldArconiumTileEntity(tier), ModBlocks.getGoldArconiumBlock(tier)).build(null);
+            TileEntityType<GoldArconiumTileEntity> teType = TileEntityType.Builder.create(() -> new GoldArconiumTileEntity(tier, false), ModBlocks.getGoldArconiumBlock(tier)).build(null);
             goldArconiumTileEntityTypes.put(tier, teType);
             register(r, teType, tier.getTierName() + "_gold_arconium_tile_entity");
+        }
+
+        // Infinite Gold arconium blocks
+        for (RainbowColor tier: RainbowColor.values()) {
+            TileEntityType<GoldArconiumTileEntity> teType = TileEntityType.Builder.create(() -> new GoldArconiumTileEntity(tier, true), ModBlocks.getInfiniteGoldArconiumBlock(tier)).build(null);
+            infiniteGoldArconiumTileEntityTypes.put(tier, teType);
+            register(r, teType, tier.getTierName() + "_infinite_gold_arconium_tile_entity");
         }
         Arconia.logger.info("************ Registered tile entities");
 
@@ -80,5 +88,9 @@ public class ModTiles {
 
     public static TileEntityType<GoldArconiumTileEntity> getGoldArconiumTileEntityType(RainbowColor tier) {
         return goldArconiumTileEntityTypes.get(tier);
+    }
+
+    public static TileEntityType<GoldArconiumTileEntity> getInfiniteGoldArconiumTileEntityType(RainbowColor tier) {
+        return infiniteGoldArconiumTileEntityTypes.get(tier);
     }
 }

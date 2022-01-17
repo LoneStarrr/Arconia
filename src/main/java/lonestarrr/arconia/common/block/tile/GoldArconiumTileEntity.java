@@ -19,19 +19,21 @@ public class GoldArconiumTileEntity extends BaseTileEntity {
     private long coins; // number of coins left to produce
     private boolean infinite; // If set, internal coin store is never depleted and unlimited coins are generated
 
-    public GoldArconiumTileEntity(RainbowColor tier) {
-        super(ModTiles.getGoldArconiumTileEntityType(tier));
+    /**
+     * Tile entity class is shared between regular (coin store depletes) and infinite gold arconium blocks
+     *
+     * @param tier
+     * @param infinite
+     */
+    public GoldArconiumTileEntity(RainbowColor tier, boolean infinite) {
+        super(infinite ? ModTiles.getInfiniteGoldArconiumTileEntityType(tier) : ModTiles.getGoldArconiumTileEntityType(tier));
         this.tier = tier;
         setInitialCoinCount();
-        infinite = false;
+        this.infinite = infinite;
     }
 
     public final RainbowColor getTier() {
         return this.tier;
-    }
-
-    public void setInfinite() {
-        this.infinite = true;
     }
 
     private void setInitialCoinCount() {

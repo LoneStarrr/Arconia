@@ -31,34 +31,35 @@ public class ClientProxy implements IProxy {
     private void clientSetup(FMLClientSetupEvent event) {
         Arconia.logger.info("********************* client-side proxy init");
 
-        // TODO Can these blocks themselves provide this hint?
-        RenderType cutout = RenderType.getCutout();
+        event.enqueueWork(() -> {
+            // TODO Can these blocks themselves provide this hint?
+            RenderType cutout = RenderType.getCutout();
 
-        RenderTypeLookup.setRenderLayer(ModBlocks.clover, cutout);
-//        RenderTypeLookup.setRenderLayer(ModBlocks.potMultiBlockPrimary, RenderType.getTranslucent());
-//        RenderTypeLookup.setRenderLayer(ModBlocks.potMultiBlockSecondary, RenderType.getTranslucent());
+            RenderTypeLookup.setRenderLayer(ModBlocks.clover, cutout);
 
-        for (RainbowColor tier: RainbowColor.values()) {
+            for (RainbowColor tier : RainbowColor.values()) {
 //            RenderTypeLookup.setRenderLayer(ModBlocks.getRainbowCrop(tier), cutout);
-            RenderTypeLookup.setRenderLayer(ModBlocks.getMoneyTreeLeaves(tier), cutout);
-            RenderTypeLookup.setRenderLayer(ModBlocks.getMoneyTreeSapling(tier), cutout);
-            // Crates are solid, but use overlapping textures with gaps
-            RenderTypeLookup.setRenderLayer(ModBlocks.getRainbowCrateBlock(tier), cutout);
-            // gleaned from Blocks.GRASS_BLOCK - this is for overlaying the top with a rainbow tint
-            RenderTypeLookup.setRenderLayer(ModBlocks.getResourceTreeRootBlock(tier), RenderType.getCutoutMipped());
-            RenderTypeLookup.setRenderLayer(ModBlocks.getGoldArconiumBlock(tier), RenderType.getCutoutMipped());
-            RenderTypeLookup.setRenderLayer(ModBlocks.orb, RenderType.getTranslucent());
-        }
+                RenderTypeLookup.setRenderLayer(ModBlocks.getMoneyTreeLeaves(tier), cutout);
+                RenderTypeLookup.setRenderLayer(ModBlocks.getMoneyTreeSapling(tier), cutout);
+                // Crates are solid, but use overlapping textures with gaps
+                RenderTypeLookup.setRenderLayer(ModBlocks.getRainbowCrateBlock(tier), cutout);
+                // gleaned from Blocks.GRASS_BLOCK - this is for overlaying the top with a rainbow tint
+                RenderTypeLookup.setRenderLayer(ModBlocks.getResourceTreeRootBlock(tier), RenderType.getCutoutMipped());
+                RenderTypeLookup.setRenderLayer(ModBlocks.getGoldArconiumBlock(tier), RenderType.getCutoutMipped());
+                RenderTypeLookup.setRenderLayer(ModBlocks.getInfiniteGoldArconiumBlock(tier), RenderType.getCutoutMipped());
+                RenderTypeLookup.setRenderLayer(ModBlocks.orb, RenderType.getTranslucent());
+            }
 
-        // gleaned from Blocks.GRASS_BLOCK - this is for overlaying the sides with the tinted grass
-        RenderTypeLookup.setRenderLayer(ModBlocks.resourceGenBlock, RenderType.getCutoutMipped());
+            // gleaned from Blocks.GRASS_BLOCK - this is for overlaying the sides with the tinted grass
+            RenderTypeLookup.setRenderLayer(ModBlocks.resourceGenBlock, RenderType.getCutoutMipped());
 
-        // GUI screens associated with containers
-        RainbowCrateContainerScreen.registerContainerScreens();
+            // GUI screens associated with containers
+            RainbowCrateContainerScreen.registerContainerScreens();
 
-        TileEntityRendererHandler.registerTileEntityRenderers();
+            TileEntityRendererHandler.registerTileEntityRenderers();
 
-        event.enqueueWork(ClientProxy::registerItemProperties);
+            registerItemProperties();
+        });
     }
 
     private void loadComplete(FMLLoadCompleteEvent event) {

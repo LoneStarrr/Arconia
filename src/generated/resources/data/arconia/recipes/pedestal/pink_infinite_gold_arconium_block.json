@@ -1,0 +1,33 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "item": "arconia:pink_infinite_gold_arconium_block"
+  },
+  "durationTicks": 1000,
+  "ingredients": [
+    {
+      "item": "arconia:pink_gold_arconium_block"
+    },
+    {
+      "item": "arconia:pink_arconium_block"
+    },
+    {
+      "item": "arconia:pink_arconium_block"
+    },
+    {
+      "item": "arconia:pink_arconium_block"
+    },
+    {
+      "item": "arconia:pink_arconium_block"
+    },
+    {
+      "item": "arconia:pink_arconium_block"
+    },
+    {
+      "item": "arconia:pink_arconium_block"
+    },
+    {
+      "item": "arconia:pink_arconium_block"
+    }
+  ]
+}

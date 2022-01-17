@@ -93,6 +93,18 @@ public class ColorHandler {
                 return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
             }, Item.getItemFromBlock(goldArconiumBlock));
 
+            // Infinite Gold Arconium Blocks
+            InfiniteGoldArconiumBlock infiniteGoldArconiumBlock = ModBlocks.getInfiniteGoldArconiumBlock(tier);
+            colorBlocks.register(infiniteGoldArconiumBlock, infiniteGoldArconiumBlock);
+            // Taken from minecraft's ItemColors
+            items.register((stack, layer) -> {
+                if (layer != 0) {
+                    return 0xFFFFFF;
+                }
+                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
+                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
+            }, Item.getItemFromBlock(infiniteGoldArconiumBlock));
+
             // Rainbow crates
             RainbowCrateBlock crateBlock = ModBlocks.getRainbowCrateBlock(tier);
             colorBlocks.register(crateBlock, crateBlock);
