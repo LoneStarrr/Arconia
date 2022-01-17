@@ -38,6 +38,7 @@ public class ModLanguageProvider extends LanguageProvider {
             String colorName = color.getUnlocalizedName();
             add(ModBlocks.getArconiumBlock(color), colorName + " Arconium Block");
             add(ModBlocks.getGoldArconiumBlock(color), colorName + " Gold Arconium Block");
+            add(ModBlocks.getInfiniteGoldArconiumBlock(color), colorName + " Infinite Gold Arconium Block");
             add(ModBlocks.getMoneyTreeLeaves(color), colorName + " Resource Tree Leaves");
             add(ModBlocks.getMoneyTreeSapling(color), colorName + " Resource Tree Sapling");
             add(ModBlocks.getResourceTreeRootBlock(color), colorName + " Tree Root Block");
@@ -111,5 +112,14 @@ public class ModLanguageProvider extends LanguageProvider {
         add("arconia.item.cloverstaff.selectpot.failed", "Invalid pot of gold multiblock structure?");
         // pedestal ritual messages
         add("arconia.block.center_pedestal.ritual_start_failed", "Failed to start ritual. Perhaps some items are missing?");
+        // Pot multiblock
+        add("block.arconia.pot_multiblock_secondary", "Pot of Gold");
+        add("block.arconia.pot_multiblock_primary", "Pot of Gold");
+        add("arconia.block.pot_multiblock.coin_count.none", "There are no coins");
+        add("arconia.block.pot_multiblock.coin_count.few", "There are a few coins");
+        add("arconia.block.pot_multiblock.coin_count.tens", "There are tens of coins");
+        add("arconia.block.pot_multiblock.coin_count.hundreds", "There are hundreds of coins");
+        add("arconia.block.pot_multiblock.coin_count.thousands", "There are thousands of coins");
+        add("arconia.block.pot_multiblock.coin_count.ludicrous", "There is an insane amount of coins");
     }
 }

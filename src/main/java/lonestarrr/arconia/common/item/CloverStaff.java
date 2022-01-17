@@ -1,6 +1,5 @@
 package lonestarrr.arconia.common.item;
 
-import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.advancements.PotOfGoldTrigger;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.PotMultiBlockPrimary;
@@ -155,6 +154,5 @@ public class CloverStaff extends Item {
             }
             return formed;
         }
-
     }
 }

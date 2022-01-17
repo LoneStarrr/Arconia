@@ -47,6 +47,10 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         return count;
     }
 
+    public final long getCoinCount() {
+        return coinCount;
+    }
+
     public void linkHat(BlockPos hatPos) throws LinkHatException {
         if (hats.size() >= MAX_HATS) {
             throw new LinkHatException(LinkErrorCode.TOO_MANY_HATS);

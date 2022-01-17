@@ -36,10 +36,18 @@ public class GoldArconiumTileEntity extends BaseTileEntity {
         return this.tier;
     }
 
+    private long calculateInitialCount() {
+        return (long)Math.pow(2, 7 + this.tier.getTier());
+    }
+
     private void setInitialCoinCount() {
         // TODO configurable
-        this.coins = (long)Math.pow(2, 7 + this.tier.getTier());
+        this.coins = calculateInitialCount();
         markDirty();
+    }
+
+    public boolean isInfinite() {
+        return this.infinite;
     }
 
     /**
@@ -54,6 +62,10 @@ public class GoldArconiumTileEntity extends BaseTileEntity {
      */
     public long coinsLeft() {
         return coins;
+    }
+
+    public int coinsLeftAsPercentage() {
+        return (int)(coins * 100 / calculateInitialCount());
     }
 
     /**

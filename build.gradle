@@ -121,7 +121,11 @@ repositories {
         name "Patchouli"
         url "https://maven.blamejared.com"
     }
-
+    // The One Probe
+    maven {
+        name "tterrag maven"
+        url "https://maven.tterrag.com"
+    }
 }
 
 dependencies {
@@ -162,6 +166,10 @@ dependencies {
     // Patchouli
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
+
+    // The One Probe
+    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${top_version}")
+    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${top_version}")
 
     // Test framework
     testImplementation "org.junit.jupiter:junit-jupiter:${junit_version}"

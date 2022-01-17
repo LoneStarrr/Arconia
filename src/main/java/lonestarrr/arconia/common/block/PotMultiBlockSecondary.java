@@ -3,6 +3,11 @@ package lonestarrr.arconia.common.block;
 import lonestarrr.arconia.common.block.tile.CenterPedestalTileEntity;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryTileEntity;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryTileEntity;
+import lonestarrr.arconia.common.core.helper.LanguageHelper;
+import lonestarrr.arconia.compat.theoneprobe.TOPDriver;
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -22,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,7 +40,7 @@ import javax.annotation.Nullable;
  * Block that is part of a large multiblock pot - this is the secondary, passive block. It is invisible in the world, as the primary block
  * will render the large model
  */
-public class PotMultiBlockSecondary extends Block {
+public class PotMultiBlockSecondary extends Block implements TOPDriver {
     private static final VoxelShape[] shapes;
     private static final VoxelShape defaultShape = makeCuboidShape(0, 0,0, 16, 16, 16);
     private static final int MAX_SHAPE_IDX = 2 << 2 | 2; // see calcShapeIndex()
@@ -202,5 +208,33 @@ public class PotMultiBlockSecondary extends Block {
         }
 
         return makeCuboidShape(x1, y1, z1, x2, y2, z2);
+    }
+
+    @Override
+    public void addProbeInfo(
+            ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        PotMultiBlockPrimaryTileEntity entity = getPrimaryTileEntity(world, data.getPos());
+        if (entity == null) {
+            return;
+        }
+
+        long coinCount = entity.getCoinCount();
+        String lang;
+        if (coinCount == 0) {
+            lang = "none";
+        } else if (coinCount < 10) {
+            lang = "few";
+        } else if (coinCount < 100) {
+            lang = "tens";
+        } else if (coinCount < 1000) {
+            lang = "hundreds";
+        } else if (coinCount < 10000) {
+            lang = "thousands";
+        } else {
+            lang = "ludicrous";
+        }
+
+        // TODO use icons instead..?
+        probeInfo.text(new TranslationTextComponent(LanguageHelper.block("pot_multiblock") + ".coin_count." + lang));
     }
 }

@@ -4,6 +4,7 @@ import lonestarrr.arconia.common.advancements.ModCriterialTriggers;
 import lonestarrr.arconia.common.core.command.ArconiaCommand;
 import lonestarrr.arconia.common.loot.DirtLootModifier;
 import lonestarrr.arconia.common.loot.ModLootModifiers;
+import lonestarrr.arconia.compat.theoneprobe.TheOneProbe;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -36,6 +37,8 @@ import java.io.IOException;
 public class Arconia {
     // mod_id must also be updated in build.gradle
     public static final String MOD_ID = "arconia";
+    public static final String MOD_PACKAGE = "lonestarrr.arconia";
+
     static final String NAME = "Arconia";
 
     public static final Logger logger = LogManager.getLogger(Arconia.MOD_ID);
@@ -65,6 +68,8 @@ public class Arconia {
         Arconia.logger.info("Running commonSetup");
         // Register network packets to synchronize server/client data
         ModPackets.init();
+        // The One Probe - optional, checks for mod presence
+        TheOneProbe.init();
 
         try {
             BuildPatternTier.loadPatterns();
