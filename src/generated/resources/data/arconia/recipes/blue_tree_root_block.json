@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RRR",
+    "RRR",
+    "RRR"
+  ],
+  "key": {
+    "R": {
+      "item": "arconia:blue_colored_tree_root"
+    }
+  },
+  "result": {
+    "item": "arconia:blue_tree_root_block"
+  }
+}

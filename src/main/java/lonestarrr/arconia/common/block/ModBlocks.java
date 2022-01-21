@@ -16,6 +16,7 @@ import lonestarrr.arconia.common.item.ModItems;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Mod.EventBusSubscriber(modid = Arconia.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModBlocks {
@@ -25,6 +26,8 @@ public class ModBlocks {
     private static final Map<RainbowColor, ResourceTreeSapling> resourceTreeSaplings = new HashMap<>();
     private static final Map<RainbowColor, ResourceTreeRootBlock> treeRootBlocks = new HashMap<>();
     private static final Map<RainbowColor, ArconiumBlock> arconiumBlocks = new HashMap<>();
+    private static final Map<RainbowColor, GoldArconiumBlock> goldArconiumBlocks = new HashMap<>();
+    private static final Map<RainbowColor, InfiniteGoldArconiumBlock> infiniteGoldArconiumBlocks = new HashMap<>();
 
     public static final CloverBlock clover = new CloverBlock();
     public static final PotBlock pot = new PotBlock();
@@ -32,6 +35,9 @@ public class ModBlocks {
     public static final Pedestal pedestal = new Pedestal();
     public static final CenterPedestal centerPedestal = new CenterPedestal();
     public static final Orb orb = new Orb();
+    public static final Hat hat = new Hat(); // TODO hat
+    public static final PotMultiBlockPrimary potMultiBlockPrimary = new PotMultiBlockPrimary(); //no associated item
+    public static final PotMultiBlockSecondary potMultiBlockSecondary = new PotMultiBlockSecondary(); //no associated item
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -43,6 +49,9 @@ public class ModBlocks {
         register(r, pedestal, BlockNames.PEDESTAL);
         register(r, centerPedestal, BlockNames.CENTER_PEDESTAL);
         register(r, orb, BlockNames.ORB);
+        register(r, hat, BlockNames.HAT);
+        register(r, potMultiBlockPrimary, BlockNames.POT_MULTIBLOCK_PRIMARY);
+        register(r, potMultiBlockSecondary, BlockNames.POT_MULTIBLOCK_SECONDARY);
 
         // RainbowColor tiered colorBlocks
         for (RainbowColor color: RainbowColor.values()) {
@@ -70,6 +79,14 @@ public class ModBlocks {
             ArconiumBlock arconiumBlock = new ArconiumBlock(color);
             register(r, arconiumBlock, color.getTierName() + BlockNames.ARCONIUM_BLOCK_SUFFIX);
             arconiumBlocks.put(color, arconiumBlock);
+
+            GoldArconiumBlock goldArconiumBlock = new GoldArconiumBlock(color);
+            register(r, goldArconiumBlock, color.getTierName() + BlockNames.GOLD_ARCONIUM_BLOCK_SUFFIX);
+            goldArconiumBlocks.put(color, goldArconiumBlock);
+
+            InfiniteGoldArconiumBlock infiniteGoldArconiumBlock = new InfiniteGoldArconiumBlock(color);
+            register(r, infiniteGoldArconiumBlock, color.getTierName() + BlockNames.INFINITE_GOLD_ARCONIUM_BLOCK_SUFFIX);
+            infiniteGoldArconiumBlocks.put(color, infiniteGoldArconiumBlock);
         }
     }
 
@@ -85,28 +102,15 @@ public class ModBlocks {
         registerBlockItem(r, pedestal, builder);
         registerBlockItem(r, centerPedestal, builder);
         registerBlockItem(r, orb, builder); // TODO replace me with actual item?
+        registerBlockItem(r, hat, builder);
 
-
-
-        for (ResourceTreeRootBlock root: treeRootBlocks.values()) {
-            registerBlockItem(r, root, builder);
-        }
-
-        for (RainbowCrateBlock crate: rainbowCrates.values()) {
-            registerBlockItem(r, crate, builder);
-        }
-
-        for (ResourceTreeSapling sapling: resourceTreeSaplings.values()) {
-            registerBlockItem(r, sapling, builder);
-        }
-
-        for (ResourceTreeLeaves leaves: resourceTreeLeaves.values()) {
-            registerBlockItem(r, leaves, builder);
-        }
-
-        for (ArconiumBlock arconiumBlock: arconiumBlocks.values()) {
-            registerBlockItem(r, arconiumBlock, builder);
-        }
+        treeRootBlocks.values().stream().forEach(b -> registerBlockItem(r, b, builder));
+        rainbowCrates.values().stream().forEach(b -> registerBlockItem(r, b, builder));
+        resourceTreeSaplings.values().stream().forEach(b -> registerBlockItem(r, b, builder));
+        resourceTreeLeaves.values().stream().forEach(b -> registerBlockItem(r, b, builder));
+        arconiumBlocks.values().stream().forEach(b -> registerBlockItem(r, b, builder));
+        goldArconiumBlocks.values().stream().forEach(b -> registerBlockItem(r, b, builder));
+        infiniteGoldArconiumBlocks.values().stream().forEach(b -> registerBlockItem(r, b, builder));
     }
 
 //    public static RainbowCropBlock getRainbowCrop(RainbowColor tier) {
@@ -114,6 +118,10 @@ public class ModBlocks {
 //    }
 
     public static ArconiumBlock getArconiumBlock(RainbowColor tier) { return arconiumBlocks.get(tier); }
+
+    public static GoldArconiumBlock getGoldArconiumBlock(RainbowColor tier) { return goldArconiumBlocks.get(tier); }
+
+    public static InfiniteGoldArconiumBlock getInfiniteGoldArconiumBlock(RainbowColor tier) { return infiniteGoldArconiumBlocks.get(tier); }
 
     public static RainbowCrateBlock getRainbowCrateBlock(RainbowColor tier) {
         return rainbowCrates.get(tier);

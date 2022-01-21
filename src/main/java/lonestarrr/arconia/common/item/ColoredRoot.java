@@ -1,5 +1,7 @@
 package lonestarrr.arconia.common.item;
 
+import lonestarrr.arconia.common.block.Hat;
+import lonestarrr.arconia.common.block.tile.HatTileEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,13 +31,18 @@ import java.util.List;
 public class ColoredRoot extends Item {
     private RainbowColor tier;
     private static final String TAG_ITEM = "item";
+    private static final String TAG_INTERVAL = "interval";
+    private static final String TAG_COUNT = "count";
+    private static final String TAG_COIN_COST = "coin_cost";
 
     public ColoredRoot(Properties builder, RainbowColor tier) {
         super(builder);
         this.tier = tier;
     }
 
-    public RainbowColor getTier() { return tier; }
+    public RainbowColor getTier() {
+        return tier;
+    }
 
     @Override
     public boolean hasEffect(ItemStack stack) {
@@ -49,24 +56,80 @@ public class ColoredRoot extends Item {
             return ItemStack.EMPTY;
         }
 
-        return ItemStack.read(tag.getCompound("item"));
+        return ItemStack.read(tag.getCompound(TAG_ITEM));
+    }
+
+    /**
+     * @param stack
+     * @return Resource generation interval for enchanted root item
+     */
+    @Nonnull
+    public static int getResourceInterval(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag == null || !tag.contains(TAG_INTERVAL)) {
+            return 1;
+        }
+
+        return tag.getInt(TAG_INTERVAL);
+    }
+
+    /**
+     * @param stack
+     * @return Resource generation count for enchanted root item
+     */
+    @Nonnull
+    public static int getResourceCount(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag == null || !tag.contains(TAG_COUNT)) {
+            return 1;
+        }
+
+        return tag.getInt(TAG_COUNT);
+    }
+
+    /**
+     * @param stack
+     * @return Resource generation count for enchanted root item
+     */
+    @Nonnull
+    public static int getResourceCoinCost(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag == null || !tag.contains(TAG_COIN_COST)) {
+            return 1;
+        }
+
+        return tag.getInt(TAG_COIN_COST);
     }
 
     /**
      * Colored roots can be enchanted through a ritual with a specific item. Once enchanted, right-clicking the root near an activated resource tree will
      * have that tree produce this resource.
-     * @param item Item to be generated
      *
-     * Data is stored in NBT so that it can be used for any item from any mod by only adding a pedestal ritual recipe.
+     * @param coloredRootStack colored root to set resource on
+     * @param resourceItem     resource to set
+     * @param interval         Frequency with which resource is generated. An interval of 1 is fastest. Interval length is determined by the pot of gold and is typically
+     *                         no less than 5 ticks.
+     * @param count            Number of items generated per event. Must not exceed item's max stack count
+     * @param coinCost         Number of coins it takes to generate the resource
+     *                         <p>
+     *                         Data is stored in NBT so that it can be used for any item from any mod by only adding a pedestal ritual recipe.
      */
-    public static void setResourceItem(@Nonnull ItemStack coloredRootStack, @Nonnull IItemProvider resourceItem) {
+    public static void setResourceItem(
+            @Nonnull ItemStack coloredRootStack, @Nonnull IItemProvider resourceItem, @Nonnull int interval, @Nonnull int count, int coinCost) {
         CompoundNBT tag = coloredRootStack.getOrCreateTag();
-        tag.put(TAG_ITEM, new ItemStack(resourceItem, 1).serializeNBT());
+        ItemStack stack = new ItemStack(resourceItem);
+        int maxCount = stack.getMaxStackSize();
+        int stackCount = count > maxCount ? maxCount : count;
+        stack.setCount(stackCount);
+        tag.put(TAG_ITEM, stack.serializeNBT());
+        tag.putInt(TAG_INTERVAL, interval < 1 ? 1 : interval);
+        tag.putInt(TAG_COIN_COST, coinCost < 1 ? 1 : coinCost);
     }
 
     /**
-     * Tiered tree roots enchanted through a pedestal crafting ritual with a specific resource are able to turn regular grass into resource generators
-     * for a Resource Tree.
+     * Tiered tree roots enchanted through a pedestal crafting ritual with a specific resource are able to assign this resource to a placed down
+     * hat. The hat can then 'draw' this resource from a nearby active and linked pot of gold.
+     *
      * @param context
      * @return
      */
@@ -77,30 +140,30 @@ public class ColoredRoot extends Item {
         BlockPos pos = context.getPos();
         ItemStack heldItem = player.getHeldItem(context.getHand());
 
-        if (heldItem.getItem() != this || world.getBlockState(pos).getBlock() != Blocks.GRASS_BLOCK) {
+        if (heldItem.getItem() != this || world.getBlockState(pos).getBlock() != ModBlocks.hat) {
             return ActionResultType.PASS;
         }
 
         ItemStack resource = getResourceItem(heldItem); // Item to be produced
 
-        if (resource.isEmpty() || !findNearbyTreeRoot(world, pos)) {
+        if (resource.isEmpty()) {
             return ActionResultType.PASS;
         }
 
-        world.setBlockState(pos, ModBlocks.resourceGenBlock.getDefaultState(), 2);
-        TileEntity te = world.getTileEntity(pos);
-        if (te != null && te instanceof ResourceGenTileEntity) {
-            ResourceGenTileEntity rte = (ResourceGenTileEntity) te;
-            // TODO do based on nbt data on provided itemstack
-            rte.setTierAndItem(tier, resource);
+        int count = getResourceCount(heldItem);
+        resource.setCount(count);
+        int interval = getResourceInterval(heldItem);
+        int coinCost = getResourceCoinCost(heldItem);
+
+        boolean resourceSet = Hat.setResourceGenerated(world, pos, tier, resource, interval, coinCost);
+
+        if (resourceSet) {
             if (heldItem.getCount() > 1) {
                 heldItem.shrink(1);
                 player.setHeldItem(context.getHand(), heldItem);
             } else {
                 player.setHeldItem(context.getHand(), ItemStack.EMPTY);
             }
-        } else {
-            Arconia.logger.warn("No tile entity for resource block I just placed?");
         }
 
         return ActionResultType.SUCCESS;
@@ -115,17 +178,5 @@ public class ColoredRoot extends Item {
         if (!resource.isEmpty()) {
             tooltip.add(resource.getItem().getDisplayName(resource));
         }
-    }
-
-    private boolean findNearbyTreeRoot(World world, BlockPos pos) {
-        boolean foundTreeRoot = false;
-        for (BlockPos scanPos: BlockPos.getAllInBoxMutable(pos.west().north(), pos.east().south())) {
-            TileEntity te = world.getTileEntity(scanPos);
-            if (te != null && te instanceof ResourceTreeRootTileEntity && ((ResourceTreeRootTileEntity)te).getTier().equals(tier)) {
-                foundTreeRoot = true;
-                break;
-            }
-        }
-        return foundTreeRoot;
     }
 }

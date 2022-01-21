@@ -14,6 +14,7 @@ public class TileEntityRendererHandler {
         ClientRegistry.bindTileEntityRenderer(ModTiles.RESOURCEGEN, ResourceGenRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTiles.PEDESTAL, PedestalRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTiles.CENTER_PEDESTAL, CenterPedestalRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ModTiles.HAT, HatRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTiles.ORB, OrbRenderer::new);
 
 

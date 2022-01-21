@@ -43,6 +43,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         registerCrates();
 //        registerCrops();
         registerArconiumBlocks();
+        registerGoldArconiumBlocks();
+        registerInfiniteGoldArconiumBlocks();
     }
 
 //    private void registerCrops() {
@@ -159,6 +161,26 @@ public class ModBlockStateProvider extends BlockStateProvider {
             ModelFile model = models().getExistingFile(prefix("block/arconium_block"));
             simpleBlock(block, model);
             itemModels().withExistingParent(name, prefix("block/arconium_block"));
+        }
+    }
+
+    private void registerGoldArconiumBlocks() {
+        for (RainbowColor color: RainbowColor.values()) {
+            Block block = ModBlocks.getGoldArconiumBlock(color);
+            String name = Registry.BLOCK.getKey(block).getPath();
+            ModelFile model = models().getExistingFile(prefix("block/gold_arconium_block"));
+            simpleBlock(block, model);
+            itemModels().withExistingParent(name, prefix("block/gold_arconium_block"));
+        }
+    }
+
+    private void registerInfiniteGoldArconiumBlocks() {
+        for (RainbowColor color: RainbowColor.values()) {
+            Block block = ModBlocks.getInfiniteGoldArconiumBlock(color);
+            String name = Registry.BLOCK.getKey(block).getPath();
+            ModelFile model = models().getExistingFile(prefix("block/infinite_gold_arconium_block"));
+            simpleBlock(block, model);
+            itemModels().withExistingParent(name, prefix("block/infinite_gold_arconium_block"));
         }
     }
 }

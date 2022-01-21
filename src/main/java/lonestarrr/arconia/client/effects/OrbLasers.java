@@ -41,7 +41,7 @@ public class OrbLasers {
         beams.add(beam);
     }
 
-    @SubscribeEvent
+//    @SubscribeEvent
     public static void render(RenderWorldLastEvent event) {
         World world = Minecraft.getInstance().world;
 
@@ -69,7 +69,7 @@ public class OrbLasers {
                 continue;
             }
 
-            renderBeamItem(beam, event.getMatrixStack(), buffer);
+            renderBeamItem(beam, event.getMatrixStack(), buffer, event.getPartialTicks());
         }
         buffer.finish();
 
@@ -80,12 +80,14 @@ public class OrbLasers {
         matrix.pop();
     }
 
-    private static void renderBeamItem(LaserBeam beam, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
-        Vector3d directionVector = beam.itemPos.subtract(beam.orbPos);
-        float pctRemaining = 1 - beam.getDistanceElapsedPct();
-        double itemX = beam.orbPos.x + directionVector.x * pctRemaining;
-        double itemY = beam.orbPos.y + directionVector.y * pctRemaining;
-        double itemZ = beam.orbPos.z + directionVector.z * pctRemaining;
+    private static void renderBeamItem(LaserBeam beam, MatrixStack matrixStack, IRenderTypeBuffer buffer, float partialTicks) {
+        double elapsedTicks = beam.getTicksElapsed() + partialTicks;
+        Vector3d velocity = beam.getVelocity(); // TODO - calculate once at beam creation time if this works out well
+        // TODO move code below into beam 
+        double itemX = beam.itemPos.x + velocity.x * elapsedTicks;
+        double itemY = beam.itemPos.y + velocity.y * elapsedTicks - (LaserBeam.GRAVITY * elapsedTicks * elapsedTicks) / 2d;
+        double itemZ = beam.itemPos.z + velocity.z * elapsedTicks;
+
         int light = WorldRenderer.getCombinedLight(Minecraft.getInstance().world, new BlockPos(itemX, itemY, itemZ));
         matrixStack.push();
         matrixStack.translate(itemX, itemY, itemZ);
@@ -96,7 +98,8 @@ public class OrbLasers {
 }
 
 class LaserBeam {
-    public static final int BEAM_DISPLAY_TICKS = 5;
+    public static final int BEAM_DISPLAY_TICKS = 20;
+    public static final double GRAVITY = 2 / 20d;
 
     public final Vector3d orbPos;
     public final Vector3d itemPos;
@@ -113,11 +116,27 @@ class LaserBeam {
     }
 
     /**
+     * @return
+     *     A velocity vector V for a parabolic animation of an item being flung at the orb where the fling time is constant.
+     */
+    public Vector3d getVelocity() {
+        final double animationTicks = BEAM_DISPLAY_TICKS;
+        final double gravity = GRAVITY;
+        final double vx = (orbPos.x - itemPos.x) / animationTicks;
+        final double vz = (orbPos.z - itemPos.z) / animationTicks;
+        final double vy = (orbPos.y - itemPos.y + (gravity * animationTicks * animationTicks) / 2d) / animationTicks;
+        return new Vector3d(vx, vy, vz);
+    }
+    /**
      * @return Elapsed time % as a fraction [0..1]
      */
     public float getTimeElapsedPct() {
         return Math.min(1f, (Minecraft.getInstance().world.getGameTime() - startTick) / (float) BEAM_DISPLAY_TICKS);
 
+    }
+
+    public long getTicksElapsed() {
+        return Minecraft.getInstance().world.getGameTime() - startTick;
     }
 
     /**

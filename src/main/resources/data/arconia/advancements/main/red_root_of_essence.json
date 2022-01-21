@@ -5,10 +5,10 @@
       "nbt": "{'item':'arconia:red_arconium_essence'}"
     },
     "title": {
-      "translate": "advancements.main.red_root_of_essence.title"
+      "translate": "advancement.arconia.main.red_root_of_essence.title"
     },
     "description": {
-      "translate": "advancements.main.red_root_of_essence.desc"
+      "translate": "advancement.arconia.main.red_root_of_essence.desc"
     },
     "show_toast": true,
     "announce_to_chat": true,

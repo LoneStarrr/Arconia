@@ -1,0 +1,22 @@
+{
+  "display": {
+    "icon": {
+      "item": "arconia:pot"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.pot_of_gold.title"
+    },
+    "description": {
+      "translate": "advancement.arconia.main.pot_of_gold.desc"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "arconia:main/clover_staff",
+  "criteria": {
+    "pot_of_gold": {
+      "trigger": "arconia:create_pot_of_gold"
+    }
+  }
+}

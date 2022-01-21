@@ -5,7 +5,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
+import lonestarrr.arconia.common.block.GoldArconiumBlock;
 import lonestarrr.arconia.common.block.ModBlocks;
+import lonestarrr.arconia.common.block.tile.GoldArconiumTileEntity;
+import lonestarrr.arconia.common.core.BlockNames;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
@@ -27,7 +31,9 @@ import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.ModItems;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * Registers recipes specific for the pedestal crafting ritual
@@ -40,204 +46,177 @@ public class PedestalProvider extends RecipeProvider {
 
     @Override
     public String getName() {
-        return "ResourceTrees pedestal recipes";
+        return "Arconia pedestal recipes";
     }
 
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
-        // Recipes for enchanted colored tree roots - these are used to activate a resource tree of the same color and makes them start
-        // generating the resource associated with them
-        consumer.accept(makeEnchantedRedColoredRoot(ModItems.getArconiumEssence(RainbowColor.RED), Items.RED_WOOL));
-        consumer.accept(makeEnchantedRedColoredRoot(Items.RED_DYE, Items.RED_DYE));
-        consumer.accept(makeEnchantedRedColoredRoot(Items.OAK_LOG, Items.OAK_LOG));
-        consumer.accept(makeEnchantedRedColoredRoot(Items.DARK_OAK_LOG, Items.DARK_OAK_LOG));
-        consumer.accept(makeEnchantedRedColoredRoot(Items.BIRCH_LOG, Items.BIRCH_LOG));
-        consumer.accept(makeEnchantedRedColoredRoot(Items.JUNGLE_LOG, Items.JUNGLE_LOG));
-        consumer.accept(makeEnchantedRedColoredRoot(Items.ACACIA_LOG, Items.ACACIA_LOG));
-        consumer.accept(makeEnchantedRedColoredRoot(Items.SPRUCE_LOG, Items.SPRUCE_LOG));
-        consumer.accept(makeEnchantedRedColoredRoot(Items.SAND, Items.SAND));
-        consumer.accept(makeEnchantedRedColoredRoot(Items.GRAVEL, Items.GRAVEL));
-        consumer.accept(makeEnchantedRedColoredRoot(Items.DIRT, Items.DIRT));
-        consumer.accept(makeEnchantedRedColoredRoot(Items.KELP, Items.KELP));
-
-        consumer.accept(makeEnchantedOrangeColoredRoot(ModItems.getArconiumEssence(RainbowColor.ORANGE), Items.ORANGE_WOOL));
-        consumer.accept(makeEnchantedOrangeColoredRoot(Items.ORANGE_DYE, Items.ORANGE_DYE));
-        consumer.accept(makeEnchantedOrangeColoredRoot(Items.COAL, Items.COAL));
-        consumer.accept(makeEnchantedOrangeColoredRoot(Items.STONE, Items.STONE));
-        consumer.accept(makeEnchantedOrangeColoredRoot(Items.DIORITE, Items.DIORITE));
-        consumer.accept(makeEnchantedOrangeColoredRoot(Items.GRANITE, Items.GRANITE));
-        consumer.accept(makeEnchantedOrangeColoredRoot(Items.ANDESITE, Items.ANDESITE));
-        consumer.accept(makeEnchantedOrangeColoredRoot(Items.STRING, Items.SPIDER_EYE));
-        consumer.accept(makeEnchantedOrangeColoredRoot(Items.COOKED_BEEF, Items.BEEF));
-        consumer.accept(makeEnchantedOrangeColoredRoot(Items.SUGAR_CANE, Items.SUGAR_CANE));
-
-        consumer.accept(makeEnchantedYellowColoredRoot(ModItems.getArconiumEssence(RainbowColor.YELLOW), Items.YELLOW_WOOL));
-        consumer.accept(makeEnchantedYellowColoredRoot(Items.YELLOW_DYE, Items.YELLOW_DYE));
-        consumer.accept(makeEnchantedYellowColoredRoot(Items.IRON_INGOT, Items.IRON_BLOCK));
-        consumer.accept(makeEnchantedOrangeColoredRoot(Items.ARROW, Items.BONE_BLOCK));
-        consumer.accept(makeEnchantedOrangeColoredRoot(Items.LEATHER, Items.LEATHER));
-        consumer.accept(makeEnchantedOrangeColoredRoot(Items.COOKED_PORKCHOP, Items.PORKCHOP));
-
-        consumer.accept(makeEnchantedGreenColoredRoot(ModItems.getArconiumEssence(RainbowColor.GREEN), Items.GREEN_WOOL));
-        consumer.accept(makeEnchantedGreenColoredRoot(Items.GREEN_DYE, Items.GREEN_DYE));
-        consumer.accept(makeEnchantedGreenColoredRoot(Items.GOLD_INGOT, Items.GOLD_BLOCK));
-        consumer.accept(makeEnchantedGreenColoredRoot(Items.LAPIS_LAZULI, Items.LAPIS_BLOCK));
-        consumer.accept(makeEnchantedGreenColoredRoot(Items.REDSTONE, Items.REDSTONE_BLOCK));
-        consumer.accept(makeEnchantedGreenColoredRoot(Items.GUNPOWDER, Items.GUNPOWDER));
-
-        consumer.accept(makeEnchantedLightBlueColoredRoot(ModItems.getArconiumEssence(RainbowColor.LIGHT_BLUE), Items.LIGHT_BLUE_WOOL));
-        consumer.accept(makeEnchantedLightBlueColoredRoot(Items.LIGHT_BLUE_DYE, Items.LIGHT_BLUE_DYE));
-        consumer.accept(makeEnchantedLightBlueColoredRoot(Items.DIAMOND, Items.DIAMOND_BLOCK));
-        consumer.accept(makeEnchantedLightBlueColoredRoot(Items.OBSIDIAN, Items.CRYING_OBSIDIAN));
-        consumer.accept(makeEnchantedLightBlueColoredRoot(Items.ENDER_PEARL, Items.ENDER_PEARL));
-
-        consumer.accept(makeEnchantedBlueColoredRoot(ModItems.getArconiumEssence(RainbowColor.BLUE), Items.BLUE_WOOL));
-        consumer.accept(makeEnchantedBlueColoredRoot(Items.BLUE_DYE, Items.BLUE_DYE));
-        consumer.accept(makeEnchantedBlueColoredRoot(Items.NETHERRACK, Items.NETHER_BRICK));
-        consumer.accept(makeEnchantedBlueColoredRoot(Items.SOUL_SAND, Items.SOUL_SAND));
-        consumer.accept(makeEnchantedBlueColoredRoot(Items.SOUL_SOIL, Items.SOUL_SOIL));
-        consumer.accept(makeEnchantedBlueColoredRoot(Items.BLAZE_ROD, Items.BLAZE_ROD));
-        consumer.accept(makeEnchantedBlueColoredRoot(Items.WARPED_STEM, Items.WARPED_STEM, Items.WARPED_NYLIUM));
-        consumer.accept(makeEnchantedLightBlueColoredRoot(Items.EMERALD, Items.EMERALD_BLOCK));
-        consumer.accept(makeEnchantedLightBlueColoredRoot(Items.NETHER_WART, Items.NETHER_WART));
-
-        consumer.accept(makeEnchantedPurpleColoredRoot(ModItems.getArconiumEssence(RainbowColor.PURPLE), Items.PURPLE_WOOL));
-        consumer.accept(makeEnchantedPurpleColoredRoot(Items.PURPLE_DYE, Items.PURPLE_DYE));
-        consumer.accept(makeEnchantedPurpleColoredRoot(Items.END_STONE, Items.END_STONE_BRICKS));
-        consumer.accept(makeEnchantedPurpleColoredRoot(Items.CHORUS_FRUIT, Items.CHORUS_FLOWER));
-        consumer.accept(makeEnchantedPurpleColoredRoot(Items.GHAST_TEAR, Items.GHAST_TEAR));
-        consumer.accept(makeEnchantedPinkColoredRoot(Items.ZOMBIE_SPAWN_EGG, Items.ZOMBIE_HEAD));
-        consumer.accept(makeEnchantedPinkColoredRoot(Items.CREEPER_SPAWN_EGG, Items.CREEPER_HEAD));
-        consumer.accept(makeEnchantedPinkColoredRoot(Items.SKELETON_SPAWN_EGG, Items.SKELETON_SKULL));
-        consumer.accept(makeEnchantedPinkColoredRoot(Items.SPIDER_SPAWN_EGG, Items.FERMENTED_SPIDER_EYE));
-
-        consumer.accept(makeEnchantedMagentaColoredRoot(ModItems.getArconiumEssence(RainbowColor.MAGENTA), Items.MAGENTA_WOOL));
-        consumer.accept(makeEnchantedMagentaColoredRoot(Items.MAGENTA_DYE, Items.MAGENTA_DYE));
-        consumer.accept(makeEnchantedMagentaColoredRoot(Items.SHULKER_SHELL, Items.SHULKER_BOX));
-        consumer.accept(makeEnchantedPinkColoredRoot(Items.WITHER_SKELETON_SPAWN_EGG, Items.WITHER_SKELETON_SKULL));
-        consumer.accept(makeEnchantedPinkColoredRoot(Items.ZOMBIFIED_PIGLIN_SPAWN_EGG, Items.MUSIC_DISC_PIGSTEP));
-        consumer.accept(makeEnchantedPinkColoredRoot(Items.GHAST_SPAWN_EGG, Items.NETHERITE_HOE));
-
-        consumer.accept(makeEnchantedPinkColoredRoot(ModItems.getArconiumEssence(RainbowColor.PINK), Items.PINK_WOOL));
-        consumer.accept(makeEnchantedPinkColoredRoot(Items.PINK_DYE, Items.PINK_DYE));
-        consumer.accept(makeEnchantedPinkColoredRoot(Items.ENDERMAN_SPAWN_EGG, Items.ENDER_CHEST));
-
+        registerColoredRootRecipes(consumer);
+        registerGoldArconiumBlocks(consumer);
+        // TODO have yet to implement visually different rendering based on it having infinite turned on
+        registerInfiniteGoldArconiumBlocks(consumer);
     }
 
-    private static FinishedRecipe make(IItemProvider item, int durationTicks, Ingredient... ingredients) {
-        return new FinishedRecipe(idFor(Registry.ITEM.getKey(item.asItem())), new ItemStack(item), durationTicks, ingredients);
+    /*
+     * Recipes for colored roots with nbt data on them indicating what item will be generated by the mod's resource generator
+     */
+    private void registerColoredRootRecipes(Consumer<IFinishedRecipe> consumer) {
+        final Ingredient clover = Ingredient.fromItems(ModItems.fourLeafClover);
+
+        int durationTicks = 200; // Time for ritual to create the item from the recipe
+        int interval = 10; // Resource Generation - minimum interval, in resource generator events, between resource generation
+        int count = 1; // Number of items to generate per resource generation event
+        int cost = 1; // Number of coins the resource generated should cost
+        RainbowColor tier = RainbowColor.RED;
+
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, clover, clover, Ingredient.fromItems(Items.RED_WOOL)));
+        for (Item item: new Item[] { Items.OAK_LOG, Items.DARK_OAK_LOG, Items.BIRCH_LOG, Items.JUNGLE_LOG, Items.ACACIA_LOG, Items.SPRUCE_LOG, Items.SAND, Items.GRAVEL, Items.DIRT, Items.KELP }) {
+            consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(item)));
+        }
+
+        tier = RainbowColor.ORANGE;
+        durationTicks = 200;
+        interval = 9;
+        cost = 2;
+
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(RainbowColor.RED)), clover, Ingredient.fromItems(Items.ORANGE_WOOL)));
+        for (Item item: new Item[] { Items.ORANGE_DYE, Items.COAL, Items.STONE, Items.DIORITE, Items.GRANITE, Items.ANDESITE, Items.STRING, Items.COOKED_BEEF, Items.SUGAR_CANE }) {
+            consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(item)));
+        }
+
+        tier = RainbowColor.YELLOW;
+        durationTicks = 400;
+        interval = 8;
+        cost = 4;
+
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(RainbowColor.ORANGE)), clover, Ingredient.fromItems(Items.YELLOW_WOOL)));
+        for (Item item: new Item[] { Items.YELLOW_DYE, Items.IRON_INGOT, Items.ARROW, Items.LEATHER, Items.COOKED_PORKCHOP }) {
+            consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(item)));
+        }
+
+        tier = RainbowColor.GREEN;
+        durationTicks = 400;
+        interval = 7;
+        cost = 8;
+
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(RainbowColor.YELLOW)), clover, Ingredient.fromItems(Items.GREEN_WOOL)));
+        for (Item item: new Item[] { Items.GREEN_DYE, Items.GOLD_INGOT, Items.LAPIS_LAZULI, Items.REDSTONE, Items.GUNPOWDER }) {
+            consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(item)));
+        }
+
+        tier = RainbowColor.LIGHT_BLUE;
+        durationTicks = 400;
+        interval = 6;
+        cost = 16;
+
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(RainbowColor.GREEN)), clover, Ingredient.fromItems(Items.LIGHT_BLUE_WOOL)));
+        for (Item item: new Item[] { Items.LIGHT_BLUE_DYE, Items.DIAMOND, Items.OBSIDIAN, Items.ENDER_PEARL }) {
+            consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(item)));
+        }
+
+        tier = RainbowColor.BLUE;
+        durationTicks = 400;
+        interval = 5;
+        cost = 32;
+
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(RainbowColor.LIGHT_BLUE)), clover, Ingredient.fromItems(Items.BLUE_WOOL)));
+        for (Item item: new Item[] { Items.BLUE_DYE, Items.NETHERRACK, Items.SOUL_SAND, Items.SOUL_SOIL, Items.BLAZE_ROD, Items.WARPED_STEM, Items.EMERALD, Items.NETHER_WART }) {
+            consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(item)));
+        }
+
+        tier = RainbowColor.PURPLE;
+        durationTicks = 800;
+        interval = 4;
+        cost = 64;
+
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(RainbowColor.BLUE)), clover, Ingredient.fromItems(Items.PURPLE_WOOL)));
+        for (Item item: new Item[] { Items.PURPLE_DYE, Items.END_STONE, Items.CHORUS_FRUIT, Items.GHAST_TEAR }) {
+            consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(item)));
+        }
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.ZOMBIE_SPAWN_EGG, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(Items.ZOMBIE_HEAD)));
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.CREEPER_SPAWN_EGG, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(Items.CREEPER_HEAD)));
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.SKELETON_SPAWN_EGG, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(Items.SKELETON_SKULL)));
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.SPIDER_SPAWN_EGG, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(Items.FERMENTED_SPIDER_EYE)));
+
+        tier = RainbowColor.MAGENTA;
+        durationTicks = 800;
+        interval = 3;
+        cost = 128;
+
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(RainbowColor.PURPLE)), clover, Ingredient.fromItems(Items.MAGENTA_WOOL)));
+        for (Item item: new Item[] { Items.MAGENTA_DYE, Items.SHULKER_SHELL }) {
+            consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(item)));
+        }
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.WITHER_SKELETON_SPAWN_EGG, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(Items.WITHER_SKELETON_SKULL)));
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.ZOMBIFIED_PIGLIN_SPAWN_EGG, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(Items.MUSIC_DISC_PIGSTEP)));
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.GHAST_SPAWN_EGG, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(Items.NETHERITE_HOE)));
+
+        tier = RainbowColor.PINK;
+        durationTicks = 800;
+        interval = 2;
+        cost = 256;
+
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(RainbowColor.MAGENTA)), clover, Ingredient.fromItems(Items.PINK_WOOL)));
+        for (Item item: new Item[] { Items.PINK_DYE }) {
+            consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(item)));
+        }
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.ENDERMAN_SPAWN_EGG, durationTicks, interval, count, cost, Ingredient.fromItems(ModItems.getArconiumIngot(tier)), clover, Ingredient.fromItems(Items.ENDER_CHEST)));
     }
+
+    private void registerGoldArconiumBlocks(Consumer<IFinishedRecipe> consumer) {
+        RainbowColor.stream().forEach(color -> consumer.accept(makeGoldArconiumBlock(color)));
+    }
+
+    private void registerInfiniteGoldArconiumBlocks(Consumer<IFinishedRecipe> consumer) {
+        RainbowColor.stream().forEach(color -> consumer.accept(makeInfiniteGoldArconiumBlock(color)));
+    }
+
+    private static FinishedRecipe makeGoldArconiumBlock(RainbowColor color) {
+        ItemStack output = new ItemStack(ModBlocks.getGoldArconiumBlock(color).asItem());
+        Ingredient goldBlock = Ingredient.fromItems(Blocks.GOLD_BLOCK.asItem());
+        Ingredient essence = Ingredient.fromItems(ModItems.getArconiumEssence(color));
+        ResourceLocation recipeId = id(color.getTierName() + BlockNames.GOLD_ARCONIUM_BLOCK_SUFFIX);
+        final int durationTicks = 100 + (color.getTier() * 100);
+        return new FinishedRecipe(recipeId, output, durationTicks, goldBlock, essence, essence, essence, essence, essence, essence);
+    }
+
+    private static FinishedRecipe makeInfiniteGoldArconiumBlock(RainbowColor color) {
+        ItemStack output = new ItemStack(ModBlocks.getInfiniteGoldArconiumBlock(color).asItem());
+        Ingredient goldArconiumBlock = Ingredient.fromItems(ModBlocks.getGoldArconiumBlock(color).asItem());
+        Ingredient arconiumBlock = Ingredient.fromItems(ModBlocks.getArconiumBlock(color).asItem());
+        ResourceLocation recipeId = id(color.getTierName() + BlockNames.INFINITE_GOLD_ARCONIUM_BLOCK_SUFFIX);
+        final int durationTicks = 100 + (color.getTier() * 100);
+        return new FinishedRecipe(recipeId, output, durationTicks, goldArconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock);
+    }
+
 
     /**
-     * Craft an enchanted colored root, which will be used to make a resource tree grow a specific resource
+     * Craft an enchanted colored root for a given item to be generated as part of the resource generation of the mod
      *
-     * @param item Colored root item to craft, which will be 'enchanted' through the altar ritual
+     * @param tier Tier of colored root to make
      * @param resourceItem The item to be produced by the tree
      * @param durationTicks time the crafting recipe will take to make the root
+     * @param resourceGenCount Number of items to generate per resource generation event
+     * @param resourceGenInterval Frequency with which resource is generated. An interval of 1 is fastest. Interval length is determined by the pot of gold and is typically no less than 5 ticks.
+     * @param resourceCoinCost How many coins it costs to generate this resource
      * @param ingredients
      * @return
      */
-    private static FinishedRecipe makeEnchantedColoredRoot(ColoredRoot item, IItemProvider resourceItem, int durationTicks, Ingredient... ingredients) {
-        ItemStack output = new ItemStack(item);
-        ColoredRoot.setResourceItem(output, resourceItem);
-        ResourceLocation rootID = Registry.ITEM.getKey(item);
-        ResourceLocation itemID = Registry.ITEM.getKey(resourceItem.asItem());
-        ResourceLocation recipeID = new ResourceLocation(rootID.getNamespace(), "pedestal/" + rootID.getPath() + "/" + itemID.getNamespace() + "_" + itemID.getPath());
-        Arconia.logger.info("***** Recipe ID: " + recipeID);
-        return new FinishedRecipe(recipeID, output, durationTicks, ingredients);
+    private static FinishedRecipe makeEnchantedColoredRoot(RainbowColor tier, IItemProvider resourceItem, int durationTicks, int resourceGenInterval, int resourceGenCount, int resourceCoinCost, Ingredient... ingredients) {
+        Item root = ModItems.getColoredRoot(tier);
+        ItemStack coloredRoot = new ItemStack(root);
+        ColoredRoot.setResourceItem(coloredRoot, resourceItem, resourceGenInterval, resourceGenCount, resourceCoinCost);
+        ResourceLocation rootId = Registry.ITEM.getKey(root);
+        ResourceLocation itemId = Registry.ITEM.getKey(resourceItem.asItem());
+        ResourceLocation recipeId = id(rootId.getPath() + "/" + itemId.getNamespace() + "_" + itemId.getPath());
+        Arconia.logger.info("***** Recipe ID: " + recipeId);
+        Ingredient[] newIngredients = Arrays.copyOf(ingredients, ingredients.length + 1);
+        newIngredients[ingredients.length] = Ingredient.fromItems(root);
+        return new FinishedRecipe(recipeId, coloredRoot, durationTicks, newIngredients);
     }
 
-    /**
-     * Generic recipe for enchanted red colored roots
-     * @param resourceItem Resource to be generated by the resource tree, once activated with the resulting enchanted root
-     * @param ingredient Required extra ingredient for crafting this enchanted root
-     * @return
-     */
-    private static FinishedRecipe makeEnchantedRedColoredRoot(IItemProvider resourceItem, Item... ingredient) {
-        final Ingredient root = Ingredient.fromItems(ModItems.getColoredRoot(RainbowColor.RED));
-        final Ingredient clover = Ingredient.fromItems(ModItems.fourLeafClover);
-
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.RED), resourceItem, 200, root, clover,
-                Ingredient.fromItems(ingredient));
-    }
-
-    private static FinishedRecipe makeEnchantedOrangeColoredRoot(IItemProvider resourceItem, Item... ingredient) {
-        final Ingredient root = Ingredient.fromItems(ModItems.getColoredRoot(RainbowColor.ORANGE));
-        final Ingredient clover = Ingredient.fromItems(ModItems.fourLeafClover);
-        final Ingredient arconium = Ingredient.fromItems(ModItems.getArconiumIngot(RainbowColor.RED));
-
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.ORANGE), resourceItem, 200, root, clover, arconium,
-                Ingredient.fromItems(ingredient));
-    }
-
-    private static FinishedRecipe makeEnchantedYellowColoredRoot(IItemProvider resourceItem, Item... ingredient) {
-        final Ingredient root = Ingredient.fromItems(ModItems.getColoredRoot(RainbowColor.YELLOW));
-        final Ingredient clover = Ingredient.fromItems(ModItems.fourLeafClover);
-        final Ingredient arconium = Ingredient.fromItems(ModItems.getArconiumIngot(RainbowColor.ORANGE));
-
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.YELLOW), resourceItem, 200, root, clover, arconium,
-                Ingredient.fromItems(ingredient));
-    }
-
-    private static FinishedRecipe makeEnchantedGreenColoredRoot(IItemProvider resourceItem, Item... ingredient) {
-        final Ingredient root = Ingredient.fromItems(ModItems.getColoredRoot(RainbowColor.GREEN));
-        final Ingredient clover = Ingredient.fromItems(ModItems.fourLeafClover);
-        final Ingredient arconium = Ingredient.fromItems(ModBlocks.getArconiumBlock(RainbowColor.YELLOW).asItem());
-
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.GREEN), resourceItem, 400, root, clover, arconium,
-                Ingredient.fromItems(ingredient));
-    }
-
-    private static FinishedRecipe makeEnchantedLightBlueColoredRoot(IItemProvider resourceItem, Item... ingredient) {
-        final Ingredient root = Ingredient.fromItems(ModItems.getColoredRoot(RainbowColor.LIGHT_BLUE));
-        final Ingredient clover = Ingredient.fromItems(ModItems.fourLeafClover);
-        final Ingredient arconium = Ingredient.fromItems(ModBlocks.getArconiumBlock(RainbowColor.GREEN).asItem());
-
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.LIGHT_BLUE), resourceItem, 400, root, clover, arconium,
-                Ingredient.fromItems(ingredient));
-    }
-
-    private static FinishedRecipe makeEnchantedBlueColoredRoot(IItemProvider resourceItem, Item... ingredient) {
-        final Ingredient root = Ingredient.fromItems(ModItems.getColoredRoot(RainbowColor.BLUE));
-        final Ingredient clover = Ingredient.fromItems(ModItems.fourLeafClover);
-        final Ingredient arconium = Ingredient.fromItems(ModBlocks.getArconiumBlock(RainbowColor.LIGHT_BLUE).asItem());
-
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.BLUE), resourceItem, 400, root, clover, arconium,
-                Ingredient.fromItems(ingredient));
-    }
-
-    private static FinishedRecipe makeEnchantedPurpleColoredRoot(IItemProvider resourceItem, Item... ingredient) {
-        final Ingredient root = Ingredient.fromItems(ModItems.getColoredRoot(RainbowColor.PURPLE));
-        final Ingredient clover = Ingredient.fromItems(ModItems.fourLeafClover);
-        final Item arconiumItem = ModBlocks.getArconiumBlock(RainbowColor.BLUE).asItem();
-        final Ingredient arconium = Ingredient.fromItems(arconiumItem, arconiumItem, arconiumItem);
-
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.PURPLE), resourceItem, 800, root, clover, arconium,
-                Ingredient.fromItems(ingredient));
-    }
-
-    private static FinishedRecipe makeEnchantedMagentaColoredRoot(IItemProvider resourceItem, Item... ingredient) {
-        final Ingredient root = Ingredient.fromItems(ModItems.getColoredRoot(RainbowColor.MAGENTA));
-        final Ingredient clover = Ingredient.fromItems(ModItems.fourLeafClover);
-        final Item arconiumItem = ModBlocks.getArconiumBlock(RainbowColor.PURPLE).asItem();
-        final Ingredient arconium = Ingredient.fromItems(arconiumItem, arconiumItem, arconiumItem);
-
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.MAGENTA), resourceItem, 800, root, clover, arconium,
-                Ingredient.fromItems(ingredient));
-    }
-
-    private static FinishedRecipe makeEnchantedPinkColoredRoot(IItemProvider resourceItem, Item... ingredient) {
-        final Ingredient root = Ingredient.fromItems(ModItems.getColoredRoot(RainbowColor.PINK));
-        final Ingredient clover = Ingredient.fromItems(ModItems.fourLeafClover);
-        final Item arconiumItem = ModBlocks.getArconiumBlock(RainbowColor.PINK).asItem();
-        final Ingredient arconium = Ingredient.fromItems(arconiumItem, arconiumItem, arconiumItem);
-
-        return makeEnchantedColoredRoot(ModItems.getColoredRoot(RainbowColor.PINK), resourceItem, 800, root, clover, arconium,
-                Ingredient.fromItems(ingredient));
-    }
-
-    private static ResourceLocation idFor(ResourceLocation name) {
-        return new ResourceLocation(name.getNamespace(), "pedestal/" + name.getPath());
+    private static ResourceLocation id(String s) {
+        return new ResourceLocation(Arconia.MOD_ID, "pedestal/" + s);
     }
 
 

@@ -4,10 +4,10 @@
       "item": "arconia:red_arconium_ingot"
     },
     "title": {
-      "translate": "advancements.main.red_arconium_ingot.title"
+      "translate": "advancement.arconia.main.red_arconium_ingot.title"
     },
     "description": {
-      "translate": "advancements.main.red_arconium_ingot.desc"
+      "translate": "advancement.arconia.main.red_arconium_ingot.desc"
     },
     "show_toast": true,
     "announce_to_chat": true,

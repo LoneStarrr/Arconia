@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "arconia:pink_arconium_block"
+    }
+  ],
+  "result": {
+    "item": "arconia:pink_arconium_ingot",
+    "count": 9
+  }
+}

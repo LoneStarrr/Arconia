@@ -1,0 +1,29 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "nbt": {
+      "item": {
+        "id": "minecraft:end_stone",
+        "Count": 1
+      },
+      "interval": 4,
+      "coin_cost": 64
+    },
+    "item": "arconia:purple_colored_tree_root"
+  },
+  "durationTicks": 800,
+  "ingredients": [
+    {
+      "item": "arconia:purple_arconium_ingot"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "minecraft:end_stone"
+    },
+    {
+      "item": "arconia:purple_colored_tree_root"
+    }
+  ]
+}

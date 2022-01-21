@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "arconia:block/rainbow_crate"
+    },
+    "facing=south": {
+      "model": "arconia:block/rainbow_crate",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "arconia:block/rainbow_crate",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "arconia:block/rainbow_crate",
+      "y": 90
+    }
+  }
+}

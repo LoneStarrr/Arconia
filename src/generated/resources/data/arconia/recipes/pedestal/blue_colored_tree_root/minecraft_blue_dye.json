@@ -1,0 +1,29 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "nbt": {
+      "item": {
+        "id": "minecraft:blue_dye",
+        "Count": 1
+      },
+      "interval": 5,
+      "coin_cost": 32
+    },
+    "item": "arconia:blue_colored_tree_root"
+  },
+  "durationTicks": 400,
+  "ingredients": [
+    {
+      "item": "arconia:blue_arconium_ingot"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "minecraft:blue_dye"
+    },
+    {
+      "item": "arconia:blue_colored_tree_root"
+    }
+  ]
+}

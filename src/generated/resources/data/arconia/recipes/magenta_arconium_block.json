@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "III",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "arconia:magenta_arconium_ingot"
+    }
+  },
+  "result": {
+    "item": "arconia:magenta_arconium_block"
+  }
+}

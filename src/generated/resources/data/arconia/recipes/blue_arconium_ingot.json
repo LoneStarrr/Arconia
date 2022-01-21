@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "arconia:blue_arconium_block"
+    }
+  ],
+  "result": {
+    "item": "arconia:blue_arconium_ingot",
+    "count": 9
+  }
+}

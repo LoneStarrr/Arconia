@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "arconia:block/resource_tree_leaves"
+    }
+  }
+}

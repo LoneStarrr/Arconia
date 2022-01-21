@@ -37,6 +37,8 @@ public class ModLanguageProvider extends LanguageProvider {
         for (RainbowColor color : RainbowColor.values()) {
             String colorName = color.getUnlocalizedName();
             add(ModBlocks.getArconiumBlock(color), colorName + " Arconium Block");
+            add(ModBlocks.getGoldArconiumBlock(color), colorName + " Gold Arconium Block");
+            add(ModBlocks.getInfiniteGoldArconiumBlock(color), colorName + " Infinite Gold Arconium Block");
             add(ModBlocks.getMoneyTreeLeaves(color), colorName + " Resource Tree Leaves");
             add(ModBlocks.getMoneyTreeSapling(color), colorName + " Resource Tree Sapling");
             add(ModBlocks.getResourceTreeRootBlock(color), colorName + " Tree Root Block");
@@ -57,6 +59,7 @@ public class ModLanguageProvider extends LanguageProvider {
         add(ModBlocks.clover, "Clover Plant");
         add(ModBlocks.pot, "Pot");
         add(ModBlocks.orb, "Orb");
+        add(ModBlocks.hat, "Leprechaun Hat");
         add(ModBlocks.pedestal, "Pedestal");
         add(ModBlocks.centerPedestal, "Center Pedestal");
     }
@@ -72,20 +75,22 @@ public class ModLanguageProvider extends LanguageProvider {
 
     private void registerAdvancements() {
         Stream.of(new String[][] {
-                { "advancements.main.root.title", "Arconia" },
-                { "advancements.main.root.desc", "Punch a defenseless clover plant" },
-                { "advancements.main.four_leaf_clover.title", "Luck is on your side" },
-                { "advancements.main.four_leaf_clover.desc", "Punch clover plants until you get lucky" },
-                { "advancements.main.clover_staff.title", "You're a wizard now" },
-                { "advancements.main.clover_staff.desc", "Make a clover staff to increase your luck punching clovers" },
-                { "advancements.main.tree_root_block.title", "I'm rooting for you" },
-                { "advancements.main.tree_root_block.desc", "I wonder what happens if you put this under one of those red trees" },
-                { "advancements.main.pedestal.title", "Oh no, yet another altar" },
-                { "advancements.main.pedestal.desc", "Setup an altar to perform colorful rituals" },
-                { "advancements.main.red_root_of_essence.title", "Arconium?" },
-                { "advancements.main.red_root_of_essence.desc", "Imbue magical properties onto a tree root using the altar" },
-                { "advancements.main.red_arconium_ingot.title", "The first of many" },
-                { "advancements.main.red_arconium_ingot.desc", "Craft your first arconium ingot" },
+                { "advancement.arconia.main.root.title", "Read the fine manual" },
+                { "advancement.arconia.main.root.desc", "Dig up dirt and find some memoirs" },
+                { "advancement.arconia.main.four_leaf_clover.title", "Luck is on your side" },
+                { "advancement.arconia.main.four_leaf_clover.desc", "Punch clover plants until you get lucky" },
+                { "advancement.arconia.main.clover_staff.title", "You're a wizard now" },
+                { "advancement.arconia.main.clover_staff.desc", "Make a clover staff to increase your luck punching clovers" },
+                { "advancement.arconia.main.tree_root_block.title", "I'm rooting for you" },
+                { "advancement.arconia.main.tree_root_block.desc", "Craft a root tree block" },
+                { "advancement.arconia.main.pedestal.title", "Oh no, yet another altar" },
+                { "advancement.arconia.main.pedestal.desc", "Setup an altar to perform colorful rituals" },
+                { "advancement.arconia.main.red_root_of_essence.title", "Arconium?" },
+                { "advancement.arconia.main.red_root_of_essence.desc", "Imbue magical properties onto a tree root using the altar" },
+                { "advancement.arconia.main.red_arconium_ingot.title", "The first of many" },
+                { "advancement.arconia.main.red_arconium_ingot.desc", "Craft your first arconium ingot" },
+                { "advancement.arconia.main.pot_of_gold.title", "Rainbow not included" },
+                { "advancement.arconia.main.pot_of_gold.desc", "Build a pot of gold" },
         }).forEach(adv -> add(adv[0], adv[1]));
     }
 
@@ -93,5 +98,28 @@ public class ModLanguageProvider extends LanguageProvider {
         add("jei.arconia.recipe_category.altar", "Altar");
         // label in crate GUI
         add("container.arconia.rainbow_crate", "Rainbow Crate");
+        // clover staff messages
+        add("arconia.item.cloverstaff.linkhat.invalidpot", "The selected pot of gold appears to be invalid or missing");
+        add("arconia.item.cloverstaff.linkhat.linked", "Linked hat");
+        add("arconia.item.cloverstaff.linkhat.toofar", "The hat is too far away to link");
+        add("arconia.item.cloverstaff.linkhat.notfound", "Invalid hat");
+        add("arconia.item.cloverstaff.linkhat.toomanyhats", "Too many hats have been linked already");
+        add("arconia.item.cloverstaff.linkhat.alreadylinked", "The hat's already linked");
+        add("arconia.item.cloverstaff.linkhat.linked_other_pot", "The hat's already linked to another pot");
+        add("arconia.item.cloverstaff.linkhat.unlinked", "Unlinked hat");
+        add("arconia.item.cloverstaff.linkhat.unlink_failed", "Hat was not linked");
+        add("arconia.item.cloverstaff.selectpot.success", "Stored coordinate of the pot of gold at %s");
+        add("arconia.item.cloverstaff.selectpot.failed", "Invalid pot of gold multiblock structure?");
+        // pedestal ritual messages
+        add("arconia.block.center_pedestal.ritual_start_failed", "Failed to start ritual. Perhaps some items are missing?");
+        // Pot multiblock
+        add("block.arconia.pot_multiblock_secondary", "Pot of Gold");
+        add("block.arconia.pot_multiblock_primary", "Pot of Gold");
+        add("arconia.block.pot_multiblock.coin_count.none", "There are no coins");
+        add("arconia.block.pot_multiblock.coin_count.few", "There are a few coins");
+        add("arconia.block.pot_multiblock.coin_count.tens", "There are tens of coins");
+        add("arconia.block.pot_multiblock.coin_count.hundreds", "There are hundreds of coins");
+        add("arconia.block.pot_multiblock.coin_count.thousands", "There are thousands of coins");
+        add("arconia.block.pot_multiblock.coin_count.ludicrous", "There is an insane amount of coins");
     }
 }

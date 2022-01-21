@@ -11,6 +11,7 @@ buildscript {
             url "https://repo.spongepowered.org/repository/maven-public"
         }
 
+        // Tests
         jcenter()
     }
     dependencies {
@@ -115,6 +116,16 @@ repositories {
     maven { url = 'https://dvs1.progwml6.com/files/maven/' }
     // JEI fallback
     maven { url = 'https://modmaven.k-4u.nl' }
+    // Patchouli - for the guide book
+    maven {
+        name "Patchouli"
+        url "https://maven.blamejared.com"
+    }
+    // The One Probe
+    maven {
+        name "tterrag maven"
+        url "https://maven.tterrag.com"
+    }
 }
 
 dependencies {
@@ -151,6 +162,14 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
     // at runtime, use the full JEI jar
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+
+    // Patchouli
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
+
+    // The One Probe
+    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${top_version}")
+    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${top_version}")
 
     // Test framework
     testImplementation "org.junit.jupiter:junit-jupiter:${junit_version}"
@@ -202,17 +221,3 @@ publishing {
         }
     }
 }
-
-//sourceSets {
-//    main {
-//        java {
-//            srcDirs=['src/main/java']
-//        }
-//    }
-//
-//    test {
-//        java {
-//            srcDirs=['src/test/java']
-//        }
-//    }
-//}

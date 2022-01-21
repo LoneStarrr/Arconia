@@ -4,10 +4,10 @@
       "item": "arconia:four_leaf_clover"
     },
     "title": {
-      "translate": "advancements.main.four_leaf_clover.title"
+      "translate": "advancement.arconia.main.four_leaf_clover.title"
     },
     "description": {
-      "translate": "advancements.main.four_leaf_clover.desc"
+      "translate": "advancement.arconia.main.four_leaf_clover.desc"
     },
     "show_toast": true,
     "announce_to_chat": true,

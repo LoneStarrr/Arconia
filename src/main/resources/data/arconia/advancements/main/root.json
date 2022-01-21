@@ -1,13 +1,14 @@
 {
   "display": {
     "icon": {
-      "item": "arconia:three_leaf_clover"
+      "item": "patchouli:guide_book",
+      "nbt": "{\"patchouli:book\":\"arconia:guide_book\"}"
     },
     "title": {
-      "translate": "advancements.main.root.title"
+      "translate": "advancement.arconia.main.root.title"
     },
     "description": {
-      "translate": "advancements.main.root.desc"
+      "translate": "advancement.arconia.main.root.desc"
     },
     "background": "arconia:textures/block/tree_root_block_sides.png",
     "show_toast": true,
@@ -15,12 +16,13 @@
     "hidden": false
   },
   "criteria": {
-    "clover": {
+    "guide_book": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "arconia:three_leaf_clover"
+            "item": "patchouli:guide_book",
+            "nbt": "{\"patchouli:book\":\"arconia:guide_book\"}"
           }
         ]
       }

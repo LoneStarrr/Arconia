@@ -10,6 +10,7 @@ import lonestarrr.arconia.common.Arconia;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.stream.Stream;
 
 /**
  * All the colors of the Minecraft rainbow roughly matching dye colors - used by various blocks and items
@@ -60,6 +61,9 @@ public enum RainbowColor {
         return tier;
     }
 
+    public static Stream<RainbowColor> stream() {
+        return Stream.of(RainbowColor.values());
+    }
     /**
      *
      * @return The next tier, or null if this is the maximum tier
