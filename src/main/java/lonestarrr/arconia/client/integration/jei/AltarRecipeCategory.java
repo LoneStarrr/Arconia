@@ -33,7 +33,7 @@ public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
 
     public AltarRecipeCategory(@Nonnull IGuiHelper guiHelper) {
         this.background = guiHelper.createBlankDrawable(144, 81);
-        this.localizedName = I18n.format("jei.arconia.recipe_category.altar");
+        this.localizedName = I18n.get("jei.arconia.recipe_category.altar");
         this.overlay = guiHelper.createDrawable(new ResourceLocation(Arconia.MOD_ID, "textures/gui/jei/altar_overlay.png"),
                 0, 0, 144, 81);
         this.icon = guiHelper.createDrawableIngredient(new ItemStack(ModBlocks.centerPedestal.asItem()));
@@ -76,7 +76,7 @@ public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
     @Override
     public void setIngredients(IPedestalRecipe recipe, IIngredients ingredients) {
         ingredients.setInputIngredients(recipe.getIngredients());
-        ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
+        ingredients.setOutput(VanillaTypes.ITEM, recipe.getResultItem());
     }
 
     @Override

@@ -60,18 +60,18 @@ public class ArconiaCommand {
 
     private static int enchantRoot(
             CommandContext<CommandSource> ctx, ItemInput itemInput, int itemCount, int generationInterval, int coinCost) throws CommandSyntaxException {
-        PlayerEntity player = ctx.getSource().asPlayer();
+        PlayerEntity player = ctx.getSource().getPlayerOrException();
         Item resourceItem = itemInput.getItem();
 
         // Enchant resourceItem in player's hand
-        ItemStack rootItem = player.inventory.getCurrentItem();
+        ItemStack rootItem = player.inventory.getSelected();
         if (rootItem.isEmpty() || !(rootItem.getItem() instanceof ColoredRoot)) {
-            player.sendMessage(new StringTextComponent("A colored root is expected in your active hotbar slot for this to work"), Util.DUMMY_UUID);
+            player.sendMessage(new StringTextComponent("A colored root is expected in your active hotbar slot for this to work"), Util.NIL_UUID);
             return Command.SINGLE_SUCCESS;
         }
 
         ColoredRoot.setResourceItem(rootItem, resourceItem, generationInterval, itemCount, coinCost);
-        player.sendMessage(new StringTextComponent("Enchanted the colored root with resourceItem " + resourceItem.getRegistryName()), Util.DUMMY_UUID);
+        player.sendMessage(new StringTextComponent("Enchanted the colored root with resourceItem " + resourceItem.getRegistryName()), Util.NIL_UUID);
         return Command.SINGLE_SUCCESS;
     }
 }

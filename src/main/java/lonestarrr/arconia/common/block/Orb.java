@@ -30,20 +30,20 @@ public class Orb extends Block {
 
     static {
         // I Used Plotz Modeler to generate the sphere model, easy to step over it layer by layer, then copied that into blockbench
-        VoxelShape layer1 = makeCuboidShape(5, 1, 5, 11, 2, 11);
-        VoxelShape layer2 = makeCuboidShape(4, 2, 4, 12, 3, 12);
-        VoxelShape layer3 = makeCuboidShape(3, 3, 3, 13, 4, 13);
-        VoxelShape layer4 = makeCuboidShape(2, 4, 2, 14, 5, 14);
-        VoxelShape layer5_10 = makeCuboidShape(1, 5, 1, 15, 11, 15);
-        VoxelShape layer11 = makeCuboidShape(2, 11, 2, 14, 12, 14);
-        VoxelShape layer12 = makeCuboidShape(3, 12, 3, 13, 13, 13);
-        VoxelShape layer13 = makeCuboidShape(4, 13, 4, 12, 14, 12);
-        VoxelShape layer14 = makeCuboidShape(5, 14, 5, 11, 15, 11);
+        VoxelShape layer1 = box(5, 1, 5, 11, 2, 11);
+        VoxelShape layer2 = box(4, 2, 4, 12, 3, 12);
+        VoxelShape layer3 = box(3, 3, 3, 13, 4, 13);
+        VoxelShape layer4 = box(2, 4, 2, 14, 5, 14);
+        VoxelShape layer5_10 = box(1, 5, 1, 15, 11, 15);
+        VoxelShape layer11 = box(2, 11, 2, 14, 12, 14);
+        VoxelShape layer12 = box(3, 12, 3, 13, 13, 13);
+        VoxelShape layer13 = box(4, 13, 4, 12, 14, 12);
+        VoxelShape layer14 = box(5, 14, 5, 11, 15, 11);
         SHAPE = VoxelShapes.or(layer1, layer2, layer3, layer4, layer5_10, layer11, layer12, layer13, layer14);
     }
 
     public Orb() {
-        super(Block.Properties.create(Material.GLASS, MaterialColor.AIR).hardnessAndResistance(0.5F).setLightLevel(s->15).sound(SoundType.GLASS));
+        super(Block.Properties.of(Material.GLASS, MaterialColor.NONE).strength(0.5F).lightLevel(s->15).sound(SoundType.GLASS));
     }
 
     @Nonnull
@@ -64,26 +64,26 @@ public class Orb extends Block {
     }
 
     @Override
-    public ActionResultType onBlockActivated(
+    public ActionResultType use(
             BlockState blockState, World world, BlockPos blockPos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult rayTraceResult) {
 //        return super.onBlockActivated(blockState, world, blockPos, playerEntity, hand, rayTraceResult);
         OrbTileEntity tile = null;
-        if (world.getTileEntity(blockPos) != null && world.getTileEntity(blockPos) instanceof OrbTileEntity) {
-            tile = (OrbTileEntity) world.getTileEntity(blockPos);
+        if (world.getBlockEntity(blockPos) != null && world.getBlockEntity(blockPos) instanceof OrbTileEntity) {
+            tile = (OrbTileEntity) world.getBlockEntity(blockPos);
         }
 
         if (tile == null) {
             return ActionResultType.PASS;
         }
 
-        if (playerEntity.isSneaking()) {
+        if (playerEntity.isShiftKeyDown()) {
             ItemStack stack = tile.popItem();
             if (stack.isEmpty()) {
                 return ActionResultType.PASS;
             }
             return ActionResultType.SUCCESS;
         } else {
-            ItemStack held = playerEntity.getHeldItem(hand);
+            ItemStack held = playerEntity.getItemInHand(hand);
             if (held.isEmpty()) {
                 return ActionResultType.PASS;
             }

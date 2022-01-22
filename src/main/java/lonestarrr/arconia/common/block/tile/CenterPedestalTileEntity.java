@@ -40,7 +40,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
         if (currentRecipeID == null) {
             return null;
         }
-        Optional<? extends IRecipe> recipe = world.getRecipeManager().getRecipe(currentRecipeID);
+        Optional<? extends IRecipe> recipe = level.getRecipeManager().byKey(currentRecipeID);
         if (recipe.isPresent() && recipe.get() instanceof IPedestalRecipe) {
             return (IPedestalRecipe)recipe.get();
         }
@@ -74,7 +74,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
     public boolean isRitualOngoing() { return ritualOngoing; }
 
     public boolean startRitual() {
-        if (world.isRemote()) {
+        if (level.isClientSide()) {
             return false;
         }
 
@@ -102,7 +102,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
         currentRecipeID = recipe.getId();
         ritualOngoing = true;
         ritualTicksElapsed = 0;
-        markDirty();
+        setChanged();
         return true;
     }
 
@@ -115,7 +115,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
     }
 
     public void completeRitual() {
-        if (world.isRemote()) {
+        if (level.isClientSide()) {
             return;
         }
 
@@ -129,10 +129,10 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
         List<PedestalTileEntity> pedestals = findPedestals();
         Inventory inv = getPedestalItems(pedestals);
 
-        if (currentRecipe.matches(inv, world)) {
+        if (currentRecipe.matches(inv, level)) {
             produceRecipeOutput();
             consumePedestalItems(pedestals);
-            world.playSound(null, pos, SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, SoundCategory.AMBIENT, 1, 1);
+            level.playSound(null, worldPosition, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundCategory.AMBIENT, 1, 1);
         }
         resetRitual();
     }
@@ -147,7 +147,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
             return;
         }
 
-        ItemStack output = currentRecipe.getRecipeOutput().copy();
+        ItemStack output = currentRecipe.getResultItem().copy();
         this.putItem(output);
     }
 
@@ -156,7 +156,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
         ritualOngoing = false;
         ritualTicksElapsed = 0;
         lastTickTime = 0;
-        markDirty();
+        setChanged();
         updateClient();
     }
 
@@ -164,8 +164,8 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
     private List<PedestalTileEntity> findPedestals() {
         List<PedestalTileEntity> pedestals = new ArrayList<>();
 
-        for (BlockPos posNear: BlockPos.getAllInBoxMutable(pos.west(3).north(3), pos.east(3).south(3))) {
-            TileEntity te = world.getTileEntity(posNear);
+        for (BlockPos posNear: BlockPos.betweenClosed(worldPosition.west(3).north(3), worldPosition.east(3).south(3))) {
+            TileEntity te = level.getBlockEntity(posNear);
             if (te == null) {
                 continue;
             }
@@ -191,14 +191,14 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
         Inventory inv = new Inventory(stacks.size());
         for (int i = 0; i < stacks.size(); i++) {
             ItemStack ingredient = stacks.get(i);
-            inv.setInventorySlotContents(i, ingredient);
+            inv.setItem(i, ingredient);
         }
 
         return inv;
     }
 
     private IPedestalRecipe findRecipe(Inventory inv) {
-        Optional<IPedestalRecipe> hasRecipe = world.getRecipeManager().getRecipe(ModRecipeTypes.PEDESTAL_TYPE, inv, world);
+        Optional<IPedestalRecipe> hasRecipe = level.getRecipeManager().getRecipeFor(ModRecipeTypes.PEDESTAL_TYPE, inv, level);
         if (hasRecipe.isPresent()) {
             return hasRecipe.get();
         }
@@ -208,7 +208,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
 
     @Override
     public void tick() {
-        if (world.isRemote() || !isRitualOngoing()) {
+        if (level.isClientSide() || !isRitualOngoing()) {
             return;
         }
 
@@ -220,11 +220,11 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
         }
 
         if (lastTickTime == 0) {
-            lastTickTime = world.getGameTime();
+            lastTickTime = level.getGameTime();
             return;
         }
 
-        long now = world.getGameTime();
+        long now = level.getGameTime();
         long ticksElapsed = now - lastTickTime;
         if (ticksElapsed < TICK_UPDATE_INTERVAL)
             return;
@@ -234,7 +234,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
         if (ritualTicksElapsed > currentRecipe.getDurationTicks()) {
             completeRitual();
         } else {
-            markDirty(); // unloading the entity should not reset the ritual entirely
+            setChanged(); // unloading the entity should not reset the ritual entirely
             updateClient(); // TODO should probably only send to nearby players!
         }
     }

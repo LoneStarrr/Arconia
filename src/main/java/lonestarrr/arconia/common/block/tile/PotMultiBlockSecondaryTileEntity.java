@@ -16,7 +16,7 @@ public class PotMultiBlockSecondaryTileEntity extends BaseTileEntity {
 
     public void setPrimaryPos(@Nonnull final BlockPos primaryPos) {
         this.primaryPos = primaryPos;
-        markDirty();
+        setChanged();
     }
 
     public BlockPos getPrimaryPos() {
@@ -25,12 +25,12 @@ public class PotMultiBlockSecondaryTileEntity extends BaseTileEntity {
 
     public void writePacketNBT(CompoundNBT tag) {
         if (this.primaryPos != null) {
-            tag.putLong("primaryPos", primaryPos.toLong());
+            tag.putLong("primaryPos", primaryPos.asLong());
         }
     }
 
     public void readPacketNBT(CompoundNBT tag) {
-        this.primaryPos = BlockPos.fromLong(tag.getLong("primaryPos"));
+        this.primaryPos = BlockPos.of(tag.getLong("primaryPos"));
     }
 
 }

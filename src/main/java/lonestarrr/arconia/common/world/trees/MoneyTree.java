@@ -29,14 +29,14 @@ public class MoneyTree extends Tree {
      * Get a {@link net.minecraft.world.gen.feature.ConfiguredFeature} of tree
      */
     @Nullable
-    protected ConfiguredFeature<BaseTreeFeatureConfig, ?> getTreeFeature(Random randomIn, boolean largeHive) {
+    protected ConfiguredFeature<BaseTreeFeatureConfig, ?> getConfiguredFeature(Random randomIn, boolean largeHive) {
         return ModFeatures.getResourceTreeConfigured(this.tier);
     }
 
     @Override
-    public boolean attemptGrowTree(
+    public boolean growTree(
             ServerWorld world, ChunkGenerator chunkGenerator, BlockPos pos, BlockState state, Random rand) {
-        boolean didGrow = super.attemptGrowTree(world, chunkGenerator, pos, state, rand);
+        boolean didGrow = super.growTree(world, chunkGenerator, pos, state, rand);
 
         if (didGrow) {
             // Is this money tree placed on a pattern? Then attempt to complete it.

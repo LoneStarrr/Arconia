@@ -35,20 +35,20 @@ import javax.annotation.Nullable;
  * placing the block by use of a magically configured tree root.
  */
 public class ResourceGenBlock extends Block implements IBlockColor {
-    private static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
+    private static final DirectionProperty FACING = HorizontalBlock.FACING;
 
     public ResourceGenBlock() {
-        super(Block.Properties.create(Material.EARTH).hardnessAndResistance(0.5f).sound(SoundType.GROUND));
+        super(Block.Properties.of(Material.DIRT).strength(0.5f).sound(SoundType.GRAVEL));
 
-        BlockState defaultBlockState = this.stateContainer.getBaseState().with(FACING, Direction.NORTH);
-        this.setDefaultState(defaultBlockState);
+        BlockState defaultBlockState = this.stateDefinition.any().setValue(FACING, Direction.NORTH);
+        this.registerDefaultState(defaultBlockState);
     }
 
     /**
      * BlockState properties for this block
      */
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
@@ -60,18 +60,18 @@ public class ResourceGenBlock extends Block implements IBlockColor {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext blockItemUseContext) {
-        World world = blockItemUseContext.getWorld();
-        BlockPos blockPos = blockItemUseContext.getPos();
+        World world = blockItemUseContext.getLevel();
+        BlockPos blockPos = blockItemUseContext.getClickedPos();
 
-        Direction direction = blockItemUseContext.getPlacementHorizontalFacing();  // north, east, south, or west
+        Direction direction = blockItemUseContext.getHorizontalDirection();  // north, east, south, or west
 
-        BlockState blockState = getDefaultState().with(FACING, direction);
+        BlockState blockState = defaultBlockState().setValue(FACING, direction);
         return blockState;
     }
 
     @Override
     public int getColor(BlockState state, @Nullable IBlockDisplayReader reader, @Nullable BlockPos pos, int color) {
-        return reader != null && pos != null ? BiomeColors.getGrassColor(reader, pos) : GrassColors.get(0.5D, 1.0D);
+        return reader != null && pos != null ? BiomeColors.getAverageGrassColor(reader, pos) : GrassColors.get(0.5D, 1.0D);
     }
 
     @Override

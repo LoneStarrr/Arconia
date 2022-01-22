@@ -10,6 +10,6 @@ import net.minecraft.block.material.Material;
  */
 public class CloverBlock extends BushBlock {
     public CloverBlock() {
-        super(Block.Properties.create(Material.PLANTS).doesNotBlockMovement().hardnessAndResistance(0f).sound(SoundType.PLANT));
+        super(Block.Properties.of(Material.PLANT).noCollission().strength(0f).sound(SoundType.GRASS));
     }
 }

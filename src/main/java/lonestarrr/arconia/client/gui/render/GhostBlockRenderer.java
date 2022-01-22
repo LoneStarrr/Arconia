@@ -26,13 +26,13 @@ public class GhostBlockRenderer {
      * @param scale Scale to render at
      */
     public static void renderGhostBlock(@Nonnull final MatrixStack matrixStack, @Nonnull final BlockPos pos, @Nonnull final BlockState state, final int lightLevel, final float scale) {
-        BlockRendererDispatcher renderer = Minecraft.getInstance().getBlockRendererDispatcher();
-        ClientWorld world = Minecraft.getInstance().world;
-        IModelData model = renderer.getModelForState(state).getModelData(world, new BlockPos(pos), state, ModelDataManager.getModelData(world, new BlockPos(pos)));
-        ActiveRenderInfo renderInfo = Minecraft.getInstance().gameRenderer.getActiveRenderInfo();
+        BlockRendererDispatcher renderer = Minecraft.getInstance().getBlockRenderer();
+        ClientWorld world = Minecraft.getInstance().level;
+        IModelData model = renderer.getBlockModel(state).getModelData(world, new BlockPos(pos), state, ModelDataManager.getModelData(world, new BlockPos(pos)));
+        ActiveRenderInfo renderInfo = Minecraft.getInstance().gameRenderer.getMainCamera();
 
-        matrixStack.push();
-        matrixStack.translate(-renderInfo.getProjectedView().getX() + pos.getX(), -renderInfo.getProjectedView().getY() + pos.getY(), -renderInfo.getProjectedView().getZ() + pos.getZ());
+        matrixStack.pushPose();
+        matrixStack.translate(-renderInfo.getPosition().x() + pos.getX(), -renderInfo.getPosition().y() + pos.getY(), -renderInfo.getPosition().z() + pos.getZ());
 
         final float scaleOffset = (1F - scale) / 2F; // render scaled block in the center of this world pos
         matrixStack.translate(scaleOffset, scaleOffset, scaleOffset);
@@ -43,9 +43,9 @@ public class GhostBlockRenderer {
 
         // overlay: first int is light level (0..15)
         // looking at implementation: 2nd val = 3 or 10, is that 'UV'? No, 'UV' is used in models to indicate a texture area size (e.g. if not 16x16).
-        int combinedOverlayIn = OverlayTexture.getPackedUV(lightLevel, 10);
+        int combinedOverlayIn = OverlayTexture.pack(lightLevel, 10);
         int combinedLightIn = 240<<16 + 240; // What do these values represent?
-        Minecraft.getInstance().getBlockRendererDispatcher().renderBlock(state, matrixStack, Minecraft.getInstance().getRenderTypeBuffers().getCrumblingBufferSource(), combinedLightIn, combinedOverlayIn, model);
-        matrixStack.pop();
+        Minecraft.getInstance().getBlockRenderer().renderBlock(state, matrixStack, Minecraft.getInstance().renderBuffers().crumblingBufferSource(), combinedLightIn, combinedOverlayIn, model);
+        matrixStack.popPose();
     }
 }

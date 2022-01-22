@@ -101,7 +101,7 @@ public class BuildPatternPreview {
         }
 
         // TODO use the nicer logic from HighlightPatternStructure rendering
-        World world = Minecraft.getInstance().world;
+        World world = Minecraft.getInstance().level;
         float gameTime = world.getGameTime(); // ticks since start
         float ticksperHalfCycle = 15;
         float cycleCount = gameTime % ticksperHalfCycle;
@@ -146,7 +146,7 @@ public class BuildPatternPreview {
             return;
         }
 
-        float gameTime = Minecraft.getInstance().world.getGameTime(); // ticks since start
+        float gameTime = Minecraft.getInstance().level.getGameTime(); // ticks since start
         if (lastBadBlocksRenderTime == 0) {
             lastBadBlocksRenderTime = gameTime;
         }
@@ -155,10 +155,10 @@ public class BuildPatternPreview {
         }
         lastBadBlocksRenderTime = gameTime;
 
-        World world = Minecraft.getInstance().world; //client world
+        World world = Minecraft.getInstance().level; //client world
 
         for (BlockPos pos: badBlockPositions) {
-            if (!world.isAirBlock(pos.add(0, 1, 0))) {
+            if (!world.isEmptyBlock(pos.offset(0, 1, 0))) {
                 continue;
             }
             // Example taken from CampfireBlock

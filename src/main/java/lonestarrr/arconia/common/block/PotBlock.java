@@ -23,6 +23,6 @@ import java.util.Stack;
 
 public class PotBlock extends Block {
     public PotBlock() {
-        super(Block.Properties.create(Material.IRON, MaterialColor.STONE).hardnessAndResistance(2.0F).notSolid());
+        super(Block.Properties.of(Material.METAL, MaterialColor.STONE).strength(2.0F).noOcclusion());
     }
 }

@@ -33,7 +33,7 @@ public class ClientProxy implements IProxy {
 
         event.enqueueWork(() -> {
             // TODO Can these blocks themselves provide this hint?
-            RenderType cutout = RenderType.getCutout();
+            RenderType cutout = RenderType.cutout();
 
             RenderTypeLookup.setRenderLayer(ModBlocks.clover, cutout);
 
@@ -44,14 +44,14 @@ public class ClientProxy implements IProxy {
                 // Crates are solid, but use overlapping textures with gaps
                 RenderTypeLookup.setRenderLayer(ModBlocks.getRainbowCrateBlock(tier), cutout);
                 // gleaned from Blocks.GRASS_BLOCK - this is for overlaying the top with a rainbow tint
-                RenderTypeLookup.setRenderLayer(ModBlocks.getResourceTreeRootBlock(tier), RenderType.getCutoutMipped());
-                RenderTypeLookup.setRenderLayer(ModBlocks.getGoldArconiumBlock(tier), RenderType.getCutoutMipped());
-                RenderTypeLookup.setRenderLayer(ModBlocks.getInfiniteGoldArconiumBlock(tier), RenderType.getCutoutMipped());
-                RenderTypeLookup.setRenderLayer(ModBlocks.orb, RenderType.getTranslucent());
+                RenderTypeLookup.setRenderLayer(ModBlocks.getResourceTreeRootBlock(tier), RenderType.cutoutMipped());
+                RenderTypeLookup.setRenderLayer(ModBlocks.getGoldArconiumBlock(tier), RenderType.cutoutMipped());
+                RenderTypeLookup.setRenderLayer(ModBlocks.getInfiniteGoldArconiumBlock(tier), RenderType.cutoutMipped());
+                RenderTypeLookup.setRenderLayer(ModBlocks.orb, RenderType.translucent());
             }
 
             // gleaned from Blocks.GRASS_BLOCK - this is for overlaying the sides with the tinted grass
-            RenderTypeLookup.setRenderLayer(ModBlocks.resourceGenBlock, RenderType.getCutoutMipped());
+            RenderTypeLookup.setRenderLayer(ModBlocks.resourceGenBlock, RenderType.cutoutMipped());
 
             // GUI screens associated with containers
             RainbowCrateContainerScreen.registerContainerScreens();
@@ -68,6 +68,6 @@ public class ClientProxy implements IProxy {
     }
 
     private static void registerItemProperties() {
-        ItemModelsProperties.registerProperty(ModItems.magicInABottle, new ResourceLocation(Arconia.MOD_ID, "filled"), MagicInABottle::getFilledPercentage);
+        ItemModelsProperties.register(ModItems.magicInABottle, new ResourceLocation(Arconia.MOD_ID, "filled"), MagicInABottle::getFilledPercentage);
     }
 }

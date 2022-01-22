@@ -43,13 +43,13 @@ public class HighlightPatternStructure {
     }
 
     private static void renderHighlightedBlocks(@Nonnull final Set<BlockPos> blocks, @Nonnull  final MatrixStack matrixStack) {
-        float gameTime = Minecraft.getInstance().world.getGameTime(); // ticks since start
+        float gameTime = Minecraft.getInstance().level.getGameTime(); // ticks since start
         float hue = gameTime % 100 / 100F; // cycle hue as animation effect
-        matrixStack.push();
+        matrixStack.pushPose();
         for (BlockPos pos: blocks) {
             OutlineBlockRenderer.renderOutline(matrixStack, pos, hue, OutlineBlockRenderer.LINE_3_NO_DEPTH);
         }
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
 }

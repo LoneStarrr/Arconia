@@ -43,7 +43,7 @@ public class GoldArconiumTileEntity extends BaseTileEntity {
     private void setInitialCoinCount() {
         // TODO configurable
         this.coins = calculateInitialCount();
-        markDirty();
+        setChanged();
     }
 
     public boolean isInfinite() {
@@ -85,7 +85,7 @@ public class GoldArconiumTileEntity extends BaseTileEntity {
         if (!infinite) {
             coinsToSend = coinsToSend > coins ? coins : coinsToSend;
             this.coins -= coinsToSend;
-            markDirty();
+            setChanged();
         }
         return (int)coinsToSend;
     }

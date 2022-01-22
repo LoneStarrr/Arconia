@@ -28,6 +28,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.item.Item.Properties;
+
 public class ColoredRoot extends Item {
     private RainbowColor tier;
     private static final String TAG_ITEM = "item";
@@ -45,7 +47,7 @@ public class ColoredRoot extends Item {
     }
 
     @Override
-    public boolean hasEffect(ItemStack stack) {
+    public boolean isFoil(ItemStack stack) {
         return !getResourceItem(stack).isEmpty();
     }
 
@@ -56,7 +58,7 @@ public class ColoredRoot extends Item {
             return ItemStack.EMPTY;
         }
 
-        return ItemStack.read(tag.getCompound(TAG_ITEM));
+        return ItemStack.of(tag.getCompound(TAG_ITEM));
     }
 
     /**
@@ -134,11 +136,11 @@ public class ColoredRoot extends Item {
      * @return
      */
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        World world = context.getWorld();
+    public ActionResultType useOn(ItemUseContext context) {
+        World world = context.getLevel();
         PlayerEntity player = context.getPlayer();
-        BlockPos pos = context.getPos();
-        ItemStack heldItem = player.getHeldItem(context.getHand());
+        BlockPos pos = context.getClickedPos();
+        ItemStack heldItem = player.getItemInHand(context.getHand());
 
         if (heldItem.getItem() != this || world.getBlockState(pos).getBlock() != ModBlocks.hat) {
             return ActionResultType.PASS;
@@ -160,9 +162,9 @@ public class ColoredRoot extends Item {
         if (resourceSet) {
             if (heldItem.getCount() > 1) {
                 heldItem.shrink(1);
-                player.setHeldItem(context.getHand(), heldItem);
+                player.setItemInHand(context.getHand(), heldItem);
             } else {
-                player.setHeldItem(context.getHand(), ItemStack.EMPTY);
+                player.setItemInHand(context.getHand(), ItemStack.EMPTY);
             }
         }
 
@@ -171,12 +173,12 @@ public class ColoredRoot extends Item {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(
+    public void appendHoverText(
             ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         ItemStack resource = getResourceItem(stack);
         if (!resource.isEmpty()) {
-            tooltip.add(resource.getItem().getDisplayName(resource));
+            tooltip.add(resource.getItem().getName(resource));
         }
     }
 }

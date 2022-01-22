@@ -26,13 +26,13 @@ public class PotItemTransferPacket {
     }
 
     public static PotItemTransferPacket decode(PacketBuffer buf) {
-        return new PotItemTransferPacket(buf.readBlockPos(), buf.readBlockPos(), buf.readItemStack());
+        return new PotItemTransferPacket(buf.readBlockPos(), buf.readBlockPos(), buf.readItem());
     }
 
     public static void encode(PotItemTransferPacket msg, PacketBuffer buf) {
         buf.writeBlockPos(msg.hatPos);
         buf.writeBlockPos(msg.potPos);
-        buf.writeItemStack(msg.itemStack);
+        buf.writeItem(msg.itemStack);
     }
 
     public static class Handler {
@@ -47,7 +47,7 @@ public class PotItemTransferPacket {
                 @Override
                 public void run() {
                     Minecraft mc = Minecraft.getInstance();
-                    World world = mc.world;
+                    World world = mc.level;
                     PotItemTransfers.addItemTransfer(msg.hatPos, msg.potPos, msg.itemStack);
                 }
             });

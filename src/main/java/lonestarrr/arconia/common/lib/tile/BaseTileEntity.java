@@ -19,15 +19,15 @@ public abstract class BaseTileEntity extends TileEntity {
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
-        CompoundNBT ret = super.write(tag);
+    public CompoundNBT save(CompoundNBT tag) {
+        CompoundNBT ret = super.save(tag);
         writePacketNBT(ret);
         return ret;
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT tag) {
-        super.read(state, tag);
+    public void load(BlockState state, CompoundNBT tag) {
+        super.load(state, tag);
         readPacketNBT(tag);
     }
 
@@ -41,35 +41,35 @@ public abstract class BaseTileEntity extends TileEntity {
         CompoundNBT tag = getUpdateTag();
         writePacketNBT(tag);
         final int tileEntityType = -1;  // arbitrary number; only used for vanilla TileEntities.  You can use it, or not, as you want.
-        return new SUpdateTileEntityPacket(pos, tileEntityType, tag);
+        return new SUpdateTileEntityPacket(worldPosition, tileEntityType, tag);
 
     }
 
     @Override
     public void onDataPacket(NetworkManager manager, SUpdateTileEntityPacket packet) {
         super.onDataPacket(manager, packet);
-        readPacketNBT(packet.getNbtCompound());
+        readPacketNBT(packet.getTag());
     }
 
     @Override
     public final CompoundNBT getUpdateTag() {
-        return write(new CompoundNBT());
+        return save(new CompoundNBT());
     }
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) {
         // Called on client to read server data
-        read(state, tag);
+        load(state, tag);
     }
 
     /**
      * Updates client side by publishing a block update
      */
     protected void updateClient() {
-        if (world == null || world.isRemote()) {
+        if (level == null || level.isClientSide()) {
             return;
         }
 
-        world.notifyBlockUpdate(getPos(), world.getBlockState(getPos()), world.getBlockState(getPos()), Constants.BlockFlags.BLOCK_UPDATE);
+        level.sendBlockUpdated(getBlockPos(), level.getBlockState(getBlockPos()), level.getBlockState(getBlockPos()), Constants.BlockFlags.BLOCK_UPDATE);
     }
 }

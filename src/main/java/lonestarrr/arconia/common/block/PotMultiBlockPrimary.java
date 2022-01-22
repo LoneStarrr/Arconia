@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
  */
 public class PotMultiBlockPrimary extends Block {
     public PotMultiBlockPrimary() {
-        super(Block.Properties.create(Material.IRON, MaterialColor.BLACK).hardnessAndResistance(4.0F));
+        super(Block.Properties.of(Material.METAL, MaterialColor.COLOR_BLACK).strength(4.0F));
     }
 
     @Override
@@ -41,8 +41,8 @@ public class PotMultiBlockPrimary extends Block {
     }
 
     @Override
-    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
-        super.onBlockHarvested(worldIn, pos, state, player);
+    public void playerWillDestroy(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
+        super.playerWillDestroy(worldIn, pos, state, player);
         breakMultiBlock(worldIn, pos);
     }
 
@@ -54,7 +54,7 @@ public class PotMultiBlockPrimary extends Block {
      *     True on successful formation
      */
     public static boolean formMultiBlock(World world, BlockPos goldPos) {
-        if (world.isRemote) {
+        if (world.isClientSide) {
             return false;
         }
 
@@ -64,19 +64,19 @@ public class PotMultiBlockPrimary extends Block {
             return false;
         }
 
-        BlockPos primaryPos = goldPos.down();
-        world.setBlockState(primaryPos, ModBlocks.potMultiBlockPrimary.getDefaultState(), 3);
+        BlockPos primaryPos = goldPos.below();
+        world.setBlock(primaryPos, ModBlocks.potMultiBlockPrimary.defaultBlockState(), 3);
 
-        BlockPos corner = goldPos.add(-1, -1, -1);
+        BlockPos corner = goldPos.offset(-1, -1, -1);
         for (int x = 0; x < 3; x++) {
             for (int z = 0; z < 3; z++) {
                 for (int y = 0; y < 2; y++) {
-                    BlockPos toReplace = corner.add(x, y, z);
+                    BlockPos toReplace = corner.offset(x, y, z);
                     if (toReplace.equals(primaryPos)) {
                         continue;
                     }
-                    world.setBlockState(toReplace, ModBlocks.potMultiBlockSecondary.getDefaultState(), 3);
-                    TileEntity te = world.getTileEntity(toReplace);
+                    world.setBlock(toReplace, ModBlocks.potMultiBlockSecondary.defaultBlockState(), 3);
+                    TileEntity te = world.getBlockEntity(toReplace);
                     if (te == null || !(te instanceof PotMultiBlockSecondaryTileEntity)) {
                         Arconia.logger.error("Error setting up pot multiblock - expected to find a secondary multiblock tile entity at " + toReplace);
                         return false;
@@ -90,24 +90,24 @@ public class PotMultiBlockPrimary extends Block {
     }
 
     public static void breakMultiBlock(World world, BlockPos primaryPos) {
-        if (world.isRemote) {
+        if (world.isClientSide) {
             return;
         }
 
-        TileEntity te = world.getTileEntity(primaryPos);
+        TileEntity te = world.getBlockEntity(primaryPos);
         if (te == null || !(te instanceof PotMultiBlockPrimaryTileEntity)) {
             return;
         }
 
-        BlockPos corner = primaryPos.add(-1, 0, -1);
-        BlockPos goldPos = primaryPos.up();
+        BlockPos corner = primaryPos.offset(-1, 0, -1);
+        BlockPos goldPos = primaryPos.above();
 
         ItemStack goldBlock = new ItemStack(Blocks.GOLD_BLOCK, 0);
         ItemStack cauldrons = new ItemStack(Blocks.CAULDRON, 0);
         for (int x = 0; x < 3; x++) {
             for (int z = 0; z < 3; z++) {
                 for (int y = 0; y < 2; y++) {
-                    BlockPos toReplace = corner.add(x, y, z);
+                    BlockPos toReplace = corner.offset(x, y, z);
                     BlockState bs = world.getBlockState(toReplace);
 
                     if (bs.getBlock().equals(ModBlocks.potMultiBlockSecondary) || bs.getBlock().equals(ModBlocks.potMultiBlockPrimary)) {
@@ -116,7 +116,7 @@ public class PotMultiBlockPrimary extends Block {
                         } else {
                             cauldrons.setCount(cauldrons.getCount() + 1);
                         }
-                        world.setBlockState(toReplace, Blocks.AIR.getDefaultState());
+                        world.setBlockAndUpdate(toReplace, Blocks.AIR.defaultBlockState());
                     }
                 }
             }
@@ -128,11 +128,11 @@ public class PotMultiBlockPrimary extends Block {
                 continue;
             }
             ItemEntity entity = new ItemEntity(world, goldPos.getX(), goldPos.getY(), goldPos.getZ(), item);
-            entity.setMotion(0, 0.1, 0);
-            entity.setNoPickupDelay();
-            world.addEntity(entity);
+            entity.setDeltaMovement(0, 0.1, 0);
+            entity.setNoPickUpDelay();
+            world.addFreshEntity(entity);
             if (!playedSound) {
-                world.playSound(null, goldPos, SoundEvents.BLOCK_NETHERITE_BLOCK_BREAK, SoundCategory.BLOCKS, 1, 1);
+                world.playSound(null, goldPos, SoundEvents.NETHERITE_BLOCK_BREAK, SoundCategory.BLOCKS, 1, 1);
                 playedSound = true;
             }
         }
@@ -144,11 +144,11 @@ public class PotMultiBlockPrimary extends Block {
             return false;
         }
 
-        BlockPos corner = goldPos.add(-1, -1, -1);
+        BlockPos corner = goldPos.offset(-1, -1, -1);
         for (int x = 0; x < 3; x++) {
             for (int z = 0; z < 3; z++) {
                 for (int y = 0; y < 2; y++) {
-                    BlockPos toCheck = corner.add(x, y, z);
+                    BlockPos toCheck = corner.offset(x, y, z);
                     if (toCheck.equals(goldPos)) {
                         continue;
                     }

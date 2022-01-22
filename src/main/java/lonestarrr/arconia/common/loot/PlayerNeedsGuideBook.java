@@ -28,29 +28,29 @@ import java.util.Set;
 public class PlayerNeedsGuideBook implements ILootCondition {
     @Override
     public boolean test(LootContext lootContext) {
-        Entity looter = lootContext.get(LootParameters.THIS_ENTITY);
+        Entity looter = lootContext.getParamOrNull(LootParameters.THIS_ENTITY);
         if (!(looter instanceof ServerPlayerEntity) || looter instanceof FakePlayer) {
             return false;
         }
 
         ServerPlayerEntity player = (ServerPlayerEntity)looter;
-        ServerWorld world = player.getServerWorld();
+        ServerWorld world = player.getLevel();
         // Only drop a book if the player does not have the advancement yet, AND there is no nearby guide book entity (you could mine a whole bunch of dirt
         // without picking up the book!). I suppose you could game this with e.g. a hopper if you really, really wanted to have a large collection of useless
         // guide books!
-        Advancement guideBookAdvancement = world.getServer().getAdvancementManager().getAdvancement(new ResourceLocation(Arconia.MOD_ID, "main/root"));
+        Advancement guideBookAdvancement = world.getServer().getAdvancements().getAdvancement(new ResourceLocation(Arconia.MOD_ID, "main/root"));
         if (guideBookAdvancement == null) {
             // Should not happen, but if it does, better be safe than sorry!
             Arconia.logger.error("Missing guide book advancement");
             return false;
         }
-        boolean hasGuideBookAdvancement = player.getAdvancements().getProgress(guideBookAdvancement).isDone();
+        boolean hasGuideBookAdvancement = player.getAdvancements().getOrStartProgress(guideBookAdvancement).isDone();
         if (hasGuideBookAdvancement) {
             return false;
         }
 
         // Check if the player has recently mined a block that already did drop the book by checking for the entity in the near vicinity
-        List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(32));
+        List<ItemEntity> items = world.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(32));
 
         for (ItemEntity itemEntity : items) {
             ItemStack itemStack = itemEntity.getItem();
@@ -63,12 +63,12 @@ public class PlayerNeedsGuideBook implements ILootCondition {
     }
 
     @Override
-    public Set<LootParameter<?>> getRequiredParameters() {
+    public Set<LootParameter<?>> getReferencedContextParams() {
         return ImmutableSet.of(LootParameters.THIS_ENTITY);
     }
 
     @Override
-    public LootConditionType func_230419_b_() {
+    public LootConditionType getType() {
         return ModLootModifiers.PLAYER_NEEDS_GUIDEBOOK;
     }
 

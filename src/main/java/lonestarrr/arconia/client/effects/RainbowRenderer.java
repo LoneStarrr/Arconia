@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.client.renderer.RenderState.TransparencyState;
+
 /**
  * Render a rainbow between two points, with 1 or more colors
  */
@@ -38,12 +40,12 @@ public class RainbowRenderer {
         float colorG = color.getGreen() / 255f;
         float colorB = color.getBlue() / 255f;
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(origin.x, origin.y, origin.z);
-        matrixStack.rotate(rotation);
+        matrixStack.mulPose(rotation);
 
         IVertexBuilder builder = buffer.getBuffer(RainbowSegmentRenderType.RAINBOW_SEGMENT);
-        Matrix4f positionMatrix = matrixStack.getLast().getMatrix();
+        Matrix4f positionMatrix = matrixStack.last().pose();
 
 
         // TODO this should obviously be calculated only once per rendered rainbow
@@ -57,16 +59,16 @@ public class RainbowRenderer {
         for (int i = 0; i < numEdges - 1; i++) {
             Vector3f[] corners = {outerArch.get(i), outerArch.get(i + 1), innerArch.get(i +1), innerArch.get(i)};
             for (Vector3f v: corners) {
-                builder.pos(positionMatrix, v.getX(), v.getY(), v.getZ()).color(colorR, colorG, colorB, alpha).endVertex();
+                builder.vertex(positionMatrix, v.x(), v.y(), v.z()).color(colorR, colorG, colorB, alpha).endVertex();
             }
         }
 
         // FIXME How am I supposed to indicate that I'm done drawing? Closing the polygon? Nope. This here works, but something
         // tells me I am not supposed to be doing this this way.
-        RainbowSegmentRenderType.RAINBOW_SEGMENT.finish((BufferBuilder)builder, 0, 0, 0);
+        RainbowSegmentRenderType.RAINBOW_SEGMENT.end((BufferBuilder)builder, 0, 0, 0);
         ((BufferBuilder)builder).begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     /**
@@ -109,17 +111,17 @@ class RainbowSegmentRenderType extends RenderType {
         super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
     }
 
-    public static final RenderType RAINBOW_SEGMENT = makeType("rainbow_segment",
+    public static final RenderType RAINBOW_SEGMENT = create("rainbow_segment",
             DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 32768,
-            RenderType.State.getBuilder()
-                    .layer(RenderState.field_239235_M_)
-                    .alpha(RenderState.ZERO_ALPHA)
-                    .transparency(TransparencyState.LIGHTNING_TRANSPARENCY)
-                    .lightmap(RenderState.LIGHTMAP_DISABLED)
-                    .shadeModel(RenderState.SHADE_ENABLED)
-                    .texture(RenderState.NO_TEXTURE)
-                    .writeMask(RenderState.COLOR_WRITE)
-                    .cull(RenderState.CULL_DISABLED)
-                    .build(false)
+            RenderType.State.builder()
+                    .setLayeringState(RenderState.VIEW_OFFSET_Z_LAYERING)
+                    .setAlphaState(RenderState.NO_ALPHA)
+                    .setTransparencyState(TransparencyState.LIGHTNING_TRANSPARENCY)
+                    .setLightmapState(RenderState.NO_LIGHTMAP)
+                    .setShadeModelState(RenderState.SMOOTH_SHADE)
+                    .setTextureState(RenderState.NO_TEXTURE)
+                    .setWriteMaskState(RenderState.COLOR_WRITE)
+                    .setCullState(RenderState.NO_CULL)
+                    .createCompositeState(false)
     );
 }

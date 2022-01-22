@@ -30,24 +30,24 @@ public class ItemProjector {
     public static void projectItem(ItemStack stack, BlockPos itemPos, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight,
                                     int combinedOverlay, boolean forceShow) {
         // Don't draw the item if something's in the way
-        World world = Minecraft.getInstance().world;
+        World world = Minecraft.getInstance().level;
         if (!forceShow) {
             VoxelShape shape = world.getBlockState(itemPos).getCollisionShape(world, itemPos);
-            if (!shape.isEmpty() && shape.getBoundingBox().offset(itemPos).contains(itemPos.getX(), itemPos.getY(), itemPos.getZ())) {
+            if (!shape.isEmpty() && shape.bounds().move(itemPos).contains(itemPos.getX(), itemPos.getY(), itemPos.getZ())) {
                 return;
             }
         }
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(itemPos.getX(), itemPos.getY(), itemPos.getZ());
         matrixStack.translate(0.5, 0.1, 0.5);
         Vector3f rotationVector = new Vector3f(0, 1, 0);
-        int light = WorldRenderer.getCombinedLight(Minecraft.getInstance().world, itemPos);
-        long ticks = Minecraft.getInstance().world.getGameTime();
+        int light = WorldRenderer.getLightColor(Minecraft.getInstance().level, itemPos);
+        long ticks = Minecraft.getInstance().level.getGameTime();
 
         // rotation animation
         float angleDegrees = (ticks % 128f) / 128f * 360;
-        matrixStack.rotate(rotationVector.rotationDegrees(angleDegrees));
+        matrixStack.mulPose(rotationVector.rotationDegrees(angleDegrees));
 
         // scaling animation
         final float SCALE_INTERVAL = 128f;
@@ -58,7 +58,7 @@ public class ItemProjector {
         matrixStack.scale(scale, scale, scale);
 
         Minecraft.getInstance().getItemRenderer()
-                .renderItem(stack, ItemCameraTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
-        matrixStack.pop();
+                .renderStatic(stack, ItemCameraTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
+        matrixStack.popPose();
     }
 }

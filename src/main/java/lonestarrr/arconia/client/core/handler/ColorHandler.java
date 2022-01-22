@@ -25,9 +25,9 @@ public class ColorHandler {
         colorBlocks.register(ModBlocks.resourceGenBlock, ModBlocks.resourceGenBlock);
         //taken from minecraft's ItemColors
         items.register((stack, color) -> {
-            BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
+            BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
             return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, color);
-        }, Item.getItemFromBlock(ModBlocks.resourceGenBlock));
+        }, Item.byBlock(ModBlocks.resourceGenBlock));
 
         //magic in a bottle is colored differently based on ItemStack NBT data
         //'color' corresponds to the layer in the model (layer0 -> color 0, etc)
@@ -47,18 +47,18 @@ public class ColorHandler {
             colorBlocks.register(treeRoot, treeRoot);
             // Taken from minecraft's ItemColors
             items.register((stack, layer) -> {
-                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
+                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
                 return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
-            }, Item.getItemFromBlock(treeRoot));
+            }, Item.byBlock(treeRoot));
 
             // Tree leaves
             ResourceTreeLeaves treeLeaf = ModBlocks.getMoneyTreeLeaves(tier);
             colorBlocks.register(treeLeaf, treeLeaf);
             // Taken from minecraft's ItemColors
             items.register((stack, layer) -> {
-                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
+                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
                 return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
-            }, Item.getItemFromBlock(treeLeaf));
+            }, Item.byBlock(treeLeaf));
 
             // Tree saplings
             ResourceTreeSapling treeSapling = ModBlocks.getMoneyTreeSapling(tier);
@@ -68,18 +68,18 @@ public class ColorHandler {
                 if (layer != 0) {
                     return 0xFFFFFF;
                 }
-                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
+                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
                 return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
-            }, Item.getItemFromBlock(treeSapling));
+            }, Item.byBlock(treeSapling));
 
             // Arconium blocks
             ArconiumBlock arconiumBlock = ModBlocks.getArconiumBlock(tier);
             colorBlocks.register(arconiumBlock, arconiumBlock);
             // Taken from minecraft's ItemColors
             items.register((stack, layer) -> {
-                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
+                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
                 return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
-            }, Item.getItemFromBlock(arconiumBlock));
+            }, Item.byBlock(arconiumBlock));
 
             // Gold Arconium Blocks
             GoldArconiumBlock goldArconiumBlock = ModBlocks.getGoldArconiumBlock(tier);
@@ -89,9 +89,9 @@ public class ColorHandler {
                 if (layer != 0) {
                     return 0xFFFFFF;
                 }
-                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
+                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
                 return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
-            }, Item.getItemFromBlock(goldArconiumBlock));
+            }, Item.byBlock(goldArconiumBlock));
 
             // Infinite Gold Arconium Blocks
             InfiniteGoldArconiumBlock infiniteGoldArconiumBlock = ModBlocks.getInfiniteGoldArconiumBlock(tier);
@@ -101,18 +101,18 @@ public class ColorHandler {
                 if (layer != 0) {
                     return 0xFFFFFF;
                 }
-                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
+                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
                 return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
-            }, Item.getItemFromBlock(infiniteGoldArconiumBlock));
+            }, Item.byBlock(infiniteGoldArconiumBlock));
 
             // Rainbow crates
             RainbowCrateBlock crateBlock = ModBlocks.getRainbowCrateBlock(tier);
             colorBlocks.register(crateBlock, crateBlock);
             // Taken from minecraft's ItemColors
             items.register((stack, layer) -> {
-                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
+                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
                 return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
-            }, Item.getItemFromBlock(crateBlock));
+            }, Item.byBlock(crateBlock));
 
             // Colored tree roots
             items.register((stack, layer) -> {

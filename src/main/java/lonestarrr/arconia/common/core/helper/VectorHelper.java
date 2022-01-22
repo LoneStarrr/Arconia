@@ -36,14 +36,14 @@ public class VectorHelper {
         Vector3d diff = endPos.subtract(startPos);
         float distance = (float)startPos.distanceTo(endPos);
         float rotationY, rotationZ;
-        Vector3d vectorXZPlane = new Vector3d(diff.getX(), 0, diff.getZ());
+        Vector3d vectorXZPlane = new Vector3d(diff.x(), 0, diff.z());
         double vectorXZPlaneLength = vectorXZPlane.length();
         // Rotation in radians.
-        rotationY = vectorXZPlaneLength == 0 ? 0 : (float)Math.acos(Math.abs(diff.getX()) / vectorXZPlaneLength);
-        if (diff.getX() < 0) rotationY = (float)Math.PI - rotationY; // mirror X on Z axis
-        rotationY = (diff.getZ() < 0 ? 1 : -1) * rotationY;
-        rotationZ = (diff.getY() == 0 ? 0 : (float)Math.acos(vectorXZPlaneLength / distance));
-        rotationZ = (diff.getY() < 0 ? -1 : 1) * rotationZ;
+        rotationY = vectorXZPlaneLength == 0 ? 0 : (float)Math.acos(Math.abs(diff.x()) / vectorXZPlaneLength);
+        if (diff.x() < 0) rotationY = (float)Math.PI - rotationY; // mirror X on Z axis
+        rotationY = (diff.z() < 0 ? 1 : -1) * rotationY;
+        rotationZ = (diff.y() == 0 ? 0 : (float)Math.acos(vectorXZPlaneLength / distance));
+        rotationZ = (diff.y() < 0 ? -1 : 1) * rotationZ;
         Quaternion rotation = new Quaternion(0f, rotationY, rotationZ, false);
         return rotation;
     }
@@ -61,20 +61,20 @@ public class VectorHelper {
     public static Quaternion getRotationBetweenVectors(Vector3d a, Vector3d b) {
         Vector3d start = a.normalize();
         Vector3d dest = b.normalize();
-        float cosTheta = (float)start.dotProduct(dest);
+        float cosTheta = (float)start.dot(dest);
         Vector3d rotationAxis;
 
         if (cosTheta < -1 + 0.001f) {
             // Special case when vectors are in opposite direction. Guess one, as long as it's perpendicular to start
-            rotationAxis = new Vector3d(0,0, 1).crossProduct(start);
+            rotationAxis = new Vector3d(0,0, 1).cross(start);
             if (rotationAxis.length() < 0.01) {
-                rotationAxis = new Vector3d(1, 0, 0).crossProduct(start);
+                rotationAxis = new Vector3d(1, 0, 0).cross(start);
             }
             rotationAxis = rotationAxis.normalize();
             return new Quaternion(new Vector3f((float)rotationAxis.x, (float)rotationAxis.y, (float)rotationAxis.z), 180f, true);
         }
 
-        rotationAxis = a.crossProduct(b);
+        rotationAxis = a.cross(b);
         float s = (float)Math.sqrt((1 + cosTheta) * 2);
         float invs = 1 / s;
         return new Quaternion((float)rotationAxis.x * invs, (float)rotationAxis.y * invs, (float)rotationAxis.z * invs, s * 0.5f);

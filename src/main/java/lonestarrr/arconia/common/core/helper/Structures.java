@@ -64,7 +64,7 @@ public abstract class Structures {
      */
     public static void placeStructure(Iterator<BlockPos> positions, Iterator<BlockState> blockStates, World world,
                                       int flags) {
-        placeStructure(positions, blockStates, (pos, state) -> world.setBlockState(pos, state, flags));
+        placeStructure(positions, blockStates, (pos, state) -> world.setBlock(pos, state, flags));
     }
 
     /**
@@ -93,7 +93,7 @@ public abstract class Structures {
      */
     public static void placeStructure(Map<BlockPos, BlockState> blockStates, World world, int flags) {
         for (Map.Entry<BlockPos, BlockState> pair: blockStates.entrySet()) {
-            world.setBlockState(pair.getKey(), pair.getValue(), flags);
+            world.setBlock(pair.getKey(), pair.getValue(), flags);
         }
     }
 }

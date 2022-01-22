@@ -17,13 +17,13 @@ import static lonestarrr.arconia.common.block.ModBlocks.register;
 
 @Mod.EventBusSubscriber(modid = Arconia.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModTiles {
-    public static final TileEntityType<ResourceGenTileEntity> RESOURCEGEN = TileEntityType.Builder.create(ResourceGenTileEntity::new, ModBlocks.resourceGenBlock).build(null);
-    public static final TileEntityType<HatTileEntity> HAT = TileEntityType.Builder.create(HatTileEntity::new, ModBlocks.hat).build(null);
-    public static final TileEntityType<PedestalTileEntity> PEDESTAL = TileEntityType.Builder.create(PedestalTileEntity::new, ModBlocks.pedestal).build(null);
-    public static final TileEntityType<CenterPedestalTileEntity> CENTER_PEDESTAL = TileEntityType.Builder.create(CenterPedestalTileEntity::new, ModBlocks.centerPedestal).build(null);
-    public static final TileEntityType<OrbTileEntity> ORB = TileEntityType.Builder.create(OrbTileEntity::new, ModBlocks.orb).build(null);
-    public static final TileEntityType<PotMultiBlockPrimaryTileEntity> POT_MULTIBLOCK_PRIMARY = TileEntityType.Builder.create(PotMultiBlockPrimaryTileEntity::new, ModBlocks.potMultiBlockPrimary).build(null);
-    public static final TileEntityType<PotMultiBlockSecondaryTileEntity> POT_MULTIBLOCK_SECONDARY = TileEntityType.Builder.create(PotMultiBlockSecondaryTileEntity::new, ModBlocks.potMultiBlockSecondary).build(null);
+    public static final TileEntityType<ResourceGenTileEntity> RESOURCEGEN = TileEntityType.Builder.of(ResourceGenTileEntity::new, ModBlocks.resourceGenBlock).build(null);
+    public static final TileEntityType<HatTileEntity> HAT = TileEntityType.Builder.of(HatTileEntity::new, ModBlocks.hat).build(null);
+    public static final TileEntityType<PedestalTileEntity> PEDESTAL = TileEntityType.Builder.of(PedestalTileEntity::new, ModBlocks.pedestal).build(null);
+    public static final TileEntityType<CenterPedestalTileEntity> CENTER_PEDESTAL = TileEntityType.Builder.of(CenterPedestalTileEntity::new, ModBlocks.centerPedestal).build(null);
+    public static final TileEntityType<OrbTileEntity> ORB = TileEntityType.Builder.of(OrbTileEntity::new, ModBlocks.orb).build(null);
+    public static final TileEntityType<PotMultiBlockPrimaryTileEntity> POT_MULTIBLOCK_PRIMARY = TileEntityType.Builder.of(PotMultiBlockPrimaryTileEntity::new, ModBlocks.potMultiBlockPrimary).build(null);
+    public static final TileEntityType<PotMultiBlockSecondaryTileEntity> POT_MULTIBLOCK_SECONDARY = TileEntityType.Builder.of(PotMultiBlockSecondaryTileEntity::new, ModBlocks.potMultiBlockSecondary).build(null);
     private static final Map<RainbowColor, TileEntityType<ResourceTreeRootTileEntity>> treeRootBlockTileEntityTypes = new HashMap<>(RainbowColor.values().length);
     private static final Map<RainbowColor, TileEntityType<RainbowCrateTileEntity>> rainbowCrateTileEntityTypes =
             new HashMap<>(RainbowColor.values().length);
@@ -46,7 +46,7 @@ public class ModTiles {
         // tree root blocks
         for (RainbowColor tier: RainbowColor.values()) {
             TileEntityType<ResourceTreeRootTileEntity> teType =
-                    TileEntityType.Builder.create(() -> new ResourceTreeRootTileEntity(tier),
+                    TileEntityType.Builder.of(() -> new ResourceTreeRootTileEntity(tier),
                             ModBlocks.getResourceTreeRootBlock(tier)).build(null);
             treeRootBlockTileEntityTypes.put(tier, teType);
             register(r, teType, tier.getTierName() + "_pattern_lootblock_tile_entity");
@@ -55,7 +55,7 @@ public class ModTiles {
         // Rainbow crates
         for (RainbowColor tier: RainbowColor.values()) {
             TileEntityType<RainbowCrateTileEntity> teType =
-                    TileEntityType.Builder.create(() -> new RainbowCrateTileEntity(tier),
+                    TileEntityType.Builder.of(() -> new RainbowCrateTileEntity(tier),
                             ModBlocks.getRainbowCrateBlock(tier)).build(null);
             rainbowCrateTileEntityTypes.put(tier, teType);
             register(r, teType, tier.getTierName() + "_rainbow_crate_tile_entity");
@@ -63,14 +63,14 @@ public class ModTiles {
 
         // Gold arconium blocks
         for (RainbowColor tier: RainbowColor.values()) {
-            TileEntityType<GoldArconiumTileEntity> teType = TileEntityType.Builder.create(() -> new GoldArconiumTileEntity(tier, false), ModBlocks.getGoldArconiumBlock(tier)).build(null);
+            TileEntityType<GoldArconiumTileEntity> teType = TileEntityType.Builder.of(() -> new GoldArconiumTileEntity(tier, false), ModBlocks.getGoldArconiumBlock(tier)).build(null);
             goldArconiumTileEntityTypes.put(tier, teType);
             register(r, teType, tier.getTierName() + "_gold_arconium_tile_entity");
         }
 
         // Infinite Gold arconium blocks
         for (RainbowColor tier: RainbowColor.values()) {
-            TileEntityType<GoldArconiumTileEntity> teType = TileEntityType.Builder.create(() -> new GoldArconiumTileEntity(tier, true), ModBlocks.getInfiniteGoldArconiumBlock(tier)).build(null);
+            TileEntityType<GoldArconiumTileEntity> teType = TileEntityType.Builder.of(() -> new GoldArconiumTileEntity(tier, true), ModBlocks.getInfiniteGoldArconiumBlock(tier)).build(null);
             infiniteGoldArconiumTileEntityTypes.put(tier, teType);
             register(r, teType, tier.getTierName() + "_infinite_gold_arconium_tile_entity");
         }

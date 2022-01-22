@@ -29,7 +29,7 @@ public class LibPatternBlockTests {
     public static void setup() {
         // Setup enough minecraft context to be able to access block registry
         //Loader.instance();
-        Bootstrap.register();
+        Bootstrap.bootStrap();
 //        Loader.instance().setupTestHarness(new DummyModContainer(new ModMetadata() {{
 //            modId = "test";
 //        }}));
@@ -41,8 +41,8 @@ public class LibPatternBlockTests {
                 "'1': {'blockId':'minecraft:dirt'}}}";
         jsonString = jsonString.replaceAll("'", "\"");
         List<List<BlockState>> blocks = LibBlockPattern.readBlockPattern(jsonString);
-        BlockState woolLime = Blocks.LIME_WOOL.getDefaultState();
-        BlockState dirt = Blocks.DIRT.getDefaultState();
+        BlockState woolLime = Blocks.LIME_WOOL.defaultBlockState();
+        BlockState dirt = Blocks.DIRT.defaultBlockState();
         assertEquals(blocks,
                 new ArrayList<List<BlockState>>(
                         Arrays.asList(
@@ -66,10 +66,10 @@ public class LibPatternBlockTests {
         // Spot checks
         BlockState[][] array =
                 blocks.stream().map(u -> u.toArray(new BlockState[0])).toArray(BlockState[][]::new);
-        assertEquals(Blocks.AIR.getDefaultState(), array[0][0]);
-        assertEquals(Blocks.AIR.getDefaultState(), array[33][41]);
-        assertEquals(Blocks.GREEN_CONCRETE.getDefaultState(), array[0][12]);
-        assertEquals(Blocks.EMERALD_BLOCK.getDefaultState(), array[24][21]);
+        assertEquals(Blocks.AIR.defaultBlockState(), array[0][0]);
+        assertEquals(Blocks.AIR.defaultBlockState(), array[33][41]);
+        assertEquals(Blocks.GREEN_CONCRETE.defaultBlockState(), array[0][12]);
+        assertEquals(Blocks.EMERALD_BLOCK.defaultBlockState(), array[24][21]);
     }
 
     @Test
@@ -92,7 +92,7 @@ public class LibPatternBlockTests {
 
     @Test
     void testDeserializeBlockStateHappyCaseNoMetadata() throws BlockPatternException {
-        assertEquals(Blocks.LIME_WOOL.getDefaultState(), LibBlockPattern.deserializeBlockState("minecraft:lime_wool"));
+        assertEquals(Blocks.LIME_WOOL.defaultBlockState(), LibBlockPattern.deserializeBlockState("minecraft:lime_wool"));
     }
 
     @Test

@@ -20,10 +20,10 @@ import javax.annotation.Nullable;
  * A leprechaun's hat. Used in combination with a pot of gold to collect resources.
  */
 public class Hat extends Block {
-    private static final VoxelShape shape = makeCuboidShape(0, 0, 0, 16, 10, 16);
+    private static final VoxelShape shape = box(0, 0, 0, 16, 10, 16);
 
     public Hat() {
-        super(Block.Properties.create(Material.WOOL, MaterialColor.GREEN).hardnessAndResistance(1.0F).notSolid());
+        super(Block.Properties.of(Material.WOOL, MaterialColor.COLOR_GREEN).strength(1.0F).noOcclusion());
     }
 
     @Override
@@ -55,7 +55,7 @@ public class Hat extends Block {
      * @return True if a hat was placed in the world at the given location
      */
     public static boolean setResourceGenerated(World world, BlockPos pos, RainbowColor tier, ItemStack resource, int interval, int coinCost) {
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
         if (te != null && te instanceof HatTileEntity) {
             HatTileEntity rte = (HatTileEntity) te;
             rte.setResourceGenerated(tier, resource, interval, coinCost);

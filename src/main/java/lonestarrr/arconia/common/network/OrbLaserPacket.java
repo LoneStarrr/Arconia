@@ -28,13 +28,13 @@ public class OrbLaserPacket {
     }
 
     public static OrbLaserPacket decode(PacketBuffer buf) {
-        return new OrbLaserPacket(buf.readBlockPos(), buf.readBlockPos(), buf.readItemStack());
+        return new OrbLaserPacket(buf.readBlockPos(), buf.readBlockPos(), buf.readItem());
     }
 
     public static void encode(OrbLaserPacket msg, PacketBuffer buf) {
         buf.writeBlockPos(msg.orbPos);
         buf.writeBlockPos(msg.itemPos);
-        buf.writeItemStack(msg.itemStack);
+        buf.writeItem(msg.itemStack);
     }
 
     public static class Handler {
@@ -49,7 +49,7 @@ public class OrbLaserPacket {
                 @Override
                 public void run() {
                     Minecraft mc = Minecraft.getInstance();
-                    World world = mc.world;
+                    World world = mc.level;
                     OrbLasers.addLaserBeam(msg.orbPos, msg.itemPos, msg.itemStack);
                 }
             });

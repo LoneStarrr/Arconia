@@ -20,7 +20,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
     }
 
     @Override
-    protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
+    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
         //addCriterion - makes recipe visible only after you have attained a specific (set of)item(s)
         registerArconiumBlocks(consumer);
         registerArconiumIngots(consumer);
@@ -30,27 +30,27 @@ public class VanillaRecipeProvider extends RecipeProvider {
     }
 
     private void registerMisc(Consumer<IFinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shapedRecipe(ModBlocks.hat)
-                .key('W', Items.GREEN_WOOL)
-                .key('H', Items.GOLDEN_HELMET)
-                .patternLine("WWW")
-                .patternLine("WHW")
-                .patternLine("   ")
-                .addCriterion("has_item", hasItem(Items.GOLDEN_HELMET))
-                .build(consumer);
+        ShapedRecipeBuilder.shaped(ModBlocks.hat)
+                .define('W', Items.GREEN_WOOL)
+                .define('H', Items.GOLDEN_HELMET)
+                .pattern("WWW")
+                .pattern("WHW")
+                .pattern("   ")
+                .unlockedBy("has_item", has(Items.GOLDEN_HELMET))
+                .save(consumer);
     }
 
     private void registerTreeRootBlocks(Consumer<IFinishedRecipe> consumer) {
         for (RainbowColor tier : RainbowColor.values()) {
             Item treeRoot = ModItems.getColoredRoot(tier);
             Item treeRootBlock = ModBlocks.getResourceTreeRootBlock(tier).asItem();
-            ShapedRecipeBuilder.shapedRecipe(treeRootBlock)
-                    .key('R', treeRoot)
-                    .patternLine("RRR")
-                    .patternLine("RRR")
-                    .patternLine("RRR")
-                    .addCriterion("has_item", hasItem(treeRoot))
-                    .build(consumer);
+            ShapedRecipeBuilder.shaped(treeRootBlock)
+                    .define('R', treeRoot)
+                    .pattern("RRR")
+                    .pattern("RRR")
+                    .pattern("RRR")
+                    .unlockedBy("has_item", has(treeRoot))
+                    .save(consumer);
         }
     }
 
@@ -59,10 +59,10 @@ public class VanillaRecipeProvider extends RecipeProvider {
             Item ingot = ModItems.getArconiumIngot(tier);
             Item arconiumBlock = ModBlocks.getArconiumBlock(tier).asItem();
 
-            ShapelessRecipeBuilder.shapelessRecipe(ingot, 9)
-                    .addIngredient(arconiumBlock)
-                    .addCriterion("has_item", hasItem(arconiumBlock))
-                    .build(consumer);
+            ShapelessRecipeBuilder.shapeless(ingot, 9)
+                    .requires(arconiumBlock)
+                    .unlockedBy("has_item", has(arconiumBlock))
+                    .save(consumer);
         }
     }
 
@@ -70,28 +70,28 @@ public class VanillaRecipeProvider extends RecipeProvider {
         for (RainbowColor tier : RainbowColor.values()) {
             Block block = ModBlocks.getArconiumBlock(tier);
             Item ingot = ModItems.getArconiumIngot(tier);
-            ShapedRecipeBuilder.shapedRecipe(block)
-                    .key('I', ingot)
-                    .patternLine("III")
-                    .patternLine("III")
-                    .patternLine("III")
-                    .addCriterion("has_item", hasItem(ingot))
-                    .build(consumer);
+            ShapedRecipeBuilder.shaped(block)
+                    .define('I', ingot)
+                    .pattern("III")
+                    .pattern("III")
+                    .pattern("III")
+                    .unlockedBy("has_item", has(ingot))
+                    .save(consumer);
         }
     }
 
     private void registerCrates(Consumer<IFinishedRecipe> consumer) {
         for (RainbowColor tier : RainbowColor.values()) {
             Block block = ModBlocks.getRainbowCrateBlock(tier);
-            ShapedRecipeBuilder.shapedRecipe(block)
-                    .key('I', ModItems.getArconiumIngot(tier))
-                    .key('C', Tags.Items.CHESTS)
-                    .key('P', ItemTags.PLANKS)
-                    .patternLine("IPI")
-                    .patternLine("PCP")
-                    .patternLine("IPI")
-                    .addCriterion("has_item", hasItem(ModItems.getArconiumIngot(tier)))
-                    .build(consumer);
+            ShapedRecipeBuilder.shaped(block)
+                    .define('I', ModItems.getArconiumIngot(tier))
+                    .define('C', Tags.Items.CHESTS)
+                    .define('P', ItemTags.PLANKS)
+                    .pattern("IPI")
+                    .pattern("PCP")
+                    .pattern("IPI")
+                    .unlockedBy("has_item", has(ModItems.getArconiumIngot(tier)))
+                    .save(consumer);
         }
     }
 

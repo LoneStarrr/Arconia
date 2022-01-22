@@ -40,8 +40,8 @@ public class ModPackets {
         if (world instanceof ServerWorld) {
             ServerWorld serverWorld = (ServerWorld) world;
 
-            serverWorld.getChunkProvider().chunkManager.getTrackingPlayers(new ChunkPos(pos), false)
-                    .filter(p -> p.getDistanceSq(pos.getX(), pos.getY(), pos.getZ()) < 64 * 64)
+            serverWorld.getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false)
+                    .filter(p -> p.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) < 64 * 64)
                     .forEach(p -> HANDLER.send(PacketDistributor.PLAYER.with(() -> p), toSend));
         }
     }

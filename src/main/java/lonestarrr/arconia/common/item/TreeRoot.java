@@ -16,6 +16,8 @@ import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.tile.ResourceGenTileEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 
+import net.minecraft.item.Item.Properties;
+
 /**
  * Tree roots are droppped as rare loot from chopping down resource trees growing in the wild. They will get 'magic' properties through a ritual that will
  * make them turn grass blocks into resource generating blocks for a resource generating tree.
