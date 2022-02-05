@@ -1,5 +1,8 @@
 package lonestarrr.arconia.common.block;
 
+import lonestarrr.arconia.client.gui.crate.RainbowCrateContainer;
+import lonestarrr.arconia.common.block.tile.RainbowCrateTileEntity;
+import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.color.IBlockColor;
@@ -13,7 +16,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -24,28 +26,20 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.tile.ModTiles;
-import lonestarrr.arconia.common.block.tile.RainbowCrateTileEntity;
-import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.client.gui.crate.RainbowCrateContainer;
-
-import static lonestarrr.arconia.common.block.ModBlocks.register;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+import static lonestarrr.arconia.common.block.ModBlocks.register;
+
 /**
- * Tiered crates. Who does not like a lil' extra storage?
+ * Tiered crates. Who does not like a li'l extra storage?
  */
-@Mod.EventBusSubscriber(modid = Arconia.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class RainbowCrateBlock extends ContainerBlock implements IBlockColor {
     private static final Map<RainbowColor,ContainerType<RainbowCrateContainer>> containerTypes =
             new HashMap<>(RainbowColor.values().length);
@@ -158,7 +152,6 @@ public class RainbowCrateBlock extends ContainerBlock implements IBlockColor {
     }
 
 
-    @SubscribeEvent
     public static void registerContainers(final RegistryEvent.Register<ContainerType<?>> event)
     {
         IForgeRegistry<ContainerType<?>> r = event.getRegistry();

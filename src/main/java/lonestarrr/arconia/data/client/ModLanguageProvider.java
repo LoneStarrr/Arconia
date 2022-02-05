@@ -6,11 +6,7 @@ import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
-import org.apache.commons.lang3.text.WordUtils;
 
-import javax.annotation.Nonnull;
-import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -39,9 +35,9 @@ public class ModLanguageProvider extends LanguageProvider {
             add(ModBlocks.getArconiumBlock(color), colorName + " Arconium Block");
             add(ModBlocks.getGoldArconiumBlock(color), colorName + " Gold Arconium Block");
             add(ModBlocks.getInfiniteGoldArconiumBlock(color), colorName + " Infinite Gold Arconium Block");
-            add(ModBlocks.getMoneyTreeLeaves(color), colorName + " Resource Tree Leaves");
-            add(ModBlocks.getMoneyTreeSapling(color), colorName + " Resource Tree Sapling");
-            add(ModBlocks.getResourceTreeRootBlock(color), colorName + " Tree Root Block");
+            add(ModBlocks.getArconiumTreeLeaves(color), colorName + " Arconium Tree Leaves");
+            add(ModBlocks.getArconiumTreeSapling(color), colorName + " Arconium Tree Sapling");
+            add(ModBlocks.getArconiumTreeRootBlocks(color), colorName + " Tree Root Block");
             add(ModBlocks.getRainbowCrateBlock(color), colorName + " Rainbow Crate");
         }
     }
@@ -75,22 +71,32 @@ public class ModLanguageProvider extends LanguageProvider {
 
     private void registerAdvancements() {
         Stream.of(new String[][] {
-                { "advancement.arconia.main.root.title", "Read the fine manual" },
+                { "advancement.arconia.main.root.title", "Arconia" },
                 { "advancement.arconia.main.root.desc", "Dig up dirt and find some memoirs" },
                 { "advancement.arconia.main.four_leaf_clover.title", "Luck is on your side" },
                 { "advancement.arconia.main.four_leaf_clover.desc", "Punch clover plants until you get lucky" },
                 { "advancement.arconia.main.clover_staff.title", "You're a wizard now" },
                 { "advancement.arconia.main.clover_staff.desc", "Make a clover staff to increase your luck punching clovers" },
-                { "advancement.arconia.main.tree_root_block.title", "I'm rooting for you" },
-                { "advancement.arconia.main.tree_root_block.desc", "Craft a root tree block" },
-                { "advancement.arconia.main.pedestal.title", "Oh no, yet another altar" },
-                { "advancement.arconia.main.pedestal.desc", "Setup an altar to perform colorful rituals" },
+                { "advancement.arconia.main.red_tree_root_block.title", "I'm rooting for you" },
+                { "advancement.arconia.main.red_tree_root_block.desc", "Craft a red tree root block" },
+                { "advancement.arconia.main.pedestal.title", "Yes, pedestals" },
+                { "advancement.arconia.main.pedestal.desc", "Craft pedestals to place items on for performing rituals" },
+                { "advancement.arconia.main.center_pedestal.title", "Colorful rituals" },
+                { "advancement.arconia.main.center_pedestal.desc", "Craft a center pedestal to perform rituals" },
                 { "advancement.arconia.main.red_root_of_essence.title", "Arconium?" },
                 { "advancement.arconia.main.red_root_of_essence.desc", "Imbue magical properties onto a tree root using the altar" },
-                { "advancement.arconia.main.red_arconium_ingot.title", "The first of many" },
-                { "advancement.arconia.main.red_arconium_ingot.desc", "Craft your first arconium ingot" },
                 { "advancement.arconia.main.pot_of_gold.title", "Rainbow not included" },
                 { "advancement.arconia.main.pot_of_gold.desc", "Build a pot of gold" },
+                { "advancement.arconia.main.hat.title", "So fashionable" },
+                { "advancement.arconia.main.hat.desc", "Craft a leprechaun hat" },
+                { "advancement.arconia.main.red_arconium_essence.title", "Arconium Essence" },
+                { "advancement.arconia.main.red_arconium_essence.desc", "Get your first red arconium essence" },
+                { "advancement.arconia.main.red_gold_arconium_block.title", "Arconium Gold" },
+                { "advancement.arconia.main.red_gold_arconium_block.desc", "Get your first arconium infused gold" },
+                { "advancement.arconia.main.red_arconium_block.title", "Pure Arconium" },
+                { "advancement.arconia.main.red_arconium_block.desc", "Drain your first gold arconium gold block" },
+                { "advancement.arconia.main.orange_arconium_tree_sapling.title", "Orange you glad" },
+                { "advancement.arconia.main.orange_arconium_tree_sapling.desc", "Harvest your first orange arconium sapling" },
         }).forEach(adv -> add(adv[0], adv[1]));
     }
 

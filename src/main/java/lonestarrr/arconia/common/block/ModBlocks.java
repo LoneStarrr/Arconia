@@ -1,30 +1,26 @@
 package lonestarrr.arconia.common.block;
 
+import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.common.core.BlockNames;
+import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.core.BlockNames;
-import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.item.ModItems;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
-@Mod.EventBusSubscriber(modid = Arconia.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModBlocks {
 //    private static final Map<RainbowColor, RainbowCropBlock> rainbowCrops = new HashMap<>();
     private static final Map<RainbowColor, RainbowCrateBlock> rainbowCrates = new HashMap<>();
-    private static final Map<RainbowColor, ResourceTreeLeaves> resourceTreeLeaves = new HashMap<>();
-    private static final Map<RainbowColor, ResourceTreeSapling> resourceTreeSaplings = new HashMap<>();
-    private static final Map<RainbowColor, ResourceTreeRootBlock> treeRootBlocks = new HashMap<>();
+    private static final Map<RainbowColor, ArconiumTreeLeaves> arconiumTreeLeaves = new HashMap<>();
+    private static final Map<RainbowColor, ArconiumTreeSapling> arconiumTreeSaplings = new HashMap<>();
+    private static final Map<RainbowColor, ArconiumTreeRootBlock> treeRootBlocks = new HashMap<>();
     private static final Map<RainbowColor, ArconiumBlock> arconiumBlocks = new HashMap<>();
     private static final Map<RainbowColor, GoldArconiumBlock> goldArconiumBlocks = new HashMap<>();
     private static final Map<RainbowColor, InfiniteGoldArconiumBlock> infiniteGoldArconiumBlocks = new HashMap<>();
@@ -39,7 +35,6 @@ public class ModBlocks {
     public static final PotMultiBlockPrimary potMultiBlockPrimary = new PotMultiBlockPrimary(); //no associated item
     public static final PotMultiBlockSecondary potMultiBlockSecondary = new PotMultiBlockSecondary(); //no associated item
 
-    @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         IForgeRegistry<Block> r = event.getRegistry();
 
@@ -59,17 +54,17 @@ public class ModBlocks {
             register(r, crate, color.getTierName() + BlockNames.RAINBOW_CRATE_SUFFIX);
             rainbowCrates.put(color, crate);
 
-            ResourceTreeRootBlock resourceTreeRootBlock = new ResourceTreeRootBlock(color);
-            register(r, resourceTreeRootBlock, color.getTierName() + BlockNames.TREE_ROOT_BLOCK_SUFFIX);
-            treeRootBlocks.put(color, resourceTreeRootBlock);
+            ArconiumTreeRootBlock arconiumTreeRootBlock = new ArconiumTreeRootBlock(color);
+            register(r, arconiumTreeRootBlock, color.getTierName() + BlockNames.TREE_ROOT_BLOCK_SUFFIX);
+            treeRootBlocks.put(color, arconiumTreeRootBlock);
 
-            ResourceTreeLeaves leaves = new ResourceTreeLeaves(color);
+            ArconiumTreeLeaves leaves = new ArconiumTreeLeaves(color);
             register(r, leaves, color.getTierName() + BlockNames.LEAVES_SUFFIX);
-            resourceTreeLeaves.put(color, leaves);
+            arconiumTreeLeaves.put(color, leaves);
 
-            ResourceTreeSapling sapling = new ResourceTreeSapling(color);
+            ArconiumTreeSapling sapling = new ArconiumTreeSapling(color);
             register(r, sapling, color.getTierName() + BlockNames.SAPLING_SUFFIX);
-            resourceTreeSaplings.put(color, sapling);
+            arconiumTreeSaplings.put(color, sapling);
 
             // TODO decide on the fate of crops. They are not dynamically colored and they ugly
 //            RainbowCropBlock crop = new RainbowCropBlock(color);
@@ -90,7 +85,6 @@ public class ModBlocks {
         }
     }
 
-    @SubscribeEvent
     public static void registerItemBlocks(RegistryEvent.Register<Item> event) {
         IForgeRegistry<Item> r = event.getRegistry();
         // TODO create my own creative tab, e.g. https://github.com/Vazkii/Botania/blob/1.15/src/main/java/vazkii/botania/common/core/BotaniaCreativeTab.java
@@ -106,8 +100,8 @@ public class ModBlocks {
 
         treeRootBlocks.values().stream().forEach(b -> registerBlockItem(r, b, builder));
         rainbowCrates.values().stream().forEach(b -> registerBlockItem(r, b, builder));
-        resourceTreeSaplings.values().stream().forEach(b -> registerBlockItem(r, b, builder));
-        resourceTreeLeaves.values().stream().forEach(b -> registerBlockItem(r, b, builder));
+        arconiumTreeSaplings.values().stream().forEach(b -> registerBlockItem(r, b, builder));
+        arconiumTreeLeaves.values().stream().forEach(b -> registerBlockItem(r, b, builder));
         arconiumBlocks.values().stream().forEach(b -> registerBlockItem(r, b, builder));
         goldArconiumBlocks.values().stream().forEach(b -> registerBlockItem(r, b, builder));
         infiniteGoldArconiumBlocks.values().stream().forEach(b -> registerBlockItem(r, b, builder));
@@ -127,15 +121,15 @@ public class ModBlocks {
         return rainbowCrates.get(tier);
     }
 
-    public static ResourceTreeSapling getMoneyTreeSapling(RainbowColor tier) {
-        return resourceTreeSaplings.get(tier);
+    public static ArconiumTreeSapling getArconiumTreeSapling(RainbowColor tier) {
+        return arconiumTreeSaplings.get(tier);
     }
 
-    public static ResourceTreeLeaves getMoneyTreeLeaves(RainbowColor tier) {
-        return resourceTreeLeaves.get(tier);
+    public static ArconiumTreeLeaves getArconiumTreeLeaves(RainbowColor tier) {
+        return arconiumTreeLeaves.get(tier);
     }
 
-    public static ResourceTreeRootBlock getResourceTreeRootBlock(RainbowColor tier) {
+    public static ArconiumTreeRootBlock getArconiumTreeRootBlocks(RainbowColor tier) {
         return treeRootBlocks.get(tier);
     }
 

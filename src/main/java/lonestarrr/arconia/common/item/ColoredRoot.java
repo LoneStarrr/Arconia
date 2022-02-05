@@ -1,16 +1,12 @@
 package lonestarrr.arconia.common.item;
 
 import lonestarrr.arconia.common.block.Hat;
-import lonestarrr.arconia.common.block.tile.HatTileEntity;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.math.BlockPos;
@@ -18,17 +14,12 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
-import lonestarrr.arconia.common.block.tile.ResourceGenTileEntity;
-import lonestarrr.arconia.common.block.tile.ResourceTreeRootTileEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-
-import net.minecraft.item.Item.Properties;
 
 public class ColoredRoot extends Item {
     private RainbowColor tier;

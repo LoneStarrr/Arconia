@@ -4,7 +4,7 @@
 
 for clr in red orange yellow green blue light_blue purple magenta pink
 do
-    cat << EOF > ${clr}_money_tree_leaves.json
+    cat << EOF > ${clr}_arconium_tree_leaves.json
 {
   "type": "minecraft:block",
   "pools": [
@@ -42,7 +42,7 @@ do
                   ]
                 }
               ],
-              "name": "arconia:${clr}_money_tree_leaves"
+              "name": "arconia:${clr}_arconium_tree_leaves"
             },
             {
               "type": "minecraft:item",
@@ -61,7 +61,7 @@ do
                   ]
                 }
               ],
-              "name": "arconia:${clr}_money_tree_sapling"
+              "name": "arconia:${clr}_arconium_tree_sapling"
             },
             {
               "type": "minecraft:item",

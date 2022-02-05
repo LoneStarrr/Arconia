@@ -1,6 +1,9 @@
 package lonestarrr.arconia.common.world;
 
 import com.google.common.collect.ImmutableSet;
+import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.common.block.ModBlocks;
+import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -14,22 +17,13 @@ import net.minecraft.world.gen.foliageplacer.BlobFoliagePlacer;
 import net.minecraft.world.gen.trunkplacer.StraightTrunkPlacer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
-import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.ModBlocks;
-import lonestarrr.arconia.common.core.RainbowColor;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static lonestarrr.arconia.common.block.ModBlocks.register;
-
-@Mod.EventBusSubscriber(modid = Arconia.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModFeatures {
-    public static final String MONEY_FEATURE_POSTFIX = "_money_tree_feature";
     public static final Set<Biome.Category> CLOVER_BIOME_BLACKLIST = ImmutableSet.of(
             Biome.Category.NETHER,
             Biome.Category.THEEND,
@@ -48,7 +42,6 @@ public class ModFeatures {
     public static final ConfiguredFeature<?, ?> CLOVER_CONFIGURED = Feature.FLOWER.configured(Configs.CLOVER_CONFIG).decorated(Features.Placements.ADD_32).decorated(Features.Placements.HEIGHTMAP_SQUARE).count(4);
 
 
-    @SubscribeEvent
     public static void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
         IForgeRegistry<Feature<?>> r = event.getRegistry();
         Arconia.logger.info("********* Registering biome features");
@@ -58,20 +51,20 @@ public class ModFeatures {
 
         Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "clovers"), CLOVER_CONFIGURED);
 
-        // Using minecraft's built in tree feature for the money trees. Each tier has a unique config due to using tiered leaves
+        // Using minecraft's built in tree feature for the arconium trees. Each tier has a unique config due to using tiered leaves
         for (RainbowColor tier: RainbowColor.values()) {
             BaseTreeFeatureConfig treeConfig = (new BaseTreeFeatureConfig.Builder(
                     new SimpleBlockStateProvider(Blocks.OAK_LOG.defaultBlockState()),
-                    new SimpleBlockStateProvider(ModBlocks.getMoneyTreeLeaves(tier).defaultBlockState()),
+                    new SimpleBlockStateProvider(ModBlocks.getArconiumTreeLeaves(tier).defaultBlockState()),
                     new BlobFoliagePlacer(FeatureSpread.fixed(2), FeatureSpread.fixed(0), 3),
                     new StraightTrunkPlacer(5, 2, 0), new TwoLayerFeature(1, 0, 1))).ignoreVines().build();
             ConfiguredFeature<BaseTreeFeatureConfig, ?> treeConfigured = Feature.TREE.configured(treeConfig);
-            Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "resource_tree_" + tier.getTierName()), treeConfigured);
+            Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "arconium_tree_" + tier.getTierName()), treeConfigured);
             configuredTrees.put(tier, treeConfigured);
         }
     }
 
-    public static ConfiguredFeature<BaseTreeFeatureConfig, ?> getResourceTreeConfigured(RainbowColor tier) {
+    public static ConfiguredFeature<BaseTreeFeatureConfig, ?> getArconiumTreeConfigured(RainbowColor tier) {
         return configuredTrees.get(tier);
     }
 
@@ -80,16 +73,16 @@ public class ModFeatures {
      */
     public static void onBiomeLoad(BiomeLoadingEvent event) {
         addClovers(event);
-        addResourceTrees(event);
+        addArconiumTrees(event);
     }
 
-    public static void addResourceTrees(BiomeLoadingEvent event) {
+    public static void addArconiumTrees(BiomeLoadingEvent event) {
         Biome.Category category = event.getCategory();
 
         if (category == Biome.Category.FOREST) {
             for (RainbowColor tier: RainbowColor.values()) {
                 event.getGeneration().addFeature(GenerationStage.Decoration.VEGETAL_DECORATION,
-                        getResourceTreeConfigured(tier));
+                        getArconiumTreeConfigured(tier));
             }
         }
     }

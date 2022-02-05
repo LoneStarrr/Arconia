@@ -3,18 +3,13 @@ package lonestarrr.arconia.data.client;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
-import lonestarrr.arconia.common.block.RainbowCropBlock;
-import lonestarrr.arconia.common.core.BlockNames;
 import lonestarrr.arconia.common.core.RainbowColor;
-import org.lwjgl.system.CallbackI;
 
 import static lonestarrr.arconia.common.core.helper.ResourceLocationHelper.prefix;
 
@@ -120,7 +115,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile model = models().getExistingFile(prefix("block/cross_sapling"));
 
         for (RainbowColor color: RainbowColor.values()) {
-            Block block = ModBlocks.getMoneyTreeSapling(color);
+            Block block = ModBlocks.getArconiumTreeSapling(color);
             String name = Registry.BLOCK.getKey(block).getPath();
             simpleBlock(block, model);
             // Item model here does not use the block model, but instead the flat texture(s)
@@ -133,7 +128,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     private void registerTreeRoots() {
         //Tree roots
         for (RainbowColor color: RainbowColor.values()) {
-            Block rootBlock = ModBlocks.getResourceTreeRootBlock(color);
+            Block rootBlock = ModBlocks.getArconiumTreeRootBlocks(color);
             String rootName = Registry.BLOCK.getKey(rootBlock).getPath();
             ModelFile rootModel = models().getExistingFile(prefix("block/tree_root_block"));
             horizontalBlock(rootBlock, rootModel);
@@ -142,14 +137,14 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     }
     private void registerLeaves() {
-        //Money tree leaves
+        //Arconium tree leaves
         //TODO: single texture for all, use tints to dynamically color - like TreeRoots (probably use a manual model file)
         for (RainbowColor color: RainbowColor.values()) {
-            Block leafBlock = ModBlocks.getMoneyTreeLeaves(color);
+            Block leafBlock = ModBlocks.getArconiumTreeLeaves(color);
             String leafName = Registry.BLOCK.getKey(leafBlock).getPath();
-            ModelFile leafModel = models().getExistingFile(prefix("block/resource_tree_leaves"));
+            ModelFile leafModel = models().getExistingFile(prefix("block/arconium_tree_leaves"));
             simpleBlock(leafBlock, leafModel);
-            itemModels().withExistingParent(leafName, prefix("block/resource_tree_leaves"));
+            itemModels().withExistingParent(leafName, prefix("block/arconium_tree_leaves"));
         }
     }
 

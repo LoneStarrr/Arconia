@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "item": "arconia:red_colored_tree_root"
+    }
+  ],
+  "result":
+  {
+    "item": "patchouli:guide_book",
+    "nbt": {"patchouli:book": "arconia:guide_book"}
+  }
+}

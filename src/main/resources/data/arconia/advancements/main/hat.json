@@ -1,0 +1,29 @@
+{
+  "display": {
+    "icon": {
+      "item": "arconia:hat"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.hat.title"
+    },
+    "description": {
+      "translate": "advancement.arconia.main.hat.desc"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "arconia:main/pot_of_gold",
+  "criteria": {
+    "hat": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "arconia:hat"
+          }
+        ]
+      }
+    }
+  }
+}

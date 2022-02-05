@@ -1,0 +1,20 @@
+{
+    "name": "Getting items from the pot",
+    "icon": "arconia:hat",
+    "category": "arconia:pot_of_gold",
+    "sortnum": 6,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "text": "Place a chest near the pot. Craft a leprechaun hat, and place it on the chest. Right click the pot with a clover staff, then right click the hat to link the two. The enchanted tree roots are used to select the item to be extracted from the pot. Simply take one and right-click the linked hat with it. You should now see the item visualized above the hat."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "Items generate only if the pot contains gold. The simplest, yet expensive way, is to right-click the pot of gold with a gold ingot. Based on the item being requested, more than one ingot may be required. Once there is enough gold in the pot, and once enough time has passed, the pot will start flinging items into nearby linked hats."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "The first item to collect is arconium essence, as it is vital in producing arconium. This is needed for enchanting other roots. It is also used to infuse blocks of gold with arconium, which is the other, much cheaper and easier method to fill the pot with gold."
+        }
+    ]
+}

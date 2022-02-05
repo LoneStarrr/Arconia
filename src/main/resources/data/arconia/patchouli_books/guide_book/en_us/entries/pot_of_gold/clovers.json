@@ -1,0 +1,12 @@
+{
+    "name": "Clovers",
+    "icon": "arconia:four_leaf_clover",
+    "category": "arconia:pot_of_gold",
+    "sortnum": 1,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "text": "While observing the leprechauns, I noticed they were obsessed with four leaf clovers. Punching clovers you can find in the wild occasionally seems to produce one of those.  I once saw the green little buggers whack at the clovers with a little staff made using a four leaf clover. This seemed to give them a much higher chance of finding more of them."
+        }
+    ]
+}

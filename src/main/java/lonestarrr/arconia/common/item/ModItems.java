@@ -1,24 +1,17 @@
 package lonestarrr.arconia.common.item;
 
-import net.minecraft.item.BlockNamedItem;
+import lonestarrr.arconia.common.core.ItemNames;
+import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
-import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.ModBlocks;
-import lonestarrr.arconia.common.block.RainbowCropBlock;
-import lonestarrr.arconia.common.core.ItemNames;
-import lonestarrr.arconia.common.core.RainbowColor;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static lonestarrr.arconia.common.block.ModBlocks.register;
 
-@Mod.EventBusSubscriber(modid = Arconia.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ModItems {
     public static final Item clover = new Item(defaultBuilder());
     public static final Item goldCoin = new Item(defaultBuilder());
@@ -38,7 +31,6 @@ public final class ModItems {
         return new Item.Properties().tab(ItemGroup.TAB_MISC);
     }
 
-    @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> evt) {
         // Register stand-alone items, not associated with a block - those go into ModBlocks
         IForgeRegistry<Item> r = evt.getRegistry();

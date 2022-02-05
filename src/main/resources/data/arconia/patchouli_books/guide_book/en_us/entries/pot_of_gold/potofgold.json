@@ -1,0 +1,29 @@
+{
+    "name": "Pot of Gold",
+    "icon": "arconia:pot",
+    "category": "arconia:pot_of_gold",
+    "sortnum": 3,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "text": "The center piece of the action. Having witnessed one being built by the leprechauns, I was able to construct it, and I have documented the steps on the next page. Once built, smacking it with the four leaf clover staff brings it to life. By itself, it doesn't do much yet, but for now just know that it's going to need some space surrounding it."
+        },
+        {
+            "type": "patchouli:multiblock",
+            "multiblock": {
+                "pattern": [
+                  [ "CCC", "CGC", "CCC" ],
+                  [ "CCC", "C0C", "CCC" ]
+                ],
+                "mapping": {
+                    "C": "minecraft:cauldron",
+                    "0": "minecraft:cauldron",
+                    "G": "minecraft:gold_block"
+                },
+                "symmetrical": true
+            },
+            "text": "Right-click it with the clover staff to form the pot."
+        }
+    ]
+}
+

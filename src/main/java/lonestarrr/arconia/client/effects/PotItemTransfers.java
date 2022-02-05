@@ -2,7 +2,6 @@ package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -12,11 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import org.lwjgl.system.CallbackI;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,7 +22,6 @@ import java.util.Set;
  * Renders animations of items being flung out of a pot of gold into hats collecting the item
  * TODO This is a straight up copy of OrbLasers - do I want to get rid of that, or keep it and abstract out the shared logic?
  */
-@Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class PotItemTransfers {
     private static final Set<ItemTransfer> transfers = new HashSet<>();
 
@@ -45,7 +39,6 @@ public class PotItemTransfers {
         transfers.add(transfer);
     }
 
-    @SubscribeEvent
     public static void render(RenderWorldLastEvent event) {
         World world = Minecraft.getInstance().level;
 

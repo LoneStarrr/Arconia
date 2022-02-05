@@ -1,0 +1,29 @@
+{
+  "display": {
+    "icon": {
+      "item": "arconia:red_tree_root_block"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.red_tree_root_block.title"
+    },
+    "description": {
+      "translate": "advancement.arconia.main.red_tree_root_block.desc"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "arconia:main/red_arconium_block",
+  "criteria": {
+    "red_tree_root_block": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "arconia:red_tree_root_block"
+          }
+        ]
+      }
+    }
+  }
+}

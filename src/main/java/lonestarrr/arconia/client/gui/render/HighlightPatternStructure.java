@@ -3,19 +3,15 @@ package lonestarrr.arconia.client.gui.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Set;
 
 /**
  * When a player builds a structure using pattern blocks, highlight the pattern blocks that are detected when requesting
  * pattern completion inspection
  */
-@Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class HighlightPatternStructure {
     private static Set<BlockPos> highlightedBlocks = null;
 
@@ -35,7 +31,6 @@ public class HighlightPatternStructure {
         return highlightedBlocks != null;
     }
 
-    @SubscribeEvent
     public static void render(RenderWorldLastEvent event) {
         if (highlightedBlocks != null) {
             renderHighlightedBlocks(highlightedBlocks, event.getMatrixStack());

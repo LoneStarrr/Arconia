@@ -2,7 +2,7 @@ package lonestarrr.arconia.client.core.handler;
 
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import lonestarrr.arconia.client.effects.*;
-import lonestarrr.arconia.common.block.ResourceTreeRootBlock;
+import lonestarrr.arconia.common.block.ArconiumTreeRootBlock;
 import lonestarrr.arconia.common.block.tile.ModTiles;
 import lonestarrr.arconia.common.core.RainbowColor;
 
@@ -18,9 +18,9 @@ public class TileEntityRendererHandler {
         ClientRegistry.bindTileEntityRenderer(ModTiles.ORB, OrbRenderer::new);
 
 
-        // Visual effect rendering between money tree and rainbow crate is accomplished using a Tile Entity Renderer
+        // Visual effect for an 'activated' arconium tree
         for (RainbowColor color: RainbowColor.values()) {
-            ClientRegistry.bindTileEntityRenderer(ResourceTreeRootBlock.getTileEntityTypeByTier(color),
+            ClientRegistry.bindTileEntityRenderer(ArconiumTreeRootBlock.getTileEntityTypeByTier(color),
                     RainbowBeamRenderer::new);
         }
 

@@ -2,14 +2,17 @@ package lonestarrr.arconia.data.recipes;
 
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.core.helper.PatchouliHelper;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.data.*;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Consumer;
 
@@ -43,11 +46,13 @@ public class VanillaRecipeProvider extends RecipeProvider {
     private void registerTreeRootBlocks(Consumer<IFinishedRecipe> consumer) {
         for (RainbowColor tier : RainbowColor.values()) {
             Item treeRoot = ModItems.getColoredRoot(tier);
-            Item treeRootBlock = ModBlocks.getResourceTreeRootBlock(tier).asItem();
+            Item treeRootBlock = ModBlocks.getArconiumTreeRootBlocks(tier).asItem();
+            Item arconiumBlock = ModBlocks.getArconiumBlock(tier).asItem();
             ShapedRecipeBuilder.shaped(treeRootBlock)
                     .define('R', treeRoot)
+                    .define('A', arconiumBlock)
                     .pattern("RRR")
-                    .pattern("RRR")
+                    .pattern("RAR")
                     .pattern("RRR")
                     .unlockedBy("has_item", has(treeRoot))
                     .save(consumer);

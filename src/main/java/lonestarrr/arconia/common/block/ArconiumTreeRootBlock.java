@@ -1,0 +1,84 @@
+package lonestarrr.arconia.common.block;
+
+import lonestarrr.arconia.common.block.tile.ArconiumTreeRootTileEntity;
+import net.minecraft.block.*;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.world.IBlockReader;
+import lonestarrr.arconia.common.block.tile.ModTiles;
+import lonestarrr.arconia.common.core.RainbowColor;
+
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
+
+import static lonestarrr.arconia.common.block.ModBlocks.register;
+
+/**
+ * Tree root block to be placed under a resource tree of the matching tier. Combined with one or more Resource Gen blocks placed near the base of the tree, this
+ * will determine the resources to be generated. The root block has a tile entity which is responsible for the resource generation.
+ */
+public class ArconiumTreeRootBlock extends Block implements IBlockColor {
+    private final RainbowColor tier;
+    private static final Map<RainbowColor, TileEntityType<ArconiumTreeRootTileEntity>> tileEntityTypes =
+            new HashMap<>(RainbowColor.values().length);
+    private static final DirectionProperty FACING = HorizontalBlock.FACING;
+
+    public ArconiumTreeRootBlock(RainbowColor tier) {
+        super(Block.Properties.of(Material.WOOD).strength(0.8f).sound(SoundType.WOOD));
+        this.tier = tier;
+        BlockState defaultBlockState = this.stateDefinition.any().setValue(FACING, Direction.NORTH);
+        this.registerDefaultState(defaultBlockState);
+    }
+
+    public final RainbowColor getTier() { return tier; }
+
+    /**
+     * BlockState properties for this block
+     */
+    @Override
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
+    }
+
+    /**
+     * When the block is placed into the world, calculates the correct BlockState based on which direction the player is facing
+     * @param blockItemUseContext
+     * @return
+     */
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext blockItemUseContext) {
+        Direction direction = blockItemUseContext.getHorizontalDirection();  // north, east, south, or west
+        return defaultBlockState().setValue(FACING, direction);
+    }
+
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return new ArconiumTreeRootTileEntity(tier);
+    }
+
+    public static TileEntityType<ArconiumTreeRootTileEntity> getTileEntityTypeByTier(RainbowColor tier) {
+        return ModTiles.getTreeRootBlockTileEntityType(tier);
+    }
+
+    @Override
+    public int getColor(
+            BlockState blockState, @Nullable IBlockDisplayReader iBlockDisplayReader, @Nullable BlockPos blockPos, int tintIndex) {
+        // Colors are not dependent on tint index, but on rainbow tier (though may use tintIndex later for less saturated versions)
+        return tier.getColorValue();
+    }
+}
