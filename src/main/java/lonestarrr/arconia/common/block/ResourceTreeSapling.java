@@ -23,12 +23,12 @@ public class ResourceTreeSapling extends SaplingBlock implements IBlockColor {
 
     public ResourceTreeSapling(@Nonnull RainbowColor tier) {
         super(new MoneyTree(tier),
-                AbstractBlock.Properties.create(Material.PLANTS).doesNotBlockMovement().tickRandomly().hardnessAndResistance(0F).sound(SoundType.PLANT));
+                AbstractBlock.Properties.of(Material.PLANT).noCollission().randomTicks().strength(0F).sound(SoundType.GRASS));
         this.tier = tier;
     }
 
     @Override
-    protected boolean isValidGround(BlockState state, IBlockReader world, BlockPos pos) {
+    protected boolean mayPlaceOn(BlockState state, IBlockReader world, BlockPos pos) {
         /*
         !!!!!!!!!!!!!!!!!
         Trees have their OWN method to check for valid ground to see if they can grow. This is currently defined in TreeFeature.isDirtOrFarmlandAt(),
@@ -38,7 +38,7 @@ public class ResourceTreeSapling extends SaplingBlock implements IBlockColor {
         Block block = state.getBlock();
         // Trees can spawn in the overworld - they don't do anything special if not placed on our custom tree root block - and the player will need the
         // saplings and other resources
-        if (super.isValidGround(state, world, pos)) {
+        if (super.mayPlaceOn(state, world, pos)) {
             return true;
         }
 

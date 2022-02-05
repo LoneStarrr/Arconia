@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.OptionalDouble;
 import java.util.Random;
 
+import net.minecraft.client.renderer.RenderState.TransparencyState;
+
 /**
  * Draws pretty visual effects related to the resource tree
  *
@@ -70,7 +72,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
         // All textures are stitched into 1 large atlas texture - regular item / block models automatically take care of this,
         // but other textures need to be manually added to it for it to be available for rendering.
         // In this case, add the texture for the beam to the main atlas.
-        if (event.getMap().getTextureLocation().equals((AtlasTexture.LOCATION_BLOCKS_TEXTURE))) {
+        if (event.getMap().location().equals((AtlasTexture.LOCATION_BLOCKS))) {
             event.addSprite(BEAM_TEXTURE);
             event.addSprite(BEAM_ANIMATED_TEXTURE);
             event.addSprite(BEAM_SINE);
@@ -81,8 +83,8 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
     public void render(
             ResourceTreeRootTileEntity tileEntity, float partialTicks, MatrixStack matrixStack,
             IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
-        BlockPos startPos = tileEntity.getPos();
-        BlockPos treeBasePos = startPos.up(2);
+        BlockPos startPos = tileEntity.getBlockPos();
+        BlockPos treeBasePos = startPos.above(2);
         RainbowColor tier = tileEntity.getTier();
 
 //        renderWaveAnimated(startPos, endPos, matrixStack, buffer);
@@ -93,7 +95,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
     }
 
     private static double vectorLength(Vector3f v) {
-        return Math.sqrt(Math.pow(v.getX(), 2) + Math.pow(v.getY(), 2) + Math.pow(v.getZ(), 2));
+        return Math.sqrt(Math.pow(v.x(), 2) + Math.pow(v.y(), 2) + Math.pow(v.z(), 2));
 
     }
 
@@ -110,7 +112,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
         final int maxLogCount = 7;
         final Block logBlock = Blocks.OAK_LOG;
         BlockPos scanPos = treeBasePos; // position of first log
-        ClientWorld world = Minecraft.getInstance().world;
+        ClientWorld world = Minecraft.getInstance().level;
         if (world.getBlockState(treeBasePos).getBlock() != logBlock) {
             return;
         }
@@ -119,9 +121,9 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
         BlockPos centerPos = null;
 
         while (trunkValid && centerPos == null) {
-            scanPos = scanPos.up();
+            scanPos = scanPos.above();
             if (world.getBlockState(scanPos).getBlock() != logBlock) {
-                centerPos = scanPos.down().subtract(tePos); // Center of the visual effect
+                centerPos = scanPos.below().subtract(tePos); // Center of the visual effect
             } else if (++logsFound > maxLogCount) {
                 trunkValid = false;
             }
@@ -134,9 +136,9 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
         // Each tier has its own specific beam color
         int colorInt = tier.getColorValue();
         Color color = new Color(colorInt);
-        matrixStack.push();
+        matrixStack.pushPose();
         RainbowLightningProjector.renderRainbowLighting(centerPos, 2, 12, matrixStack, buffer, color);
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     /**
@@ -148,24 +150,24 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
      * @param buffer
      */
     private void renderWaveAnimated(BlockPos startPos, BlockPos endPos, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0.5, 0.5, 0.5);
         Vector3d start = new Vector3d(startPos.getX(), startPos.getY(), startPos.getZ());
         Vector3d end = new Vector3d(endPos.getX(), endPos.getY(), endPos.getZ());
         Quaternion rotation = VectorHelper.getRotation(start, end);
         float distance = (float)end.subtract(start).length();
-        matrixStack.rotate(rotation);
+        matrixStack.mulPose(rotation);
         // Draw the animated sprite stretched out over the full distance along the X axis. Animation is taken care of by the game already based on the .mcmeta
         // file associated with the texture's png.
-        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(BEAM_ANIMATED_TEXTURE);
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(BEAM_ANIMATED_TEXTURE);
         IVertexBuilder builder = buffer.getBuffer(RainbowBeamRenderType.BEAM_TEXTURED);
-        Matrix4f positionMatrix = matrixStack.getLast().getMatrix();
+        Matrix4f positionMatrix = matrixStack.last().pose();
         float x = 0;
         float y = 0;
         float z = 0;
         float amplitude = 0.0375f * distance;
         final int ticksPerColorCycle = 64;
-        float hue = (float)(Minecraft.getInstance().world.getGameTime() % ticksPerColorCycle) / ticksPerColorCycle;
+        float hue = (float)(Minecraft.getInstance().level.getGameTime() % ticksPerColorCycle) / ticksPerColorCycle;
         float saturation = 1f;
         float brightness = 1f;
         Color color = Color.getHSBColor(hue, saturation, brightness);
@@ -177,13 +179,13 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
         // The animated sprite's individual frames need to be rotated by 90 degrees due to the way the spritesheet was generated
         for(int i = 0; i < 3; i++) {
             // Rotate around X axis to give it a 3D effect
-            builder.pos(positionMatrix, x + 0, y + 0, z).tex(sprite.getMaxU(), sprite.getMinV()).color(colorR, colorG, colorB, colorA).endVertex();
-            builder.pos(positionMatrix, x + distance, y + 0, z).tex(sprite.getMaxU(), sprite.getMaxV()).color(colorR, colorG, colorB, colorA).endVertex();
-            builder.pos(positionMatrix, x + distance, y + amplitude * 0.3f, z).tex(sprite.getMinU(), sprite.getMaxV()).color(colorR, colorG, colorB, colorA).endVertex();
-            builder.pos(positionMatrix, x + 0, y + amplitude, z).tex(sprite.getMinU(), sprite.getMinV()).color(colorR, colorG, colorB, colorA).endVertex();
-            matrixStack.rotate(new Quaternion(120, 0, 0, true));
+            builder.vertex(positionMatrix, x + 0, y + 0, z).uv(sprite.getU1(), sprite.getV0()).color(colorR, colorG, colorB, colorA).endVertex();
+            builder.vertex(positionMatrix, x + distance, y + 0, z).uv(sprite.getU1(), sprite.getV1()).color(colorR, colorG, colorB, colorA).endVertex();
+            builder.vertex(positionMatrix, x + distance, y + amplitude * 0.3f, z).uv(sprite.getU0(), sprite.getV1()).color(colorR, colorG, colorB, colorA).endVertex();
+            builder.vertex(positionMatrix, x + 0, y + amplitude, z).uv(sprite.getU0(), sprite.getV0()).color(colorR, colorG, colorB, colorA).endVertex();
+            matrixStack.mulPose(new Quaternion(120, 0, 0, true));
         }
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     /**
@@ -197,7 +199,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
      * @param buffer
      */
     private void renderSineSprite(BlockPos startPos, BlockPos endPos, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0.5, 0.5, 0.5);
 
 
@@ -205,18 +207,18 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
         Vector3d end = new Vector3d(endPos.getX(), endPos.getY(), endPos.getZ());
         Quaternion rotation = VectorHelper.getRotation(start, end);
         float distance = (float)end.subtract(start).length();
-        matrixStack.rotate(rotation);
+        matrixStack.mulPose(rotation);
         // Draw the animated sprite stretched out over the full distance along the X axis. Animation is taken care of by the game already based on the .mcmeta
         // file associated with the texture's png.
-        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(BEAM_SINE);
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(BEAM_SINE);
         IVertexBuilder builder = buffer.getBuffer(RainbowBeamRenderType.BEAM_TEXTURED);
-        Matrix4f positionMatrix = matrixStack.getLast().getMatrix();
+        Matrix4f positionMatrix = matrixStack.last().pose();
         float x = 0;
         float y = 0;
         float z = 0;
         float amplitude = 0.25f * distance;
         final int ticksPerAnimationCycle = 64;
-        final float cycle = Minecraft.getInstance().world.getGameTime() % ticksPerAnimationCycle;
+        final float cycle = Minecraft.getInstance().level.getGameTime() % ticksPerAnimationCycle;
         float hue = cycle / ticksPerAnimationCycle;
         float xRotation = (cycle / ticksPerAnimationCycle) * 360;
         float saturation = 1f;
@@ -227,13 +229,13 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
         int colorB = color.getBlue();
         int colorA = 192;
 
-        matrixStack.rotate(new Quaternion(xRotation, 0, 0, true));
+        matrixStack.mulPose(new Quaternion(xRotation, 0, 0, true));
         // Shift y down so that sprite is rendered with the center of the image along the X axis
-        builder.pos(positionMatrix, x + 0, y - 0.5f * amplitude, z).tex(sprite.getMinU(), sprite.getMinV()).color(colorR, colorG, colorB, colorA).endVertex();
-        builder.pos(positionMatrix, x + distance, y - 0.3f * amplitude, z).tex(sprite.getMaxU(), sprite.getMinV()).color(colorR, colorG, colorB, colorA).endVertex();
-        builder.pos(positionMatrix, x + distance, y + 0.3f * amplitude, z).tex(sprite.getMaxU(), sprite.getMaxV()).color(colorR, colorG, colorB, colorA).endVertex();
-        builder.pos(positionMatrix, x + 0, y + 0.5f * amplitude, z).tex(sprite.getMinU(), sprite.getMaxV()).color(colorR, colorG, colorB, colorA).endVertex();
-        matrixStack.pop();
+        builder.vertex(positionMatrix, x + 0, y - 0.5f * amplitude, z).uv(sprite.getU0(), sprite.getV0()).color(colorR, colorG, colorB, colorA).endVertex();
+        builder.vertex(positionMatrix, x + distance, y - 0.3f * amplitude, z).uv(sprite.getU1(), sprite.getV0()).color(colorR, colorG, colorB, colorA).endVertex();
+        builder.vertex(positionMatrix, x + distance, y + 0.3f * amplitude, z).uv(sprite.getU1(), sprite.getV1()).color(colorR, colorG, colorB, colorA).endVertex();
+        builder.vertex(positionMatrix, x + 0, y + 0.5f * amplitude, z).uv(sprite.getU0(), sprite.getV1()).color(colorR, colorG, colorB, colorA).endVertex();
+        matrixStack.popPose();
     }
 
     /**
@@ -245,7 +247,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
      * @param buffer
      */
     private void renderWaveLines(BlockPos startPos, BlockPos endPos, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0.5, 0.5, 0.5);
 
         /*
@@ -255,7 +257,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
          * both cycles are complete.
          */
         int ticksPerCycle = 100;
-        int cycle = (int)(Minecraft.getInstance().world.getGameTime() % (ticksPerCycle * 2));
+        int cycle = (int)(Minecraft.getInstance().level.getGameTime() % (ticksPerCycle * 2));
         boolean secondCycle = cycle >= ticksPerCycle;
         if (secondCycle) {
             cycle -= ticksPerCycle;
@@ -302,7 +304,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
 //            renderSineWave(matrixStack, buffer, rotation, sineWidth, amplitudeFactor, color);
 //        }
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     private void renderSineWave(MatrixStack matrixStack, IRenderTypeBuffer buffer, Quaternion rotation, float scaleX, float amplitudeFactor, Color color) {
@@ -311,10 +313,10 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
         int alpha = 64;
         int[] colorInts = {color.getRed(), color.getGreen(), color.getBlue(), alpha};
 
-        matrixStack.push();
-        matrixStack.rotate(rotation);
+        matrixStack.pushPose();
+        matrixStack.mulPose(rotation);
 
-        Matrix4f positionMatrix = matrixStack.getLast().getMatrix();
+        Matrix4f positionMatrix = matrixStack.last().pose();
         IVertexBuilder builder;
         builder = buffer.getBuffer(RainbowBeamRenderType.BEAM_LINE_THICK);
         renderSineWaveSegments(positionMatrix, builder, colorInts, scaleX, 0, amplitudeFactor);
@@ -322,7 +324,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
         colorInts[3] = alpha * 2;
         renderSineWaveSegments(positionMatrix, builder, colorInts, scaleX, 0, amplitudeFactor);
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     private void renderSineWaveSegments(Matrix4f positionMatrix, IVertexBuilder builder, int[] color, float scaleX, int animationOffset, float amplitudeFactor) {
@@ -333,9 +335,9 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
             float x = sinPrecalculated.get(idxX).x * scaleX;
             float y = sinPrecalculated.get(idxY).y * amplitudeFactor;
             float z = 0;
-            builder.pos(positionMatrix, x, y, z).color(color[0], color[1], color[2], color[3]).endVertex();
+            builder.vertex(positionMatrix, x, y, z).color(color[0], color[1], color[2], color[3]).endVertex();
             if (i !=0 && i < sinPrecalculated.size() - 1) {
-                builder.pos(positionMatrix, x, y, z).color(color[0], color[1], color[2], color[3]).endVertex();
+                builder.vertex(positionMatrix, x, y, z).color(color[0], color[1], color[2], color[3]).endVertex();
             }
         }
 
@@ -344,10 +346,10 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
 
     private void add(IVertexBuilder renderer, MatrixStack stack, float x, float y, float z, float u, float v) {
         // The order of the calls is important and is
-        renderer.pos(stack.getLast().getMatrix(), x, y, z)
+        renderer.vertex(stack.last().pose(), x, y, z)
                 .color(1.0f, 1.0f, 1.0f, 1.0f)
-                .tex(u, v)
-                .lightmap(0, 240) // Override lighting
+                .uv(u, v)
+                .uv2(0, 240) // Override lighting
                 .normal(1, 0, 0) // Perpendicular to x-axis
                 .endVertex();
     }
@@ -364,26 +366,26 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
         int alpha = (int)((1 - Math.abs(progress - 0.5)) * 32 + 16);
         int[] colors = {255, 0, 255};
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(-startPos.getX(), -startPos.getY(), -startPos.getZ());
         matrixStack.translate(0.5f, 0.5f, 0.5f);
-        Matrix4f positionMatrix = matrixStack.getLast().getMatrix();
+        Matrix4f positionMatrix = matrixStack.last().pose();
         IVertexBuilder builder = buffer.getBuffer(RainbowBeamRenderType.BEAM_LINE_THICK);
-        builder.pos(positionMatrix, startPos.getX(), startPos.getY(), startPos.getZ())
+        builder.vertex(positionMatrix, startPos.getX(), startPos.getY(), startPos.getZ())
                 .color(colors[0], colors[1], colors[2], alpha)
                 .endVertex();
-        builder.pos(positionMatrix, endPos.getX(), endPos.getY(), endPos.getZ())
+        builder.vertex(positionMatrix, endPos.getX(), endPos.getY(), endPos.getZ())
                 .color(colors[0], colors[1], colors[2], alpha)
                 .endVertex();
 
         IVertexBuilder builder2 = buffer.getBuffer(RainbowBeamRenderType.BEAM_LINE_THIN);
-        builder2.pos(positionMatrix, startPos.getX(), startPos.getY(), startPos.getZ())
+        builder2.vertex(positionMatrix, startPos.getX(), startPos.getY(), startPos.getZ())
                 .color(colors[0], colors[1], colors[2], alpha * 2)
                 .endVertex();
-        builder2.pos(positionMatrix, endPos.getX(), endPos.getY(), endPos.getZ())
+        builder2.vertex(positionMatrix, endPos.getX(), endPos.getY(), endPos.getZ())
                 .color(colors[0], colors[1], colors[2], alpha * 2)
                 .endVertex();
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
 }
@@ -402,36 +404,36 @@ class RainbowBeamRenderType extends RenderType {
         super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
     }
 
-    public static final RenderType BEAM_LINE_THICK = RenderType.makeType("beam_line_thick",
+    public static final RenderType BEAM_LINE_THICK = RenderType.create("beam_line_thick",
             DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 256,
-            RenderType.State.getBuilder().line(THICK_LINE)
-                    .layer(RenderState.field_239235_M_)
-                    .transparency(TransparencyState.LIGHTNING_TRANSPARENCY)
-                    .lightmap(RenderState.LIGHTMAP_DISABLED)
-                    .texture(RenderState.NO_TEXTURE)
-                    .writeMask(RenderState.COLOR_DEPTH_WRITE)
-                    .build(false)
+            RenderType.State.builder().setLineState(THICK_LINE)
+                    .setLayeringState(RenderState.VIEW_OFFSET_Z_LAYERING)
+                    .setTransparencyState(TransparencyState.LIGHTNING_TRANSPARENCY)
+                    .setLightmapState(RenderState.NO_LIGHTMAP)
+                    .setTextureState(RenderState.NO_TEXTURE)
+                    .setWriteMaskState(RenderState.COLOR_DEPTH_WRITE)
+                    .createCompositeState(false)
     );
 
-    public static final RenderType BEAM_LINE_THIN = makeType("beam_line_thin",
+    public static final RenderType BEAM_LINE_THIN = create("beam_line_thin",
             DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 256,
-            RenderType.State.getBuilder().line(THIN_LINE)
-                    .layer(RenderState.field_239235_M_)
-                    .transparency(RenderState.TransparencyState.TRANSLUCENT_TRANSPARENCY)
-                    .lightmap(RenderState.LIGHTMAP_DISABLED)
-                    .texture(RenderState.NO_TEXTURE)
-                    .writeMask(RenderState.COLOR_DEPTH_WRITE)
-                    .build(false)
+            RenderType.State.builder().setLineState(THIN_LINE)
+                    .setLayeringState(RenderState.VIEW_OFFSET_Z_LAYERING)
+                    .setTransparencyState(RenderState.TransparencyState.TRANSLUCENT_TRANSPARENCY)
+                    .setLightmapState(RenderState.NO_LIGHTMAP)
+                    .setTextureState(RenderState.NO_TEXTURE)
+                    .setWriteMaskState(RenderState.COLOR_DEPTH_WRITE)
+                    .createCompositeState(false)
     );
 
     // RenderType for rendering a texture in 2D in the world. Note that the source here is not the texture, but the ATLAS containing the texture
-    public static final RenderType BEAM_TEXTURED = makeType("beam_textured",
+    public static final RenderType BEAM_TEXTURED = create("beam_textured",
             DefaultVertexFormats.POSITION_TEX_COLOR, 7, 262144,
-            RenderType.State.getBuilder()
-                    .texture(new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, false))
-                    .transparency(TransparencyState.TRANSLUCENT_TRANSPARENCY)
-                    .cull(RenderState.CULL_DISABLED)
-                    .writeMask(RenderState.COLOR_WRITE)
-                    .build(false)
+            RenderType.State.builder()
+                    .setTextureState(new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS, false, false))
+                    .setTransparencyState(TransparencyState.TRANSLUCENT_TRANSPARENCY)
+                    .setCullState(RenderState.NO_CULL)
+                    .setWriteMaskState(RenderState.COLOR_WRITE)
+                    .createCompositeState(false)
     );
 }

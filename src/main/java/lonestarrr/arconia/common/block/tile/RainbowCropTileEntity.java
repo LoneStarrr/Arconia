@@ -32,8 +32,8 @@ public class RainbowCropTileEntity extends TileEntity {
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound) {
-        super.read(state, compound);
+    public void load(BlockState state, CompoundNBT compound) {
+        super.load(state, compound);
         this.coinCount = compound.getShort("coinCount");
     }
 

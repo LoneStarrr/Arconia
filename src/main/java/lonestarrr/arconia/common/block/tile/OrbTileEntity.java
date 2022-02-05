@@ -43,7 +43,7 @@ public class OrbTileEntity extends BaseTileEntity implements ITickableTileEntity
 
         if (itemsToPull.size() < MAX_ITEMS) {
             itemsToPull.add(item.copy());
-            markDirty();
+            setChanged();
             updateClient();
             return true;
         }
@@ -55,7 +55,7 @@ public class OrbTileEntity extends BaseTileEntity implements ITickableTileEntity
     public ItemStack popItem() {
         if (itemsToPull.size() > 0) {
             ItemStack stack = itemsToPull.remove(itemsToPull.size() - 1);
-            markDirty();
+            setChanged();
             updateClient();
             return stack;
         }
@@ -83,7 +83,7 @@ public class OrbTileEntity extends BaseTileEntity implements ITickableTileEntity
             List<ItemStack> items = new ArrayList(list.size());
             for (int i = 0; i < list.size(); i++) {
                 CompoundNBT data = list.getCompound(i);
-                ItemStack item = ItemStack.read(data);
+                ItemStack item = ItemStack.of(data);
                 items.add(item);
             }
             itemsToPull = items;
@@ -97,12 +97,12 @@ public class OrbTileEntity extends BaseTileEntity implements ITickableTileEntity
         }
         ticksElapsed = 0;
 
-        double x = pos.getX() + 0.5;
-        double y = pos.getY() + 0.5;
-        double z = pos.getZ() + 0.5;
+        double x = worldPosition.getX() + 0.5;
+        double y = worldPosition.getY() + 0.5;
+        double z = worldPosition.getZ() + 0.5;
 
-        List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(x - RANGE, y - RANGE, z - RANGE, x + RANGE, y + RANGE, z + RANGE));
-        IItemHandler inv = InventoryHelper.getInventory(getWorld(), pos.down(), Direction.UP);
+        List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, new AxisAlignedBB(x - RANGE, y - RANGE, z - RANGE, x + RANGE, y + RANGE, z + RANGE));
+        IItemHandler inv = InventoryHelper.getInventory(getLevel(), worldPosition.below(), Direction.UP);
 
         final int maxHandled = 64;
         int handled = 0;
@@ -120,14 +120,14 @@ public class OrbTileEntity extends BaseTileEntity implements ITickableTileEntity
                 ItemStack before = item.getItem();
                 int beforeCount = before.getCount();
                 if (!before.isEmpty()) {
-                    if (!world.isRemote()) {
+                    if (!level.isClientSide()) {
                         ItemStack left = InventoryHelper.insertItem(inv, item.getItem(), false);
                         item.setItem(left);
                         // Send to client to render visualization of item being captured
                         // TODO: bunch up into a list to send
                         if (left.isEmpty() || left.getCount() < beforeCount) {
-                            OrbLaserPacket packet = new OrbLaserPacket(pos, item.getPosition(), before);
-                            ModPackets.sendToNearby(world, pos, packet);
+                            OrbLaserPacket packet = new OrbLaserPacket(worldPosition, item.blockPosition(), before);
+                            ModPackets.sendToNearby(level, worldPosition, packet);
                         }
                     }
 
@@ -145,7 +145,7 @@ public class OrbTileEntity extends BaseTileEntity implements ITickableTileEntity
         ItemStack pulled = item.getItem();
 
         for (ItemStack toPull: itemsToPull) {
-            if (pulled.isItemEqualIgnoreDurability(toPull)) {
+            if (pulled.sameItemStackIgnoreDurability(toPull)) {
                 return true;
             }
         }

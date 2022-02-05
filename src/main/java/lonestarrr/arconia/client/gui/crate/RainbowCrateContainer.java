@@ -97,7 +97,7 @@ public class RainbowCrateContainer extends Container {
         // Server sends the position of the associated tile entity tracking the inventory. This is used to
         // query the internal inventory capacity in the UI
         BlockPos tileEntityPos = extraData.readBlockPos();
-        TileEntity te = playerInventory.player.world.getTileEntity(tileEntityPos);
+        TileEntity te = playerInventory.player.level.getBlockEntity(tileEntityPos);
         RainbowCrateItemStackHandler inventory;
         if (te instanceof RainbowCrateTileEntity) {
             RainbowCrateTileEntity rcte = (RainbowCrateTileEntity)te;
@@ -115,7 +115,7 @@ public class RainbowCrateContainer extends Container {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
+    public boolean stillValid(PlayerEntity playerIn) {
         return true; // TODO proximity check etc
     }
 
@@ -123,33 +123,33 @@ public class RainbowCrateContainer extends Container {
      * Called when a player shift-clicks in the container GUI on any slot
      */
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerEntity, int sourceSlotIndex)
+    public ItemStack quickMoveStack(PlayerEntity playerEntity, int sourceSlotIndex)
     {
-        Slot sourceSlot = inventorySlots.get(sourceSlotIndex);
-        if (sourceSlot == null || !sourceSlot.getHasStack()) return ItemStack.EMPTY;  //EMPTY_ITEM
-        ItemStack sourceStack = sourceSlot.getStack();
+        Slot sourceSlot = slots.get(sourceSlotIndex);
+        if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
+        ItemStack sourceStack = sourceSlot.getItem();
         ItemStack copyOfSourceStack = sourceStack.copy();
 
         // Check if the slot clicked is one of the vanilla container slots
         if (!isCrateSlot(sourceSlotIndex)) {
             // This is a vanilla container slot so merge the stack into the tile inventory
-            if (!mergeItemStack(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX,
+            if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX,
                     TE_INVENTORY_FIRST_SLOT_INDEX + RainbowCrateTileEntity.NUM_SLOTS,
                     false)){
                 return ItemStack.EMPTY;  // EMPTY_ITEM
             }
         } else {
             // This is a TE slot so merge the stack into the players inventory
-            if (!mergeItemStack(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
+            if (!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
                 return ItemStack.EMPTY;
             }
         }
 
         // If stack size == 0 (the entire stack was moved) set slot contents to null
         if (sourceStack.getCount() == 0) {
-            sourceSlot.putStack(ItemStack.EMPTY);
+            sourceSlot.set(ItemStack.EMPTY);
         } else {
-            sourceSlot.onSlotChanged();
+            sourceSlot.setChanged();
         }
 
         sourceSlot.onTake(playerEntity, sourceStack);
@@ -160,7 +160,7 @@ public class RainbowCrateContainer extends Container {
      * @return Slots in the crate, e.g. not player inventory or hot bar.
      */
     public Stream<Slot> getCrateSlots() {
-        return this.inventorySlots.stream().filter(s -> isCrateSlot(s.slotNumber));
+        return this.slots.stream().filter(s -> isCrateSlot(s.index));
     }
 
     private boolean isCrateSlot(int slotIndex) {

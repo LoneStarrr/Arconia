@@ -33,7 +33,7 @@ public class ResourceGenTileEntity extends TileEntity {
     public void setTierAndItem(RainbowColor tier, ItemStack itemStack) {
         this.tier = tier;
         this.itemStack = itemStack.copy();
-        markDirty();
+        setChanged();
     }
 
     public final ItemStack getItemStack() {
@@ -43,16 +43,16 @@ public class ResourceGenTileEntity extends TileEntity {
     public final RainbowColor getTier() { return this.tier; }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
-        if (!world.isRemote()) {
+    public CompoundNBT save(CompoundNBT compound) {
+        if (!level.isClientSide()) {
             compound.putInt("tier", tier.getTier());
             compound.put("item", this.itemStack.serializeNBT());
         }
-        return super.write(compound);
+        return super.save(compound);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
+    public void load(BlockState state, CompoundNBT nbt) {
         try {
             int tierNum = nbt.getInt("tier");
             for (RainbowColor clr: RainbowColor.values()) {
@@ -60,26 +60,26 @@ public class ResourceGenTileEntity extends TileEntity {
                     tier = clr;
                 }
             }
-            itemStack = ItemStack.read(nbt.getCompound("item"));
-            Arconia.logger.debug("***** World remote = " + (world != null ? world.isRemote() : "null") + ", itemStack = " + itemStack);
+            itemStack = ItemStack.of(nbt.getCompound("item"));
+            Arconia.logger.debug("***** World remote = " + (level != null ? level.isClientSide() : "null") + ", itemStack = " + itemStack);
         } catch(Exception e) {
             Arconia.logger.error("Failed to read tile entity data: " + e.getMessage(), e);
             tier = RainbowColor.RED;
             itemStack = ItemStack.EMPTY;
         }
-        super.read(state, nbt);
+        super.load(state, nbt);
     }
 
     @Override
     public CompoundNBT getUpdateTag() {
         // sync server -> client, which needs the item to know how to render it in its tile entity renderer
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) {
         // Called on client to read server data
-        read(state, tag);
+        load(state, tag);
     }
 
     @Override
@@ -88,12 +88,12 @@ public class ResourceGenTileEntity extends TileEntity {
     {
         CompoundNBT nbtTagCompound = getUpdateTag();
         int tileEntityType = -1;  // arbitrary number; only used for vanilla TileEntities.  You can use it, or not, as you want.
-        return new SUpdateTileEntityPacket(this.pos, tileEntityType, nbtTagCompound);
+        return new SUpdateTileEntityPacket(this.worldPosition, tileEntityType, nbtTagCompound);
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        read(this.getBlockState(), pkt.getNbtCompound());
+        load(this.getBlockState(), pkt.getTag());
     }
 
 }

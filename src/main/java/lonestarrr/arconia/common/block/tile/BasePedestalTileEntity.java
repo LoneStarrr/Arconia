@@ -30,7 +30,7 @@ public class BasePedestalTileEntity extends BaseInventoryTileEntity {
         ItemStack toPlace = stack.copy();
         toPlace.setCount(1);
         getInventory().setStackInSlot(0, toPlace);
-        markDirty();
+        setChanged();
         updateClient();
         return true;
     }
@@ -42,7 +42,7 @@ public class BasePedestalTileEntity extends BaseInventoryTileEntity {
         }
 
         getInventory().setStackInSlot(0, ItemStack.EMPTY);
-        markDirty();
+        setChanged();
         updateClient();
         return current;
     }

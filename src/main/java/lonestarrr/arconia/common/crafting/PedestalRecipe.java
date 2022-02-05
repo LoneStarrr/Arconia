@@ -29,7 +29,7 @@ public class PedestalRecipe implements IPedestalRecipe {
         this.id = id;
         this.output = output;
         this.durationTicks = durationTicks;
-        this.inputs = NonNullList.from(Ingredient.EMPTY, inputs);
+        this.inputs = NonNullList.of(Ingredient.EMPTY, inputs);
     }
 
 
@@ -37,8 +37,8 @@ public class PedestalRecipe implements IPedestalRecipe {
     public boolean matches(IInventory inv, World world) {
         List<Ingredient> missing = new ArrayList<>(inputs);
 
-        for (int i = 0; i < inv.getSizeInventory(); i++) {
-            ItemStack input = inv.getStackInSlot(i);
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            ItemStack input = inv.getItem(i);
             if (input.isEmpty()) {
                 continue;
             }
@@ -64,12 +64,12 @@ public class PedestalRecipe implements IPedestalRecipe {
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory iInventory) {
-        return getRecipeOutput().copy();
+    public ItemStack assemble(IInventory iInventory) {
+        return getResultItem().copy();
     }
 
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getResultItem() {
         return output;
     }
 
@@ -96,38 +96,38 @@ public class PedestalRecipe implements IPedestalRecipe {
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<PedestalRecipe> {
 
         @Override
-        public PedestalRecipe read(ResourceLocation id, JsonObject json) {
+        public PedestalRecipe fromJson(ResourceLocation id, JsonObject json) {
             // Serializer is in PedestalProvider which is part of data generation
-            ItemStack output = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "output"));
-            int durationTicks = JSONUtils.getInt(json, "durationTicks");
-            JsonArray ingrs = JSONUtils.getJsonArray(json, "ingredients");
+            ItemStack output = ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(json, "output"));
+            int durationTicks = JSONUtils.getAsInt(json, "durationTicks");
+            JsonArray ingrs = JSONUtils.getAsJsonArray(json, "ingredients");
             List<Ingredient> inputs = new ArrayList<>();
             for (JsonElement e : ingrs) {
-                inputs.add(Ingredient.deserialize(e));
+                inputs.add(Ingredient.fromJson(e));
             }
             return new PedestalRecipe(id, output, durationTicks, inputs.toArray(new Ingredient[0]));
         }
 
         @Nullable
         @Override
-        public PedestalRecipe read(ResourceLocation id, PacketBuffer buf) {
+        public PedestalRecipe fromNetwork(ResourceLocation id, PacketBuffer buf) {
             Ingredient[] inputs = new Ingredient[buf.readVarInt()];
             for (int i = 0; i < inputs.length; i++) {
-                inputs[i] = Ingredient.read(buf);
+                inputs[i] = Ingredient.fromNetwork(buf);
             }
-            ItemStack output = buf.readItemStack();
+            ItemStack output = buf.readItem();
             int durationTicks = buf.readInt();
             return new PedestalRecipe(id, output, durationTicks, inputs);
 
         }
 
         @Override
-        public void write(PacketBuffer buf, PedestalRecipe recipe) {
+        public void toNetwork(PacketBuffer buf, PedestalRecipe recipe) {
             buf.writeVarInt(recipe.getIngredients().size());
             for (Ingredient input : recipe.getIngredients()) {
-                input.write(buf);
+                input.toNetwork(buf);
             }
-            buf.writeItemStack(recipe.getRecipeOutput(), false);
+            buf.writeItemStack(recipe.getResultItem(), false);
             buf.writeInt(recipe.durationTicks);
         }
     }

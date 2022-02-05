@@ -27,9 +27,9 @@ public class OrbLasers {
     private static final Set<LaserBeam> beams = new HashSet<LaserBeam>();
 
     public static void addLaserBeam(BlockPos orbPos, BlockPos itemPos, ItemStack itemStack) {
-        World world = Minecraft.getInstance().world;
+        World world = Minecraft.getInstance().level;
 
-        if (!world.isRemote()) {
+        if (!world.isClientSide()) {
             return;
         }
 
@@ -43,19 +43,19 @@ public class OrbLasers {
 
 //    @SubscribeEvent
     public static void render(RenderWorldLastEvent event) {
-        World world = Minecraft.getInstance().world;
+        World world = Minecraft.getInstance().level;
 
         long now = world.getGameTime();
         List<LaserBeam> toRemove = new ArrayList<>();
 
         MatrixStack matrix = event.getMatrixStack();
-        matrix.push();
+        matrix.pushPose();
 
         // Correct for player projection view
-        Vector3d projected = Minecraft.getInstance().getRenderManager().info.getProjectedView();
-        matrix.translate(-projected.getX(), -projected.getY(), -projected.getZ());
+        Vector3d projected = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition();
+        matrix.translate(-projected.x(), -projected.y(), -projected.z());
 
-        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
 
         for (LaserBeam beam: beams) {
             if (now - beam.startTick > LaserBeam.BEAM_DISPLAY_TICKS) {
@@ -63,21 +63,21 @@ public class OrbLasers {
                 continue;
             }
 
-            BlockPos playerPos = Minecraft.getInstance().player.getPosition();
+            BlockPos playerPos = Minecraft.getInstance().player.blockPosition();
             boolean fromCenter = true;
-            if (playerPos.distanceSq(beam.orbPos.x, beam.orbPos.y, beam.orbPos.z, fromCenter) > 64 * 64) {
+            if (playerPos.distSqr(beam.orbPos.x, beam.orbPos.y, beam.orbPos.z, fromCenter) > 64 * 64) {
                 continue;
             }
 
             renderBeamItem(beam, event.getMatrixStack(), buffer, event.getPartialTicks());
         }
-        buffer.finish();
+        buffer.endBatch();
 
         for (LaserBeam beam: toRemove) {
             beams.remove(beam);
         }
 
-        matrix.pop();
+        matrix.popPose();
     }
 
     private static void renderBeamItem(LaserBeam beam, MatrixStack matrixStack, IRenderTypeBuffer buffer, float partialTicks) {
@@ -88,12 +88,12 @@ public class OrbLasers {
         double itemY = beam.itemPos.y + velocity.y * elapsedTicks - (LaserBeam.GRAVITY * elapsedTicks * elapsedTicks) / 2d;
         double itemZ = beam.itemPos.z + velocity.z * elapsedTicks;
 
-        int light = WorldRenderer.getCombinedLight(Minecraft.getInstance().world, new BlockPos(itemX, itemY, itemZ));
-        matrixStack.push();
+        int light = WorldRenderer.getLightColor(Minecraft.getInstance().level, new BlockPos(itemX, itemY, itemZ));
+        matrixStack.pushPose();
         matrixStack.translate(itemX, itemY, itemZ);
         Minecraft.getInstance().getItemRenderer()
-                .renderItem(beam.itemStack, ItemCameraTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
-        matrixStack.pop();
+                .renderStatic(beam.itemStack, ItemCameraTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
+        matrixStack.popPose();
     }
 }
 
@@ -131,12 +131,12 @@ class LaserBeam {
      * @return Elapsed time % as a fraction [0..1]
      */
     public float getTimeElapsedPct() {
-        return Math.min(1f, (Minecraft.getInstance().world.getGameTime() - startTick) / (float) BEAM_DISPLAY_TICKS);
+        return Math.min(1f, (Minecraft.getInstance().level.getGameTime() - startTick) / (float) BEAM_DISPLAY_TICKS);
 
     }
 
     public long getTicksElapsed() {
-        return Minecraft.getInstance().world.getGameTime() - startTick;
+        return Minecraft.getInstance().level.getGameTime() - startTick;
     }
 
     /**

@@ -21,7 +21,7 @@ public class ResourceTreeLeaves extends LeavesBlock implements IBlockColor {
     private RainbowColor tier;
 
     public ResourceTreeLeaves(RainbowColor tier) {
-        super(Block.Properties.create(Material.LEAVES).hardnessAndResistance(0.2F).tickRandomly().sound(SoundType.PLANT).notSolid());
+        super(Block.Properties.of(Material.LEAVES).strength(0.2F).randomTicks().sound(SoundType.GRASS).noOcclusion());
         this.tier = tier;
     }
 

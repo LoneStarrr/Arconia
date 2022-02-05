@@ -76,7 +76,7 @@ public class ResourceTreeRootTileEntity extends TileEntity implements ITickableT
 
         if (nextTier != null) {
             hasNextTier = true;
-            nextTierLeafBlock = ModBlocks.getMoneyTreeLeaves(nextTier).getDefaultState();
+            nextTierLeafBlock = ModBlocks.getMoneyTreeLeaves(nextTier).defaultBlockState();
             leafChanger = new LeafChanger(this, nextTierLeafBlock);
         }
         dispenser = new LeafDropLootDispenser(this, LOOT_DROP_INTERVAL);
@@ -90,7 +90,7 @@ public class ResourceTreeRootTileEntity extends TileEntity implements ITickableT
     public void tick() {
         tickCount++;
 
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
 
@@ -98,31 +98,31 @@ public class ResourceTreeRootTileEntity extends TileEntity implements ITickableT
 
         if (leafChanger != null) {
             if (leafChanger.tick()) {
-                markDirty();
+                setChanged();
             }
         }
     }
 
     private void sendUpdates() {
-        if (world != null && !world.isRemote) {
-            world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
-            markDirty();
+        if (level != null && !level.isClientSide) {
+            level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 3);
+            setChanged();
         }
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
-        if (!world.isRemote()) {
+    public CompoundNBT save(CompoundNBT compound) {
+        if (!level.isClientSide()) {
             if (leafChanger != null) {
                 compound.put(TAG_LEAF_CHANGER, leafChanger.write());
             }
         }
-        return super.write(compound);
+        return super.save(compound);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound) {
-        super.read(state, compound);
+    public void load(BlockState state, CompoundNBT compound) {
+        super.load(state, compound);
         if (compound.contains(TAG_LEAF_CHANGER)) {
             if (leafChanger != null) {
                 leafChanger.read(compound.getCompound(TAG_LEAF_CHANGER));
@@ -135,7 +135,7 @@ public class ResourceTreeRootTileEntity extends TileEntity implements ITickableT
         /*
          * Data to be synced from the server to the clients when a client loads a chunk
          */
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Override
@@ -145,10 +145,10 @@ public class ResourceTreeRootTileEntity extends TileEntity implements ITickableT
          * May only want to send updates since last time this TE was synced to reduce traffic
          */
         CompoundNBT nbt = new CompoundNBT();
-        this.write(nbt);
+        this.save(nbt);
 
         // the number here is generally ignored for non-vanilla TileEntities, 0 is safest
-        return new SUpdateTileEntityPacket(this.getPos(), 0, nbt);
+        return new SUpdateTileEntityPacket(this.getBlockPos(), 0, nbt);
     }
 
     @Override
@@ -158,7 +158,7 @@ public class ResourceTreeRootTileEntity extends TileEntity implements ITickableT
          * This is received on the client after getUpdatePacket() is handled on the server
          */
         super.onDataPacket(net, packet);
-        this.read(world.getBlockState(packet.getPos()), packet.getNbtCompound());
+        this.load(level.getBlockState(packet.getPos()), packet.getTag());
     }
 }
 
@@ -201,8 +201,8 @@ LeafChanger {
      * @return True if state was changed that should be persisted
      */
     public boolean tick() {
-        World world = tile.getWorld();
-        if (world.isRemote) {
+        World world = tile.getLevel();
+        if (world.isClientSide) {
             return false;
         }
 
@@ -237,9 +237,9 @@ LeafChanger {
             BlockState state = world.getBlockState(toChange);
             if (state.getBlock().equals(leafBlock)) {
                 BlockState newState = toChangeTo
-                        .with(LeavesBlock.DISTANCE, state.get(LeavesBlock.DISTANCE))
-                        .with(LeavesBlock.PERSISTENT, state.get(LeavesBlock.PERSISTENT));
-                world.setBlockState(toChange, newState, 3);
+                        .setValue(LeavesBlock.DISTANCE, state.getValue(LeavesBlock.DISTANCE))
+                        .setValue(LeavesBlock.PERSISTENT, state.getValue(LeavesBlock.PERSISTENT));
+                world.setBlock(toChange, newState, 3);
                 leavesChanged++;
                 break;
             }
@@ -259,13 +259,13 @@ LeafChanger {
         // Find leaves of the matching tier to potentially change. Any nearby leaf not manually placed will do
         final int scanRadius = 3;
         final int scanHeight = 10;
-        BlockPos startPos = tile.getPos().add(-scanRadius, 0, -scanRadius);
-        BlockPos endPos = tile.getPos().add(scanRadius, scanHeight, scanRadius);
+        BlockPos startPos = tile.getBlockPos().offset(-scanRadius, 0, -scanRadius);
+        BlockPos endPos = tile.getBlockPos().offset(scanRadius, scanHeight, scanRadius);
         Block leafBlock = ModBlocks.getMoneyTreeLeaves(tile.getTier());
-        for (BlockPos scanPos : BlockPos.getAllInBoxMutable(startPos, endPos)) {
-            BlockState state = tile.getWorld().getBlockState(scanPos);
-            if (state.getBlock().equals(leafBlock) && !state.get(LeavesBlock.PERSISTENT)) {
-                result.add(scanPos.toImmutable());
+        for (BlockPos scanPos : BlockPos.betweenClosed(startPos, endPos)) {
+            BlockState state = tile.getLevel().getBlockState(scanPos);
+            if (state.getBlock().equals(leafBlock) && !state.getValue(LeavesBlock.PERSISTENT)) {
+                result.add(scanPos.immutable());
             }
         }
 
@@ -308,8 +308,8 @@ class LeafDropLootDispenser {
      * Loot is dropped from a leaf at an interval
      */
     public void tick() {
-        World world = tileEntity.getWorld();
-        if (world.isRemote) {
+        World world = tileEntity.getLevel();
+        if (world.isClientSide) {
             return;
         }
 
@@ -323,11 +323,11 @@ class LeafDropLootDispenser {
         List<Pair<ResourceGenTileEntity, BlockPos>> generatorsAndLeaves = new ArrayList<>();
 
         int scanRadius = 1;
-        BlockPos startPos = tileEntity.getPos().add(-scanRadius, 0, -scanRadius);
-        BlockPos endPos = tileEntity.getPos().add(scanRadius, 0, scanRadius);
+        BlockPos startPos = tileEntity.getBlockPos().offset(-scanRadius, 0, -scanRadius);
+        BlockPos endPos = tileEntity.getBlockPos().offset(scanRadius, 0, scanRadius);
 
-        for(BlockPos scanPos: BlockPos.getAllInBoxMutable(startPos, endPos)) {
-            TileEntity te = world.getTileEntity(scanPos);
+        for(BlockPos scanPos: BlockPos.betweenClosed(startPos, endPos)) {
+            TileEntity te = world.getBlockEntity(scanPos);
             if (te !=null && te instanceof ResourceGenTileEntity) {
                 ResourceGenTileEntity rte = (ResourceGenTileEntity) te;
                 if (rte.getTier().compareTo(tileEntity.getTier()) <= 0) {
@@ -367,8 +367,8 @@ class LeafDropLootDispenser {
         boolean lastBlockWasAir = false;
         BlockPos.Mutable pos = new BlockPos.Mutable();
         while (++y < maxY) {
-            pos.setPos(x, y, z);
-            BlockState bs = tileEntity.getWorld().getBlockState(pos);
+            pos.set(x, y, z);
+            BlockState bs = tileEntity.getLevel().getBlockState(pos);
             if (bs.isAir()) {
                 lastBlockWasAir = true;
                 continue;
@@ -390,7 +390,7 @@ class LeafDropLootDispenser {
     }
 
     private boolean isValidLeaf(BlockPos pos, RainbowColor minTier) {
-        BlockState state = tileEntity.getWorld().getBlockState(pos);
+        BlockState state = tileEntity.getLevel().getBlockState(pos);
         if (!(state.getBlock() instanceof ResourceTreeLeaves)) {
             return false;
         }
@@ -404,8 +404,8 @@ class LeafDropLootDispenser {
      * @param leafPos Block position that contains a money tree leaf
      */
     private void dispenseLoot(ResourceGenTileEntity generator, BlockPos leafPos) {
-        World world = tileEntity.getWorld();
-        if (world.isRemote) {
+        World world = tileEntity.getLevel();
+        if (world.isClientSide) {
             return;
         }
 
@@ -414,10 +414,10 @@ class LeafDropLootDispenser {
             ItemEntity entity = new ItemEntity(world, leafPos.getX() + 0.5D, leafPos.getY() - 1 + 0.5D,
                     leafPos.getZ() + 0.5D,
                     plunder);
-            entity.setMotion(0D, 0.0D, 0D);
-            entity.setDefaultPickupDelay();
+            entity.setDeltaMovement(0D, 0.0D, 0D);
+            entity.setDefaultPickUpDelay();
             entity.lifespan = 200; // Short lifespan - encourage players to use the crates, plus it's server-friendlier
-            world.addEntity(entity);
+            world.addFreshEntity(entity);
         }
     }
 }

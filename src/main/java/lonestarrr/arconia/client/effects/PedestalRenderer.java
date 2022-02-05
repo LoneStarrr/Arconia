@@ -34,14 +34,14 @@ public class PedestalRenderer extends TileEntityRenderer<PedestalTileEntity> {
             return;
         }
 
-        BlockPos tePos = tileEntity.getPos();
-        BlockPos itemPos = tePos.up();
+        BlockPos tePos = tileEntity.getBlockPos();
+        BlockPos itemPos = tePos.above();
 
-        matrixStack.push();
+        matrixStack.pushPose();
         // TER's have the tile entity at (0, 0, 0), compensate
         matrixStack.translate(-tePos.getX(), -tePos.getY(), -tePos.getZ());
         ItemProjector.projectItem(stack, itemPos, matrixStack, buffer, combinedLight, combinedOverlay, false);
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 }

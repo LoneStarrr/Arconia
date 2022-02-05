@@ -22,7 +22,7 @@ import static lonestarrr.arconia.common.block.ModBlocks.register;
 public final class ModItems {
     public static final Item clover = new Item(defaultBuilder());
     public static final Item goldCoin = new Item(defaultBuilder());
-    public static final Item cloverStaff = new CloverStaff(defaultBuilder().maxStackSize(1));
+    public static final Item cloverStaff = new CloverStaff(defaultBuilder().stacksTo(1));
     public static final Item treeRoot = new TreeRoot(defaultBuilder());
     public static final Item fourLeafClover = new Item(defaultBuilder());
     public static final Item threeLeafClover = new Item(defaultBuilder());
@@ -35,7 +35,7 @@ public final class ModItems {
 
     public static Item.Properties defaultBuilder() {
         // TODO make my own creative tab. With blackjack, and hookers.
-        return new Item.Properties().group(ItemGroup.MISC);
+        return new Item.Properties().tab(ItemGroup.TAB_MISC);
     }
 
     @SubscribeEvent

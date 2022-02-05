@@ -34,8 +34,8 @@ public class RainbowCrateContainerScreen extends ContainerScreen<RainbowCrateCon
                                        ITextComponent title) {
         super(container, playerInventory, title);
 
-        xSize = BACKGROUND_WIDTH;
-        ySize = BACKGROUND_HEIGHT;
+        imageWidth = BACKGROUND_WIDTH;
+        imageHeight = BACKGROUND_HEIGHT;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class RainbowCrateContainerScreen extends ContainerScreen<RainbowCrateCon
     public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(stack);
         super.render(stack, mouseX, mouseY, partialTicks);
-        renderHoveredTooltip(stack, mouseX, mouseY);
+        renderTooltip(stack, mouseX, mouseY);
     }
 
     /*
@@ -62,7 +62,7 @@ public class RainbowCrateContainerScreen extends ContainerScreen<RainbowCrateCon
      */
     private void drawSlotCapacityBars(MatrixStack stack) {
         // coordinates to render at are slot.xPos and slot.yPos
-        RainbowCrateContainer container = this.container;
+        RainbowCrateContainer container = this.menu;
         // I think blit (invoked in the draw method) simply draws whatever texture is active.
         container.getCrateSlots().forEach(s -> drawCapacityBar(stack, s));
     }
@@ -73,8 +73,8 @@ public class RainbowCrateContainerScreen extends ContainerScreen<RainbowCrateCon
      * @param s
      */
     private void drawCapacityBar(MatrixStack stack, Slot s) {
-        int maxCapacity = this.container.getInternalSlotLimit();
-        int itemCount = this.container.getInternalSlotCount(s.slotNumber);
+        int maxCapacity = this.menu.getInternalSlotLimit();
+        int itemCount = this.menu.getInternalSlotCount(s.index);
 
         final int SLOT_HEIGHT = 16;
         int barWidthPixels = (int)Math.floor((float)itemCount / maxCapacity * CAPACITY_BAR_WIDTH);
@@ -87,11 +87,11 @@ public class RainbowCrateContainerScreen extends ContainerScreen<RainbowCrateCon
             return;
         }
 
-        int renderX = (this.width - this.xSize) / 2;
-        int renderY = (this.height - this.ySize) / 2;
+        int renderX = (this.width - this.imageWidth) / 2;
+        int renderY = (this.height - this.imageHeight) / 2;
         // The slot has the location on the screen to draw to. The bar is positioned right under the slot.
         // blit: screen x, screen y, texture offset x, texture offset y, texture width, texture height
-        blit(stack, renderX + s.xPos, renderY + s.yPos + SLOT_HEIGHT, CAPACITY_BAR_OFFSET_X,
+        blit(stack, renderX + s.x, renderY + s.y + SLOT_HEIGHT, CAPACITY_BAR_OFFSET_X,
                 CAPACITY_BAR_OFFSET_Y, barWidthPixels, CAPACITY_BAR_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 
@@ -108,14 +108,14 @@ public class RainbowCrateContainerScreen extends ContainerScreen<RainbowCrateCon
      * Taken directly from ChestScreen / BeaconScreen
      */
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack stack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(MatrixStack stack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindTexture(CRATE_UI_TEXTURE);
+        this.minecraft.getTextureManager().bind(CRATE_UI_TEXTURE);
 
         // Render background in the middle of the provided window (this.width/height)
-        int edgeOffsetX = (this.width - this.xSize) / 2;
-        int edgeOffsetY = (this.height - this.ySize) / 2;
-        this.blit(stack, edgeOffsetX, edgeOffsetY, BACKGROUND_OFFSET_X, BACKGROUND_OFFSET_Y, this.xSize, this.ySize,
+        int edgeOffsetX = (this.width - this.imageWidth) / 2;
+        int edgeOffsetY = (this.height - this.imageHeight) / 2;
+        this.blit(stack, edgeOffsetX, edgeOffsetY, BACKGROUND_OFFSET_X, BACKGROUND_OFFSET_Y, this.imageWidth, this.imageHeight,
                 TEXTURE_WIDTH, TEXTURE_HEIGHT);
         drawSlotCapacityBars(stack);
     }
@@ -125,7 +125,7 @@ public class RainbowCrateContainerScreen extends ContainerScreen<RainbowCrateCon
      */
     public static void registerContainerScreens() {
         for (RainbowColor tier : RainbowColor.values()) {
-            ScreenManager.registerFactory(RainbowCrateBlock.getContainerTypeByTier(tier),
+            ScreenManager.register(RainbowCrateBlock.getContainerTypeByTier(tier),
                     RainbowCrateContainerScreen::new);
         }
     }

@@ -42,8 +42,9 @@ public class JEIArconiaPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
-        ClientWorld world = Minecraft.getInstance().world;
+        ClientWorld world = Minecraft.getInstance().level;
         if (world != null) {
+//            registration.addRecipes(ModRecipeTypes.getRecipes(world, ModRecipeTypes.PEDESTAL_TYPE).values(), AltarRecipeCategory.UID);
             registration.addRecipes(ModRecipeTypes.getRecipes(world, ModRecipeTypes.PEDESTAL_TYPE).values(), AltarRecipeCategory.UID);
         }
     }

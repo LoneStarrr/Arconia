@@ -27,29 +27,29 @@ public class CenterPedestalRenderer extends TileEntityRenderer<CenterPedestalTil
             return;
         }
 
-        BlockPos tePos = tileEntity.getPos();
-        BlockPos itemPos = tePos.up();
-        matrixStack.push();
+        BlockPos tePos = tileEntity.getBlockPos();
+        BlockPos itemPos = tePos.above();
+        matrixStack.pushPose();
         // TER's have the tile entity at (0, 0, 0), compensate
         matrixStack.translate(-tePos.getX(), -tePos.getY(), -tePos.getZ());
         ItemProjector.projectItem(stack, itemPos, matrixStack, buffer, combinedLight, combinedOverlay, false);
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     private void renderRitualProgress(CenterPedestalTileEntity tileEntity, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight,
                                       int combinedOverlay) {
 
-        BlockPos tePos = tileEntity.getPos();
-        matrixStack.push();
+        BlockPos tePos = tileEntity.getBlockPos();
+        matrixStack.pushPose();
 
         // TER's have the tile entity at (0, 0, 0), compensate
         matrixStack.translate(-tePos.getX(), -tePos.getY(), -tePos.getZ());
         int progressPct = tileEntity.getRitualProgressPercentage();
         float beamLength = 1 + progressPct / 50f;
         int beamCount = 4 + (progressPct / 10);
-        RainbowLightningProjector.renderRainbowLighting(tePos.up(), beamLength, beamCount, matrixStack, buffer);
-        matrixStack.pop();
+        RainbowLightningProjector.renderRainbowLighting(tePos.above(), beamLength, beamCount, matrixStack, buffer);
+        matrixStack.popPose();
 
     }
 }

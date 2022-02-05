@@ -33,16 +33,16 @@ public class OrbRenderer extends TileEntityRenderer<OrbTileEntity> {
             return;
         }
 
-        BlockPos tePos = tileEntity.getPos();
+        BlockPos tePos = tileEntity.getBlockPos();
         BlockPos itemPos = tePos;
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0.5, 0.5, 0.5);
 
-        int light = WorldRenderer.getCombinedLight(Minecraft.getInstance().world, itemPos);
+        int light = WorldRenderer.getLightColor(Minecraft.getInstance().level, itemPos);
         int ticksPerGoAround = 400;
         renderItemCarousel(items, matrixStack, buffer, light, ticksPerGoAround);
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     private void renderItemCarousel(List<ItemStack> items, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int ticksPerCycle) {
@@ -50,22 +50,22 @@ public class OrbRenderer extends TileEntityRenderer<OrbTileEntity> {
         boolean isDegrees = true;
 
         // Rotate the entire carousel for a nice visual effect
-        float rotationCarousel = (Minecraft.getInstance().world.getGameTime() % ticksPerCycle) / (float)ticksPerCycle * 360f;
-        matrixStack.push();
-        matrixStack.rotate(new Quaternion(yAxis, rotationCarousel, isDegrees));
+        float rotationCarousel = (Minecraft.getInstance().level.getGameTime() % ticksPerCycle) / (float)ticksPerCycle * 360f;
+        matrixStack.pushPose();
+        matrixStack.mulPose(new Quaternion(yAxis, rotationCarousel, isDegrees));
 
         for (int i = 0; i < items.size(); i++) {
             ItemStack item = items.get(i);
             float rotation = i * (360f / items.size());
-            matrixStack.push();
-            matrixStack.rotate(new Quaternion(yAxis, rotation, isDegrees));
+            matrixStack.pushPose();
+            matrixStack.mulPose(new Quaternion(yAxis, rotation, isDegrees));
             matrixStack.translate(0.3f, 0.0f, 0.0f);
             matrixStack.scale(0.4f, 0.4f, 0.4f);
             Minecraft.getInstance().getItemRenderer()
-                    .renderItem(item, ItemCameraTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
-            matrixStack.pop();
+                    .renderStatic(item, ItemCameraTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
+            matrixStack.popPose();
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 }

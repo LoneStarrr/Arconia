@@ -29,13 +29,13 @@ public class PotOfGoldTrigger extends AbstractCriterionTrigger<PotOfGoldTrigger.
 
     @Nonnull
     @Override
-    public Instance deserializeTrigger(@Nonnull JsonObject json, EntityPredicate.AndPredicate playerPred, ConditionArrayParser conditions) {
+    public Instance createInstance(@Nonnull JsonObject json, EntityPredicate.AndPredicate playerPred, ConditionArrayParser conditions) {
         // This allows mod pack authors to limit where the pot can be constructed through a datapack
-        return new Instance(playerPred, LocationPredicate.deserialize(json.get("location")));
+        return new Instance(playerPred, LocationPredicate.fromJson(json.get("location")));
     }
 
     public void trigger(ServerPlayerEntity player, ServerWorld world, BlockPos pos) {
-        triggerListeners(player, instance -> instance.test(world, pos));
+        trigger(player, instance -> instance.test(world, pos));
     }
 
     static class Instance extends CriterionInstance {
@@ -48,12 +48,12 @@ public class PotOfGoldTrigger extends AbstractCriterionTrigger<PotOfGoldTrigger.
 
         @Nonnull
         @Override
-        public ResourceLocation getId() {
+        public ResourceLocation getCriterion() {
             return ID;
         }
 
         boolean test(ServerWorld world, BlockPos pos) {
-            return this.pos.test(world, pos.getX(), pos.getY(), pos.getZ());
+            return this.pos.matches(world, pos.getX(), pos.getY(), pos.getZ());
         }
     }
 }

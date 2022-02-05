@@ -48,7 +48,7 @@ public class HatTileEntity extends BaseTileEntity {
      */
     public void linkToPot(BlockPos potPos) {
         this.linkedPotPos = potPos;
-        markDirty();
+        setChanged();
     }
 
     /**
@@ -56,7 +56,7 @@ public class HatTileEntity extends BaseTileEntity {
      */
     public void unlink() {
         this.linkedPotPos = null;
-        markDirty();
+        setChanged();
     }
 
     public void setResourceGenerated(RainbowColor tier, ItemStack itemStack, int interval, int coinCost) {
@@ -64,7 +64,7 @@ public class HatTileEntity extends BaseTileEntity {
         this.itemStack = itemStack.copy();
         this.resourceGenInterval = interval;
         this.resourceCoinCost = coinCost <= 0 ? 1: coinCost;
-        markDirty();
+        setChanged();
     }
 
     @Nonnull
@@ -90,7 +90,7 @@ public class HatTileEntity extends BaseTileEntity {
      */
     @Nonnull
     public ItemStack generateResource(World world) {
-        if (world.isRemote) {
+        if (world.isClientSide) {
             return ItemStack.EMPTY;
         }
 
@@ -99,7 +99,7 @@ public class HatTileEntity extends BaseTileEntity {
             return ItemStack.EMPTY;
         }
 
-        IItemHandler inv = InventoryHelper.getInventory(world, pos.down(), Direction.UP);
+        IItemHandler inv = InventoryHelper.getInventory(world, worldPosition.below(), Direction.UP);
         if (inv == null) {
             return ItemStack.EMPTY;
         }
@@ -112,13 +112,13 @@ public class HatTileEntity extends BaseTileEntity {
 
     @Override
     public void writePacketNBT(CompoundNBT tag) {
-        if (!world.isRemote()) {
+        if (!level.isClientSide()) {
             tag.putInt("tier", tier.getTier());
             tag.put("item", this.itemStack.serializeNBT());
             tag.putInt("interval", resourceGenInterval);
             tag.putInt("coin_cost", resourceCoinCost);
             if (this.linkedPotPos != null) {
-                tag.putLong("pot_pos", this.linkedPotPos.toLong());
+                tag.putLong("pot_pos", this.linkedPotPos.asLong());
             }
         }
     }
@@ -137,18 +137,18 @@ public class HatTileEntity extends BaseTileEntity {
                     tier = clr;
                 }
             }
-            stack = ItemStack.read(tag.getCompound("item"));
+            stack = ItemStack.of(tag.getCompound("item"));
             if (!stack.isEmpty()) {
                 interval = tag.getInt("interval");
                 coinCost = tag.getInt("coin_cost");
             }
 
             if (tag.contains("pot_pos")) {
-                this.linkedPotPos = BlockPos.fromLong(tag.getLong("pot_pos"));
+                this.linkedPotPos = BlockPos.of(tag.getLong("pot_pos"));
             } else {
                 this.linkedPotPos = null;
             }
-            Arconia.logger.debug("***** World remote = " + (world != null ? world.isRemote() : "null") + ", itemStack = " + stack);
+            Arconia.logger.debug("***** World remote = " + (level != null ? level.isClientSide() : "null") + ", itemStack = " + stack);
         } catch(Exception e) {
             Arconia.logger.error("Failed to read tile entity data: " + e.getMessage(), e);
         }

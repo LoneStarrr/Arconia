@@ -27,12 +27,12 @@ public class RainbowCratePacket {
     }
 
     public static RainbowCratePacket decode(PacketBuffer buf) {
-        return new RainbowCratePacket(buf.readBlockPos(), buf.readCompoundTag());
+        return new RainbowCratePacket(buf.readBlockPos(), buf.readNbt());
     }
 
     public static void encode(RainbowCratePacket msg, PacketBuffer buf) {
         buf.writeBlockPos(msg.pos);
-        buf.writeCompoundTag(msg.inventory);
+        buf.writeNbt(msg.inventory);
     }
 
     public static class Handler {
@@ -47,12 +47,12 @@ public class RainbowCratePacket {
                 @Override
                 public void run() {
                     Minecraft mc = Minecraft.getInstance();
-                    World world = mc.world;
-                    TileEntity te = world.getTileEntity(message.pos);
+                    World world = mc.level;
+                    TileEntity te = world.getBlockEntity(message.pos);
                     if (te instanceof RainbowCrateTileEntity) {
                         RainbowCrateTileEntity rcte = (RainbowCrateTileEntity)te;
                         //rcte.receiveServerSideInventoryData(message.itemCounts);
-                        rcte.read(world.getBlockState(message.pos), message.inventory);
+                        rcte.load(world.getBlockState(message.pos), message.inventory);
                     }
                 }
             });

@@ -38,7 +38,7 @@ public class GoldArconiumBlock extends Block implements IBlockColor, TOPDriver {
     private final IProgressStyle progressStyleTOP = IProgressStyle.createDefault().backgroundColor(Color.BLACK).filledColor(Color.decode("#f9bd23")).alternateFilledColor(Color.decode("#f9bd23")).borderColor(Color.decode("#636161")).showText(false);
 
     public GoldArconiumBlock(RainbowColor tier) {
-        super(Block.Properties.create(Material.IRON).setRequiresTool().hardnessAndResistance(5.0f, 6.0f).sound(SoundType.METAL));
+        super(Block.Properties.of(Material.METAL).requiresCorrectToolForDrops().strength(5.0f, 6.0f).sound(SoundType.METAL));
         this.tier = tier;
     }
 
@@ -68,7 +68,7 @@ public class GoldArconiumBlock extends Block implements IBlockColor, TOPDriver {
     public void addProbeInfo(
             ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
         // The One Probe extra block information
-        TileEntity te = world.getTileEntity(data.getPos());
+        TileEntity te = world.getBlockEntity(data.getPos());
         if (te == null || !(te instanceof GoldArconiumTileEntity)) {
             return;
         }

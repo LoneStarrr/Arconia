@@ -39,13 +39,13 @@ public class ModFeatures {
 
     public static final class Configs {
         public static final BlockClusterFeatureConfig CLOVER_CONFIG = (new BlockClusterFeatureConfig.Builder(
-                new SimpleBlockStateProvider(ModBlocks.clover.getDefaultState()), SimpleBlockPlacer.PLACER)).tries(8).build();
+                new SimpleBlockStateProvider(ModBlocks.clover.defaultBlockState()), SimpleBlockPlacer.INSTANCE)).tries(8).build();
     }
 
     /// Configured features
     private static final Map<RainbowColor, ConfiguredFeature<BaseTreeFeatureConfig, ?>> configuredTrees =
             new HashMap<>(RainbowColor.values().length);
-    public static final ConfiguredFeature<?, ?> CLOVER_CONFIGURED = Feature.FLOWER.withConfiguration(Configs.CLOVER_CONFIG).withPlacement(Features.Placements.VEGETATION_PLACEMENT).withPlacement(Features.Placements.HEIGHTMAP_PLACEMENT).func_242731_b(4);
+    public static final ConfiguredFeature<?, ?> CLOVER_CONFIGURED = Feature.FLOWER.configured(Configs.CLOVER_CONFIG).decorated(Features.Placements.ADD_32).decorated(Features.Placements.HEIGHTMAP_SQUARE).count(4);
 
 
     @SubscribeEvent
@@ -61,11 +61,11 @@ public class ModFeatures {
         // Using minecraft's built in tree feature for the money trees. Each tier has a unique config due to using tiered leaves
         for (RainbowColor tier: RainbowColor.values()) {
             BaseTreeFeatureConfig treeConfig = (new BaseTreeFeatureConfig.Builder(
-                    new SimpleBlockStateProvider(Blocks.OAK_LOG.getDefaultState()),
-                    new SimpleBlockStateProvider(ModBlocks.getMoneyTreeLeaves(tier).getDefaultState()),
-                    new BlobFoliagePlacer(FeatureSpread.func_242252_a(2), FeatureSpread.func_242252_a(0), 3),
-                    new StraightTrunkPlacer(5, 2, 0), new TwoLayerFeature(1, 0, 1))).setIgnoreVines().build();
-            ConfiguredFeature<BaseTreeFeatureConfig, ?> treeConfigured = Feature.TREE.withConfiguration(treeConfig);
+                    new SimpleBlockStateProvider(Blocks.OAK_LOG.defaultBlockState()),
+                    new SimpleBlockStateProvider(ModBlocks.getMoneyTreeLeaves(tier).defaultBlockState()),
+                    new BlobFoliagePlacer(FeatureSpread.fixed(2), FeatureSpread.fixed(0), 3),
+                    new StraightTrunkPlacer(5, 2, 0), new TwoLayerFeature(1, 0, 1))).ignoreVines().build();
+            ConfiguredFeature<BaseTreeFeatureConfig, ?> treeConfigured = Feature.TREE.configured(treeConfig);
             Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "resource_tree_" + tier.getTierName()), treeConfigured);
             configuredTrees.put(tier, treeConfigured);
         }
@@ -88,7 +88,7 @@ public class ModFeatures {
 
         if (category == Biome.Category.FOREST) {
             for (RainbowColor tier: RainbowColor.values()) {
-                event.getGeneration().withFeature(GenerationStage.Decoration.VEGETAL_DECORATION,
+                event.getGeneration().addFeature(GenerationStage.Decoration.VEGETAL_DECORATION,
                         getResourceTreeConfigured(tier));
             }
         }
@@ -99,7 +99,7 @@ public class ModFeatures {
 
         if (!CLOVER_BIOME_BLACKLIST.contains(category)) {
             Arconia.logger.info("********* Adding clovers to biome " + event.getName());
-            event.getGeneration().withFeature(GenerationStage.Decoration.VEGETAL_DECORATION, CLOVER_CONFIGURED);
+            event.getGeneration().addFeature(GenerationStage.Decoration.VEGETAL_DECORATION, CLOVER_CONFIGURED);
         }
     }
 }

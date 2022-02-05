@@ -25,7 +25,7 @@ import java.util.Random;
  */
 public class RainbowCropBlock extends CropsBlock {
     // bounding box for this crop per growth stage
-    private static final VoxelShape shapeAge0 = Block.makeCuboidShape(3.0D, 0.0D, 3.0D, 13.0D, 8.0D, 13.0D);
+    private static final VoxelShape shapeAge0 = Block.box(3.0D, 0.0D, 3.0D, 13.0D, 8.0D, 13.0D);
     public static final IntegerProperty CROP_AGE = IntegerProperty.create("age",0,4);
 
     private static Logger logger;
@@ -33,7 +33,7 @@ public class RainbowCropBlock extends CropsBlock {
 
     public RainbowCropBlock(RainbowColor color) {
         // can only be created from a seed
-        super(Block.Properties.create(Material.PLANTS).doesNotBlockMovement().tickRandomly().hardnessAndResistance(0f).sound(SoundType.CROP));
+        super(Block.Properties.of(Material.PLANT).noCollission().randomTicks().strength(0f).sound(SoundType.CROP));
         this.color = color;
     }
 
@@ -51,23 +51,23 @@ public class RainbowCropBlock extends CropsBlock {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(CROP_AGE);
     }
 
     @Override
-    public boolean canUseBonemeal(World worldIn, Random rand, BlockPos pos, BlockState state) {
+    public boolean isBonemealSuccess(World worldIn, Random rand, BlockPos pos, BlockState state) {
         return true;
     }
 
     @Override
-    public boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public boolean mayPlaceOn(BlockState state, IBlockReader worldIn, BlockPos pos) {
         Block soil = state.getBlock();
         if (!(soil instanceof ResourceGenBlock)) {
             return false;
         }
 
-        TileEntity te = worldIn.getTileEntity(pos);
+        TileEntity te = worldIn.getBlockEntity(pos);
         if (te == null || !(te instanceof ResourceGenTileEntity)) {
             return false;
         }
@@ -89,7 +89,7 @@ public class RainbowCropBlock extends CropsBlock {
 //    }
 
     @Override
-    public ItemStack getItem(IBlockReader worldIn, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(IBlockReader worldIn, BlockPos pos, BlockState state) {
         return new ItemStack(ModItems.getArconiumEssence(this.color));
     }
 

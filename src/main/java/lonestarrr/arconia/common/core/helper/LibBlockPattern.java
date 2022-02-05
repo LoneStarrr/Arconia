@@ -8,8 +8,10 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Bootstrap;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.io.BufferedReader;
@@ -158,7 +160,7 @@ public abstract class LibBlockPattern {
             throw new BlockPatternException("Unknown block: " + blockByName);
         }
 
-        BlockState blockState = block.getDefaultState();
+        BlockState blockState = block.defaultBlockState();
         return blockState;
     }
 }

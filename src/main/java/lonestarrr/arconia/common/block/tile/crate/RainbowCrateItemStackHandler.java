@@ -99,7 +99,7 @@ public class RainbowCrateItemStackHandler  extends ItemStackHandler {
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         ItemStack internal = internalInventory.getItem(slot);
 
-        return (internal == ItemStack.EMPTY || (internal.isItemEqual(stack)) && ItemStack.areItemStackTagsEqual(internal, stack));
+        return (internal == ItemStack.EMPTY || (internal.sameItem(stack)) && ItemStack.tagMatches(internal, stack));
     }
 
     /**
@@ -150,7 +150,7 @@ public class RainbowCrateItemStackHandler  extends ItemStackHandler {
         if (chestStack == ItemStack.EMPTY) {
             toChest = (int)Math.min(KEEP_COUNT_IN_CHEST, internalCount);
         } else {
-            if (!chestStack.isItemEqual(internalStack)) {
+            if (!chestStack.sameItem(internalStack)) {
                 throw new RuntimeException("Internal inventory item does not match chest slot");
             }
             int chestSpace = Math.max(KEEP_COUNT_IN_CHEST - chestStack.getCount(), 0);
@@ -194,7 +194,7 @@ public class RainbowCrateItemStackHandler  extends ItemStackHandler {
         ItemStack internalStack = this.internalInventory.getItem(slot);
         int internalCount = internalInventory.getItemCount(slot);
 
-        if (internalStack != ItemStack.EMPTY && (!internalStack.isItemEqual(chestStack) || !ItemStack.areItemStackTagsEqual(internalStack, chestStack))) {
+        if (internalStack != ItemStack.EMPTY && (!internalStack.sameItem(chestStack) || !ItemStack.tagMatches(internalStack, chestStack))) {
             // TODO should this really crash the game? E.g. what if this happens due to sync errors?
             throw new RuntimeException("Chest slot item does not match internal inventory item");
         }
@@ -241,7 +241,7 @@ public class RainbowCrateItemStackHandler  extends ItemStackHandler {
                 itemTag.putInt("Slot", i);
                 // ItemStack already writes a 'count' entry!
                 itemTag.putInt("CrateCount", this.internalInventory.getItemCount(i));
-                this.internalInventory.getItem(i).write(itemTag);
+                this.internalInventory.getItem(i).save(itemTag);
                 // not writing the item type here, it is assumed to be always equal to the chest item!
                 nbtTagList.add(itemTag);
             }
@@ -260,7 +260,7 @@ public class RainbowCrateItemStackHandler  extends ItemStackHandler {
             int slot = itemTags.getInt("Slot");
 
             if (slot >= 0 && slot < this.getSlots()) {
-                ItemStack stack = ItemStack.read(itemTags);
+                ItemStack stack = ItemStack.of(itemTags);
                 int count = itemTags.getInt("CrateCount");
                 internalInventory.setItem(stack, slot, count);
             }

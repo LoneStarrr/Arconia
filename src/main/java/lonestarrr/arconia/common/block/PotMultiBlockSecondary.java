@@ -42,7 +42,7 @@ import javax.annotation.Nullable;
  */
 public class PotMultiBlockSecondary extends Block implements TOPDriver {
     private static final VoxelShape[] shapes;
-    private static final VoxelShape defaultShape = makeCuboidShape(0, 0,0, 16, 16, 16);
+    private static final VoxelShape defaultShape = box(0, 0,0, 16, 16, 16);
     private static final int MAX_SHAPE_IDX = 2 << 2 | 2; // see calcShapeIndex()
 
     static {
@@ -51,13 +51,13 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
 
     public PotMultiBlockSecondary() {
 
-        super(Block.Properties.create(Material.IRON).hardnessAndResistance(4.0F).notSolid());
+        super(Block.Properties.of(Material.METAL).strength(4.0F).noOcclusion());
     }
 
     @Override
-    public ActionResultType onBlockActivated(
+    public ActionResultType use(
             BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if (world.isRemote || hand != Hand.MAIN_HAND) {
+        if (world.isClientSide || hand != Hand.MAIN_HAND) {
             return ActionResultType.PASS;
         }
 
@@ -65,7 +65,7 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
             return ActionResultType.PASS;
         }
 
-        ItemStack itemUsed = player.inventory.getCurrentItem();
+        ItemStack itemUsed = player.inventory.getSelected();
         // We buy gold
         if (itemUsed.isEmpty() || itemUsed.getItem() != Items.GOLD_INGOT) {
             return ActionResultType.PASS;
@@ -79,7 +79,7 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
         int coinsAdded = primTile.addCoins(1);
         if (coinsAdded > 0) {
             itemUsed.setCount(itemUsed.getCount() - coinsAdded);
-            world.playSound(null, pos, SoundEvents.BLOCK_CHAIN_PLACE, SoundCategory.BLOCKS, 1, 1.3f);
+            world.playSound(null, pos, SoundEvents.CHAIN_PLACE, SoundCategory.BLOCKS, 1, 1.3f);
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.FAIL;
@@ -104,19 +104,19 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
 
     // inspired by Barrier block
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
 
     // inspired by Barrier block
     @OnlyIn(Dist.CLIENT)
-    public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public float getShadeBrightness(BlockState state, IBlockReader worldIn, BlockPos pos) {
         return 1.0F;
     }
 
     @Override
-    public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-        super.onBlockHarvested(world, pos, state, player);
+    public void playerWillDestroy(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+        super.playerWillDestroy(world, pos, state, player);
 
         BlockPos primaryPos = getPrimaryBlockPos(world, pos);
         if (primaryPos != null) {
@@ -125,7 +125,7 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
     }
 
     private BlockPos getPrimaryBlockPos(World world, BlockPos pos) {
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
         if (te == null || !(te instanceof PotMultiBlockSecondaryTileEntity)) {
             return null;
         }
@@ -139,7 +139,7 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
             return null;
         }
 
-        TileEntity te = world.getTileEntity(primaryPos);
+        TileEntity te = world.getBlockEntity(primaryPos);
         return te != null && te instanceof PotMultiBlockPrimaryTileEntity ? (PotMultiBlockPrimaryTileEntity) te : null;
     }
 
@@ -154,7 +154,7 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
     @Override
     public VoxelShape getShape(
             BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        TileEntity te = worldIn.getTileEntity(pos);
+        TileEntity te = worldIn.getBlockEntity(pos);
         if (te == null || !(te instanceof PotMultiBlockSecondaryTileEntity)) {
             return defaultShape;
         }
@@ -207,7 +207,7 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
             z2 = 16 - PADDING;
         }
 
-        return makeCuboidShape(x1, y1, z1, x2, y2, z2);
+        return box(x1, y1, z1, x2, y2, z2);
     }
 
     @Override

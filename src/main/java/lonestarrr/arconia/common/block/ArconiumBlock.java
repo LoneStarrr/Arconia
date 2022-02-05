@@ -15,7 +15,7 @@ public class ArconiumBlock extends Block implements IBlockColor {
     private final RainbowColor tier;
 
     public ArconiumBlock(RainbowColor tier) {
-        super(Block.Properties.create(Material.IRON).setRequiresTool().hardnessAndResistance(5.0f, 6.0f).sound(SoundType.METAL));
+        super(Block.Properties.of(Material.METAL).requiresCorrectToolForDrops().strength(5.0f, 6.0f).sound(SoundType.METAL));
         this.tier = tier;
     }
 

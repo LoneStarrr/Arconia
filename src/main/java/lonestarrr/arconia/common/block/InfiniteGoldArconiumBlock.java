@@ -16,11 +16,13 @@ import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class InfiniteGoldArconiumBlock extends Block implements IBlockColor {
     private final RainbowColor tier;
 
     public InfiniteGoldArconiumBlock(RainbowColor tier) {
-        super(Properties.create(Material.IRON).setRequiresTool().hardnessAndResistance(5.0f, 6.0f).sound(SoundType.METAL));
+        super(Properties.of(Material.METAL).requiresCorrectToolForDrops().strength(5.0f, 6.0f).sound(SoundType.METAL));
         this.tier = tier;
     }
 

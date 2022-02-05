@@ -30,13 +30,13 @@ public class ResourceTreeRootBlock extends Block implements IBlockColor {
     private final RainbowColor tier;
     private static final Map<RainbowColor, TileEntityType<ResourceTreeRootTileEntity>> tileEntityTypes =
             new HashMap<>(RainbowColor.values().length);
-    private static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
+    private static final DirectionProperty FACING = HorizontalBlock.FACING;
 
     public ResourceTreeRootBlock(RainbowColor tier) {
-        super(Block.Properties.create(Material.WOOD).hardnessAndResistance(0.8f).sound(SoundType.WOOD));
+        super(Block.Properties.of(Material.WOOD).strength(0.8f).sound(SoundType.WOOD));
         this.tier = tier;
-        BlockState defaultBlockState = this.stateContainer.getBaseState().with(FACING, Direction.NORTH);
-        this.setDefaultState(defaultBlockState);
+        BlockState defaultBlockState = this.stateDefinition.any().setValue(FACING, Direction.NORTH);
+        this.registerDefaultState(defaultBlockState);
     }
 
     public final RainbowColor getTier() { return tier; }
@@ -45,7 +45,7 @@ public class ResourceTreeRootBlock extends Block implements IBlockColor {
      * BlockState properties for this block
      */
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
@@ -57,8 +57,8 @@ public class ResourceTreeRootBlock extends Block implements IBlockColor {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext blockItemUseContext) {
-        Direction direction = blockItemUseContext.getPlacementHorizontalFacing();  // north, east, south, or west
-        return getDefaultState().with(FACING, direction);
+        Direction direction = blockItemUseContext.getHorizontalDirection();  // north, east, south, or west
+        return defaultBlockState().setValue(FACING, direction);
     }
 
     @Override

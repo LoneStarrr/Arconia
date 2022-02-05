@@ -26,7 +26,7 @@ public class PlaceStructureTests {
     public static void setup() {
         // Setup enough minecraft context to be able to access block registry
         //Loader.instance();
-        Bootstrap.register();
+        Bootstrap.bootStrap();
 //        Loader.instance().setupTestHarness(new DummyModContainer(new ModMetadata() {{
 //            modId = "test";
 //        }}));
@@ -39,8 +39,8 @@ public class PlaceStructureTests {
         List<BlockPos> blockPositions =
                 Arrays.stream(positions).map((arr) -> new BlockPos(arr[0], arr[1], arr[2])).collect(Collectors.toList());
         List<BlockState> states = new ArrayList<BlockState>(Arrays.asList(
-                Blocks.DIRT.getDefaultState(),
-                Blocks.AIR.getDefaultState()
+                Blocks.DIRT.defaultBlockState(),
+                Blocks.AIR.defaultBlockState()
         ));
 
         List<BlockState> placedBlocks = new ArrayList<BlockState>();
@@ -57,20 +57,20 @@ public class PlaceStructureTests {
 
     /**
      * Test placing a bigger pattern and validate that the structure placer adds blocks in the correct order and
-     * using the correct type. Also validates that {@link BlockPos#getAllInBox(BlockPos, BlockPos)} generates items in
+     * using the correct type. Also validates that {@link BlockPos#betweenClosed(BlockPos, BlockPos)} generates items in
      * the expected order.
      */
     @Test
     void testPlaceStructureBigPattern() {
-        BlockState evenBlock = Blocks.STONE.getDefaultState();
-        BlockState oddBlock = Blocks.GRASS_BLOCK.getDefaultState();
+        BlockState evenBlock = Blocks.STONE.defaultBlockState();
+        BlockState oddBlock = Blocks.GRASS_BLOCK.defaultBlockState();
         int structureWidth = 40;
         int structureHeight = 40;
         int blockCount = structureWidth * structureHeight;
 
         BlockPos from = new BlockPos(0, 63, 0);
         BlockPos to = new BlockPos(structureWidth - 1, 63, structureHeight - 1);
-        Stream<BlockPos> blocks = BlockPos.getAllInBox(from, to);
+        Stream<BlockPos> blocks = BlockPos.betweenClosedStream(from, to);
         List<BlockState> states = new ArrayList<BlockState>(blockCount);
         // iterator that generates a different block every 100 iterations
         IntStream.range(0, blockCount).forEach((i) -> {

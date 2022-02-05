@@ -49,9 +49,9 @@ public class FractalTreeCommand {
     }
 
     private static int fractalTree(CommandContext<CommandSource> ctx, String rulesSerialized, int iterations) throws CommandSyntaxException {
-        PlayerEntity player = ctx.getSource().asPlayer();
-        World world = ctx.getSource().getWorld();
-        BlockPos pos = player.getPosition().up(2);
+        PlayerEntity player = ctx.getSource().getPlayerOrException();
+        World world = ctx.getSource().getLevel();
+        BlockPos pos = player.blockPosition().above(2);
         Map<Character, String> rules = parseRules(rulesSerialized);
         String ltree = generateLTreeString(rules, iterations);
         try {
@@ -100,12 +100,12 @@ public class FractalTreeCommand {
                 case '1': //place log
                     for (int i = 0; i < (int)numLogsToDraw; i++) {
                         s.pos = advancePos3D(s);
-                        worldIn.setBlockState(s.pos, Blocks.OAK_LOG.getDefaultState());
+                        worldIn.setBlockAndUpdate(s.pos, Blocks.OAK_LOG.defaultBlockState());
                     }
                     break;
                 case '0': //place leaf
                     s.pos = advancePos3D(s);
-                    worldIn.setBlockState(s.pos, Blocks.OAK_LEAVES.getDefaultState().with(LeavesBlock.DISTANCE, 1));
+                    worldIn.setBlockAndUpdate(s.pos, Blocks.OAK_LEAVES.defaultBlockState().setValue(LeavesBlock.DISTANCE, 1));
                     break;
                 case 'W': //rotate "west"
                     s.rotationX = (s.rotationX + 315)%360;
@@ -142,7 +142,7 @@ public class FractalTreeCommand {
             if (stopAt >= 0 && count >= stopAt) {
                 String treeRendered = ltree.substring(0, count);
                 player.sendMessage(new StringTextComponent("Position = " + s.pos + ", rotation = " + s.rotationX + "," + s.rotationZ + ", " +
-                        " String drawn = " + treeRendered), Util.DUMMY_UUID);
+                        " String drawn = " + treeRendered), Util.NIL_UUID);
                 break;
             }
         }
@@ -152,14 +152,14 @@ public class FractalTreeCommand {
         BlockPos newPos;
 
         switch(rotation) {
-            case 0: newPos = pos.add(0, 1, 0); break;
-            case 315: newPos = pos.add(-1, 1, 0); break;
-            case 270: newPos = pos.add(-1, 0, 0); break;
-            case 225: newPos = pos.add(-1, -1, 0); break;
-            case 180: newPos = pos.add(0, -1, 0); break;
-            case 135: newPos = pos.add(1, -1, 0); break;
-            case 90: newPos = pos.add(1, 0, 0); break;
-            case 45: newPos = pos.add(1, 1, 0); break;
+            case 0: newPos = pos.offset(0, 1, 0); break;
+            case 315: newPos = pos.offset(-1, 1, 0); break;
+            case 270: newPos = pos.offset(-1, 0, 0); break;
+            case 225: newPos = pos.offset(-1, -1, 0); break;
+            case 180: newPos = pos.offset(0, -1, 0); break;
+            case 135: newPos = pos.offset(1, -1, 0); break;
+            case 90: newPos = pos.offset(1, 0, 0); break;
+            case 45: newPos = pos.offset(1, 1, 0); break;
             default:
                 newPos = pos;
         }
@@ -197,7 +197,7 @@ public class FractalTreeCommand {
 
         double yCombined = vX.y + vZ.y;
         yCombined = (yCombined > 1 ? 1 : yCombined < -1? -1 : yCombined);
-        return s.pos.add(vX.x + vZ.x, yCombined, vX.z + vZ.z);
+        return s.pos.offset(vX.x + vZ.x, yCombined, vX.z + vZ.z);
     }
 
     private static String generateLTreeString(Map<Character, String> rules, int recursions) {

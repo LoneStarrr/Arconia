@@ -70,7 +70,7 @@ public class ModLanguageProvider extends LanguageProvider {
         add(ModItems.goldCoin, "Gold Coin");
         add(ModItems.cloverStaff, "Clover Staff");
         add(ModItems.magicInABottle, "Magic In A Bottle");
-        add(ModItems.magicInABottle.getTranslationKey() + ".tooltip", "The Magic Luck-o-Meter indicates it's at %d%%");
+        add(ModItems.magicInABottle.getDescriptionId() + ".tooltip", "The Magic Luck-o-Meter indicates it's at %d%%");
     }
 
     private void registerAdvancements() {

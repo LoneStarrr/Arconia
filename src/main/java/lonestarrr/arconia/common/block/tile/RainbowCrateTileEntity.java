@@ -74,15 +74,15 @@ public class RainbowCrateTileEntity extends TileEntity implements INamedContaine
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         compound.put("inventory", inventory.serializeNBT());
-        return super.write(compound);
+        return super.save(compound);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound) {
+    public void load(BlockState state, CompoundNBT compound) {
         inventory.deserializeNBT(compound.getCompound("inventory"));
-        super.read(state, compound);
+        super.load(state, compound);
     }
 
     @Nonnull
@@ -124,7 +124,7 @@ public class RainbowCrateTileEntity extends TileEntity implements INamedContaine
     public void tick() {
         // Only manage the inventory on server worlds - data required on the client side is sent through network
         // packets
-        if (world.isRemote()) {
+        if (level.isClientSide()) {
             return;
         }
 
@@ -140,8 +140,8 @@ public class RainbowCrateTileEntity extends TileEntity implements INamedContaine
             boolean updates = this.inventory.tick();
             if (updates) {
                 CompoundNBT data = new CompoundNBT();
-                data = this.write(data);
-                ModPackets.sendToNearby(world, pos, new RainbowCratePacket(pos, data));
+                data = this.save(data);
+                ModPackets.sendToNearby(level, worldPosition, new RainbowCratePacket(worldPosition, data));
                 ticksSinceLastChange = 0;
             }
         }
@@ -155,7 +155,7 @@ public class RainbowCrateTileEntity extends TileEntity implements INamedContaine
      * @param internalItemCounts Item counts, per slot, of the hidden internal inventory
      */
     public void receiveServerSideInventoryData(int[] internalItemCounts) {
-        if (world.isRemote()) {
+        if (level.isClientSide()) {
             this.inventory.receiveServerSideInventoryData(internalItemCounts);
         }
     }
@@ -166,15 +166,15 @@ public class RainbowCrateTileEntity extends TileEntity implements INamedContaine
     public SUpdateTileEntityPacket getUpdatePacket()
     {
         CompoundNBT nbtTagCompound = new CompoundNBT();
-        write(nbtTagCompound);
+        save(nbtTagCompound);
         int tileEntityType = 42;  // arbitrary number; only used for vanilla TileEntities.  You can use it, or not, as you want.
-        return new SUpdateTileEntityPacket(this.pos, tileEntityType, nbtTagCompound);
+        return new SUpdateTileEntityPacket(this.worldPosition, tileEntityType, nbtTagCompound);
     }
 
     // I thought this would be triggered whenever the inv is updated (e.g. hopper) but nope..
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        read(world.getBlockState(pkt.getPos()), pkt.getNbtCompound());
+        load(level.getBlockState(pkt.getPos()), pkt.getTag());
     }
 
     /* Creates a tag containing all of the TileEntity information, used by vanilla to transmit from server to client
@@ -183,7 +183,7 @@ public class RainbowCrateTileEntity extends TileEntity implements INamedContaine
     public CompoundNBT getUpdateTag()
     {
         CompoundNBT nbtTagCompound = new CompoundNBT();
-        write(nbtTagCompound);
+        save(nbtTagCompound);
         return nbtTagCompound;
     }
 
@@ -191,7 +191,7 @@ public class RainbowCrateTileEntity extends TileEntity implements INamedContaine
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag)
     {
-        read(state, tag);
+        load(state, tag);
     }
 
 }

@@ -24,9 +24,9 @@ public class RainbowCrateItemRenderer extends ItemRenderer {
     }
 
     @Override
-    public void renderItemOverlayIntoGUI(
+    public void renderGuiItemDecorations(
             FontRenderer fr, ItemStack stack, int xPosition, int yPosition, @Nullable String text) {
-        super.renderItemOverlayIntoGUI(fr, stack, xPosition, yPosition, text);
+        super.renderGuiItemDecorations(fr, stack, xPosition, yPosition, text);
         // TODO Draw the bar here
     }
 }

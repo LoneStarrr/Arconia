@@ -51,21 +51,21 @@ public class RainbowCrateBlock extends ContainerBlock implements IBlockColor {
             new HashMap<>(RainbowColor.values().length);
 
     private final RainbowColor tier;
-    private static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
+    private static final DirectionProperty FACING = HorizontalBlock.FACING;
     private static final Logger LOGGER = LogManager.getLogger();
 
     public RainbowCrateBlock(RainbowColor tier) {
-        super(Block.Properties.create(Material.WOOD).hardnessAndResistance(1.0F));
+        super(Block.Properties.of(Material.WOOD).strength(1.0F));
         this.tier = tier;
-        BlockState defaultBlockState = this.stateContainer.getBaseState().with(FACING, Direction.NORTH);
-        this.setDefaultState(defaultBlockState);
+        BlockState defaultBlockState = this.stateDefinition.any().setValue(FACING, Direction.NORTH);
+        this.registerDefaultState(defaultBlockState);
     }
 
     /**
      * BlockState properties for this block
      */
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
@@ -77,18 +77,18 @@ public class RainbowCrateBlock extends ContainerBlock implements IBlockColor {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext blockItemUseContext) {
-        World world = blockItemUseContext.getWorld();
-        BlockPos blockPos = blockItemUseContext.getPos();
+        World world = blockItemUseContext.getLevel();
+        BlockPos blockPos = blockItemUseContext.getClickedPos();
 
-        Direction direction = blockItemUseContext.getPlacementHorizontalFacing();  // north, east, south, or west
+        Direction direction = blockItemUseContext.getHorizontalDirection();  // north, east, south, or west
 
-        BlockState blockState = getDefaultState().with(FACING, direction);
+        BlockState blockState = defaultBlockState().setValue(FACING, direction);
         return blockState;
     }
 
     @Nullable
     @Override
-    public TileEntity createNewTileEntity(IBlockReader worldIn) {
+    public TileEntity newBlockEntity(IBlockReader worldIn) {
         return new RainbowCrateTileEntity(this.tier);
     }
 
@@ -101,8 +101,8 @@ public class RainbowCrateBlock extends ContainerBlock implements IBlockColor {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-        if (worldIn.isRemote) {
+    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+        if (worldIn.isClientSide) {
             LOGGER.info("onBlockActivated: world.isRemote()");
             return ActionResultType.SUCCESS;
         }
@@ -110,7 +110,7 @@ public class RainbowCrateBlock extends ContainerBlock implements IBlockColor {
         LOGGER.info("onBlockActivate: world is server");
 
         // namedContainerProvider -> this is the tile entity
-        INamedContainerProvider namedContainerProvider = this.getContainer(state, worldIn, pos);
+        INamedContainerProvider namedContainerProvider = this.getMenuProvider(state, worldIn, pos);
         if (namedContainerProvider != null) {
             if (!(player instanceof ServerPlayerEntity)) {
                 LOGGER.info("Player is not a ServerPlayerEntity");
@@ -127,22 +127,22 @@ public class RainbowCrateBlock extends ContainerBlock implements IBlockColor {
 
     // This is where you can do something when the block is broken. In this case drop the inventory's contents
     // Code is copied directly from vanilla eg ChestBlock, CampfireBlock
-    public void onReplaced(BlockState state, World world, BlockPos blockPos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, World world, BlockPos blockPos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
-            TileEntity tileentity = world.getTileEntity(blockPos);
+            TileEntity tileentity = world.getBlockEntity(blockPos);
             if (tileentity instanceof RainbowCrateTileEntity) {
                 RainbowCrateTileEntity tileEntity = (RainbowCrateTileEntity) tileentity;
                 tileEntity.dropAllContents(world, blockPos);
             }
 //          world.updateComparatorOutputLevel(pos, this);  if the inventory is used to set redstone power for comparators
-            super.onReplaced(state, world, blockPos, newState, isMoving);  // call it last, because it removes the TileEntity
+            super.onRemove(state, world, blockPos, newState, isMoving);  // call it last, because it removes the TileEntity
         }
     }
 
     // render using a BakedModel
     // required because the default (super method) is INVISIBLE for ContainerBlock
     @Override
-    public BlockRenderType getRenderType(BlockState iBlockState) {
+    public BlockRenderType getRenderShape(BlockState iBlockState) {
         return BlockRenderType.MODEL;
     }
 

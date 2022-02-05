@@ -12,6 +12,6 @@ import java.util.Map;
 // Mixin generic guide: https://darkhax.net/2020/07/mixins
 @Mixin(RecipeManager.class)
 public interface AccessorRecipeManager {
-    @Invoker("getRecipes")
+    @Invoker("byType")
     <C extends IInventory, T extends IRecipe<C>> Map<ResourceLocation, IRecipe<C>> arconia_getRecipes(IRecipeType<T> type);
 }

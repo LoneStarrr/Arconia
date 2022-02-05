@@ -24,7 +24,7 @@ public class InventoryHelper {
      */
     @Nullable
     public static IItemHandler getInventory(World world, BlockPos pos, Direction side) {
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
 
         if (te == null) {
             return null;

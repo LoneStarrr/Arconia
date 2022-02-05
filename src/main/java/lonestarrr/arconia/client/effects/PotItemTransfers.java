@@ -32,9 +32,9 @@ public class PotItemTransfers {
     private static final Set<ItemTransfer> transfers = new HashSet<>();
 
     public static void addItemTransfer(BlockPos hatPos, BlockPos potPos, ItemStack itemStack) {
-        World world = Minecraft.getInstance().world;
+        World world = Minecraft.getInstance().level;
 
-        if (!world.isRemote()) {
+        if (!world.isClientSide()) {
             return;
         }
 
@@ -47,23 +47,23 @@ public class PotItemTransfers {
 
     @SubscribeEvent
     public static void render(RenderWorldLastEvent event) {
-        World world = Minecraft.getInstance().world;
+        World world = Minecraft.getInstance().level;
 
         long now = world.getGameTime();
         List<ItemTransfer> toRemove = new ArrayList<>();
 
         MatrixStack matrix = event.getMatrixStack();
-        matrix.push();
+        matrix.pushPose();
 
         // Correct for player projection view
-        Vector3d projected = Minecraft.getInstance().getRenderManager().info.getProjectedView();
-        matrix.translate(-projected.getX(), -projected.getY(), -projected.getZ());
+        Vector3d projected = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition();
+        matrix.translate(-projected.x(), -projected.y(), -projected.z());
 
         // 2021-11-14 XXX This code crashes when a nether star is being transferred. I think it's because it has a glint.
         // I attempted to use my own buffer to no avail, it might be a bug in the mojang code?
 //        BufferBuilder bufferBuilder = new BufferBuilder(2097152); // taken from Tesselator
 //        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(bufferBuilder);
-        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
 
         // Probably also add a random delay and don't fire them all at the same tick
         for (ItemTransfer transfer: transfers) {
@@ -72,9 +72,9 @@ public class PotItemTransfers {
                 continue;
             }
 
-            BlockPos playerPos = Minecraft.getInstance().player.getPosition();
+            BlockPos playerPos = Minecraft.getInstance().player.blockPosition();
             boolean fromCenter = true;
-            if (playerPos.distanceSq(transfer.hatPos.x, transfer.hatPos.y, transfer.hatPos.z, fromCenter) > 64 * 64) {
+            if (playerPos.distSqr(transfer.hatPos.x, transfer.hatPos.y, transfer.hatPos.z, fromCenter) > 64 * 64) {
                 continue;
             }
 
@@ -82,24 +82,24 @@ public class PotItemTransfers {
             // TODO: Temporary - testing rainbow rendering
 //            RainbowRenderer.renderRainbow(transfer.potPos, transfer.hatPos, event.getMatrixStack(), buffer);
         }
-        buffer.finish();
+        buffer.endBatch();
 
         for (ItemTransfer transfer: toRemove) {
             transfers.remove(transfer);
         }
 
-        matrix.pop();
+        matrix.popPose();
     }
 
     private static void renderItemTransfer(ItemTransfer transfer, MatrixStack matrixStack, IRenderTypeBuffer buffer, float partialTicks) {
         double elapsedTicks = transfer.getTicksElapsed() + partialTicks;
         Vector3d itemPos = transfer.getPosition(elapsedTicks);
-        int light = WorldRenderer.getCombinedLight(Minecraft.getInstance().world, new BlockPos(itemPos.x, itemPos.y, itemPos.z));
-        matrixStack.push();
+        int light = WorldRenderer.getLightColor(Minecraft.getInstance().level, new BlockPos(itemPos.x, itemPos.y, itemPos.z));
+        matrixStack.pushPose();
         matrixStack.translate(itemPos.x, itemPos.y, itemPos.z);
         Minecraft.getInstance().getItemRenderer()
-                .renderItem(transfer.itemStack, ItemCameraTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
-        matrixStack.pop();
+                .renderStatic(transfer.itemStack, ItemCameraTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
+        matrixStack.popPose();
         // TODO temporarily rendering a rainbow just to see what it looks like
 
     }
@@ -122,8 +122,8 @@ class ItemTransfer {
         this.itemStack = itemStack.copy();
         this.startTick = startTick;
         // Vary gravity and speed a little for visual effect
-        this.gravity = GRAVITY * (0.9 + Minecraft.getInstance().world.rand.nextFloat() / 10f);
-        this.displayTicks = DISPLAY_TICKS * (0.6 + 0.4 * Minecraft.getInstance().world.rand.nextFloat());
+        this.gravity = GRAVITY * (0.9 + Minecraft.getInstance().level.random.nextFloat() / 10f);
+        this.displayTicks = DISPLAY_TICKS * (0.6 + 0.4 * Minecraft.getInstance().level.random.nextFloat());
     }
 
     public boolean isComplete(float partialTicks) {
@@ -158,12 +158,12 @@ class ItemTransfer {
      * @return Elapsed time % as a fraction [0..1]
      */
     public float getTimeElapsedPct() {
-        return Math.min(1f, (Minecraft.getInstance().world.getGameTime() - startTick) / (float) DISPLAY_TICKS);
+        return Math.min(1f, (Minecraft.getInstance().level.getGameTime() - startTick) / (float) DISPLAY_TICKS);
 
     }
 
     public long getTicksElapsed() {
-        return Minecraft.getInstance().world.getGameTime() - startTick;
+        return Minecraft.getInstance().level.getGameTime() - startTick;
     }
 
     /**

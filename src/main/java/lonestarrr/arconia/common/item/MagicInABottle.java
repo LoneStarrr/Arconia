@@ -39,25 +39,25 @@ public class MagicInABottle extends Item {
     private static final String TAG_TICKS_ELAPSED = "ticksElapsed";
 
     public MagicInABottle(Item.Properties builder) {
-        super(builder.maxStackSize(1));
+        super(builder.stacksTo(1));
     }
 
 
     @Override
-    public boolean hasEffect(ItemStack stack) {
+    public boolean isFoil(ItemStack stack) {
         // for that visual enchanted effect only
         return false;
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        World world = context.getWorld();
+    public ActionResultType useOn(ItemUseContext context) {
+        World world = context.getLevel();
         PlayerEntity player = context.getPlayer();
-        BlockPos pos = context.getPos(); // TODO this is pos player is AT, not looking at. That is a client-side thing..
-        ItemStack itemStack = player.getHeldItem(context.getHand());
+        BlockPos pos = context.getClickedPos(); // TODO this is pos player is AT, not looking at. That is a client-side thing..
+        ItemStack itemStack = player.getItemInHand(context.getHand());
 
         // For testing purposes, just cycle through the tiers for now when it's used on anything
-        if (!world.isRemote()) {
+        if (!world.isClientSide()) {
             RainbowColor currentTier = getTier(itemStack);
             int tierNum = currentTier.ordinal();
             tierNum = (tierNum >= RainbowColor.values().length - 1 ? 0: tierNum + 1);
@@ -68,20 +68,20 @@ public class MagicInABottle extends Item {
                 itemStack.setTag(tag);
             }
             tag.putString("tier", newTier.name());
-            player.sendStatusMessage(new StringTextComponent("Taste the " + newTier.getTierName() + " rainbow!"), true);
+            player.displayClientMessage(new StringTextComponent("Taste the " + newTier.getTierName() + " rainbow!"), true);
         }
         return ActionResultType.SUCCESS;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(
+    public void appendHoverText(
             ItemStack stack, @Nullable World world, List<ITextComponent> toolTips, ITooltipFlag flag) {
-        super.addInformation(stack, world, toolTips, flag);
+        super.appendHoverText(stack, world, toolTips, flag);
         int ticksElapsed = getTicksElapsed(stack);
         int ticksBetweenLoot = getTicksBetweenLoot(stack);
         int pct = (int)Math.min(100, (int)(ticksElapsed * 100d / ticksBetweenLoot));
-        toolTips.add(new TranslationTextComponent(stack.getTranslationKey() + ".tooltip", pct).mergeStyle(TextFormatting.AQUA, TextFormatting.ITALIC));
+        toolTips.add(new TranslationTextComponent(stack.getDescriptionId() + ".tooltip", pct).withStyle(TextFormatting.AQUA, TextFormatting.ITALIC));
     }
 
     public static int getTicksElapsed(ItemStack stack) {
@@ -101,7 +101,7 @@ public class MagicInABottle extends Item {
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slotIn, boolean selected) {
-        if (world.isRemote() || !(entity instanceof ServerPlayerEntity)) {
+        if (world.isClientSide() || !(entity instanceof ServerPlayerEntity)) {
             return;
         }
         final int tickEvalInterval = 20;
@@ -115,7 +115,7 @@ public class MagicInABottle extends Item {
                 ticksElapsed += tickEvalInterval;
                 setTicksElapsed(stack, ticksElapsed);
                 if (ticksElapsed >= ticksNextLoot) {
-                    world.playSound(null, entity.getPosition(), SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.PLAYERS, 1, 1);
+                    world.playSound(null, entity.blockPosition(), SoundEvents.BREWING_STAND_BREW, SoundCategory.PLAYERS, 1, 1);
                 }
             }
 
@@ -123,8 +123,8 @@ public class MagicInABottle extends Item {
             if (gameTime % (tickEvalInterval * 3) == 0){
                 ServerPlayerEntity player = (ServerPlayerEntity) entity;
 
-                for (int slot = 0; slot < player.inventory.getSizeInventory(); slot++) {
-                    ItemStack otherStack = player.inventory.getStackInSlot(slot);
+                for (int slot = 0; slot < player.inventory.getContainerSize(); slot++) {
+                    ItemStack otherStack = player.inventory.getItem(slot);
                     if (otherStack.getItem() == this && otherStack != stack) {
                         int otherTicksElapsed = getTicksElapsed(otherStack);
                         if (otherTicksElapsed < ticksElapsed) {
@@ -138,38 +138,38 @@ public class MagicInABottle extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity playerEntity, Hand hand) {
-        ItemStack stack = playerEntity.getHeldItem(hand);
+    public ActionResult<ItemStack> use(World world, PlayerEntity playerEntity, Hand hand) {
+        ItemStack stack = playerEntity.getItemInHand(hand);
         if (stack.isEmpty() || stack.getItem() != this) {
-            return ActionResult.resultPass(stack);
+            return ActionResult.pass(stack);
         }
 
         // Without syncing ticks to client, can't really know on the client when time has elapsed because it will desync. So just consume the click.
-        if (world.isRemote()) {
-            return ActionResult.resultConsume(stack);
+        if (world.isClientSide()) {
+            return ActionResult.consume(stack);
         }
 
         int ticks = getTicksElapsed(stack);
         if (ticks < getTicksBetweenLoot(stack)) {
-            return ActionResult.resultFail(stack);
+            return ActionResult.fail(stack);
         }
 
         List<ItemStack> lootCollection = getLoot(stack, world);
-        BlockPos spawnPos = playerEntity.getPosition();
-        spawnPos.add(playerEntity.getLookVec().x, playerEntity.getLookVec().y, playerEntity.getLookVec().z); // somewhat in front of player?
+        BlockPos spawnPos = playerEntity.blockPosition();
+        spawnPos.offset(playerEntity.getLookAngle().x, playerEntity.getLookAngle().y, playerEntity.getLookAngle().z); // somewhat in front of player?
         for (ItemStack loot: lootCollection) {
             ItemEntity entity = new ItemEntity(world, spawnPos.getX(), spawnPos.getY(),
                     spawnPos.getZ() ,
                     loot);
-            entity.setMotion(0D, 0.0D, 0D);
-            entity.setNoPickupDelay();
+            entity.setDeltaMovement(0D, 0.0D, 0D);
+            entity.setNoPickUpDelay();
             entity.lifespan = 200;
-            world.addEntity(entity);
-            world.playSound(null, spawnPos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1, 1);
+            world.addFreshEntity(entity);
+            world.playSound(null, spawnPos, SoundEvents.BOTTLE_EMPTY, SoundCategory.BLOCKS, 1, 1);
         }
 
         setTicksElapsed(stack, 0);
-        return ActionResult.resultSuccess(stack);
+        return ActionResult.success(stack);
     }
 
     public static int getTicksBetweenLoot(ItemStack stack) {
@@ -199,9 +199,9 @@ public class MagicInABottle extends Item {
         RainbowColor tier = getTier(stack);
 
         final ResourceLocation lootResource = new ResourceLocation(Arconia.MOD_ID, "magic_in_a_bottle_" + tier.getTierName());
-        LootTable lootTable = ((ServerWorld) world).getServer().getLootTableManager().getLootTableFromLocation(lootResource);
-        LootContext ctx = new LootContext.Builder((ServerWorld) world).build(LootParameterSets.EMPTY);
-        List<ItemStack> stacks = lootTable.generate(ctx);
+        LootTable lootTable = ((ServerWorld) world).getServer().getLootTables().get(lootResource);
+        LootContext ctx = new LootContext.Builder((ServerWorld) world).create(LootParameterSets.EMPTY);
+        List<ItemStack> stacks = lootTable.getRandomItems(ctx);
         return stacks;
     }
 
