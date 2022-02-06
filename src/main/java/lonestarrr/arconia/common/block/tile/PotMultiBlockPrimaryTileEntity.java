@@ -2,6 +2,7 @@ package lonestarrr.arconia.common.block.tile;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
+import lonestarrr.arconia.common.core.handler.ConfigHandler;
 import lonestarrr.arconia.common.item.ModItems;
 import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
 import lonestarrr.arconia.common.network.ModPackets;
@@ -22,14 +23,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements ITickableTileEntity {
-    private static final int MAX_HATS = 32;
     private static final int MAX_COIN_SUPPLIERS = 1; // How many hats may supply coins per coin collection tick?
-    private static final float MAX_HAT_DISTANCE = 16; // Max straight-line distance
     private static final String TAG_HAT_POSITIONS = "hat_positions";
     private static final String TAG_COIN_COUNT = "coin_count";
 
     private int coinCount;
-    public static final int TICKS_PER_INTERVAL = 5;
     private int intervalsElapsed = 0;
     private long lastIntervalGameTime = 0;
 
@@ -51,12 +49,24 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         return coinCount;
     }
 
+    public int maxHats() {
+        return ConfigHandler.COMMON.potOfGoldMaxHats.get();
+    }
+
+    public int ticksPerInterval() {
+        return ConfigHandler.COMMON.potOfGoldTicksPerInterval.get();
+    }
+
+    public int maxHatDistance() {
+        return ConfigHandler.COMMON.potOfGoldMaxHatDistance.get();
+    }
+
     public void linkHat(BlockPos hatPos) throws LinkHatException {
-        if (hats.size() >= MAX_HATS) {
+        if (hats.size() >= maxHats()) {
             throw new LinkHatException(LinkErrorCode.TOO_MANY_HATS);
         }
 
-        if (!worldPosition.closerThan(hatPos, MAX_HAT_DISTANCE)) {
+        if (!worldPosition.closerThan(hatPos, maxHatDistance())) {
             throw new LinkHatException(LinkErrorCode.HAT_TOO_FAR);
         }
 
@@ -142,7 +152,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         }
 
         long now = level.getGameTime();
-        if (now - lastIntervalGameTime < TICKS_PER_INTERVAL) {
+        if (now - lastIntervalGameTime < ticksPerInterval()) {
             return;
         }
 
@@ -214,9 +224,6 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
                 }
             }
 
-            // TODO with increasing coin collection for higher tiers, it will very quickly hit a max number of coins spent generating resources because at
-            // most 1 coin per hat is expensed in this method. I guess resources should come with required coins per resource (which goes up per tier too).
-            // Or, it should attempt to spend more coins by diving available coins over the hats up to a per-tick limit?
             if (!hatEntity.getResourceGenerated().isEmpty()) {
                 if (this.intervalsElapsed - hat.lastResourceGenInterval < hatEntity.getResourceGenInterval()) {
                     continue;
@@ -226,7 +233,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
                     hat.lastResourceGenInterval = this.intervalsElapsed;
                 }
             } else {
-                // TODO I'm preventing sending more frequently than the dictated interval of the gold arconium block AND I limit to 1 coin collector, but..
+                // This prevents sending more frequently than the dictated interval of the gold arconium block AND it limits to 1 coin collector, but..
                 // placing multiple of a lower tier can still speed it up because the limit is applied per pot tick, which is shorter than the coin collector's
                 // interval. I.e. one can always get coin collection down to 1 per pot tick by placing enough of them. Am I ok with that?
                 BlockPos goldArconiumPos = hatPos.below();

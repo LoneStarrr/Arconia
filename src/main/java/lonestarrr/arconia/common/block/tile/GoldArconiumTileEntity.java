@@ -1,6 +1,7 @@
 package lonestarrr.arconia.common.block.tile;
 
 import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.core.handler.ConfigHandler;
 import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -37,11 +38,10 @@ public class GoldArconiumTileEntity extends BaseTileEntity {
     }
 
     private long calculateInitialCount() {
-        return (long)Math.pow(2, 7 + this.tier.getTier());
+        return (long)ConfigHandler.COMMON.goldArconiumCoinCounts.get(tier).get();
     }
 
     private void setInitialCoinCount() {
-        // TODO configurable
         this.coins = calculateInitialCount();
         setChanged();
     }
@@ -72,8 +72,7 @@ public class GoldArconiumTileEntity extends BaseTileEntity {
      * @return How frequently coins can be collected - interval length determined by collector (pot of gold)
      */
     public int getCoinGenerationInterval() {
-        int tierNum = tier.getTier();
-        return Math.max(1, 10 - tierNum);
+        return ConfigHandler.COMMON.goldArconiumCoinInterval.get(tier).get();
     }
 
     /**

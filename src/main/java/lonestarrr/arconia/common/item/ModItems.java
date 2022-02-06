@@ -16,7 +16,6 @@ public final class ModItems {
     public static final Item clover = new Item(defaultBuilder());
     public static final Item goldCoin = new Item(defaultBuilder());
     public static final Item cloverStaff = new CloverStaff(defaultBuilder().stacksTo(1));
-    public static final Item treeRoot = new TreeRoot(defaultBuilder());
     public static final Item fourLeafClover = new Item(defaultBuilder());
     public static final Item threeLeafClover = new Item(defaultBuilder());
     public static final Item magicInABottle = new MagicInABottle(defaultBuilder());
@@ -41,7 +40,6 @@ public final class ModItems {
 
         register(r, goldCoin, ItemNames.GOLD_COIN);
         register(r, cloverStaff, ItemNames.CLOVER_STAFF);
-        register(r, treeRoot, ItemNames.TREE_ROOT);
         register(r, fourLeafClover, ItemNames.FOUR_LEAF_CLOVER);
         register(r, threeLeafClover, ItemNames.THREE_LEAF_CLOVER);
         register(r, magicInABottle, ItemNames.MAGIC_IN_A_BOTTLE);
