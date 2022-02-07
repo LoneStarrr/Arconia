@@ -127,5 +127,8 @@ public class ModLanguageProvider extends LanguageProvider {
         add("arconia.block.pot_multiblock.coin_count.hundreds", "There are hundreds of coins");
         add("arconia.block.pot_multiblock.coin_count.thousands", "There are thousands of coins");
         add("arconia.block.pot_multiblock.coin_count.ludicrous", "There is an insane amount of coins");
+        // Guide book
+        add("arconia.guide_book.landing_text", "A collection of notes on my studies of a dwindling race.");
+        add("arconia.guide_book.name", "Arconia Notebook");
     }
 }
