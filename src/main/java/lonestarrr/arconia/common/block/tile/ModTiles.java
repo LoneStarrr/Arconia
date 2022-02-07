@@ -1,21 +1,18 @@
 package lonestarrr.arconia.common.block.tile;
 
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.IForgeRegistry;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.BlockNames;
 import lonestarrr.arconia.common.core.RainbowColor;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static lonestarrr.arconia.common.block.ModBlocks.register;
 
-@Mod.EventBusSubscriber(modid = Arconia.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModTiles {
     public static final TileEntityType<ResourceGenTileEntity> RESOURCEGEN = TileEntityType.Builder.of(ResourceGenTileEntity::new, ModBlocks.resourceGenBlock).build(null);
     public static final TileEntityType<HatTileEntity> HAT = TileEntityType.Builder.of(HatTileEntity::new, ModBlocks.hat).build(null);
@@ -24,14 +21,12 @@ public class ModTiles {
     public static final TileEntityType<OrbTileEntity> ORB = TileEntityType.Builder.of(OrbTileEntity::new, ModBlocks.orb).build(null);
     public static final TileEntityType<PotMultiBlockPrimaryTileEntity> POT_MULTIBLOCK_PRIMARY = TileEntityType.Builder.of(PotMultiBlockPrimaryTileEntity::new, ModBlocks.potMultiBlockPrimary).build(null);
     public static final TileEntityType<PotMultiBlockSecondaryTileEntity> POT_MULTIBLOCK_SECONDARY = TileEntityType.Builder.of(PotMultiBlockSecondaryTileEntity::new, ModBlocks.potMultiBlockSecondary).build(null);
-    private static final Map<RainbowColor, TileEntityType<ResourceTreeRootTileEntity>> treeRootBlockTileEntityTypes = new HashMap<>(RainbowColor.values().length);
+    private static final Map<RainbowColor, TileEntityType<ArconiumTreeRootTileEntity>> treeRootBlockTileEntityTypes = new HashMap<>(RainbowColor.values().length);
     private static final Map<RainbowColor, TileEntityType<RainbowCrateTileEntity>> rainbowCrateTileEntityTypes =
             new HashMap<>(RainbowColor.values().length);
     private static final Map<RainbowColor, TileEntityType<GoldArconiumTileEntity>> goldArconiumTileEntityTypes = new HashMap<>(RainbowColor.values().length);
     private static final Map<RainbowColor, TileEntityType<GoldArconiumTileEntity>> infiniteGoldArconiumTileEntityTypes = new HashMap<>(RainbowColor.values().length);
 
-
-    @SubscribeEvent
     public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
         IForgeRegistry<TileEntityType<?>> r = event.getRegistry();
 
@@ -45,9 +40,9 @@ public class ModTiles {
 
         // tree root blocks
         for (RainbowColor tier: RainbowColor.values()) {
-            TileEntityType<ResourceTreeRootTileEntity> teType =
-                    TileEntityType.Builder.of(() -> new ResourceTreeRootTileEntity(tier),
-                            ModBlocks.getResourceTreeRootBlock(tier)).build(null);
+            TileEntityType<ArconiumTreeRootTileEntity> teType =
+                    TileEntityType.Builder.of(() -> new ArconiumTreeRootTileEntity(tier),
+                            ModBlocks.getArconiumTreeRootBlocks(tier)).build(null);
             treeRootBlockTileEntityTypes.put(tier, teType);
             register(r, teType, tier.getTierName() + "_pattern_lootblock_tile_entity");
         }
@@ -78,7 +73,7 @@ public class ModTiles {
 
     }
 
-    public static TileEntityType<ResourceTreeRootTileEntity> getTreeRootBlockTileEntityType(RainbowColor tier) {
+    public static TileEntityType<ArconiumTreeRootTileEntity> getTreeRootBlockTileEntityType(RainbowColor tier) {
         return treeRootBlockTileEntityTypes.get(tier);
     }
 

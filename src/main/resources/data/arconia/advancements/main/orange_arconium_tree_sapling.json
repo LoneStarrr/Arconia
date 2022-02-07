@@ -1,0 +1,29 @@
+{
+  "display": {
+    "icon": {
+      "item": "arconia:orange_arconium_tree_sapling"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.orange_arconium_tree_sapling.title"
+    },
+    "description": {
+      "translate": "advancement.arconia.main.orange_arconium_tree_sapling.desc"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "arconia:main/red_tree_root_block",
+  "criteria": {
+    "orange_arconium_sapling": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "arconia:orange_arconium_tree_sapling"
+          }
+        ]
+      }
+    }
+  }
+}

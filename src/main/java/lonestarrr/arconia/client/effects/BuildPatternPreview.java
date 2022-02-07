@@ -1,5 +1,10 @@
 package lonestarrr.arconia.client.effects;
 
+import lonestarrr.arconia.client.gui.render.GhostBlockRenderer;
+import lonestarrr.arconia.client.gui.render.OutlineBlockRenderer;
+import lonestarrr.arconia.common.core.BuildPattern;
+import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.core.helper.BuildPatternTier;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.particles.ParticleTypes;
@@ -7,25 +12,16 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import lonestarrr.arconia.common.core.BuildPattern;
-import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.core.helper.*;
-import lonestarrr.arconia.client.gui.render.GhostBlockRenderer;
-import lonestarrr.arconia.client.gui.render.OutlineBlockRenderer;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Renders build pattern previews, which are activated using the clover staff - deprecated for now in favor of
  * highlighting pattern block positions
  *
- * TODO use Tile Entity Renderer
  */
-@Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class BuildPatternPreview {
     private static final int PREVIEW_MIN_LIGHT_LEVEL = 0;
     private static final int PREVIEW_MAX_LIGHT_LEVEL = 15;
@@ -88,7 +84,6 @@ public class BuildPatternPreview {
         lastLightLevel = 0;
     }
 
-    @SubscribeEvent
     public static void render(RenderWorldLastEvent event) {
         renderPreview(event);
         showBadBlockPositions();

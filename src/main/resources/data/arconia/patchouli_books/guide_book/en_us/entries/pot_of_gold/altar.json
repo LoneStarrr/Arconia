@@ -1,0 +1,27 @@
+{
+    "name": "Altar",
+    "icon": "arconia:center_pedestal",
+    "category": "arconia:pot_of_gold",
+    "sortnum": 2,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "text": "Over the years, I have witnessed that all strange, magical things in life somehow seem to involve some kind of ritual performed on a set of pedestals. I imagine magicians and wizards have to attend some kind of magic college where they are being told in no misunderstood terms that if they want to perform magic tricks, it had better involve a circle of pedestals."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "Anyway, I digress. The master leprechaun magician I witnessed performing rituals was no different. I saw him place down a stone pedestal, and surround them with up to 8 wood pedestals nearby to place items on. Activating a ritual was done by using the clover staff (see my other notes) on the center pedestal.$(br2)I have included crafting instructions later in this entry."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "There are many rituals available. I have not documented them in this notebook, however some other clever individual has told me they can be find through something called $(italic)JEI$() by looking at how the center pedestal can be $(italic)$(bold)u$()$(italic)sed$()." 
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "arconia:center_pedestal",
+            "recipe2": "arconia:pedestal"
+        }
+    ]
+}
+
+

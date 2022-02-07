@@ -14,7 +14,7 @@
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "arconia:main/pedestal",
+  "parent": "arconia:main/center_pedestal",
   "criteria": {
     "red_root_of_essence": {
       "trigger": "minecraft:inventory_changed",

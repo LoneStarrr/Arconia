@@ -2,12 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "RRR",
-    "RRR",
+    "RAR",
     "RRR"
   ],
   "key": {
     "R": {
       "item": "arconia:red_colored_tree_root"
+    },
+    "A": {
+      "item": "arconia:red_arconium_block"
     }
   },
   "result": {

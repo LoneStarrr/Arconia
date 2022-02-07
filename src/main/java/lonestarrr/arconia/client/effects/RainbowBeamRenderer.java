@@ -2,52 +2,42 @@ package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import lonestarrr.arconia.client.core.handler.ColorHandler;
+import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.common.block.tile.ArconiumTreeRootTileEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.core.helper.VectorHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderState;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.*;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.tile.ResourceTreeRootTileEntity;
-import lonestarrr.arconia.common.core.helper.VectorHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
-import java.util.Random;
-
-import net.minecraft.client.renderer.RenderState.TransparencyState;
 
 /**
  * Draws pretty visual effects related to the resource tree
  *
  * TODO deprecated - remove me
  */
-@Mod.EventBusSubscriber(modid=Arconia.MOD_ID, value= Dist.CLIENT, bus=Mod.EventBusSubscriber.Bus.MOD)
-public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTileEntity>  {
+public class RainbowBeamRenderer extends TileEntityRenderer<ArconiumTreeRootTileEntity>  {
     public static final ResourceLocation BEAM_TEXTURE = new ResourceLocation(Arconia.MOD_ID, "effects/link");
     public static final ResourceLocation BEAM_ANIMATED_TEXTURE = new ResourceLocation(Arconia.MOD_ID, "effects/beam_animated");
     public static final ResourceLocation BEAM_SINE = new ResourceLocation(Arconia.MOD_ID, "effects/sine_wave");
@@ -67,7 +57,6 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
         }
     }
 
-    @SubscribeEvent
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
         // All textures are stitched into 1 large atlas texture - regular item / block models automatically take care of this,
         // but other textures need to be manually added to it for it to be available for rendering.
@@ -81,7 +70,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ResourceTreeRootTile
 
     @Override
     public void render(
-            ResourceTreeRootTileEntity tileEntity, float partialTicks, MatrixStack matrixStack,
+            ArconiumTreeRootTileEntity tileEntity, float partialTicks, MatrixStack matrixStack,
             IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
         BlockPos startPos = tileEntity.getBlockPos();
         BlockPos treeBasePos = startPos.above(2);

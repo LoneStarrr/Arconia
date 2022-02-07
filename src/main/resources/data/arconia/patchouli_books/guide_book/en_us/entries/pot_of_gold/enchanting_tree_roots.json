@@ -1,0 +1,19 @@
+{
+    "name": "Enchanting tree roots",
+    "icon": "arconia:red_colored_tree_root",
+    "category": "arconia:pot_of_gold",
+    "sortnum": 4,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "text": "Have you noticed those strange red arconium trees in forest areas? They look like oak trees, but the leaves have a vibrant, red color with a hint of gold. I saw the leprechauns chop these down and collect tree roots. These roots by themselves don't do much, but the master magician used them in rituals to give them magic abilities."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "These enchanted tree roots somehow influence what items are flung out of the pot of gold. Most of the rituals require this colorful metal-like material called arconium. Getting your hands on this stuff requires a few steps, the first of which is figuring out how to make arconium essence."
+        }
+    ]
+}
+
+
+

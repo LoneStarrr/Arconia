@@ -1,28 +1,27 @@
 package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import lonestarrr.arconia.client.core.handler.ColorHandler;
-import lonestarrr.arconia.common.core.RainbowColor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Renders 'laser beams' being shot from an orb when it vacuums up items in the world
  */
-@Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class OrbLasers {
     private static final Set<LaserBeam> beams = new HashSet<LaserBeam>();
 
@@ -41,7 +40,6 @@ public class OrbLasers {
         beams.add(beam);
     }
 
-//    @SubscribeEvent
     public static void render(RenderWorldLastEvent event) {
         World world = Minecraft.getInstance().level;
 

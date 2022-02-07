@@ -1,29 +1,21 @@
 package lonestarrr.arconia.common.item;
 
-import net.minecraft.item.BlockNamedItem;
+import lonestarrr.arconia.common.core.ItemNames;
+import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
-import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.ModBlocks;
-import lonestarrr.arconia.common.block.RainbowCropBlock;
-import lonestarrr.arconia.common.core.ItemNames;
-import lonestarrr.arconia.common.core.RainbowColor;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static lonestarrr.arconia.common.block.ModBlocks.register;
 
-@Mod.EventBusSubscriber(modid = Arconia.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ModItems {
     public static final Item clover = new Item(defaultBuilder());
     public static final Item goldCoin = new Item(defaultBuilder());
     public static final Item cloverStaff = new CloverStaff(defaultBuilder().stacksTo(1));
-    public static final Item treeRoot = new TreeRoot(defaultBuilder());
     public static final Item fourLeafClover = new Item(defaultBuilder());
     public static final Item threeLeafClover = new Item(defaultBuilder());
     public static final Item magicInABottle = new MagicInABottle(defaultBuilder());
@@ -38,7 +30,6 @@ public final class ModItems {
         return new Item.Properties().tab(ItemGroup.TAB_MISC);
     }
 
-    @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> evt) {
         // Register stand-alone items, not associated with a block - those go into ModBlocks
         IForgeRegistry<Item> r = evt.getRegistry();
@@ -49,7 +40,6 @@ public final class ModItems {
 
         register(r, goldCoin, ItemNames.GOLD_COIN);
         register(r, cloverStaff, ItemNames.CLOVER_STAFF);
-        register(r, treeRoot, ItemNames.TREE_ROOT);
         register(r, fourLeafClover, ItemNames.FOUR_LEAF_CLOVER);
         register(r, threeLeafClover, ItemNames.THREE_LEAF_CLOVER);
         register(r, magicInABottle, ItemNames.MAGIC_IN_A_BOTTLE);

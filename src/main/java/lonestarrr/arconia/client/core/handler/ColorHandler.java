@@ -7,15 +7,12 @@ import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockDisplayReader;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.MagicInABottle;
 import lonestarrr.arconia.common.item.ModItems;
-
-import java.awt.*;
 
 public class ColorHandler {
     public static void registerColorBlocks() {
@@ -43,7 +40,7 @@ public class ColorHandler {
 
         for (RainbowColor tier: RainbowColor.values()) {
             // Tree root tops are modified using the corresponding rainbow color.
-            ResourceTreeRootBlock treeRoot = ModBlocks.getResourceTreeRootBlock(tier);
+            ArconiumTreeRootBlock treeRoot = ModBlocks.getArconiumTreeRootBlocks(tier);
             colorBlocks.register(treeRoot, treeRoot);
             // Taken from minecraft's ItemColors
             items.register((stack, layer) -> {
@@ -52,7 +49,7 @@ public class ColorHandler {
             }, Item.byBlock(treeRoot));
 
             // Tree leaves
-            ResourceTreeLeaves treeLeaf = ModBlocks.getMoneyTreeLeaves(tier);
+            ArconiumTreeLeaves treeLeaf = ModBlocks.getArconiumTreeLeaves(tier);
             colorBlocks.register(treeLeaf, treeLeaf);
             // Taken from minecraft's ItemColors
             items.register((stack, layer) -> {
@@ -61,7 +58,7 @@ public class ColorHandler {
             }, Item.byBlock(treeLeaf));
 
             // Tree saplings
-            ResourceTreeSapling treeSapling = ModBlocks.getMoneyTreeSapling(tier);
+            ArconiumTreeSapling treeSapling = ModBlocks.getArconiumTreeSapling(tier);
             colorBlocks.register(treeSapling, treeSapling);
             // Taken from minecraft's ItemColors - for saplings, only layer0 is dynamically colored
             items.register((stack, layer) -> {
