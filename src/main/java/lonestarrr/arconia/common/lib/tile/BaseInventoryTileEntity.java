@@ -1,8 +1,8 @@
 package lonestarrr.arconia.common.lib.tile;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -15,19 +15,19 @@ import net.minecraftforge.items.ItemStackHandler;
 public abstract class BaseInventoryTileEntity extends BaseTileEntity {
     private final LazyOptional<IItemHandler> capability = LazyOptional.of(this::getInventory);
 
-    public BaseInventoryTileEntity(TileEntityType<?> type) {
+    public BaseInventoryTileEntity(BlockEntityType<?> type) {
         super(type);
     }
 
     public abstract ItemStackHandler getInventory();
 
     @Override
-    public void writePacketNBT(CompoundNBT tag) {
+    public void writePacketNBT(CompoundTag tag) {
         tag.merge(getInventory().serializeNBT());
     }
 
     @Override
-    public void readPacketNBT(CompoundNBT tag) {
+    public void readPacketNBT(CompoundTag tag) {
         getInventory().deserializeNBT(tag);
     }
 

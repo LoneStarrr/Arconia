@@ -1,10 +1,10 @@
 package lonestarrr.arconia.common.network;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -36,9 +36,9 @@ public class ModPackets {
      * @param pos
      * @param toSend Packet to send (why does this not bother to implement at least an interface?)
      */
-    public static void sendToNearby(World world, BlockPos pos, Object toSend) {
-        if (world instanceof ServerWorld) {
-            ServerWorld serverWorld = (ServerWorld) world;
+    public static void sendToNearby(Level world, BlockPos pos, Object toSend) {
+        if (world instanceof ServerLevel) {
+            ServerLevel serverWorld = (ServerLevel) world;
 
             serverWorld.getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false)
                     .filter(p -> p.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) < 64 * 64)

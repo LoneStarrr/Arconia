@@ -1,9 +1,9 @@
 package lonestarrr.arconia.common.block.tile.crate;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.logging.log4j.LogManager;
@@ -231,13 +231,13 @@ public class RainbowCrateItemStackHandler  extends ItemStackHandler {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
+    public CompoundTag serializeNBT() {
         // Take NBT data from ItemStackhandler and add the internal inventory list to it
-        CompoundNBT nbt = super.serializeNBT();
-        ListNBT nbtTagList = new ListNBT();
+        CompoundTag nbt = super.serializeNBT();
+        ListTag nbtTagList = new ListTag();
         for (int i = 0; i < this.getSlots(); i++) {
             if (!this.internalInventory.getItem(i).isEmpty()) {
-                CompoundNBT itemTag = new CompoundNBT();
+                CompoundTag itemTag = new CompoundTag();
                 itemTag.putInt("Slot", i);
                 // ItemStack already writes a 'count' entry!
                 itemTag.putInt("CrateCount", this.internalInventory.getItemCount(i));
@@ -251,12 +251,12 @@ public class RainbowCrateItemStackHandler  extends ItemStackHandler {
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
-        ListNBT tagList = nbt.getList("InternalInventory", Constants.NBT.TAG_COMPOUND);
+    public void deserializeNBT(CompoundTag nbt) {
+        ListTag tagList = nbt.getList("InternalInventory", Constants.NBT.TAG_COMPOUND);
         internalInventory.clear();
         for (int i = 0; i < tagList.size(); i++)
         {
-            CompoundNBT itemTags = tagList.getCompound(i);
+            CompoundTag itemTags = tagList.getCompound(i);
             int slot = itemTags.getInt("Slot");
 
             if (slot >= 0 && slot < this.getSlots()) {

@@ -1,63 +1,63 @@
 package lonestarrr.arconia.common.lib.tile;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 
 /** Base class for tile entities that implements the standard data syncing
  */
-public abstract class BaseTileEntity extends TileEntity {
-    public BaseTileEntity(TileEntityType<?> type) {
+public abstract class BaseTileEntity extends BlockEntity {
+    public BaseTileEntity(BlockEntityType<?> type) {
         super(type);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tag) {
-        CompoundNBT ret = super.save(tag);
+    public CompoundTag save(CompoundTag tag) {
+        CompoundTag ret = super.save(tag);
         writePacketNBT(ret);
         return ret;
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT tag) {
+    public void load(BlockState state, CompoundTag tag) {
         super.load(state, tag);
         readPacketNBT(tag);
     }
 
-    public abstract void writePacketNBT(CompoundNBT tag);
+    public abstract void writePacketNBT(CompoundTag tag);
 
-    public abstract void readPacketNBT(CompoundNBT tag);
+    public abstract void readPacketNBT(CompoundTag tag);
 
 
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        CompoundNBT tag = getUpdateTag();
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        CompoundTag tag = getUpdateTag();
         writePacketNBT(tag);
         final int tileEntityType = -1;  // arbitrary number; only used for vanilla TileEntities.  You can use it, or not, as you want.
-        return new SUpdateTileEntityPacket(worldPosition, tileEntityType, tag);
+        return new ClientboundBlockEntityDataPacket(worldPosition, tileEntityType, tag);
 
     }
 
     @Override
-    public void onDataPacket(NetworkManager manager, SUpdateTileEntityPacket packet) {
+    public void onDataPacket(Connection manager, ClientboundBlockEntityDataPacket packet) {
         super.onDataPacket(manager, packet);
         readPacketNBT(packet.getTag());
     }
 
     @Override
-    public final CompoundNBT getUpdateTag() {
-        return save(new CompoundNBT());
+    public final CompoundTag getUpdateTag() {
+        return save(new CompoundTag());
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
+    public void handleUpdateTag(BlockState state, CompoundTag tag) {
         // Called on client to read server data
         load(state, tag);
     }

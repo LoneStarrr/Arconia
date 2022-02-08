@@ -1,10 +1,10 @@
 package lonestarrr.arconia.common.core.helper;
 
 import lonestarrr.arconia.common.Arconia;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class PatchouliHelper {
@@ -15,7 +15,7 @@ public class PatchouliHelper {
     public static ItemStack createGuideBook() {
         Item bookItem = ForgeRegistries.ITEMS.getValue(PATCHOULI_GUIDE_BOOK);
         ItemStack bookStack = new ItemStack(bookItem);
-        CompoundNBT tag = new CompoundNBT();
+        CompoundTag tag = new CompoundTag();
         tag.putString(TAG_PATCHOULI_BOOK, GUIDE_BOOK_ID);
         bookStack.setTag(tag);
         return bookStack;
@@ -25,7 +25,7 @@ public class PatchouliHelper {
         if (!itemStack.getItem().getRegistryName().equals(PATCHOULI_GUIDE_BOOK)) {
             return false;
         }
-        CompoundNBT tag = itemStack.getTag();
+        CompoundTag tag = itemStack.getTag();
         String bookId = tag.getString(TAG_PATCHOULI_BOOK);
         return (bookId != null && bookId.equals(GUIDE_BOOK_ID));
     }

@@ -8,28 +8,28 @@ import lonestarrr.arconia.compat.theoneprobe.TOPDriver;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.block.material.MaterialColor;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayer;
@@ -55,34 +55,34 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
     }
 
     @Override
-    public ActionResultType use(
-            BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if (world.isClientSide || hand != Hand.MAIN_HAND) {
-            return ActionResultType.PASS;
+    public InteractionResult use(
+            BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (world.isClientSide || hand != InteractionHand.MAIN_HAND) {
+            return InteractionResult.PASS;
         }
 
-        if (!(player instanceof ServerPlayerEntity) || player instanceof FakePlayer) {
-            return ActionResultType.PASS;
+        if (!(player instanceof ServerPlayer) || player instanceof FakePlayer) {
+            return InteractionResult.PASS;
         }
 
         ItemStack itemUsed = player.inventory.getSelected();
         // We buy gold
         if (itemUsed.isEmpty() || itemUsed.getItem() != Items.GOLD_INGOT) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         PotMultiBlockPrimaryTileEntity primTile = getPrimaryTileEntity(world, pos);
         if (primTile == null) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         int coinsAdded = primTile.addCoins(1);
         if (coinsAdded > 0) {
             itemUsed.setCount(itemUsed.getCount() - coinsAdded);
-            world.playSound(null, pos, SoundEvents.CHAIN_PLACE, SoundCategory.BLOCKS, 1, 1.3f);
-            return ActionResultType.SUCCESS;
+            world.playSound(null, pos, SoundEvents.CHAIN_PLACE, SoundSource.BLOCKS, 1, 1.3f);
+            return InteractionResult.SUCCESS;
         }
-        return ActionResultType.FAIL;
+        return InteractionResult.FAIL;
     }
 
     @Override
@@ -92,30 +92,30 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
         return new PotMultiBlockSecondaryTileEntity();
     }
 
     // inspired by Barrier block
     @Override
-    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
     }
 
     // inspired by Barrier block
     @Override
-    public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.INVISIBLE;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.INVISIBLE;
     }
 
     // inspired by Barrier block
     @OnlyIn(Dist.CLIENT)
-    public float getShadeBrightness(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public float getShadeBrightness(BlockState state, BlockGetter worldIn, BlockPos pos) {
         return 1.0F;
     }
 
     @Override
-    public void playerWillDestroy(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+    public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
         super.playerWillDestroy(world, pos, state, player);
 
         BlockPos primaryPos = getPrimaryBlockPos(world, pos);
@@ -124,8 +124,8 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
         }
     }
 
-    private BlockPos getPrimaryBlockPos(World world, BlockPos pos) {
-        TileEntity te = world.getBlockEntity(pos);
+    private BlockPos getPrimaryBlockPos(Level world, BlockPos pos) {
+        BlockEntity te = world.getBlockEntity(pos);
         if (te == null || !(te instanceof PotMultiBlockSecondaryTileEntity)) {
             return null;
         }
@@ -133,13 +133,13 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
         return secondaryTE.getPrimaryPos();
     }
 
-    private PotMultiBlockPrimaryTileEntity getPrimaryTileEntity(World world, BlockPos pos) {
+    private PotMultiBlockPrimaryTileEntity getPrimaryTileEntity(Level world, BlockPos pos) {
         BlockPos primaryPos = getPrimaryBlockPos(world, pos);
         if (primaryPos == null) {
             return null;
         }
 
-        TileEntity te = world.getBlockEntity(primaryPos);
+        BlockEntity te = world.getBlockEntity(primaryPos);
         return te != null && te instanceof PotMultiBlockPrimaryTileEntity ? (PotMultiBlockPrimaryTileEntity) te : null;
     }
 
@@ -153,8 +153,8 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
      */
     @Override
     public VoxelShape getShape(
-            BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        TileEntity te = worldIn.getBlockEntity(pos);
+            BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+        BlockEntity te = worldIn.getBlockEntity(pos);
         if (te == null || !(te instanceof PotMultiBlockSecondaryTileEntity)) {
             return defaultShape;
         }
@@ -212,7 +212,7 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
 
     @Override
     public void addProbeInfo(
-            ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+            ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
         PotMultiBlockPrimaryTileEntity entity = getPrimaryTileEntity(world, data.getPos());
         if (entity == null) {
             return;
@@ -235,6 +235,6 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
         }
 
         // TODO use icons instead..?
-        probeInfo.text(new TranslationTextComponent(LanguageHelper.block("pot_multiblock") + ".coin_count." + lang));
+        probeInfo.text(new TranslatableComponent(LanguageHelper.block("pot_multiblock") + ".coin_count." + lang));
     }
 }

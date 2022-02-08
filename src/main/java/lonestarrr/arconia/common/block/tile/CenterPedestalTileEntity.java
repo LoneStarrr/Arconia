@@ -1,16 +1,16 @@
 package lonestarrr.arconia.common.block.tile;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.crafting.IPedestalRecipe;
 import lonestarrr.arconia.common.crafting.ModRecipeTypes;
@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * Tile Entity responsible for processing pedestal crafting rituals
  */
-public class CenterPedestalTileEntity extends BasePedestalTileEntity implements ITickableTileEntity {
+public class CenterPedestalTileEntity extends BasePedestalTileEntity implements TickableBlockEntity {
     private boolean ritualOngoing = false; // persisted
     private float ritualTicksElapsed = 0; // persisted
     private ResourceLocation currentRecipeID; // persisted
@@ -40,7 +40,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
         if (currentRecipeID == null) {
             return null;
         }
-        Optional<? extends IRecipe> recipe = level.getRecipeManager().byKey(currentRecipeID);
+        Optional<? extends Recipe> recipe = level.getRecipeManager().byKey(currentRecipeID);
         if (recipe.isPresent() && recipe.get() instanceof IPedestalRecipe) {
             return (IPedestalRecipe)recipe.get();
         }
@@ -48,7 +48,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
     }
 
     @Override
-    public void writePacketNBT(CompoundNBT tag) {
+    public void writePacketNBT(CompoundTag tag) {
         super.writePacketNBT(tag);
         if (currentRecipeID != null) {
             tag.putString(TAG_RECIPE, currentRecipeID.toString());
@@ -58,7 +58,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
     }
 
     @Override
-    public void readPacketNBT(CompoundNBT tag) {
+    public void readPacketNBT(CompoundTag tag) {
         super.readPacketNBT(tag);
         if (tag.contains(TAG_RECIPE)) {
             currentRecipeID = new ResourceLocation(tag.getString(TAG_RECIPE));
@@ -84,7 +84,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
 
         List<PedestalTileEntity> pedestals = findPedestals();
         Arconia.logger.debug("Found " + pedestals.size() + " ritual pedestal(s)");
-        Inventory inv = getPedestalItems(pedestals);
+        SimpleContainer inv = getPedestalItems(pedestals);
 
         if (inv.isEmpty()) {
             return false;
@@ -127,12 +127,12 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
         }
 
         List<PedestalTileEntity> pedestals = findPedestals();
-        Inventory inv = getPedestalItems(pedestals);
+        SimpleContainer inv = getPedestalItems(pedestals);
 
         if (currentRecipe.matches(inv, level)) {
             produceRecipeOutput();
             consumePedestalItems(pedestals);
-            level.playSound(null, worldPosition, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundCategory.AMBIENT, 1, 1);
+            level.playSound(null, worldPosition, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.AMBIENT, 1, 1);
         }
         resetRitual();
     }
@@ -165,7 +165,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
         List<PedestalTileEntity> pedestals = new ArrayList<>();
 
         for (BlockPos posNear: BlockPos.betweenClosed(worldPosition.west(3).north(3), worldPosition.east(3).south(3))) {
-            TileEntity te = level.getBlockEntity(posNear);
+            BlockEntity te = level.getBlockEntity(posNear);
             if (te == null) {
                 continue;
             }
@@ -180,7 +180,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
         return pedestals;
     }
 
-    private Inventory getPedestalItems(List<PedestalTileEntity> pedestals) {
+    private SimpleContainer getPedestalItems(List<PedestalTileEntity> pedestals) {
         List<ItemStack> stacks = new ArrayList<>(pedestals.size());
         for (PedestalTileEntity entity: pedestals) {
             if (!entity.getItemOnDisplay().isEmpty()) {
@@ -188,7 +188,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
             }
         }
 
-        Inventory inv = new Inventory(stacks.size());
+        SimpleContainer inv = new SimpleContainer(stacks.size());
         for (int i = 0; i < stacks.size(); i++) {
             ItemStack ingredient = stacks.get(i);
             inv.setItem(i, ingredient);
@@ -197,7 +197,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
         return inv;
     }
 
-    private IPedestalRecipe findRecipe(Inventory inv) {
+    private IPedestalRecipe findRecipe(SimpleContainer inv) {
         Optional<IPedestalRecipe> hasRecipe = level.getRecipeManager().getRecipeFor(ModRecipeTypes.PEDESTAL_TYPE, inv, level);
         if (hasRecipe.isPresent()) {
             return hasRecipe.get();

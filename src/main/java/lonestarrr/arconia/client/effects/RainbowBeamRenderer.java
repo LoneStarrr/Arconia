@@ -1,26 +1,26 @@
 package lonestarrr.arconia.client.effects;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.tile.ArconiumTreeRootTileEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.VectorHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderState;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.vector.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -32,27 +32,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
 
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.RenderStateShard.TransparencyStateShard;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
+
 /**
  * Draws pretty visual effects related to the resource tree
  *
  * TODO deprecated - remove me
  */
-public class RainbowBeamRenderer extends TileEntityRenderer<ArconiumTreeRootTileEntity>  {
+public class RainbowBeamRenderer extends BlockEntityRenderer<ArconiumTreeRootTileEntity>  {
     public static final ResourceLocation BEAM_TEXTURE = new ResourceLocation(Arconia.MOD_ID, "effects/link");
     public static final ResourceLocation BEAM_ANIMATED_TEXTURE = new ResourceLocation(Arconia.MOD_ID, "effects/beam_animated");
     public static final ResourceLocation BEAM_SINE = new ResourceLocation(Arconia.MOD_ID, "effects/sine_wave");
 
-    private static List<Vector2f> sinPrecalculated;
+    private static List<Vec2> sinPrecalculated;
     private static final int NUM_SIN_VERTICES = 40;
     private int sinRenderOffsetGlobal = 0;
-    public RainbowBeamRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public RainbowBeamRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     static {
         sinPrecalculated = new ArrayList<>(NUM_SIN_VERTICES);
         for (int i = 0; i < NUM_SIN_VERTICES; i++) {
-            sinPrecalculated.add(new Vector2f(i / (float)NUM_SIN_VERTICES,
+            sinPrecalculated.add(new Vec2(i / (float)NUM_SIN_VERTICES,
                     (float)Math.sin(i * Math.PI * 2 / (float)NUM_SIN_VERTICES)));
         }
     }
@@ -61,7 +68,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ArconiumTreeRootTile
         // All textures are stitched into 1 large atlas texture - regular item / block models automatically take care of this,
         // but other textures need to be manually added to it for it to be available for rendering.
         // In this case, add the texture for the beam to the main atlas.
-        if (event.getMap().location().equals((AtlasTexture.LOCATION_BLOCKS))) {
+        if (event.getMap().location().equals((TextureAtlas.LOCATION_BLOCKS))) {
             event.addSprite(BEAM_TEXTURE);
             event.addSprite(BEAM_ANIMATED_TEXTURE);
             event.addSprite(BEAM_SINE);
@@ -70,8 +77,8 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ArconiumTreeRootTile
 
     @Override
     public void render(
-            ArconiumTreeRootTileEntity tileEntity, float partialTicks, MatrixStack matrixStack,
-            IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+            ArconiumTreeRootTileEntity tileEntity, float partialTicks, PoseStack matrixStack,
+            MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
         BlockPos startPos = tileEntity.getBlockPos();
         BlockPos treeBasePos = startPos.above(2);
         RainbowColor tier = tileEntity.getTier();
@@ -96,12 +103,12 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ArconiumTreeRootTile
      * @param matrixStack
      * @param buffer
      */
-    private void renderRainbowLightning(BlockPos tePos, BlockPos treeBasePos, RainbowColor tier, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
+    private void renderRainbowLightning(BlockPos tePos, BlockPos treeBasePos, RainbowColor tier, PoseStack matrixStack, MultiBufferSource buffer) {
         // Find the top of the tree trunk - that's where we want to generate the effect from
         final int maxLogCount = 7;
         final Block logBlock = Blocks.OAK_LOG;
         BlockPos scanPos = treeBasePos; // position of first log
-        ClientWorld world = Minecraft.getInstance().level;
+        ClientLevel world = Minecraft.getInstance().level;
         if (world.getBlockState(treeBasePos).getBlock() != logBlock) {
             return;
         }
@@ -138,18 +145,18 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ArconiumTreeRootTile
      * @param matrixStack
      * @param buffer
      */
-    private void renderWaveAnimated(BlockPos startPos, BlockPos endPos, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
+    private void renderWaveAnimated(BlockPos startPos, BlockPos endPos, PoseStack matrixStack, MultiBufferSource buffer) {
         matrixStack.pushPose();
         matrixStack.translate(0.5, 0.5, 0.5);
-        Vector3d start = new Vector3d(startPos.getX(), startPos.getY(), startPos.getZ());
-        Vector3d end = new Vector3d(endPos.getX(), endPos.getY(), endPos.getZ());
+        Vec3 start = new Vec3(startPos.getX(), startPos.getY(), startPos.getZ());
+        Vec3 end = new Vec3(endPos.getX(), endPos.getY(), endPos.getZ());
         Quaternion rotation = VectorHelper.getRotation(start, end);
         float distance = (float)end.subtract(start).length();
         matrixStack.mulPose(rotation);
         // Draw the animated sprite stretched out over the full distance along the X axis. Animation is taken care of by the game already based on the .mcmeta
         // file associated with the texture's png.
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(BEAM_ANIMATED_TEXTURE);
-        IVertexBuilder builder = buffer.getBuffer(RainbowBeamRenderType.BEAM_TEXTURED);
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(BEAM_ANIMATED_TEXTURE);
+        VertexConsumer builder = buffer.getBuffer(RainbowBeamRenderType.BEAM_TEXTURED);
         Matrix4f positionMatrix = matrixStack.last().pose();
         float x = 0;
         float y = 0;
@@ -187,20 +194,20 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ArconiumTreeRootTile
      * @param matrixStack
      * @param buffer
      */
-    private void renderSineSprite(BlockPos startPos, BlockPos endPos, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
+    private void renderSineSprite(BlockPos startPos, BlockPos endPos, PoseStack matrixStack, MultiBufferSource buffer) {
         matrixStack.pushPose();
         matrixStack.translate(0.5, 0.5, 0.5);
 
 
-        Vector3d start = new Vector3d(startPos.getX(), startPos.getY(), startPos.getZ());
-        Vector3d end = new Vector3d(endPos.getX(), endPos.getY(), endPos.getZ());
+        Vec3 start = new Vec3(startPos.getX(), startPos.getY(), startPos.getZ());
+        Vec3 end = new Vec3(endPos.getX(), endPos.getY(), endPos.getZ());
         Quaternion rotation = VectorHelper.getRotation(start, end);
         float distance = (float)end.subtract(start).length();
         matrixStack.mulPose(rotation);
         // Draw the animated sprite stretched out over the full distance along the X axis. Animation is taken care of by the game already based on the .mcmeta
         // file associated with the texture's png.
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(BEAM_SINE);
-        IVertexBuilder builder = buffer.getBuffer(RainbowBeamRenderType.BEAM_TEXTURED);
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(BEAM_SINE);
+        VertexConsumer builder = buffer.getBuffer(RainbowBeamRenderType.BEAM_TEXTURED);
         Matrix4f positionMatrix = matrixStack.last().pose();
         float x = 0;
         float y = 0;
@@ -235,7 +242,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ArconiumTreeRootTile
      * @param matrixStack
      * @param buffer
      */
-    private void renderWaveLines(BlockPos startPos, BlockPos endPos, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
+    private void renderWaveLines(BlockPos startPos, BlockPos endPos, PoseStack matrixStack, MultiBufferSource buffer) {
         matrixStack.pushPose();
         matrixStack.translate(0.5, 0.5, 0.5);
 
@@ -296,7 +303,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ArconiumTreeRootTile
         matrixStack.popPose();
     }
 
-    private void renderSineWave(MatrixStack matrixStack, IRenderTypeBuffer buffer, Quaternion rotation, float scaleX, float amplitudeFactor, Color color) {
+    private void renderSineWave(PoseStack matrixStack, MultiBufferSource buffer, Quaternion rotation, float scaleX, float amplitudeFactor, Color color) {
         // Render a sine wave using Multiple line thicknesses and alpha values
         //int alpha = (int)((1 - Math.abs(progress - 0.5)) * 32 + 16);
         int alpha = 64;
@@ -306,7 +313,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ArconiumTreeRootTile
         matrixStack.mulPose(rotation);
 
         Matrix4f positionMatrix = matrixStack.last().pose();
-        IVertexBuilder builder;
+        VertexConsumer builder;
         builder = buffer.getBuffer(RainbowBeamRenderType.BEAM_LINE_THICK);
         renderSineWaveSegments(positionMatrix, builder, colorInts, scaleX, 0, amplitudeFactor);
         builder = buffer.getBuffer(RainbowBeamRenderType.BEAM_LINE_THIN);
@@ -316,7 +323,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ArconiumTreeRootTile
         matrixStack.popPose();
     }
 
-    private void renderSineWaveSegments(Matrix4f positionMatrix, IVertexBuilder builder, int[] color, float scaleX, int animationOffset, float amplitudeFactor) {
+    private void renderSineWaveSegments(Matrix4f positionMatrix, VertexConsumer builder, int[] color, float scaleX, int animationOffset, float amplitudeFactor) {
         // Render a sine wave using line segments
         for (int i = 0; i < sinPrecalculated.size(); i++) {
             int idxY = (i + animationOffset) % sinPrecalculated.size();
@@ -333,7 +340,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ArconiumTreeRootTile
         builder.endVertex();
     }
 
-    private void add(IVertexBuilder renderer, MatrixStack stack, float x, float y, float z, float u, float v) {
+    private void add(VertexConsumer renderer, PoseStack stack, float x, float y, float z, float u, float v) {
         // The order of the calls is important and is
         renderer.vertex(stack.last().pose(), x, y, z)
                 .color(1.0f, 1.0f, 1.0f, 1.0f)
@@ -350,7 +357,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ArconiumTreeRootTile
      * @param matrixStack
      * @param buffer
      */
-    private void renderBeam(BlockPos startPos, BlockPos endPos, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
+    private void renderBeam(BlockPos startPos, BlockPos endPos, PoseStack matrixStack, MultiBufferSource buffer) {
         float progress = 1f;
         int alpha = (int)((1 - Math.abs(progress - 0.5)) * 32 + 16);
         int[] colors = {255, 0, 255};
@@ -359,7 +366,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ArconiumTreeRootTile
         matrixStack.translate(-startPos.getX(), -startPos.getY(), -startPos.getZ());
         matrixStack.translate(0.5f, 0.5f, 0.5f);
         Matrix4f positionMatrix = matrixStack.last().pose();
-        IVertexBuilder builder = buffer.getBuffer(RainbowBeamRenderType.BEAM_LINE_THICK);
+        VertexConsumer builder = buffer.getBuffer(RainbowBeamRenderType.BEAM_LINE_THICK);
         builder.vertex(positionMatrix, startPos.getX(), startPos.getY(), startPos.getZ())
                 .color(colors[0], colors[1], colors[2], alpha)
                 .endVertex();
@@ -367,7 +374,7 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ArconiumTreeRootTile
                 .color(colors[0], colors[1], colors[2], alpha)
                 .endVertex();
 
-        IVertexBuilder builder2 = buffer.getBuffer(RainbowBeamRenderType.BEAM_LINE_THIN);
+        VertexConsumer builder2 = buffer.getBuffer(RainbowBeamRenderType.BEAM_LINE_THIN);
         builder2.vertex(positionMatrix, startPos.getX(), startPos.getY(), startPos.getZ())
                 .color(colors[0], colors[1], colors[2], alpha * 2)
                 .endVertex();
@@ -384,8 +391,8 @@ public class RainbowBeamRenderer extends TileEntityRenderer<ArconiumTreeRootTile
  */
 @OnlyIn(Dist.CLIENT)
 class RainbowBeamRenderType extends RenderType {
-    private static final RenderState.LineState THICK_LINE = new RenderState.LineState(OptionalDouble.of(12));
-    private static final RenderState.LineState THIN_LINE = new RenderState.LineState(OptionalDouble.of(4));
+    private static final RenderStateShard.LineStateShard THICK_LINE = new RenderStateShard.LineStateShard(OptionalDouble.of(12));
+    private static final RenderStateShard.LineStateShard THIN_LINE = new RenderStateShard.LineStateShard(OptionalDouble.of(4));
 
     public RainbowBeamRenderType(
             String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn,
@@ -394,35 +401,35 @@ class RainbowBeamRenderType extends RenderType {
     }
 
     public static final RenderType BEAM_LINE_THICK = RenderType.create("beam_line_thick",
-            DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 256,
-            RenderType.State.builder().setLineState(THICK_LINE)
-                    .setLayeringState(RenderState.VIEW_OFFSET_Z_LAYERING)
-                    .setTransparencyState(TransparencyState.LIGHTNING_TRANSPARENCY)
-                    .setLightmapState(RenderState.NO_LIGHTMAP)
-                    .setTextureState(RenderState.NO_TEXTURE)
-                    .setWriteMaskState(RenderState.COLOR_DEPTH_WRITE)
+            DefaultVertexFormat.POSITION_COLOR, GL11.GL_LINES, 256,
+            RenderType.CompositeState.builder().setLineState(THICK_LINE)
+                    .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
+                    .setTransparencyState(TransparencyStateShard.LIGHTNING_TRANSPARENCY)
+                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
+                    .setTextureState(RenderStateShard.NO_TEXTURE)
+                    .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
                     .createCompositeState(false)
     );
 
     public static final RenderType BEAM_LINE_THIN = create("beam_line_thin",
-            DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 256,
-            RenderType.State.builder().setLineState(THIN_LINE)
-                    .setLayeringState(RenderState.VIEW_OFFSET_Z_LAYERING)
-                    .setTransparencyState(RenderState.TransparencyState.TRANSLUCENT_TRANSPARENCY)
-                    .setLightmapState(RenderState.NO_LIGHTMAP)
-                    .setTextureState(RenderState.NO_TEXTURE)
-                    .setWriteMaskState(RenderState.COLOR_DEPTH_WRITE)
+            DefaultVertexFormat.POSITION_COLOR, GL11.GL_LINES, 256,
+            RenderType.CompositeState.builder().setLineState(THIN_LINE)
+                    .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
+                    .setTransparencyState(RenderStateShard.TransparencyStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
+                    .setTextureState(RenderStateShard.NO_TEXTURE)
+                    .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
                     .createCompositeState(false)
     );
 
     // RenderType for rendering a texture in 2D in the world. Note that the source here is not the texture, but the ATLAS containing the texture
     public static final RenderType BEAM_TEXTURED = create("beam_textured",
-            DefaultVertexFormats.POSITION_TEX_COLOR, 7, 262144,
-            RenderType.State.builder()
-                    .setTextureState(new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS, false, false))
-                    .setTransparencyState(TransparencyState.TRANSLUCENT_TRANSPARENCY)
-                    .setCullState(RenderState.NO_CULL)
-                    .setWriteMaskState(RenderState.COLOR_WRITE)
+            DefaultVertexFormat.POSITION_TEX_COLOR, 7, 262144,
+            RenderType.CompositeState.builder()
+                    .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, false))
+                    .setTransparencyState(TransparencyStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setCullState(RenderStateShard.NO_CULL)
+                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
                     .createCompositeState(false)
     );
 }

@@ -1,20 +1,20 @@
 package lonestarrr.arconia.client.effects;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderState;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector4f;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.core.BlockPos;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
@@ -23,7 +23,7 @@ import java.awt.*;
 import java.util.OptionalDouble;
 import java.util.Random;
 
-import net.minecraft.client.renderer.RenderState.TransparencyState;
+import net.minecraft.client.renderer.RenderStateShard.TransparencyStateShard;
 
 public class RainbowLightningProjector {
 
@@ -36,7 +36,7 @@ public class RainbowLightningProjector {
      * @param matrixStack
      * @param buffer
      */
-    public static void renderRainbowLighting(BlockPos pos, float beamLength, int beamCount, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
+    public static void renderRainbowLighting(BlockPos pos, float beamLength, int beamCount, PoseStack matrixStack, MultiBufferSource buffer) {
         renderRainbowLighting(pos, beamLength, beamCount, matrixStack, buffer, null);
     }
 
@@ -50,7 +50,7 @@ public class RainbowLightningProjector {
      * @param buffer
      * @param color The color to use, or null if it should cycle through all rainbow colors
      */
-    public static void renderRainbowLighting(BlockPos pos, float beamLength, int beamCount, MatrixStack matrixStack, IRenderTypeBuffer buffer, Color color) {
+    public static void renderRainbowLighting(BlockPos pos, float beamLength, int beamCount, PoseStack matrixStack, MultiBufferSource buffer, Color color) {
         matrixStack.pushPose();
         matrixStack.translate(pos.getX(), pos.getY(), pos.getZ());
         matrixStack.translate(0.5f, 0.5f, 0.5f);
@@ -71,7 +71,7 @@ public class RainbowLightningProjector {
             vertices[i] = new Vector4f();
         }
 
-        IVertexBuilder builder = buffer.getBuffer(LightningRenderType.BEAM_TRIANGLE);
+        VertexConsumer builder = buffer.getBuffer(LightningRenderType.BEAM_TRIANGLE);
         long ticks = Minecraft.getInstance().level.getGameTime();
 
         for (int i = 0; i < beamCount; i++) {
@@ -120,7 +120,7 @@ public class RainbowLightningProjector {
             // FIXME How am I supposed to indicate with mode GL_POLYGON that I'm done drawing? Closing the polygon? Nope. This here works, but something
             // tells me I am not supposed to be doing this this way..should I just forego the builder and directly call methods on buffer!?
             LightningRenderType.BEAM_TRIANGLE.end((BufferBuilder)builder, 0, 0, 0);
-            ((BufferBuilder)builder).begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_COLOR);
+            ((BufferBuilder)builder).begin(GL11.GL_POLYGON, DefaultVertexFormat.POSITION_COLOR);
         }
 
         matrixStack.popPose();
@@ -140,16 +140,16 @@ class LightningRenderType extends RenderType {
     }
 
     public static final RenderType BEAM_TRIANGLE = create("beam_triangle",
-            DefaultVertexFormats.POSITION_COLOR, GL11.GL_POLYGON, 32768,
-            RenderType.State.builder()
-                    .setLayeringState(RenderState.VIEW_OFFSET_Z_LAYERING)
-                    .setAlphaState(RenderState.NO_ALPHA)
-                    .setTransparencyState(TransparencyState.LIGHTNING_TRANSPARENCY)
-                    .setLightmapState(RenderState.NO_LIGHTMAP)
-                    .setShadeModelState(RenderState.SMOOTH_SHADE)
-                    .setTextureState(RenderState.NO_TEXTURE)
-                    .setWriteMaskState(RenderState.COLOR_WRITE)
-                    .setCullState(RenderState.NO_CULL)
+            DefaultVertexFormat.POSITION_COLOR, GL11.GL_POLYGON, 32768,
+            RenderType.CompositeState.builder()
+                    .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
+                    .setAlphaState(RenderStateShard.NO_ALPHA)
+                    .setTransparencyState(TransparencyStateShard.LIGHTNING_TRANSPARENCY)
+                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
+                    .setShadeModelState(RenderStateShard.SMOOTH_SHADE)
+                    .setTextureState(RenderStateShard.NO_TEXTURE)
+                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+                    .setCullState(RenderStateShard.NO_CULL)
                     .createCompositeState(false)
     );
 }

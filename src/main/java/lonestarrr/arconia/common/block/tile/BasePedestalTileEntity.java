@@ -1,14 +1,14 @@
 package lonestarrr.arconia.common.block.tile;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.items.ItemStackHandler;
 import lonestarrr.arconia.common.lib.tile.BaseInventoryTileEntity;
 
 public class BasePedestalTileEntity extends BaseInventoryTileEntity {
     private final ItemStackHandler inventory = new ItemStackHandler(1);
 
-    public BasePedestalTileEntity(TileEntityType<?> type) {
+    public BasePedestalTileEntity(BlockEntityType<?> type) {
         super(type);
     }
 

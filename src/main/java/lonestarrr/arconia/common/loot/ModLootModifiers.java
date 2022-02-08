@@ -1,9 +1,9 @@
 package lonestarrr.arconia.common.loot;
 
 import lonestarrr.arconia.common.Arconia;
-import net.minecraft.loot.LootConditionType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -14,7 +14,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class ModLootModifiers {
     // Custom Conditions
-    public static final LootConditionType PLAYER_NEEDS_GUIDEBOOK = new LootConditionType(new PlayerNeedsGuideBook.Serializer());
+    public static final LootItemConditionType PLAYER_NEEDS_GUIDEBOOK = new LootItemConditionType(new PlayerNeedsGuideBook.Serializer());
 
     // Global modifiers
     public static final DeferredRegister<GlobalLootModifierSerializer<?>> LOOT_MODIFIERS = DeferredRegister.create(ForgeRegistries.LOOT_MODIFIER_SERIALIZERS, Arconia.MOD_ID);

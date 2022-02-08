@@ -1,11 +1,11 @@
 package lonestarrr.arconia.common.core;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import org.apache.commons.lang3.tuple.Pair;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.helper.BlockPatternException;
@@ -82,8 +82,8 @@ public class BuildPattern {
      * @return
      *   Pattern coordinate of bottom-left corner
      */
-    public Vector3i getBottomLeftCoordinate(int y) {
-        return new Vector3i(0, y, this.getHeight() - 1);
+    public Vec3i getBottomLeftCoordinate(int y) {
+        return new Vec3i(0, y, this.getHeight() - 1);
     }
     /**
      * Produces a list of expected blockstates and block positions if a pattern were located in the world at a
@@ -101,11 +101,11 @@ public class BuildPattern {
      *  List of BlockPos, BlockState pairs. Order of list is always left to right (increasing X), top to bottom
      *  (increasing Z). Y coordinate equals that of worldPos
      */
-    public Map<BlockPos, BlockState> getBlockStates(@Nonnull Direction dir, @Nonnull Vector3i patternPos, @Nonnull BlockPos worldPos) {
+    public Map<BlockPos, BlockState> getBlockStates(@Nonnull Direction dir, @Nonnull Vec3i patternPos, @Nonnull BlockPos worldPos) {
         BlockState[][] rotation = this.rotations.get(dir);
         Arconia.logger.info("Pattern for direction " + dir.toString() + ": ");
         logPattern(rotation);
-        Vector3i anchorPatternPos = this.calculateRotatedAnchorCoordinate(patternPos, dir);
+        Vec3i anchorPatternPos = this.calculateRotatedAnchorCoordinate(patternPos, dir);
         Arconia.logger.info("Rotated pattern anchor coordinate: " + anchorPatternPos.toString());
         final int startX = worldPos.getX() - anchorPatternPos.getX();
         final int startZ = worldPos.getZ() - anchorPatternPos.getZ();
@@ -141,7 +141,7 @@ public class BuildPattern {
      * @return
      *   New coordinate
      */
-    private Vector3i calculateRotatedAnchorCoordinate(@Nonnull final Vector3i anchorCoordinate, @Nonnull final Direction dir) {
+    private Vec3i calculateRotatedAnchorCoordinate(@Nonnull final Vec3i anchorCoordinate, @Nonnull final Direction dir) {
         int patternWidth = this.pattern.get(0).size();
         int patternHeight = this.pattern.size();
         int rotationCount;

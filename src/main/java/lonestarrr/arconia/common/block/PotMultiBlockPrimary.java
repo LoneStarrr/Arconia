@@ -3,20 +3,20 @@ package lonestarrr.arconia.common.block;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryTileEntity;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryTileEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
@@ -36,12 +36,12 @@ public class PotMultiBlockPrimary extends Block {
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
         return new PotMultiBlockPrimaryTileEntity();
     }
 
     @Override
-    public void playerWillDestroy(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
+    public void playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
         super.playerWillDestroy(worldIn, pos, state, player);
         breakMultiBlock(worldIn, pos);
     }
@@ -53,7 +53,7 @@ public class PotMultiBlockPrimary extends Block {
      * @return
      *     True on successful formation
      */
-    public static boolean formMultiBlock(World world, BlockPos goldPos) {
+    public static boolean formMultiBlock(Level world, BlockPos goldPos) {
         if (world.isClientSide) {
             return false;
         }
@@ -76,7 +76,7 @@ public class PotMultiBlockPrimary extends Block {
                         continue;
                     }
                     world.setBlock(toReplace, ModBlocks.potMultiBlockSecondary.defaultBlockState(), 3);
-                    TileEntity te = world.getBlockEntity(toReplace);
+                    BlockEntity te = world.getBlockEntity(toReplace);
                     if (te == null || !(te instanceof PotMultiBlockSecondaryTileEntity)) {
                         Arconia.logger.error("Error setting up pot multiblock - expected to find a secondary multiblock tile entity at " + toReplace);
                         return false;
@@ -89,12 +89,12 @@ public class PotMultiBlockPrimary extends Block {
         return true;
     }
 
-    public static void breakMultiBlock(World world, BlockPos primaryPos) {
+    public static void breakMultiBlock(Level world, BlockPos primaryPos) {
         if (world.isClientSide) {
             return;
         }
 
-        TileEntity te = world.getBlockEntity(primaryPos);
+        BlockEntity te = world.getBlockEntity(primaryPos);
         if (te == null || !(te instanceof PotMultiBlockPrimaryTileEntity)) {
             return;
         }
@@ -132,13 +132,13 @@ public class PotMultiBlockPrimary extends Block {
             entity.setNoPickUpDelay();
             world.addFreshEntity(entity);
             if (!playedSound) {
-                world.playSound(null, goldPos, SoundEvents.NETHERITE_BLOCK_BREAK, SoundCategory.BLOCKS, 1, 1);
+                world.playSound(null, goldPos, SoundEvents.NETHERITE_BLOCK_BREAK, SoundSource.BLOCKS, 1, 1);
                 playedSound = true;
             }
         }
     }
 
-    public static boolean canFormMultiBlock(World world, BlockPos goldPos) {
+    public static boolean canFormMultiBlock(Level world, BlockPos goldPos) {
         // Expecting pos to be a block of gold, surrounded by cauldrons in a 3x3 grid, and another layer of 3x3 cauldrons below it
         if (world.getBlockState(goldPos).getBlock() != Blocks.GOLD_BLOCK) {
             return false;

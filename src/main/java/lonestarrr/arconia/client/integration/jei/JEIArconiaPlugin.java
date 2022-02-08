@@ -7,10 +7,10 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
@@ -42,7 +42,7 @@ public class JEIArconiaPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
-        ClientWorld world = Minecraft.getInstance().level;
+        ClientLevel world = Minecraft.getInstance().level;
         if (world != null) {
 //            registration.addRecipes(ModRecipeTypes.getRecipes(world, ModRecipeTypes.PEDESTAL_TYPE).values(), AltarRecipeCategory.UID);
             registration.addRecipes(ModRecipeTypes.getRecipes(world, ModRecipeTypes.PEDESTAL_TYPE).values(), AltarRecipeCategory.UID);

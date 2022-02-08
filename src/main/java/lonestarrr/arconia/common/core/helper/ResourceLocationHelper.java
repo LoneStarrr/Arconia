@@ -1,6 +1,6 @@
 package lonestarrr.arconia.common.core.helper;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import lonestarrr.arconia.common.Arconia;
 
 public class ResourceLocationHelper {

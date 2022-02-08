@@ -7,22 +7,22 @@ import lonestarrr.arconia.common.item.ModItems;
 import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
 import lonestarrr.arconia.common.network.ModPackets;
 import lonestarrr.arconia.common.network.PotItemTransferPacket;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements ITickableTileEntity {
+public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements TickableBlockEntity {
     private static final int MAX_COIN_SUPPLIERS = 1; // How many hats may supply coins per coin collection tick?
     private static final String TAG_HAT_POSITIONS = "hat_positions";
     private static final String TAG_COIN_COUNT = "coin_count";
@@ -74,7 +74,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
             throw new LinkHatException(LinkErrorCode.ALREADY_LINKED);
         }
 
-        TileEntity te = level.getBlockEntity(hatPos);
+        BlockEntity te = level.getBlockEntity(hatPos);
         if (te == null || !(te instanceof HatTileEntity)) {
             throw new LinkHatException(LinkErrorCode.HAT_NOT_FOUND);
         }
@@ -99,7 +99,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         if (hat != null) {
             hats.remove(hat);
             setChanged();
-            TileEntity te = level.getBlockEntity(hatPos);
+            BlockEntity te = level.getBlockEntity(hatPos);
             if (te != null && te instanceof HatTileEntity) {
                 HatTileEntity hatTE = (HatTileEntity) te;
                 BlockPos linkedPot = hatTE.getLinkedPot();
@@ -131,7 +131,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
      * @return If the hat has a gold arconium tile entity under it, return that, otherwise return null
      */
     private GoldArconiumTileEntity getGoldArconiumInWorld(BlockPos goldArconiumPos) {
-        TileEntity te = level.getBlockEntity(goldArconiumPos);
+        BlockEntity te = level.getBlockEntity(goldArconiumPos);
 
         if (te == null || !(te instanceof GoldArconiumTileEntity)) {
             return null;
@@ -181,7 +181,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
 
         if (goldArconiumTE.isDepleted()) {
             level.setBlock(goldArconiumPos, ModBlocks.getArconiumBlock(goldArconiumTE.getTier()).defaultBlockState(), 3);
-            level.playSound(null, worldPosition, SoundEvents.METAL_BREAK, SoundCategory.BLOCKS, 1, 1);
+            level.playSound(null, worldPosition, SoundEvents.METAL_BREAK, SoundSource.BLOCKS, 1, 1);
         }
 
         return coinCount;
@@ -193,7 +193,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
     private void tickHats() {
         // For now, assume 1 coin = 1 resource, regardless of other parameters
         BlockPos particlePos = worldPosition.above(2);
-        Vector3d particleVec = new Vector3d(particlePos.getX(), particlePos.getY(), particlePos.getZ());
+        Vec3 particleVec = new Vec3(particlePos.getX(), particlePos.getY(), particlePos.getZ());
         particleVec.add(0.5, 1.5, 0.5);
 
         if (level == null || hats.size() == 0) {
@@ -277,7 +277,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
     }
 
     private HatTileEntity getHatEntity(BlockPos hatPos) {
-        TileEntity te = level.getBlockEntity(hatPos);
+        BlockEntity te = level.getBlockEntity(hatPos);
         if (te == null || !(te instanceof HatTileEntity)) {
             return null;
         }
@@ -285,12 +285,12 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         return (HatTileEntity) te;
     }
 
-    public void writePacketNBT(CompoundNBT tag) {
+    public void writePacketNBT(CompoundTag tag) {
         tag.putLongArray(TAG_HAT_POSITIONS, hats.stream().map(hat -> hat.hatPos.asLong()).collect(Collectors.toList()));
         tag.putInt(TAG_COIN_COUNT, coinCount);
     }
 
-    public void readPacketNBT(CompoundNBT tag) {
+    public void readPacketNBT(CompoundTag tag) {
         long[] longPositions = tag.getLongArray(TAG_HAT_POSITIONS);
         hats.clear();
         for (long longPos: longPositions) {

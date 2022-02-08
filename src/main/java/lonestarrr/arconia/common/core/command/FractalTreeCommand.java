@@ -7,18 +7,18 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.LeavesBlock;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 import lonestarrr.arconia.common.Arconia;
 import sun.java2d.pipe.SpanShapeRenderer;
 
@@ -36,7 +36,7 @@ import java.util.Stack;
  * introduce randomness
  */
 public class FractalTreeCommand {
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("fractal-tree").then(
                     Commands.argument("rules", StringArgumentType.string()).then(
@@ -48,9 +48,9 @@ public class FractalTreeCommand {
         );
     }
 
-    private static int fractalTree(CommandContext<CommandSource> ctx, String rulesSerialized, int iterations) throws CommandSyntaxException {
-        PlayerEntity player = ctx.getSource().getPlayerOrException();
-        World world = ctx.getSource().getLevel();
+    private static int fractalTree(CommandContext<CommandSourceStack> ctx, String rulesSerialized, int iterations) throws CommandSyntaxException {
+        Player player = ctx.getSource().getPlayerOrException();
+        Level world = ctx.getSource().getLevel();
         BlockPos pos = player.blockPosition().above(2);
         Map<Character, String> rules = parseRules(rulesSerialized);
         String ltree = generateLTreeString(rules, iterations);
@@ -76,19 +76,19 @@ public class FractalTreeCommand {
         for (String singleRule: serialized.split(",")) {
             String[] ruleParts = singleRule.split(":");
             if (ruleParts.length != 2) {
-                throw new SimpleCommandExceptionType(new StringTextComponent("Rule colon parse error")).create();
+                throw new SimpleCommandExceptionType(new TextComponent("Rule colon parse error")).create();
             }
             String ruleChar = ruleParts[0];
             String ruleSubst = ruleParts[1];
             if (ruleChar.length() != 1 || ruleSubst.length() < 1) {
-                throw new SimpleCommandExceptionType(new StringTextComponent("Invalid rule lengths")).create();
+                throw new SimpleCommandExceptionType(new TextComponent("Invalid rule lengths")).create();
             }
             result.put(ruleChar.charAt(0), ruleSubst);
         }
         return result;
     }
 
-    private static void renderLTree(World worldIn, BlockPos posIn, String ltree, PlayerEntity player, int stopAt) {
+    private static void renderLTree(Level worldIn, BlockPos posIn, String ltree, Player player, int stopAt) {
         int count = 0;
         float numLogsToDraw = 3;
         DrawState s = new DrawState(posIn);
@@ -141,7 +141,7 @@ public class FractalTreeCommand {
             count = count + 1;
             if (stopAt >= 0 && count >= stopAt) {
                 String treeRendered = ltree.substring(0, count);
-                player.sendMessage(new StringTextComponent("Position = " + s.pos + ", rotation = " + s.rotationX + "," + s.rotationZ + ", " +
+                player.sendMessage(new TextComponent("Position = " + s.pos + ", rotation = " + s.rotationX + "," + s.rotationZ + ", " +
                         " String drawn = " + treeRendered), Util.NIL_UUID);
                 break;
             }
@@ -167,32 +167,32 @@ public class FractalTreeCommand {
     }
 
     private static BlockPos advancePos3D(DrawState s) {
-        Vector3d vX, vZ;
+        Vec3 vX, vZ;
 
         switch(s.rotationX) {
-            case 0: vX = new Vector3d(0, 1, 0); break;
-            case 315: vX = new Vector3d(0, 1, -1); break;
-            case 270: vX = new Vector3d(0, 0, -1); break;
-            case 225: vX = new Vector3d(0, -1, -1); break;
-            case 180: vX = new Vector3d(0, -1, 0); break;
-            case 135: vX = new Vector3d(0, -1, 1); break;
-            case 90: vX = new Vector3d(0, 0, 1); break;
-            case 45: vX = new Vector3d(0, 1, 1); break;
+            case 0: vX = new Vec3(0, 1, 0); break;
+            case 315: vX = new Vec3(0, 1, -1); break;
+            case 270: vX = new Vec3(0, 0, -1); break;
+            case 225: vX = new Vec3(0, -1, -1); break;
+            case 180: vX = new Vec3(0, -1, 0); break;
+            case 135: vX = new Vec3(0, -1, 1); break;
+            case 90: vX = new Vec3(0, 0, 1); break;
+            case 45: vX = new Vec3(0, 1, 1); break;
             default:
-                vX = new Vector3d(0, 0, 0);
+                vX = new Vec3(0, 0, 0);
         }
 
         switch(s.rotationZ) {
-            case 0: vZ = new Vector3d(0, 1, 0); break;
-            case 315: vZ = new Vector3d(-1, 1, 0); break;
-            case 270: vZ = new Vector3d(-1, 0, 0); break;
-            case 225: vZ = new Vector3d(-1, -1, 0); break;
-            case 180: vZ = new Vector3d(0, -1, 0); break;
-            case 135: vZ = new Vector3d(1, -1, 0); break;
-            case 90: vZ = new Vector3d(1, 0, 0); break;
-            case 45: vZ = new Vector3d(1, 1, 0); break;
+            case 0: vZ = new Vec3(0, 1, 0); break;
+            case 315: vZ = new Vec3(-1, 1, 0); break;
+            case 270: vZ = new Vec3(-1, 0, 0); break;
+            case 225: vZ = new Vec3(-1, -1, 0); break;
+            case 180: vZ = new Vec3(0, -1, 0); break;
+            case 135: vZ = new Vec3(1, -1, 0); break;
+            case 90: vZ = new Vec3(1, 0, 0); break;
+            case 45: vZ = new Vec3(1, 1, 0); break;
             default:
-                vZ = new Vector3d(0, 0, 0);
+                vZ = new Vec3(0, 0, 0);
         }
 
         double yCombined = vX.y + vZ.y;

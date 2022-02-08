@@ -2,17 +2,17 @@ package lonestarrr.arconia.common.block;
 
 import lonestarrr.arconia.common.block.tile.ArconiumTreeRootTileEntity;
 import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockDisplayReader;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockGetter;
 import lonestarrr.arconia.common.block.tile.ModTiles;
 import lonestarrr.arconia.common.core.RainbowColor;
 
@@ -22,15 +22,20 @@ import java.util.Map;
 
 import static lonestarrr.arconia.common.block.ModBlocks.register;
 
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+
 /**
  * Tree root block to be placed under a resource tree of the matching tier. Combined with one or more Resource Gen blocks placed near the base of the tree, this
  * will determine the resources to be generated. The root block has a tile entity which is responsible for the resource generation.
  */
-public class ArconiumTreeRootBlock extends Block implements IBlockColor {
+public class ArconiumTreeRootBlock extends Block implements BlockColor {
     private final RainbowColor tier;
-    private static final Map<RainbowColor, TileEntityType<ArconiumTreeRootTileEntity>> tileEntityTypes =
+    private static final Map<RainbowColor, BlockEntityType<ArconiumTreeRootTileEntity>> tileEntityTypes =
             new HashMap<>(RainbowColor.values().length);
-    private static final DirectionProperty FACING = HorizontalBlock.FACING;
+    private static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
     public ArconiumTreeRootBlock(RainbowColor tier) {
         super(Block.Properties.of(Material.WOOD).strength(0.8f).sound(SoundType.WOOD));
@@ -45,7 +50,7 @@ public class ArconiumTreeRootBlock extends Block implements IBlockColor {
      * BlockState properties for this block
      */
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
@@ -56,7 +61,7 @@ public class ArconiumTreeRootBlock extends Block implements IBlockColor {
      */
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext blockItemUseContext) {
+    public BlockState getStateForPlacement(BlockPlaceContext blockItemUseContext) {
         Direction direction = blockItemUseContext.getHorizontalDirection();  // north, east, south, or west
         return defaultBlockState().setValue(FACING, direction);
     }
@@ -67,17 +72,17 @@ public class ArconiumTreeRootBlock extends Block implements IBlockColor {
     }
 
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
         return new ArconiumTreeRootTileEntity(tier);
     }
 
-    public static TileEntityType<ArconiumTreeRootTileEntity> getTileEntityTypeByTier(RainbowColor tier) {
+    public static BlockEntityType<ArconiumTreeRootTileEntity> getTileEntityTypeByTier(RainbowColor tier) {
         return ModTiles.getTreeRootBlockTileEntityType(tier);
     }
 
     @Override
     public int getColor(
-            BlockState blockState, @Nullable IBlockDisplayReader iBlockDisplayReader, @Nullable BlockPos blockPos, int tintIndex) {
+            BlockState blockState, @Nullable BlockAndTintGetter iBlockDisplayReader, @Nullable BlockPos blockPos, int tintIndex) {
         // Colors are not dependent on tint index, but on rainbow tier (though may use tintIndex later for less saturated versions)
         return tier.getColorValue();
     }

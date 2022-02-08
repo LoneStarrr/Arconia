@@ -1,9 +1,9 @@
 package lonestarrr.arconia.common.block.tile;
 
 import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 import javax.annotation.Nonnull;
 
@@ -23,13 +23,13 @@ public class PotMultiBlockSecondaryTileEntity extends BaseTileEntity {
         return primaryPos;
     }
 
-    public void writePacketNBT(CompoundNBT tag) {
+    public void writePacketNBT(CompoundTag tag) {
         if (this.primaryPos != null) {
             tag.putLong("primaryPos", primaryPos.asLong());
         }
     }
 
-    public void readPacketNBT(CompoundNBT tag) {
+    public void readPacketNBT(CompoundTag tag) {
         this.primaryPos = BlockPos.of(tag.getLong("primaryPos"));
     }
 

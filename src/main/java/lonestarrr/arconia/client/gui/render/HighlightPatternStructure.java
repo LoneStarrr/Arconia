@@ -1,8 +1,8 @@
 package lonestarrr.arconia.client.gui.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
 import javax.annotation.Nonnull;
@@ -37,7 +37,7 @@ public class HighlightPatternStructure {
         }
     }
 
-    private static void renderHighlightedBlocks(@Nonnull final Set<BlockPos> blocks, @Nonnull  final MatrixStack matrixStack) {
+    private static void renderHighlightedBlocks(@Nonnull final Set<BlockPos> blocks, @Nonnull  final PoseStack matrixStack) {
         float gameTime = Minecraft.getInstance().level.getGameTime(); // ticks since start
         float hue = gameTime % 100 / 100F; // cycle hue as animation effect
         matrixStack.pushPose();

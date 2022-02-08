@@ -4,7 +4,7 @@ import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
 import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
 import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 
@@ -90,13 +90,13 @@ public class GoldArconiumTileEntity extends BaseTileEntity {
     }
 
     @Override
-    public void writePacketNBT(CompoundNBT tag) {
+    public void writePacketNBT(CompoundTag tag) {
         tag.putLong(TAG_COINS, this.coins);
         tag.putBoolean(TAG_INFINITE, this.infinite);
     }
 
     @Override
-    public void readPacketNBT(CompoundNBT tag) {
+    public void readPacketNBT(CompoundTag tag) {
         this.coins = tag.getLong(TAG_COINS);
         this.infinite = tag.getBoolean(TAG_INFINITE);
     }

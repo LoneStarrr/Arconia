@@ -1,12 +1,12 @@
 package lonestarrr.arconia.client.gui.crate;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.color.ItemColors;
-import net.minecraft.client.renderer.model.ModelManager;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
@@ -25,7 +25,7 @@ public class RainbowCrateItemRenderer extends ItemRenderer {
 
     @Override
     public void renderGuiItemDecorations(
-            FontRenderer fr, ItemStack stack, int xPosition, int yPosition, @Nullable String text) {
+            Font fr, ItemStack stack, int xPosition, int yPosition, @Nullable String text) {
         super.renderGuiItemDecorations(fr, stack, xPosition, yPosition, text);
         // TODO Draw the bar here
     }

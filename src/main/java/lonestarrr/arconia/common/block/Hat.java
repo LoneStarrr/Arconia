@@ -2,17 +2,17 @@ package lonestarrr.arconia.common.block;
 
 import lonestarrr.arconia.common.block.tile.HatTileEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
@@ -28,7 +28,7 @@ public class Hat extends Block {
 
     @Override
     public VoxelShape getShape(
-            BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+            BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return shape;
     }
 
@@ -39,7 +39,7 @@ public class Hat extends Block {
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
         return new HatTileEntity();
     }
 
@@ -54,8 +54,8 @@ public class Hat extends Block {
      * @param coinCost Number of coins it takes to generate the resource
      * @return True if a hat was placed in the world at the given location
      */
-    public static boolean setResourceGenerated(World world, BlockPos pos, RainbowColor tier, ItemStack resource, int interval, int coinCost) {
-        TileEntity te = world.getBlockEntity(pos);
+    public static boolean setResourceGenerated(Level world, BlockPos pos, RainbowColor tier, ItemStack resource, int interval, int coinCost) {
+        BlockEntity te = world.getBlockEntity(pos);
         if (te != null && te instanceof HatTileEntity) {
             HatTileEntity rte = (HatTileEntity) te;
             rte.setResourceGenerated(tier, resource, interval, coinCost);

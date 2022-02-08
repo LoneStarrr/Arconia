@@ -3,10 +3,10 @@ package lonestarrr.arconia.common.network;
 import lonestarrr.arconia.client.effects.OrbLasers;
 import lonestarrr.arconia.client.effects.PotItemTransfers;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -25,11 +25,11 @@ public class PotItemTransferPacket {
         this.itemStack = itemStack.copy();
     }
 
-    public static PotItemTransferPacket decode(PacketBuffer buf) {
+    public static PotItemTransferPacket decode(FriendlyByteBuf buf) {
         return new PotItemTransferPacket(buf.readBlockPos(), buf.readBlockPos(), buf.readItem());
     }
 
-    public static void encode(PotItemTransferPacket msg, PacketBuffer buf) {
+    public static void encode(PotItemTransferPacket msg, FriendlyByteBuf buf) {
         buf.writeBlockPos(msg.hatPos);
         buf.writeBlockPos(msg.potPos);
         buf.writeItem(msg.itemStack);
@@ -47,7 +47,7 @@ public class PotItemTransferPacket {
                 @Override
                 public void run() {
                     Minecraft mc = Minecraft.getInstance();
-                    World world = mc.level;
+                    Level world = mc.level;
                     PotItemTransfers.addItemTransfer(msg.hatPos, msg.potPos, msg.itemStack);
                 }
             });

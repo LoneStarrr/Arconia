@@ -1,11 +1,11 @@
 package lonestarrr.arconia.common.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.NetworkEvent;
 import lonestarrr.arconia.common.block.tile.RainbowCrateTileEntity;
 
@@ -16,9 +16,9 @@ import java.util.function.Supplier;
  */
 public class RainbowCratePacket {
     private final BlockPos pos;
-    private final CompoundNBT inventory;
+    private final CompoundTag inventory;
 
-    public RainbowCratePacket(final BlockPos pos, final CompoundNBT inventory) {
+    public RainbowCratePacket(final BlockPos pos, final CompoundTag inventory) {
         // The client needs to be able to see a rainbow crate's internal inventory. The regular chest inventory
         // syncing appears to be dealt with by vanilla code already. So, just item counts? Which should be all
         // that the client cares about.
@@ -26,11 +26,11 @@ public class RainbowCratePacket {
         this.inventory = inventory;
     }
 
-    public static RainbowCratePacket decode(PacketBuffer buf) {
+    public static RainbowCratePacket decode(FriendlyByteBuf buf) {
         return new RainbowCratePacket(buf.readBlockPos(), buf.readNbt());
     }
 
-    public static void encode(RainbowCratePacket msg, PacketBuffer buf) {
+    public static void encode(RainbowCratePacket msg, FriendlyByteBuf buf) {
         buf.writeBlockPos(msg.pos);
         buf.writeNbt(msg.inventory);
     }
@@ -47,8 +47,8 @@ public class RainbowCratePacket {
                 @Override
                 public void run() {
                     Minecraft mc = Minecraft.getInstance();
-                    World world = mc.level;
-                    TileEntity te = world.getBlockEntity(message.pos);
+                    Level world = mc.level;
+                    BlockEntity te = world.getBlockEntity(message.pos);
                     if (te instanceof RainbowCrateTileEntity) {
                         RainbowCrateTileEntity rcte = (RainbowCrateTileEntity)te;
                         //rcte.receiveServerSideInventoryData(message.itemCounts);

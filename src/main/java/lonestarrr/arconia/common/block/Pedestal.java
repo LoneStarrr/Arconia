@@ -1,24 +1,24 @@
 package lonestarrr.arconia.common.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import lonestarrr.arconia.common.block.tile.PedestalTileEntity;
 
 import javax.annotation.Nonnull;
@@ -38,7 +38,7 @@ public class Pedestal extends Block {
         VoxelShape center = box(4, 2, 4, 12, 12, 12);
         VoxelShape top0 = box(3, 12, 3, 13, 13, 13);
         VoxelShape top1 = box(2, 13, 2, 14, 14, 14);
-        SHAPE = VoxelShapes.or(base0, base1, center, top0, top1);
+        SHAPE = Shapes.or(base0, base1, center, top0, top1);
     }
 
     public Pedestal() {
@@ -47,7 +47,7 @@ public class Pedestal extends Block {
 
     @Nonnull
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext ctx) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext ctx) {
         return SHAPE;
     }
 
@@ -58,25 +58,25 @@ public class Pedestal extends Block {
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
         return new PedestalTileEntity();
     }
 
     @Override
-    public ActionResultType use(
-            BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult traceResult) {
+    public InteractionResult use(
+            BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult traceResult) {
         ItemStack playerStack = player.getItemInHand(hand);
 
-        TileEntity tile = world.getBlockEntity(pos);
+        BlockEntity tile = world.getBlockEntity(pos);
         if (tile == null || !(tile instanceof PedestalTileEntity)) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         ItemStack currentItem = ((PedestalTileEntity) tile).getItemOnDisplay();
 
         if (currentItem.isEmpty()) {
             if (playerStack.isEmpty()) {
-                return ActionResultType.FAIL;
+                return InteractionResult.FAIL;
             }
             ((PedestalTileEntity) tile).putItem(playerStack);
             if (playerStack.getCount() > 1) {
@@ -84,13 +84,13 @@ public class Pedestal extends Block {
             } else {
                 player.setItemInHand(hand, ItemStack.EMPTY);
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         } else {
             if (player.addItem(currentItem)) {
                 ((PedestalTileEntity) tile).removeItem();
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
     }
 }

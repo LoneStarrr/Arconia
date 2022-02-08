@@ -10,22 +10,22 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProgressStyle;
 import mcjty.theoneprobe.api.ProbeMode;
 import mcjty.theoneprobe.apiimpl.styles.ProgressStyle;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IBlockDisplayReader;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -33,7 +33,7 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
 
-public class GoldArconiumBlock extends Block implements IBlockColor, TOPDriver {
+public class GoldArconiumBlock extends Block implements BlockColor, TOPDriver {
     private final RainbowColor tier;
     private final IProgressStyle progressStyleTOP = IProgressStyle.createDefault().backgroundColor(Color.BLACK).filledColor(Color.decode("#f9bd23")).alternateFilledColor(Color.decode("#f9bd23")).borderColor(Color.decode("#636161")).showText(false);
 
@@ -53,22 +53,22 @@ public class GoldArconiumBlock extends Block implements IBlockColor, TOPDriver {
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
         return new GoldArconiumTileEntity(tier, false);
     }
 
     @Override
     public int getColor(
-            BlockState blockState, @Nullable IBlockDisplayReader iBlockDisplayReader, @Nullable BlockPos blockPos, int tintIndex) {
+            BlockState blockState, @Nullable BlockAndTintGetter iBlockDisplayReader, @Nullable BlockPos blockPos, int tintIndex) {
         // Colors are not dependent on tint index, but on rainbow tier (though may use tintIndex later for less saturated versions)
         return tier.getColorValue();
     }
 
     @Override
     public void addProbeInfo(
-            ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+            ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
         // The One Probe extra block information
-        TileEntity te = world.getBlockEntity(data.getPos());
+        BlockEntity te = world.getBlockEntity(data.getPos());
         if (te == null || !(te instanceof GoldArconiumTileEntity)) {
             return;
         }

@@ -1,12 +1,12 @@
 package lonestarrr.arconia.client.gui.crate;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +22,7 @@ import java.util.stream.Stream;
  * A Container is a temporary object that combines the player inventory with the container's inventory. A gui
  * will display this combination when accessing the container.
  */
-public class RainbowCrateContainer extends Container {
+public class RainbowCrateContainer extends AbstractContainerMenu {
     // hints for the gui so it knows where to draw the Titles
     public static final int TILE_INVENTORY_YPOS = 5;
     public static final int PLAYER_INVENTORY_YPOS = 175;
@@ -40,7 +40,7 @@ public class RainbowCrateContainer extends Container {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RainbowCrateContainer(RainbowColor tier, int windowId, PlayerInventory playerInventory,
+    public RainbowCrateContainer(RainbowColor tier, int windowId, Inventory playerInventory,
                                  RainbowCrateItemStackHandler chestInventory) {
         super(RainbowCrateBlock.getContainerTypeByTier(tier), windowId);
         this.tier = tier;
@@ -93,11 +93,11 @@ public class RainbowCrateContainer extends Container {
 
     public static RainbowCrateContainer createContainerClientSide(
             RainbowColor tier, int windowId,
-            PlayerInventory playerInventory, net.minecraft.network.PacketBuffer extraData) {
+            Inventory playerInventory, net.minecraft.network.FriendlyByteBuf extraData) {
         // Server sends the position of the associated tile entity tracking the inventory. This is used to
         // query the internal inventory capacity in the UI
         BlockPos tileEntityPos = extraData.readBlockPos();
-        TileEntity te = playerInventory.player.level.getBlockEntity(tileEntityPos);
+        BlockEntity te = playerInventory.player.level.getBlockEntity(tileEntityPos);
         RainbowCrateItemStackHandler inventory;
         if (te instanceof RainbowCrateTileEntity) {
             RainbowCrateTileEntity rcte = (RainbowCrateTileEntity)te;
@@ -115,7 +115,7 @@ public class RainbowCrateContainer extends Container {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity playerIn) {
+    public boolean stillValid(Player playerIn) {
         return true; // TODO proximity check etc
     }
 
@@ -123,7 +123,7 @@ public class RainbowCrateContainer extends Container {
      * Called when a player shift-clicks in the container GUI on any slot
      */
     @Override
-    public ItemStack quickMoveStack(PlayerEntity playerEntity, int sourceSlotIndex)
+    public ItemStack quickMoveStack(Player playerEntity, int sourceSlotIndex)
     {
         Slot sourceSlot = slots.get(sourceSlotIndex);
         if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM

@@ -1,13 +1,13 @@
 package lonestarrr.arconia.common.block.tile;
 
 import com.mojang.datafixers.types.templates.CompoundList;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.IItemHandler;
 import lonestarrr.arconia.common.core.helper.InventoryHelper;
@@ -24,7 +24,7 @@ import java.util.List;
  * Responsible for pulling in nearby item entities of a specific type, like a magnet. If an inventory is below the tile entity, it will attempt to
  * store them in there.  Has no buffer of its own.
  */
-public class OrbTileEntity extends BaseTileEntity implements ITickableTileEntity {
+public class OrbTileEntity extends BaseTileEntity implements TickableBlockEntity {
     private List<ItemStack> itemsToPull = new ArrayList<>();
     private static final int MAX_ITEMS = 9;
     public static final String TAG_ITEM = "item";
@@ -68,8 +68,8 @@ public class OrbTileEntity extends BaseTileEntity implements ITickableTileEntity
     }
 
     @Override
-    public void writePacketNBT(CompoundNBT tag) {
-        ListNBT list = new ListNBT();
+    public void writePacketNBT(CompoundTag tag) {
+        ListTag list = new ListTag();
         for (ItemStack item: itemsToPull) {
             list.add(item.serializeNBT());
         }
@@ -77,12 +77,12 @@ public class OrbTileEntity extends BaseTileEntity implements ITickableTileEntity
     }
 
     @Override
-    public void readPacketNBT(CompoundNBT tag) {
+    public void readPacketNBT(CompoundTag tag) {
         if (tag.contains(TAG_ITEM)) {
-            ListNBT list = tag.getList(TAG_ITEM, Constants.NBT.TAG_COMPOUND);
+            ListTag list = tag.getList(TAG_ITEM, Constants.NBT.TAG_COMPOUND);
             List<ItemStack> items = new ArrayList(list.size());
             for (int i = 0; i < list.size(); i++) {
-                CompoundNBT data = list.getCompound(i);
+                CompoundTag data = list.getCompound(i);
                 ItemStack item = ItemStack.of(data);
                 items.add(item);
             }
@@ -101,7 +101,7 @@ public class OrbTileEntity extends BaseTileEntity implements ITickableTileEntity
         double y = worldPosition.getY() + 0.5;
         double z = worldPosition.getZ() + 0.5;
 
-        List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, new AxisAlignedBB(x - RANGE, y - RANGE, z - RANGE, x + RANGE, y + RANGE, z + RANGE));
+        List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, new AABB(x - RANGE, y - RANGE, z - RANGE, x + RANGE, y + RANGE, z + RANGE));
         IItemHandler inv = InventoryHelper.getInventory(getLevel(), worldPosition.below(), Direction.UP);
 
         final int maxHandled = 64;

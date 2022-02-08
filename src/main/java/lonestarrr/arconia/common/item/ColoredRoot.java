@@ -1,17 +1,17 @@
 package lonestarrr.arconia.common.item;
 
 import lonestarrr.arconia.common.block.Hat;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import lonestarrr.arconia.common.block.ModBlocks;
@@ -20,6 +20,8 @@ import lonestarrr.arconia.common.core.RainbowColor;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+
+import net.minecraft.world.item.Item.Properties;
 
 public class ColoredRoot extends Item {
     private RainbowColor tier;
@@ -44,7 +46,7 @@ public class ColoredRoot extends Item {
 
     @Nonnull
     public static ItemStack getResourceItem(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
+        CompoundTag tag = stack.getTag();
         if (tag == null || !tag.contains(TAG_ITEM)) {
             return ItemStack.EMPTY;
         }
@@ -58,7 +60,7 @@ public class ColoredRoot extends Item {
      */
     @Nonnull
     public static int getResourceInterval(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
+        CompoundTag tag = stack.getTag();
         if (tag == null || !tag.contains(TAG_INTERVAL)) {
             return 1;
         }
@@ -72,7 +74,7 @@ public class ColoredRoot extends Item {
      */
     @Nonnull
     public static int getResourceCount(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
+        CompoundTag tag = stack.getTag();
         if (tag == null || !tag.contains(TAG_COUNT)) {
             return 1;
         }
@@ -86,7 +88,7 @@ public class ColoredRoot extends Item {
      */
     @Nonnull
     public static int getResourceCoinCost(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
+        CompoundTag tag = stack.getTag();
         if (tag == null || !tag.contains(TAG_COIN_COST)) {
             return 1;
         }
@@ -108,8 +110,8 @@ public class ColoredRoot extends Item {
      *                         Data is stored in NBT so that it can be used for any item from any mod by only adding a pedestal ritual recipe.
      */
     public static void setResourceItem(
-            @Nonnull ItemStack coloredRootStack, @Nonnull IItemProvider resourceItem, @Nonnull int interval, @Nonnull int count, int coinCost) {
-        CompoundNBT tag = coloredRootStack.getOrCreateTag();
+            @Nonnull ItemStack coloredRootStack, @Nonnull ItemLike resourceItem, @Nonnull int interval, @Nonnull int count, int coinCost) {
+        CompoundTag tag = coloredRootStack.getOrCreateTag();
         ItemStack stack = new ItemStack(resourceItem);
         int maxCount = stack.getMaxStackSize();
         int stackCount = count > maxCount ? maxCount : count;
@@ -127,20 +129,20 @@ public class ColoredRoot extends Item {
      * @return
      */
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        World world = context.getLevel();
-        PlayerEntity player = context.getPlayer();
+    public InteractionResult useOn(UseOnContext context) {
+        Level world = context.getLevel();
+        Player player = context.getPlayer();
         BlockPos pos = context.getClickedPos();
         ItemStack heldItem = player.getItemInHand(context.getHand());
 
         if (heldItem.getItem() != this || world.getBlockState(pos).getBlock() != ModBlocks.hat) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         ItemStack resource = getResourceItem(heldItem); // Item to be produced
 
         if (resource.isEmpty()) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         int count = getResourceCount(heldItem);
@@ -159,13 +161,13 @@ public class ColoredRoot extends Item {
             }
         }
 
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(
-            ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+            ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
         ItemStack resource = getResourceItem(stack);
         if (!resource.isEmpty()) {

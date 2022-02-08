@@ -1,24 +1,24 @@
 package lonestarrr.arconia.common.block;
 
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import lonestarrr.arconia.common.block.tile.CenterPedestalTileEntity;
 import lonestarrr.arconia.common.block.tile.PedestalTileEntity;
 import lonestarrr.arconia.common.item.ModItems;
@@ -26,7 +26,13 @@ import lonestarrr.arconia.common.item.ModItems;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
+import net.minecraft.Util;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 
 /**
  * Center Pedestal block. Used for crafting rituals. This one outputs the result of the crafting recipe.
@@ -41,7 +47,7 @@ public class CenterPedestal extends Block {
         VoxelShape center = box(4, 2, 4, 12, 12, 12);
         VoxelShape top0 = box(3, 12, 3, 13, 13, 13);
         VoxelShape top1 = box(2, 13, 2, 14, 14, 14);
-        SHAPE = VoxelShapes.or(base0, base1, center, top0, top1);
+        SHAPE = Shapes.or(base0, base1, center, top0, top1);
 
     }
 
@@ -51,7 +57,7 @@ public class CenterPedestal extends Block {
 
     @Nonnull
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext ctx) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext ctx) {
         return SHAPE;
     }
 
@@ -62,18 +68,18 @@ public class CenterPedestal extends Block {
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
         return new CenterPedestalTileEntity();
     }
 
     @Override
-    public ActionResultType use(
-            BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult traceResult) {
+    public InteractionResult use(
+            BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult traceResult) {
         ItemStack playerStack = player.getItemInHand(hand);
 
-        TileEntity tile = world.getBlockEntity(pos);
+        BlockEntity tile = world.getBlockEntity(pos);
         if (tile == null || !(tile instanceof CenterPedestalTileEntity)) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
         CenterPedestalTileEntity cte = (CenterPedestalTileEntity) tile;
 
@@ -82,22 +88,22 @@ public class CenterPedestal extends Block {
             if (player.addItem(displayedItem)) {
                 cte.removeItem();
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (playerStack.isEmpty() || playerStack.getItem() != ModItems.cloverStaff) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         if (!world.isClientSide()) {
             if (!cte.isRitualOngoing()) {
                 if (cte.startRitual()) {
-                    world.playSound(null, pos, SoundEvents.NOTE_BLOCK_HARP, SoundCategory.AMBIENT, 1, 10);
+                    world.playSound(null, pos, SoundEvents.NOTE_BLOCK_HARP, SoundSource.AMBIENT, 1, 10);
                 } else {
-                    player.sendMessage(new TranslationTextComponent(LANG_PREFIX + ".ritual_start_failed"), Util.NIL_UUID);
+                    player.sendMessage(new TranslatableComponent(LANG_PREFIX + ".ritual_start_failed"), Util.NIL_UUID);
                 }
             }
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 }

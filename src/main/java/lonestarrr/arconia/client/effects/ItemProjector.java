@@ -1,16 +1,16 @@
 package lonestarrr.arconia.client.effects;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import com.mojang.math.Vector3f;
+import net.minecraft.world.level.Level;
 
 /**
  * Methods for projecting an animated item
@@ -27,10 +27,10 @@ public class ItemProjector {
      * @param combinedOverlay
      * @param forceShow attempt to show item, even in case of collissions
      */
-    public static void projectItem(ItemStack stack, BlockPos itemPos, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight,
+    public static void projectItem(ItemStack stack, BlockPos itemPos, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
                                     int combinedOverlay, boolean forceShow) {
         // Don't draw the item if something's in the way
-        World world = Minecraft.getInstance().level;
+        Level world = Minecraft.getInstance().level;
         if (!forceShow) {
             VoxelShape shape = world.getBlockState(itemPos).getCollisionShape(world, itemPos);
             if (!shape.isEmpty() && shape.bounds().move(itemPos).contains(itemPos.getX(), itemPos.getY(), itemPos.getZ())) {
@@ -42,7 +42,7 @@ public class ItemProjector {
         matrixStack.translate(itemPos.getX(), itemPos.getY(), itemPos.getZ());
         matrixStack.translate(0.5, 0.1, 0.5);
         Vector3f rotationVector = new Vector3f(0, 1, 0);
-        int light = WorldRenderer.getLightColor(Minecraft.getInstance().level, itemPos);
+        int light = LevelRenderer.getLightColor(Minecraft.getInstance().level, itemPos);
         long ticks = Minecraft.getInstance().level.getGameTime();
 
         // rotation animation
@@ -58,7 +58,7 @@ public class ItemProjector {
         matrixStack.scale(scale, scale, scale);
 
         Minecraft.getInstance().getItemRenderer()
-                .renderStatic(stack, ItemCameraTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
+                .renderStatic(stack, ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
         matrixStack.popPose();
     }
 }

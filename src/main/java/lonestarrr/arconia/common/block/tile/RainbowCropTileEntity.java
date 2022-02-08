@@ -1,17 +1,17 @@
 package lonestarrr.arconia.common.block.tile;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 /**
  * This tile entity keeps an inventory of gold coins, as well as ticks to convert the gold coins into rainbow coins.
  * Inspiration: https://wiki.mcjty.eu/modding/index.php?title=TileEntity_Data-1.12
  */
-public class RainbowCropTileEntity extends TileEntity {
+public class RainbowCropTileEntity extends BlockEntity {
     //@ObjectHolder(Arconia.MOD_ID + ":" + BlockNames.RAINBOW_CROP)
-    public static TileEntityType<RainbowCropTileEntity> TYPE;
+    public static BlockEntityType<RainbowCropTileEntity> TYPE;
 
     private short coinCount = 0;
 
@@ -32,7 +32,7 @@ public class RainbowCropTileEntity extends TileEntity {
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT compound) {
+    public void load(BlockState state, CompoundTag compound) {
         super.load(state, compound);
         this.coinCount = compound.getShort("coinCount");
     }

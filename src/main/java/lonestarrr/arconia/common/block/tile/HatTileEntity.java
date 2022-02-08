@@ -5,14 +5,14 @@ import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.InventoryHelper;
 import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -89,7 +89,7 @@ public class HatTileEntity extends BaseTileEntity {
      * @return True if this is invoked on the server side, and a non-zero item count was inserted into the inventory below.
      */
     @Nonnull
-    public ItemStack generateResource(World world) {
+    public ItemStack generateResource(Level world) {
         if (world.isClientSide) {
             return ItemStack.EMPTY;
         }
@@ -111,7 +111,7 @@ public class HatTileEntity extends BaseTileEntity {
     }
 
     @Override
-    public void writePacketNBT(CompoundNBT tag) {
+    public void writePacketNBT(CompoundTag tag) {
         if (!level.isClientSide()) {
             tag.putInt("tier", tier.getTier());
             tag.put("item", this.itemStack.serializeNBT());
@@ -124,7 +124,7 @@ public class HatTileEntity extends BaseTileEntity {
     }
 
     @Override
-    public void readPacketNBT(CompoundNBT tag) {
+    public void readPacketNBT(CompoundTag tag) {
         ItemStack stack = ItemStack.EMPTY;
         RainbowColor tier = RainbowColor.RED;
         int interval = 1;

@@ -4,26 +4,26 @@ import lonestarrr.arconia.client.gui.crate.RainbowCrateContainer;
 import lonestarrr.arconia.common.block.tile.RainbowCrateTileEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockDisplayReader;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -37,15 +37,21 @@ import java.util.Map;
 
 import static lonestarrr.arconia.common.block.ModBlocks.register;
 
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
+
 /**
  * Tiered crates. Who does not like a li'l extra storage?
  */
-public class RainbowCrateBlock extends ContainerBlock implements IBlockColor {
-    private static final Map<RainbowColor,ContainerType<RainbowCrateContainer>> containerTypes =
+public class RainbowCrateBlock extends BaseEntityBlock implements BlockColor {
+    private static final Map<RainbowColor,MenuType<RainbowCrateContainer>> containerTypes =
             new HashMap<>(RainbowColor.values().length);
 
     private final RainbowColor tier;
-    private static final DirectionProperty FACING = HorizontalBlock.FACING;
+    private static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     private static final Logger LOGGER = LogManager.getLogger();
 
     public RainbowCrateBlock(RainbowColor tier) {
@@ -59,7 +65,7 @@ public class RainbowCrateBlock extends ContainerBlock implements IBlockColor {
      * BlockState properties for this block
      */
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
@@ -70,8 +76,8 @@ public class RainbowCrateBlock extends ContainerBlock implements IBlockColor {
      */
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext blockItemUseContext) {
-        World world = blockItemUseContext.getLevel();
+    public BlockState getStateForPlacement(BlockPlaceContext blockItemUseContext) {
+        Level world = blockItemUseContext.getLevel();
         BlockPos blockPos = blockItemUseContext.getClickedPos();
 
         Direction direction = blockItemUseContext.getHorizontalDirection();  // north, east, south, or west
@@ -82,7 +88,7 @@ public class RainbowCrateBlock extends ContainerBlock implements IBlockColor {
 
     @Nullable
     @Override
-    public TileEntity newBlockEntity(IBlockReader worldIn) {
+    public BlockEntity newBlockEntity(BlockGetter worldIn) {
         return new RainbowCrateTileEntity(this.tier);
     }
 
@@ -95,35 +101,35 @@ public class RainbowCrateBlock extends ContainerBlock implements IBlockColor {
     }
 
     @Override
-    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
         if (worldIn.isClientSide) {
             LOGGER.info("onBlockActivated: world.isRemote()");
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         LOGGER.info("onBlockActivate: world is server");
 
         // namedContainerProvider -> this is the tile entity
-        INamedContainerProvider namedContainerProvider = this.getMenuProvider(state, worldIn, pos);
+        MenuProvider namedContainerProvider = this.getMenuProvider(state, worldIn, pos);
         if (namedContainerProvider != null) {
-            if (!(player instanceof ServerPlayerEntity)) {
+            if (!(player instanceof ServerPlayer)) {
                 LOGGER.info("Player is not a ServerPlayerEntity");
-                return ActionResultType.FAIL;  // should always be true, but just in case...
+                return InteractionResult.FAIL;  // should always be true, but just in case...
             }
-            ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)player;
+            ServerPlayer serverPlayerEntity = (ServerPlayer)player;
             // Write location of the crate so the client can find the associated tile entity - other packets will
             // keep the server tile entity in sync with the tile entity because its data is needed to render the GUI
             NetworkHooks.openGui(serverPlayerEntity, namedContainerProvider,
                     (packetBuffer)->{packetBuffer.writeBlockPos(pos);});
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     // This is where you can do something when the block is broken. In this case drop the inventory's contents
     // Code is copied directly from vanilla eg ChestBlock, CampfireBlock
-    public void onRemove(BlockState state, World world, BlockPos blockPos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level world, BlockPos blockPos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
-            TileEntity tileentity = world.getBlockEntity(blockPos);
+            BlockEntity tileentity = world.getBlockEntity(blockPos);
             if (tileentity instanceof RainbowCrateTileEntity) {
                 RainbowCrateTileEntity tileEntity = (RainbowCrateTileEntity) tileentity;
                 tileEntity.dropAllContents(world, blockPos);
@@ -136,8 +142,8 @@ public class RainbowCrateBlock extends ContainerBlock implements IBlockColor {
     // render using a BakedModel
     // required because the default (super method) is INVISIBLE for ContainerBlock
     @Override
-    public BlockRenderType getRenderShape(BlockState iBlockState) {
-        return BlockRenderType.MODEL;
+    public RenderShape getRenderShape(BlockState iBlockState) {
+        return RenderShape.MODEL;
     }
 
     public RainbowColor getTier() {
@@ -146,18 +152,18 @@ public class RainbowCrateBlock extends ContainerBlock implements IBlockColor {
 
     @Override
     public int getColor(
-            BlockState blockState, @Nullable IBlockDisplayReader iBlockDisplayReader, @Nullable BlockPos blockPos, int tintIndex) {
+            BlockState blockState, @Nullable BlockAndTintGetter iBlockDisplayReader, @Nullable BlockPos blockPos, int tintIndex) {
         // Colors are not dependent on tint index, but on rainbow tier (though may use tintIndex later for less saturated versions)
         return tier.getColorValue();
     }
 
 
-    public static void registerContainers(final RegistryEvent.Register<ContainerType<?>> event)
+    public static void registerContainers(final RegistryEvent.Register<MenuType<?>> event)
     {
-        IForgeRegistry<ContainerType<?>> r = event.getRegistry();
+        IForgeRegistry<MenuType<?>> r = event.getRegistry();
         for (RainbowColor tier: RainbowColor.values()) {
-            ContainerType<RainbowCrateContainer> cType = IForgeContainerType.create(
-                    (int windowId, PlayerInventory playerInventory, PacketBuffer extraData) ->
+            MenuType<RainbowCrateContainer> cType = IForgeContainerType.create(
+                    (int windowId, Inventory playerInventory, FriendlyByteBuf extraData) ->
                             RainbowCrateContainer.createContainerClientSide(tier, windowId, playerInventory,
                                     extraData));
             containerTypes.put(tier, cType);
@@ -167,7 +173,7 @@ public class RainbowCrateBlock extends ContainerBlock implements IBlockColor {
         LOGGER.info("************ registered RainbowCrate containers");
     }
 
-    public static ContainerType<RainbowCrateContainer> getContainerTypeByTier(RainbowColor tier) {
+    public static MenuType<RainbowCrateContainer> getContainerTypeByTier(RainbowColor tier) {
         return containerTypes.get(tier);
     }
 }

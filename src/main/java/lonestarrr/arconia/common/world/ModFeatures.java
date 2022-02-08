@@ -4,17 +4,17 @@ import com.google.common.collect.ImmutableSet;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.blockplacer.SimpleBlockPlacer;
-import net.minecraft.world.gen.blockstateprovider.SimpleBlockStateProvider;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.feature.blockplacers.SimpleBlockPlacer;
+import net.minecraft.world.level.levelgen.feature.stateproviders.SimpleStateProvider;
 import net.minecraft.world.gen.feature.*;
-import net.minecraft.world.gen.foliageplacer.BlobFoliagePlacer;
-import net.minecraft.world.gen.trunkplacer.StraightTrunkPlacer;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.BlobFoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.StraightTrunkPlacer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -23,23 +23,31 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.data.worldgen.Features;
+import net.minecraft.util.UniformInt;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
+
 public class ModFeatures {
-    public static final Set<Biome.Category> CLOVER_BIOME_BLACKLIST = ImmutableSet.of(
-            Biome.Category.NETHER,
-            Biome.Category.THEEND,
-            Biome.Category.ICY,
-            Biome.Category.MUSHROOM
+    public static final Set<Biome.BiomeCategory> CLOVER_BIOME_BLACKLIST = ImmutableSet.of(
+            Biome.BiomeCategory.NETHER,
+            Biome.BiomeCategory.THEEND,
+            Biome.BiomeCategory.ICY,
+            Biome.BiomeCategory.MUSHROOM
     );
 
     public static final class Configs {
-        public static final BlockClusterFeatureConfig CLOVER_CONFIG = (new BlockClusterFeatureConfig.Builder(
-                new SimpleBlockStateProvider(ModBlocks.clover.defaultBlockState()), SimpleBlockPlacer.INSTANCE)).tries(8).build();
+        public static final RandomPatchConfiguration CLOVER_CONFIG = (new RandomPatchConfiguration.GrassConfigurationBuilder(
+                new SimpleStateProvider(ModBlocks.clover.defaultBlockState()), SimpleBlockPlacer.INSTANCE)).tries(8).build();
     }
 
     /// Configured features
-    private static final Map<RainbowColor, ConfiguredFeature<BaseTreeFeatureConfig, ?>> configuredTrees =
+    private static final Map<RainbowColor, ConfiguredFeature<TreeConfiguration, ?>> configuredTrees =
             new HashMap<>(RainbowColor.values().length);
-    public static final ConfiguredFeature<?, ?> CLOVER_CONFIGURED = Feature.FLOWER.configured(Configs.CLOVER_CONFIG).decorated(Features.Placements.ADD_32).decorated(Features.Placements.HEIGHTMAP_SQUARE).count(4);
+    public static final ConfiguredFeature<?, ?> CLOVER_CONFIGURED = Feature.FLOWER.configured(Configs.CLOVER_CONFIG).decorated(Features.Decorators.ADD_32).decorated(Features.Decorators.HEIGHTMAP_SQUARE).count(4);
 
 
     public static void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
@@ -49,22 +57,22 @@ public class ModFeatures {
         // Features (before configuration) are registered separately from Configured Features, and differently as well! Somehow.
         // Don't have features atm, but if I add some, register them through the register() method.
 
-        Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "clovers"), CLOVER_CONFIGURED);
+        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "clovers"), CLOVER_CONFIGURED);
 
         // Using minecraft's built in tree feature for the arconium trees. Each tier has a unique config due to using tiered leaves
         for (RainbowColor tier: RainbowColor.values()) {
-            BaseTreeFeatureConfig treeConfig = (new BaseTreeFeatureConfig.Builder(
-                    new SimpleBlockStateProvider(Blocks.OAK_LOG.defaultBlockState()),
-                    new SimpleBlockStateProvider(ModBlocks.getArconiumTreeLeaves(tier).defaultBlockState()),
-                    new BlobFoliagePlacer(FeatureSpread.fixed(2), FeatureSpread.fixed(0), 3),
-                    new StraightTrunkPlacer(5, 2, 0), new TwoLayerFeature(1, 0, 1))).ignoreVines().build();
-            ConfiguredFeature<BaseTreeFeatureConfig, ?> treeConfigured = Feature.TREE.configured(treeConfig);
-            Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "arconium_tree_" + tier.getTierName()), treeConfigured);
+            TreeConfiguration treeConfig = (new TreeConfiguration.TreeConfigurationBuilder(
+                    new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()),
+                    new SimpleStateProvider(ModBlocks.getArconiumTreeLeaves(tier).defaultBlockState()),
+                    new BlobFoliagePlacer(UniformInt.fixed(2), UniformInt.fixed(0), 3),
+                    new StraightTrunkPlacer(5, 2, 0), new TwoLayersFeatureSize(1, 0, 1))).ignoreVines().build();
+            ConfiguredFeature<TreeConfiguration, ?> treeConfigured = Feature.TREE.configured(treeConfig);
+            Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "arconium_tree_" + tier.getTierName()), treeConfigured);
             configuredTrees.put(tier, treeConfigured);
         }
     }
 
-    public static ConfiguredFeature<BaseTreeFeatureConfig, ?> getArconiumTreeConfigured(RainbowColor tier) {
+    public static ConfiguredFeature<TreeConfiguration, ?> getArconiumTreeConfigured(RainbowColor tier) {
         return configuredTrees.get(tier);
     }
 
@@ -77,22 +85,22 @@ public class ModFeatures {
     }
 
     public static void addArconiumTrees(BiomeLoadingEvent event) {
-        Biome.Category category = event.getCategory();
+        Biome.BiomeCategory category = event.getCategory();
 
-        if (category == Biome.Category.FOREST) {
+        if (category == Biome.BiomeCategory.FOREST) {
             for (RainbowColor tier: RainbowColor.values()) {
-                event.getGeneration().addFeature(GenerationStage.Decoration.VEGETAL_DECORATION,
+                event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION,
                         getArconiumTreeConfigured(tier));
             }
         }
     }
 
     public static void addClovers(BiomeLoadingEvent event) {
-        Biome.Category category = event.getCategory();
+        Biome.BiomeCategory category = event.getCategory();
 
         if (!CLOVER_BIOME_BLACKLIST.contains(category)) {
             Arconia.logger.info("********* Adding clovers to biome " + event.getName());
-            event.getGeneration().addFeature(GenerationStage.Decoration.VEGETAL_DECORATION, CLOVER_CONFIGURED);
+            event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, CLOVER_CONFIGURED);
         }
     }
 }

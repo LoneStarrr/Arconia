@@ -1,6 +1,6 @@
 package lonestarrr.arconia.common.block;
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.BlockPatternException;
 

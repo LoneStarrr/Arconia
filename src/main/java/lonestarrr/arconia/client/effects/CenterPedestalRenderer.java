@@ -1,23 +1,23 @@
 package lonestarrr.arconia.client.effects;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
 import lonestarrr.arconia.common.block.CenterPedestal;
 import lonestarrr.arconia.common.block.tile.CenterPedestalTileEntity;
 import lonestarrr.arconia.common.block.tile.PedestalTileEntity;
 
-public class CenterPedestalRenderer extends TileEntityRenderer<CenterPedestalTileEntity> {
-    public CenterPedestalRenderer(TileEntityRendererDispatcher dispatcher) {
+public class CenterPedestalRenderer extends BlockEntityRenderer<CenterPedestalTileEntity> {
+    public CenterPedestalRenderer(BlockEntityRenderDispatcher dispatcher) {
         super(dispatcher);
     }
 
     @Override
     public void render(
-            CenterPedestalTileEntity tileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight,
+            CenterPedestalTileEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
             int combinedOverlay) {
         ItemStack stack = tileEntity.getItemOnDisplay();
         if (stack == ItemStack.EMPTY) {
@@ -37,7 +37,7 @@ public class CenterPedestalRenderer extends TileEntityRenderer<CenterPedestalTil
         matrixStack.popPose();
     }
 
-    private void renderRitualProgress(CenterPedestalTileEntity tileEntity, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight,
+    private void renderRitualProgress(CenterPedestalTileEntity tileEntity, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
                                       int combinedOverlay) {
 
         BlockPos tePos = tileEntity.getBlockPos();

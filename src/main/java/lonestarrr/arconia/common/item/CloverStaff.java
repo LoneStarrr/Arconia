@@ -6,21 +6,21 @@ import lonestarrr.arconia.common.block.PotMultiBlockPrimary;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryTileEntity;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryTileEntity;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Staff. Magic's wrench. Because every mod needs a staff or wrench.
@@ -36,47 +36,47 @@ public class CloverStaff extends Item {
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         BlockPos pos = context.getClickedPos();
-        World world = context.getLevel();
-        PlayerEntity player = context.getPlayer();
+        Level world = context.getLevel();
+        Player player = context.getPlayer();
         ItemStack staff = context.getItemInHand();
 
         BlockState bs = world.getBlockState(pos);
         if (bs.getBlock() == Blocks.GOLD_BLOCK) {
-            return attemptFormMultiblock(player, world, pos) ? ActionResultType.SUCCESS : ActionResultType.FAIL;
+            return attemptFormMultiblock(player, world, pos) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
         } else if (bs.getBlock() == ModBlocks.potMultiBlockSecondary) {
             BlockPos potPos = storePotCoordinate(world, pos, staff);
             if (potPos != null) {
                 if (!world.isClientSide) {
-                    context.getPlayer().sendMessage(new TranslationTextComponent(LANG_PREFIX + ".selectpot.success", potPos.toShortString()), Util.NIL_UUID);
+                    context.getPlayer().sendMessage(new TranslatableComponent(LANG_PREFIX + ".selectpot.success", potPos.toShortString()), Util.NIL_UUID);
                 }
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             } else {
                 if (!world.isClientSide) {
-                    context.getPlayer().sendMessage(new TranslationTextComponent(LANG_PREFIX + ".selectpot.failed"), Util.NIL_UUID);
+                    context.getPlayer().sendMessage(new TranslatableComponent(LANG_PREFIX + ".selectpot.failed"), Util.NIL_UUID);
                 }
             }
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         } else if (bs.getBlock() == ModBlocks.hat) {
             if (!world.isClientSide) {
                 BlockPos potPos = getPotPosition(staff);
                 if (potPos == null) {
 
-                    return ActionResultType.CONSUME;
+                    return InteractionResult.CONSUME;
                 }
                 linkOrUnlinkHat(world, pos, potPos, context);
             }
-            return ActionResultType.CONSUME;
+            return InteractionResult.CONSUME;
         }
 
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
-    private static void linkOrUnlinkHat(World world, BlockPos hatPos, BlockPos potPos, ItemUseContext context) {
+    private static void linkOrUnlinkHat(Level world, BlockPos hatPos, BlockPos potPos, UseOnContext context) {
         String lang = LANG_PREFIX + ".linkhat";
 
-        TileEntity te = world.getBlockEntity(potPos);
+        BlockEntity te = world.getBlockEntity(potPos);
         if (te == null || !(te instanceof PotMultiBlockPrimaryTileEntity)) {
             lang += ".invalidpot";
         } else {
@@ -113,11 +113,11 @@ public class CloverStaff extends Item {
                 }
             }
         }
-        context.getPlayer().sendMessage(new TranslationTextComponent(lang), Util.NIL_UUID);
+        context.getPlayer().sendMessage(new TranslatableComponent(lang), Util.NIL_UUID);
     }
 
     private static BlockPos getPotPosition(ItemStack staff) {
-        CompoundNBT tag = staff.getTag();
+        CompoundTag tag = staff.getTag();
         if (tag == null || !tag.contains(TAG_POT_POS)) {
             return null;
         }
@@ -126,15 +126,15 @@ public class CloverStaff extends Item {
         return potPos;
     }
 
-    private static BlockPos storePotCoordinate(World world, BlockPos pos, ItemStack staff) {
-        TileEntity te = world.getBlockEntity(pos);
+    private static BlockPos storePotCoordinate(Level world, BlockPos pos, ItemStack staff) {
+        BlockEntity te = world.getBlockEntity(pos);
         if (!(te instanceof PotMultiBlockSecondaryTileEntity)) {
             return null;
         }
         PotMultiBlockSecondaryTileEntity potTE = (PotMultiBlockSecondaryTileEntity) te;
         BlockPos primaryPos = potTE.getPrimaryPos();
         if (primaryPos != null) {
-            CompoundNBT tag = staff.getOrCreateTag();
+            CompoundTag tag = staff.getOrCreateTag();
             tag.putLong(TAG_POT_POS, primaryPos.asLong());
             // TODO indicate this in the description of the staff
             return primaryPos;
@@ -143,14 +143,14 @@ public class CloverStaff extends Item {
         return null;
     }
 
-    private static boolean attemptFormMultiblock(PlayerEntity player, World world, BlockPos pos) {
+    private static boolean attemptFormMultiblock(Player player, Level world, BlockPos pos) {
         // Might be an attempt to form a pot of gold multiblock
         if (world.isClientSide) {
             return PotMultiBlockPrimary.canFormMultiBlock(world, pos);
         } else {
             boolean formed = PotMultiBlockPrimary.formMultiBlock(world, pos);
             if (formed) {
-                PotOfGoldTrigger.INSTANCE.trigger((ServerPlayerEntity) player, (ServerWorld) world, pos);
+                PotOfGoldTrigger.INSTANCE.trigger((ServerPlayer) player, (ServerLevel) world, pos);
             }
             return formed;
         }
