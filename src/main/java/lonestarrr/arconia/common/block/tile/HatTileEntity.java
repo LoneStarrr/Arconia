@@ -4,19 +4,15 @@ import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.InventoryHelper;
 import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Hats linked to a pot of gold can produce a specific resource, and are tiered using RainbowColor. The tile entity stores the resource to be generated.
@@ -29,8 +25,8 @@ public class HatTileEntity extends BaseTileEntity {
     private int resourceCoinCost;
     public long nextTickParticleRender = 0; // used by TE renderer to track particle rendering - not persisted
 
-    public HatTileEntity() {
-        super(ModTiles.HAT);
+    public HatTileEntity(BlockPos pos, BlockState state) {
+        super(ModTiles.HAT, pos, state);
         this.tier = RainbowColor.RED;
         this.itemStack = ItemStack.EMPTY;
     }

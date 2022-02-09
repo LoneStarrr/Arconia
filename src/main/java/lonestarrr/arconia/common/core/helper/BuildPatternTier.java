@@ -1,9 +1,9 @@
 package lonestarrr.arconia.common.core.helper;
 
-import net.minecraft.resources.ResourceLocation;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.BuildPattern;
 import lonestarrr.arconia.common.core.RainbowColor;
+import net.minecraft.resources.ResourceLocation;
 
 import java.io.IOException;
 import java.util.Collections;

@@ -1,11 +1,11 @@
 package lonestarrr.arconia.common.crafting;
 
+import lonestarrr.arconia.common.Arconia;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.Registry;
-import lonestarrr.arconia.common.Arconia;
 
 import javax.annotation.Nonnull;
 

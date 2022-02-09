@@ -1,43 +1,42 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.core.helper.LanguageHelper;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.util.*;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
+import lonestarrr.arconia.common.block.tile.ArconiumTreeRootTileEntity;
 import lonestarrr.arconia.common.block.tile.CenterPedestalTileEntity;
-import lonestarrr.arconia.common.block.tile.PedestalTileEntity;
+import lonestarrr.arconia.common.block.tile.ModTiles;
+import lonestarrr.arconia.common.core.helper.LanguageHelper;
 import lonestarrr.arconia.common.item.ModItems;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Center Pedestal block. Used for crafting rituals. This one outputs the result of the crafting recipe.
  */
-public class CenterPedestal extends Block {
+public class CenterPedestal extends BaseEntityBlock {
     public static final VoxelShape SHAPE;
     private static final String LANG_PREFIX = LanguageHelper.block("center_pedestal");
 
@@ -62,15 +61,18 @@ public class CenterPedestal extends Block {
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new CenterPedestalTileEntity(pos, state); }
 
     @Nullable
     @Override
-    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-        return new CenterPedestalTileEntity();
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            Level level, BlockState state, BlockEntityType<T> type) {
+        if (!level.isClientSide) {
+            return createTickerHelper(type, ModTiles.CENTER_PEDESTAL, CenterPedestalTileEntity::tick);
+        }
+        return null;
     }
+
 
     @Override
     public InteractionResult use(

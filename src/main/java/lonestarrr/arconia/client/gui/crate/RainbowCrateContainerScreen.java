@@ -1,17 +1,17 @@
 package lonestarrr.arconia.client.gui.crate;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.Component;
+import com.mojang.blaze3d.vertex.PoseStack;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.RainbowCrateBlock;
 import lonestarrr.arconia.common.core.RainbowColor;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 
 public class RainbowCrateContainerScreen extends AbstractContainerScreen<RainbowCrateContainer> {
     // Texture containing the background image and overlay sprites

@@ -1,20 +1,20 @@
 package lonestarrr.arconia.common.block.tile;
 
-import com.mojang.datafixers.types.templates.CompoundList;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
-import net.minecraft.core.Direction;
-import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.items.IItemHandler;
 import lonestarrr.arconia.common.core.helper.InventoryHelper;
-import lonestarrr.arconia.common.item.ModItems;
 import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
 import lonestarrr.arconia.common.network.ModPackets;
 import lonestarrr.arconia.common.network.OrbLaserPacket;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.List;
  * Responsible for pulling in nearby item entities of a specific type, like a magnet. If an inventory is below the tile entity, it will attempt to
  * store them in there.  Has no buffer of its own.
  */
-public class OrbTileEntity extends BaseTileEntity implements TickableBlockEntity {
+public class OrbTileEntity extends BaseTileEntity {
     private List<ItemStack> itemsToPull = new ArrayList<>();
     private static final int MAX_ITEMS = 9;
     public static final String TAG_ITEM = "item";
@@ -32,8 +32,8 @@ public class OrbTileEntity extends BaseTileEntity implements TickableBlockEntity
     private static final int RANGE = 10;
     private int ticksElapsed;
 
-    public OrbTileEntity() {
-        super(ModTiles.ORB);
+    public OrbTileEntity(BlockPos pos, BlockState state) {
+        super(ModTiles.ORB, pos, state);
     }
 
     public boolean addItem(ItemStack item) {
@@ -79,7 +79,7 @@ public class OrbTileEntity extends BaseTileEntity implements TickableBlockEntity
     @Override
     public void readPacketNBT(CompoundTag tag) {
         if (tag.contains(TAG_ITEM)) {
-            ListTag list = tag.getList(TAG_ITEM, Constants.NBT.TAG_COMPOUND);
+            ListTag list = tag.getList(TAG_ITEM, Tag.TAG_COMPOUND);
             List<ItemStack> items = new ArrayList(list.size());
             for (int i = 0; i < list.size(); i++) {
                 CompoundTag data = list.getCompound(i);
@@ -90,8 +90,11 @@ public class OrbTileEntity extends BaseTileEntity implements TickableBlockEntity
         }
     }
 
-    @Override
-    public void tick() {
+    public static void tick(Level level, BlockPos pos, BlockState state, OrbTileEntity blockEntity) {
+        blockEntity.tickInternal(level, pos, state);
+    }
+
+    public void tickInternal(Level level, BlockPos pos, BlockState state) {
         if (++ticksElapsed < TICK_INTERVAL) {
             return;
         }

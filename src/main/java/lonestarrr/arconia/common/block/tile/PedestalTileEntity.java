@@ -1,12 +1,10 @@
 package lonestarrr.arconia.common.block.tile;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class PedestalTileEntity extends BasePedestalTileEntity {
-    public PedestalTileEntity() {
-        super(ModTiles.PEDESTAL);
+    public PedestalTileEntity(BlockPos pos, BlockState state) {
+        super(ModTiles.PEDESTAL, pos, state);
     }
 }

@@ -1,17 +1,17 @@
 package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.RenderLevelLastEvent;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -39,13 +39,13 @@ public class PotItemTransfers {
         transfers.add(transfer);
     }
 
-    public static void render(RenderWorldLastEvent event) {
+    public static void render(RenderLevelLastEvent event) {
         Level world = Minecraft.getInstance().level;
 
         long now = world.getGameTime();
         List<ItemTransfer> toRemove = new ArrayList<>();
 
-        PoseStack matrix = event.getMatrixStack();
+        PoseStack matrix = event.getPoseStack();
         matrix.pushPose();
 
         // Correct for player projection view
@@ -60,7 +60,7 @@ public class PotItemTransfers {
 
         // Probably also add a random delay and don't fire them all at the same tick
         for (ItemTransfer transfer: transfers) {
-            if (transfer.isComplete(event.getPartialTicks())) {
+            if (transfer.isComplete(event.getPartialTick())) {
                 toRemove.add(transfer);
                 continue;
             }
@@ -71,7 +71,7 @@ public class PotItemTransfers {
                 continue;
             }
 
-            renderItemTransfer(transfer, event.getMatrixStack(), buffer, event.getPartialTicks());
+            renderItemTransfer(transfer, event.getPoseStack(), buffer, event.getPartialTick());
             // TODO: Temporary - testing rainbow rendering
 //            RainbowRenderer.renderRainbow(transfer.potPos, transfer.hatPos, event.getMatrixStack(), buffer);
         }
@@ -91,7 +91,7 @@ public class PotItemTransfers {
         matrixStack.pushPose();
         matrixStack.translate(itemPos.x, itemPos.y, itemPos.z);
         Minecraft.getInstance().getItemRenderer()
-                .renderStatic(transfer.itemStack, ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
+                .renderStatic(transfer.itemStack, ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer, 0);
         matrixStack.popPose();
         // TODO temporarily rendering a rainbow just to see what it looks like
 

@@ -1,8 +1,10 @@
 package lonestarrr.arconia.common.lib.tile;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -15,8 +17,8 @@ import net.minecraftforge.items.ItemStackHandler;
 public abstract class BaseInventoryTileEntity extends BaseTileEntity {
     private final LazyOptional<IItemHandler> capability = LazyOptional.of(this::getInventory);
 
-    public BaseInventoryTileEntity(BlockEntityType<?> type) {
-        super(type);
+    public BaseInventoryTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     public abstract ItemStackHandler getInventory();

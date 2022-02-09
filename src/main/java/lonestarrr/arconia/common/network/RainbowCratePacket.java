@@ -1,13 +1,13 @@
 package lonestarrr.arconia.common.network;
 
+import lonestarrr.arconia.common.block.tile.RainbowCrateTileEntity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fml.network.NetworkEvent;
-import lonestarrr.arconia.common.block.tile.RainbowCrateTileEntity;
 
 import java.util.function.Supplier;
 

@@ -1,14 +1,14 @@
 package lonestarrr.arconia.common.network;
 
-import net.minecraft.resources.ResourceLocation;
+import lonestarrr.arconia.common.Arconia;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
-import lonestarrr.arconia.common.Arconia;
 
 public class ModPackets {
     private static final String PROTOCOL = "1";

@@ -7,14 +7,15 @@ import lonestarrr.arconia.common.item.ModItems;
 import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
 import lonestarrr.arconia.common.network.ModPackets;
 import lonestarrr.arconia.common.network.PotItemTransferPacket;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements TickableBlockEntity {
+public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity {
     private static final int MAX_COIN_SUPPLIERS = 1; // How many hats may supply coins per coin collection tick?
     private static final String TAG_HAT_POSITIONS = "hat_positions";
     private static final String TAG_COIN_COUNT = "coin_count";
@@ -33,8 +34,8 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements Ti
 
     private final List<HatData> hats = new ArrayList<>();
 
-    public PotMultiBlockPrimaryTileEntity() {
-        super(ModTiles.POT_MULTIBLOCK_PRIMARY);
+    public PotMultiBlockPrimaryTileEntity(BlockPos pos, BlockState state) {
+        super(ModTiles.POT_MULTIBLOCK_PRIMARY, pos, state);
         // TODO check for valid structure at an interval, if not, destroy ourselves
         coinCount = 0;
     }
@@ -140,12 +141,11 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements Ti
         return (GoldArconiumTileEntity)te;
     }
 
-    @Override
-    public void tick() {
-        if (level.isClientSide) {
-            return;
-        }
+    public static void tick(Level level, BlockPos pos, BlockState state, PotMultiBlockPrimaryTileEntity blockEntity) {
+        blockEntity.tickInternal(level, pos, state);
+    }
 
+    public void tickInternal(Level level, BlockPos pos, BlockState state) {
         // Track world game time to thwart tick accelerators
         if (lastIntervalGameTime == 0) {
             lastIntervalGameTime = level.getGameTime();

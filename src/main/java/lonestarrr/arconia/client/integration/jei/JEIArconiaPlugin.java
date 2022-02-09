@@ -1,5 +1,11 @@
 package lonestarrr.arconia.client.integration.jei;
 
+import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.common.block.ModBlocks;
+import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.crafting.ModRecipeTypes;
+import lonestarrr.arconia.common.item.ColoredRoot;
+import lonestarrr.arconia.common.item.ModItems;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -8,15 +14,8 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.resources.ResourceLocation;
-import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.ModBlocks;
-import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.crafting.ModRecipeTypes;
-import lonestarrr.arconia.common.item.ColoredRoot;
-import lonestarrr.arconia.common.item.ModItems;
+import net.minecraft.world.item.ItemStack;
 
 @JeiPlugin
 public class JEIArconiaPlugin implements IModPlugin {
@@ -57,7 +56,7 @@ public class JEIArconiaPlugin implements IModPlugin {
         // Colored roots produced by the altar are differentiated on the resource they are associated with. Can be empty, but that should also serialize.
         for (RainbowColor tier: RainbowColor.values()) {
             ColoredRoot root = ModItems.getColoredRoot(tier);
-            registration.registerSubtypeInterpreter(root, stack -> ColoredRoot.getResourceItem(stack).toString());
+            registration.registerSubtypeInterpreter(root, (stack, ctx) -> ColoredRoot.getResourceItem(stack).toString());
         }
     }
 }

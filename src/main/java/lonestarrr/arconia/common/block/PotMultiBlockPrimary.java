@@ -1,22 +1,25 @@
 package lonestarrr.arconia.common.block;
 
 import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.common.block.tile.ModTiles;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryTileEntity;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryTileEntity;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 
 import javax.annotation.Nullable;
 
@@ -24,20 +27,22 @@ import javax.annotation.Nullable;
  * Block that is part of a large multiblock pot - this is the primary block. It will render a large model, and has a ticking tile entity dealing
  * with the pot's logic
  */
-public class PotMultiBlockPrimary extends Block {
+public class PotMultiBlockPrimary extends BaseEntityBlock {
     public PotMultiBlockPrimary() {
         super(Block.Properties.of(Material.METAL, MaterialColor.COLOR_BLACK).strength(4.0F));
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new PotMultiBlockPrimaryTileEntity(pos, state); }
 
     @Nullable
     @Override
-    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-        return new PotMultiBlockPrimaryTileEntity();
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            Level level, BlockState state, BlockEntityType<T> type) {
+        if (!level.isClientSide) {
+            return createTickerHelper(type, ModTiles.POT_MULTIBLOCK_PRIMARY, PotMultiBlockPrimaryTileEntity::tick);
+        }
+        return null;
     }
 
     @Override

@@ -2,20 +2,13 @@ package lonestarrr.arconia.common.advancements;
 
 import com.google.gson.JsonObject;
 import lonestarrr.arconia.common.Arconia;
-import net.minecraft.advancements.criterion.*;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nonnull;
-
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.LocationPredicate;
-import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 
 /**
  * Advancement trigger for creating a pot of gold

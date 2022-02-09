@@ -1,7 +1,10 @@
 package lonestarrr.arconia.client.integration.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.common.block.ModBlocks;
+import lonestarrr.arconia.common.crafting.IPedestalRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -10,12 +13,8 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
-import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.ModBlocks;
-import lonestarrr.arconia.common.crafting.IPedestalRecipe;
-import lonestarrr.arconia.common.item.ModItems;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import java.util.List;

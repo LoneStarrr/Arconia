@@ -1,35 +1,32 @@
 package lonestarrr.arconia.common.block.tile;
 
+import lonestarrr.arconia.common.block.ArconiumTreeLeaves;
+import lonestarrr.arconia.common.block.ArconiumTreeRootBlock;
 import lonestarrr.arconia.common.block.ModBlocks;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.LeavesBlock;
+import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import lonestarrr.arconia.common.block.ArconiumTreeLeaves;
-import lonestarrr.arconia.common.block.ArconiumTreeRootBlock;
-import lonestarrr.arconia.common.core.RainbowColor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 
-import static java.lang.Math.max;
-
 /**
  * Responsible for morphing tree leaves into the next tier's leaves.
  */
-public class ArconiumTreeRootTileEntity extends BlockEntity implements TickableBlockEntity {
+public class ArconiumTreeRootTileEntity extends BaseTileEntity {
     private static final int LOOT_DROP_INTERVAL = 100; // How often to drop loot
 
     private static final String TAG_LEAF_CHANGER = "leafChanger";
@@ -43,12 +40,12 @@ public class ArconiumTreeRootTileEntity extends BlockEntity implements TickableB
     private boolean hasNextTier;
     private LeafChanger leafChanger;
 
-    public ArconiumTreeRootTileEntity(RainbowColor tier) {
-        this(ArconiumTreeRootBlock.getTileEntityTypeByTier(tier), tier);
+    public ArconiumTreeRootTileEntity(RainbowColor tier, BlockPos pos, BlockState state) {
+        this(ArconiumTreeRootBlock.getTileEntityTypeByTier(tier), tier, pos, state);
     }
 
-    public ArconiumTreeRootTileEntity(BlockEntityType<?> tileEntityTypeIn, RainbowColor tier) {
-        super(tileEntityTypeIn);
+    public ArconiumTreeRootTileEntity(BlockEntityType<?> tileEntityTypeIn, RainbowColor tier, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         this.tier = tier;
         RainbowColor nextTier = tier.getNextTier();
         hasNextTier = false;
@@ -65,8 +62,11 @@ public class ArconiumTreeRootTileEntity extends BlockEntity implements TickableB
         return tier;
     }
 
-    @Override
-    public void tick() {
+    public static void tick(Level level, BlockPos pos, BlockState state, ArconiumTreeRootTileEntity blockEntity) {
+        blockEntity.tickInternal(level, pos, state);
+    }
+
+    public void tickInternal(Level level, BlockPos pos, BlockState state) {
         tickCount++;
 
         if (level.isClientSide) {
@@ -82,62 +82,20 @@ public class ArconiumTreeRootTileEntity extends BlockEntity implements TickableB
         }
     }
 
-    private void sendUpdates() {
-        if (level != null && !level.isClientSide) {
-            level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 3);
-            setChanged();
+    @Override
+    public void writePacketNBT(CompoundTag tag) {
+        if (leafChanger != null) {
+            tag.put(TAG_LEAF_CHANGER, leafChanger.write());
         }
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
-        if (!level.isClientSide()) {
-            if (leafChanger != null) {
-                compound.put(TAG_LEAF_CHANGER, leafChanger.write());
-            }
-        }
-        return super.save(compound);
-    }
-
-    @Override
-    public void load(BlockState state, CompoundTag compound) {
-        super.load(state, compound);
+    public void readPacketNBT(CompoundTag compound) {
         if (compound.contains(TAG_LEAF_CHANGER)) {
             if (leafChanger != null) {
                 leafChanger.read(compound.getCompound(TAG_LEAF_CHANGER));
             }
         }
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        /*
-         * Data to be synced from the server to the clients when a client loads a chunk
-         */
-        return this.save(new CompoundTag());
-    }
-
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        /*
-         * Called on the server to generate a packet to be sent to the clients on world.notifyBlockUpdate()
-         * May only want to send updates since last time this TE was synced to reduce traffic
-         */
-        CompoundTag nbt = new CompoundTag();
-        this.save(nbt);
-
-        // the number here is generally ignored for non-vanilla TileEntities, 0 is safest
-        return new ClientboundBlockEntityDataPacket(this.getBlockPos(), 0, nbt);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
-    {
-        /*
-         * This is received on the client after getUpdatePacket() is handled on the server
-         */
-        super.onDataPacket(net, packet);
-        this.load(level.getBlockState(packet.getPos()), packet.getTag());
     }
 }
 

@@ -1,20 +1,20 @@
 package lonestarrr.arconia.client.gui.crate;
 
-import net.minecraft.world.entity.player.Player;
+import lonestarrr.arconia.common.block.RainbowCrateBlock;
+import lonestarrr.arconia.common.block.tile.RainbowCrateTileEntity;
+import lonestarrr.arconia.common.block.tile.crate.RainbowCrateItemStackHandler;
+import lonestarrr.arconia.common.core.RainbowColor;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.BlockPos;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import lonestarrr.arconia.common.block.RainbowCrateBlock;
-import lonestarrr.arconia.common.block.tile.RainbowCrateTileEntity;
-import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.block.tile.crate.RainbowCrateItemStackHandler;
 
 import java.util.stream.Stream;
 

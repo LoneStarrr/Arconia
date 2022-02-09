@@ -41,7 +41,7 @@ public class ModTiles {
         // tree root blocks
         for (RainbowColor tier: RainbowColor.values()) {
             BlockEntityType<ArconiumTreeRootTileEntity> teType =
-                    BlockEntityType.Builder.of(() -> new ArconiumTreeRootTileEntity(tier),
+                    BlockEntityType.Builder.of((pos, state) -> new ArconiumTreeRootTileEntity(tier, pos, state),
                             ModBlocks.getArconiumTreeRootBlocks(tier)).build(null);
             treeRootBlockTileEntityTypes.put(tier, teType);
             register(r, teType, tier.getTierName() + "_pattern_lootblock_tile_entity");
@@ -50,7 +50,7 @@ public class ModTiles {
         // Rainbow crates
         for (RainbowColor tier: RainbowColor.values()) {
             BlockEntityType<RainbowCrateTileEntity> teType =
-                    BlockEntityType.Builder.of(() -> new RainbowCrateTileEntity(tier),
+                    BlockEntityType.Builder.of((pos, state) -> new RainbowCrateTileEntity(tier, pos, state),
                             ModBlocks.getRainbowCrateBlock(tier)).build(null);
             rainbowCrateTileEntityTypes.put(tier, teType);
             register(r, teType, tier.getTierName() + "_rainbow_crate_tile_entity");
@@ -58,14 +58,14 @@ public class ModTiles {
 
         // Gold arconium blocks
         for (RainbowColor tier: RainbowColor.values()) {
-            BlockEntityType<GoldArconiumTileEntity> teType = BlockEntityType.Builder.of(() -> new GoldArconiumTileEntity(tier, false), ModBlocks.getGoldArconiumBlock(tier)).build(null);
+            BlockEntityType<GoldArconiumTileEntity> teType = BlockEntityType.Builder.of((pos, state) -> new GoldArconiumTileEntity(tier, false, pos, state), ModBlocks.getGoldArconiumBlock(tier)).build(null);
             goldArconiumTileEntityTypes.put(tier, teType);
             register(r, teType, tier.getTierName() + "_gold_arconium_tile_entity");
         }
 
         // Infinite Gold arconium blocks
         for (RainbowColor tier: RainbowColor.values()) {
-            BlockEntityType<GoldArconiumTileEntity> teType = BlockEntityType.Builder.of(() -> new GoldArconiumTileEntity(tier, true), ModBlocks.getInfiniteGoldArconiumBlock(tier)).build(null);
+            BlockEntityType<GoldArconiumTileEntity> teType = BlockEntityType.Builder.of((pos, state) -> new GoldArconiumTileEntity(tier, true, pos, state), ModBlocks.getInfiniteGoldArconiumBlock(tier)).build(null);
             infiniteGoldArconiumTileEntityTypes.put(tier, teType);
             register(r, teType, tier.getTierName() + "_infinite_gold_arconium_tile_entity");
         }

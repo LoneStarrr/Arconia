@@ -1,32 +1,39 @@
 package lonestarrr.arconia.common.block;
 
 import lonestarrr.arconia.client.gui.crate.RainbowCrateContainer;
+import lonestarrr.arconia.common.block.tile.ArconiumTreeRootTileEntity;
+import lonestarrr.arconia.common.block.tile.ModTiles;
 import lonestarrr.arconia.common.block.tile.RainbowCrateTileEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
-import net.minecraft.block.*;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,12 +43,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static lonestarrr.arconia.common.block.ModBlocks.register;
-
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Tiered crates. Who does not like a li'l extra storage?
@@ -88,21 +89,23 @@ public class RainbowCrateBlock extends BaseEntityBlock implements BlockColor {
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockGetter worldIn) {
-        return new RainbowCrateTileEntity(this.tier);
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new RainbowCrateTileEntity(this.tier, pos, state);
     }
 
-    // not needed if your block implements ITileEntityProvider (in this case implemented by BlockContainer), but it
-    //  doesn't hurt to include it anyway...
+    @Nullable
     @Override
-    public boolean hasTileEntity(BlockState state)
-    {
-        return true;
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            Level level, BlockState state, BlockEntityType<T> type) {
+        if (!level.isClientSide) {
+            return createTickerHelper(type, ModTiles.getRainbowCrateTileEntityType(tier), RainbowCrateTileEntity::tick);
+        }
+        return null;
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
-        if (worldIn.isClientSide) {
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
+        if (level.isClientSide) {
             LOGGER.info("onBlockActivated: world.isRemote()");
             return InteractionResult.SUCCESS;
         }
@@ -110,7 +113,7 @@ public class RainbowCrateBlock extends BaseEntityBlock implements BlockColor {
         LOGGER.info("onBlockActivate: world is server");
 
         // namedContainerProvider -> this is the tile entity
-        MenuProvider namedContainerProvider = this.getMenuProvider(state, worldIn, pos);
+        MenuProvider namedContainerProvider = this.getMenuProvider(state, level, pos);
         if (namedContainerProvider != null) {
             if (!(player instanceof ServerPlayer)) {
                 LOGGER.info("Player is not a ServerPlayerEntity");
@@ -162,7 +165,7 @@ public class RainbowCrateBlock extends BaseEntityBlock implements BlockColor {
     {
         IForgeRegistry<MenuType<?>> r = event.getRegistry();
         for (RainbowColor tier: RainbowColor.values()) {
-            MenuType<RainbowCrateContainer> cType = IForgeContainerType.create(
+            MenuType<RainbowCrateContainer> cType = IForgeMenuType.create(
                     (int windowId, Inventory playerInventory, FriendlyByteBuf extraData) ->
                             RainbowCrateContainer.createContainerClientSide(tier, windowId, playerInventory,
                                     extraData));

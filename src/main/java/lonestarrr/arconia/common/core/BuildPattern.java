@@ -1,16 +1,15 @@
 package lonestarrr.arconia.common.core;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
-import org.apache.commons.lang3.tuple.Pair;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.helper.BlockPatternException;
 import lonestarrr.arconia.common.core.helper.LibBlockPattern;
 import lonestarrr.arconia.common.core.helper.Matrix;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;

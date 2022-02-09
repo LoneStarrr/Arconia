@@ -2,23 +2,20 @@ package lonestarrr.arconia.common.block;
 
 import lonestarrr.arconia.common.block.tile.GoldArconiumTileEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
-public class InfiniteGoldArconiumBlock extends Block implements BlockColor {
+public class InfiniteGoldArconiumBlock extends BaseEntityBlock implements BlockColor {
     private final RainbowColor tier;
 
     public InfiniteGoldArconiumBlock(RainbowColor tier) {
@@ -30,16 +27,12 @@ public class InfiniteGoldArconiumBlock extends Block implements BlockColor {
         return tier;
     }
 
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
     @Nullable
     @Override
-    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-        return new GoldArconiumTileEntity(tier, true);
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new GoldArconiumTileEntity(tier, true, pos, state);
     }
+
 
     @Override
     public int getColor(

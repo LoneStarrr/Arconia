@@ -1,6 +1,5 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.CenterPedestalTileEntity;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryTileEntity;
 import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryTileEntity;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
@@ -8,28 +7,27 @@ import lonestarrr.arconia.compat.theoneprobe.TOPDriver;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayer;
@@ -40,7 +38,7 @@ import javax.annotation.Nullable;
  * Block that is part of a large multiblock pot - this is the secondary, passive block. It is invisible in the world, as the primary block
  * will render the large model
  */
-public class PotMultiBlockSecondary extends Block implements TOPDriver {
+public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver {
     private static final VoxelShape[] shapes;
     private static final VoxelShape defaultShape = box(0, 0,0, 16, 16, 16);
     private static final int MAX_SHAPE_IDX = 2 << 2 | 2; // see calcShapeIndex()
@@ -65,7 +63,7 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
             return InteractionResult.PASS;
         }
 
-        ItemStack itemUsed = player.inventory.getSelected();
+        ItemStack itemUsed = player.getInventory().getSelected();
         // We buy gold
         if (itemUsed.isEmpty() || itemUsed.getItem() != Items.GOLD_INGOT) {
             return InteractionResult.PASS;
@@ -86,17 +84,9 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new PotMultiBlockSecondaryTileEntity(pos, state); }
 
-    @Nullable
-    @Override
-    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-        return new PotMultiBlockSecondaryTileEntity();
-    }
-
-    // inspired by Barrier block
+        // inspired by Barrier block
     @Override
     public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;

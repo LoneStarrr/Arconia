@@ -1,9 +1,9 @@
 package lonestarrr.arconia.common.block.tile;
 
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * This tile entity keeps an inventory of gold coins, as well as ticks to convert the gold coins into rainbow coins.

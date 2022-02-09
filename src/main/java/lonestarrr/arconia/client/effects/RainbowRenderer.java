@@ -1,30 +1,21 @@
 package lonestarrr.arconia.client.effects;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import jdk.nashorn.internal.runtime.regexp.joni.exception.ValueException;
-import lonestarrr.arconia.common.core.helper.VectorHelper;
-import net.minecraft.client.renderer.*;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.util.math.BlockPos;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
-import net.minecraft.world.phys.Vec3;
 import com.mojang.math.Vector3f;
+import lonestarrr.arconia.common.core.helper.VectorHelper;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import net.minecraft.client.renderer.RenderStateShard.TransparencyStateShard;
-
-import com.mojang.blaze3d.vertex.BufferBuilder;
 
 /**
  * Render a rainbow between two points, with 1 or more colors

@@ -1,37 +1,36 @@
 package lonestarrr.arconia.common.block;
 
 import lonestarrr.arconia.common.block.tile.ArconiumTreeRootTileEntity;
-import net.minecraft.block.*;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.BlockGetter;
 import lonestarrr.arconia.common.block.tile.ModTiles;
 import lonestarrr.arconia.common.core.RainbowColor;
+import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.Material;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static lonestarrr.arconia.common.block.ModBlocks.register;
-
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockState;
-
 /**
  * Tree root block to be placed under a resource tree of the matching tier. Combined with one or more Resource Gen blocks placed near the base of the tree, this
  * will determine the resources to be generated. The root block has a tile entity which is responsible for the resource generation.
  */
-public class ArconiumTreeRootBlock extends Block implements BlockColor {
+public class ArconiumTreeRootBlock extends BaseEntityBlock implements BlockColor {
     private final RainbowColor tier;
     private static final Map<RainbowColor, BlockEntityType<ArconiumTreeRootTileEntity>> tileEntityTypes =
             new HashMap<>(RainbowColor.values().length);
@@ -67,13 +66,18 @@ public class ArconiumTreeRootBlock extends Block implements BlockColor {
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new ArconiumTreeRootTileEntity(tier, pos, state);
     }
 
+    @Nullable
     @Override
-    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-        return new ArconiumTreeRootTileEntity(tier);
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            Level level, BlockState state, BlockEntityType<T> type) {
+        if (!level.isClientSide) {
+            return createTickerHelper(type, ModTiles.getTreeRootBlockTileEntityType(tier), ArconiumTreeRootTileEntity::tick);
+        }
+        return null;
     }
 
     public static BlockEntityType<ArconiumTreeRootTileEntity> getTileEntityTypeByTier(RainbowColor tier) {

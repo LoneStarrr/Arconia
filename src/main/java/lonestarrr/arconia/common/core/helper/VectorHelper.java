@@ -1,9 +1,8 @@
 package lonestarrr.arconia.common.core.helper;
 
 import com.mojang.math.Quaternion;
-import net.minecraft.world.phys.Vec3;
 import com.mojang.math.Vector3f;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.phys.Vec3;
 
 public class VectorHelper {
     /**

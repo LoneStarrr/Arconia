@@ -1,15 +1,15 @@
 package lonestarrr.arconia.common.core.helper;
 
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import org.apache.commons.lang3.tuple.Pair;
-import lonestarrr.arconia.common.Arconia;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.stream.Stream;
 
 /**
  * Places block structures in the world

@@ -1,28 +1,27 @@
 package lonestarrr.arconia.common.core.proxy;
 
+import lonestarrr.arconia.client.core.handler.ColorHandler;
+import lonestarrr.arconia.client.core.handler.TileEntityRendererHandler;
 import lonestarrr.arconia.client.effects.BuildPatternPreview;
-import lonestarrr.arconia.client.effects.OrbLasers;
 import lonestarrr.arconia.client.effects.PotItemTransfers;
 import lonestarrr.arconia.client.effects.RainbowBeamRenderer;
+import lonestarrr.arconia.client.gui.crate.RainbowCrateContainerScreen;
 import lonestarrr.arconia.client.gui.render.HighlightPatternStructure;
-import net.minecraft.client.renderer.RenderType;
+import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.common.block.ModBlocks;
+import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.item.MagicInABottle;
+import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import lonestarrr.arconia.client.core.handler.ColorHandler;
-import lonestarrr.arconia.client.core.handler.TileEntityRendererHandler;
-import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.ModBlocks;
-import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.client.gui.crate.RainbowCrateContainerScreen;
-import lonestarrr.arconia.common.item.MagicInABottle;
-import lonestarrr.arconia.common.item.ModItems;
 
 /**
  * Proxy code inspired by: http://jabelarminecraft.blogspot.com/p/minecraft-modding-organizing-your-proxy.html
@@ -34,6 +33,7 @@ public class ClientProxy implements IProxy {
         modBus.addListener(this::clientSetup);
         modBus.addListener(this::loadComplete);
         modBus.addListener(RainbowBeamRenderer::onTextureStitch);
+        modBus.addGenericListener(EntityRenderersEvent.class, TileEntityRendererHandler::registerBlockEntityRenderers);
 
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
         forgeBus.addListener(BuildPatternPreview::render);
@@ -69,8 +69,6 @@ public class ClientProxy implements IProxy {
 
             // GUI screens associated with containers
             RainbowCrateContainerScreen.registerContainerScreens();
-
-            TileEntityRendererHandler.registerTileEntityRenderers();
 
             registerItemProperties();
         });

@@ -1,11 +1,10 @@
 package lonestarrr.arconia.client.gui.crate;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.color.item.ItemColors;
-import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;

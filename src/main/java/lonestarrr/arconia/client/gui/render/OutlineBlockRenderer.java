@@ -1,41 +1,56 @@
 package lonestarrr.arconia.client.gui.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Matrix4f;
+import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.mixin.client.AccessorRenderType;
 import net.minecraft.Util;
-import net.minecraft.world.phys.AABB;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import com.mojang.math.Matrix4f;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import lonestarrr.arconia.common.Arconia;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.Tesselator;
-
 /**
  * Renders block outlines
  */
-public class OutlineBlockRenderer {
+public class OutlineBlockRenderer extends RenderType {
     private static final RenderStateShard.TransparencyStateShard TRANSLUCENT_TRANSPARENCY;
     private static final MultiBufferSource.BufferSource LINE_BUFFERS;
     private static Set<BlockPos> highlightedBlocks = null;
     public static final RenderType LINE_3_NO_DEPTH;
     public static final RenderType LINE_8_NO_DEPTH;
 
+    // Default onstructor to satisfy the compiler
+    public OutlineBlockRenderer(
+            String p_173178_, VertexFormat p_173179_, VertexFormat.Mode p_173180_, int p_173181_, boolean p_173182_, boolean p_173183_,
+            Runnable p_173184_, Runnable p_173185_) {
+        super(p_173178_, p_173179_, p_173180_, p_173181_, p_173182_, p_173183_, p_173184_, p_173185_);
+    }
+
+    private static RenderType makeLayer(String name, VertexFormat format, VertexFormat.Mode mode,
+                                        int bufSize, boolean hasCrumbling, boolean sortOnUpload, CompositeState glState) {
+        return AccessorRenderType.create(name, format, mode, bufSize, hasCrumbling, sortOnUpload, glState);
+    }
+
+    private static RenderType makeLayer(String name, VertexFormat format, VertexFormat.Mode mode,
+                                        int bufSize, CompositeState glState) {
+        return makeLayer(name, format, mode, bufSize, false, false, glState);
+    }
+
     static {
-        // Gleaned from Botania's RenderHelper
+        // Most of this is gleaned from Botania's RenderHelper
         TRANSLUCENT_TRANSPARENCY = ObfuscationReflectionHelper.getPrivateValue(RenderStateShard.class, null,
                 "TRANSLUCENT_TRANSPARENCY");
         RenderStateShard.LayeringStateShard projectionLayering = ObfuscationReflectionHelper.getPrivateValue(RenderStateShard.class, null, "VIEW_OFFSET_Z_LAYERING");
@@ -45,9 +60,9 @@ public class OutlineBlockRenderer {
         // https://github.com/Vazkii/Botania/blob/24715c509e47dfc32a80d7e94aeba6d84c022503/src/main/java/vazkii/botania/client/core/helper/RenderHelper.java
         // May want to enable depthTest() ?
         RenderType.CompositeState glState = RenderType.CompositeState.builder().setLineState(new RenderStateShard.LineStateShard(OptionalDouble.of(3))).setLayeringState(projectionLayering).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setWriteMaskState(colorMask).setDepthTestState(noDepth).createCompositeState(false);
-        LINE_3_NO_DEPTH = RenderType.create(Arconia.MOD_ID + ":line_3_no_depth", DefaultVertexFormat.POSITION_COLOR, GL11.GL_LINES, 128, glState);
+        LINE_3_NO_DEPTH = makeLayer(Arconia.MOD_ID + ":line_3_no_depth", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.LINES, 128, glState);
         glState = RenderType.CompositeState.builder().setLineState(new RenderStateShard.LineStateShard(OptionalDouble.of(8))).setLayeringState(projectionLayering).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setWriteMaskState(colorMask).setDepthTestState(noDepth).createCompositeState(false);
-        LINE_8_NO_DEPTH = RenderType.create(Arconia.MOD_ID + ":line_8_no_depth", DefaultVertexFormat.POSITION_COLOR, GL11.GL_LINES, 128, glState);
+        LINE_8_NO_DEPTH = makeLayer(Arconia.MOD_ID + ":line_8_no_depth", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.LINES, 128, glState);
         // https://github.com/Vazkii/Botania/blob/master/src/main/java/vazkii/botania/client/core/handler/BoundTileRenderer.java
         LINE_BUFFERS = MultiBufferSource.immediateWithBuffers(Util.make(() -> {
             Map<RenderType, BufferBuilder> ret = new IdentityHashMap<>();
@@ -136,5 +151,4 @@ public class OutlineBlockRenderer {
         buffer.vertex(mat, ax, ay, iz).color(r, g, b, a).endVertex();
         buffer.vertex(mat, ax, ay, az).color(r, g, b, a).endVertex();
     }
-
 }

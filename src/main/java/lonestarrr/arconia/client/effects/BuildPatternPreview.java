@@ -5,14 +5,14 @@ import lonestarrr.arconia.client.gui.render.OutlineBlockRenderer;
 import lonestarrr.arconia.common.core.BuildPattern;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.BuildPatternTier;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.event.RenderLevelLastEvent;
 
 import java.util.List;
 import java.util.Map;
@@ -84,12 +84,12 @@ public class BuildPatternPreview {
         lastLightLevel = 0;
     }
 
-    public static void render(RenderWorldLastEvent event) {
+    public static void render(RenderLevelLastEvent event) {
         renderPreview(event);
         showBadBlockPositions();
     }
 
-    private static void renderPreview(RenderWorldLastEvent event) {
+    private static void renderPreview(RenderLevelLastEvent event) {
         // "Animate" preview by cycling the light value based on game time
         if (!renderPreview) {
             return;
@@ -125,13 +125,13 @@ public class BuildPatternPreview {
                 if (patternBlockState.isAir()) {
                     continue;
                 }
-                GhostBlockRenderer.renderGhostBlock(event.getMatrixStack(), worldPos, patternBlockState, (int)lightLevel, scale);
+                GhostBlockRenderer.renderGhostBlock(event.getPoseStack(), worldPos, patternBlockState, (int)lightLevel, scale);
             } else if (!world.getBlockState(worldPos).getBlock().equals(patternBlockState.getBlock())) {
                 // A block is placed in the world that does not match the pattern - show a block outline indicating
                 // it as such
                 //float hue = gameTime % 100 / 100F; // cycle hue as animation effect
                 float hue = 0F;
-                OutlineBlockRenderer.renderOutline(event.getMatrixStack(), worldPos, hue, OutlineBlockRenderer.LINE_8_NO_DEPTH);
+                OutlineBlockRenderer.renderOutline(event.getPoseStack(), worldPos, hue, OutlineBlockRenderer.LINE_8_NO_DEPTH);
             }
         }
     }

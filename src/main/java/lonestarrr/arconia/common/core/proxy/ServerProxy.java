@@ -1,8 +1,8 @@
 package lonestarrr.arconia.common.core.proxy;
 
+import lonestarrr.arconia.common.Arconia;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import lonestarrr.arconia.common.Arconia;
 
 /**
  * Proxy code inspired by: http://jabelarminecraft.blogspot.com/p/minecraft-modding-organizing-your-proxy.html

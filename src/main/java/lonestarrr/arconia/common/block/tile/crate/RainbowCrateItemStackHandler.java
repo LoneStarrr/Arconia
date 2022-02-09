@@ -1,14 +1,12 @@
 package lonestarrr.arconia.common.block.tile.crate;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import lonestarrr.arconia.common.block.tile.crate.RainbowCrateInternalInventory;
 
 import javax.annotation.Nonnull;
 
