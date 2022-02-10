@@ -1,6 +1,6 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.HatTileEntity;
+import lonestarrr.arconia.common.block.tile.HatBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -14,8 +14,6 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-
-import javax.annotation.Nullable;
 
 /**
  * A leprechaun's hat. Used in combination with a pot of gold to collect resources.
@@ -35,7 +33,7 @@ public class Hat extends BaseEntityBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new HatTileEntity(pos, state);
+        return new HatBlockEntity(pos, state);
     }
 
         /**
@@ -51,8 +49,8 @@ public class Hat extends BaseEntityBlock {
          */
     public static boolean setResourceGenerated(Level world, BlockPos pos, RainbowColor tier, ItemStack resource, int interval, int coinCost) {
         BlockEntity te = world.getBlockEntity(pos);
-        if (te != null && te instanceof HatTileEntity) {
-            HatTileEntity rte = (HatTileEntity) te;
+        if (te != null && te instanceof HatBlockEntity) {
+            HatBlockEntity rte = (HatBlockEntity) te;
             rte.setResourceGenerated(tier, resource, interval, coinCost);
             return true;
         }

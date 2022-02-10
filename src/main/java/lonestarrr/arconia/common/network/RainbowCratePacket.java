@@ -1,13 +1,13 @@
 package lonestarrr.arconia.common.network;
 
-import lonestarrr.arconia.common.block.tile.RainbowCrateTileEntity;
+import lonestarrr.arconia.common.block.tile.RainbowCrateBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -47,12 +47,12 @@ public class RainbowCratePacket {
                 @Override
                 public void run() {
                     Minecraft mc = Minecraft.getInstance();
-                    Level world = mc.level;
-                    BlockEntity te = world.getBlockEntity(message.pos);
-                    if (te instanceof RainbowCrateTileEntity) {
-                        RainbowCrateTileEntity rcte = (RainbowCrateTileEntity)te;
-                        //rcte.receiveServerSideInventoryData(message.itemCounts);
-                        rcte.load(world.getBlockState(message.pos), message.inventory);
+                    Level level = mc.level;
+                    BlockEntity te = level.getBlockEntity(message.pos);
+                    if (te instanceof RainbowCrateBlockEntity) {
+                        RainbowCrateBlockEntity rcbe = (RainbowCrateBlockEntity)te;
+                        //rcbe.receiveServerSideInventoryData(message.itemCounts);
+                        rcbe.load(message.inventory);
                     }
                 }
             });

@@ -1,14 +1,13 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.ArconiumTreeRootTileEntity;
-import lonestarrr.arconia.common.block.tile.ModTiles;
+import lonestarrr.arconia.common.block.tile.ArconiumTreeRootBlockEntity;
+import lonestarrr.arconia.common.block.tile.ModBlockEntities;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -32,7 +31,7 @@ import java.util.Map;
  */
 public class ArconiumTreeRootBlock extends BaseEntityBlock implements BlockColor {
     private final RainbowColor tier;
-    private static final Map<RainbowColor, BlockEntityType<ArconiumTreeRootTileEntity>> tileEntityTypes =
+    private static final Map<RainbowColor, BlockEntityType<ArconiumTreeRootBlockEntity>> tileEntityTypes =
             new HashMap<>(RainbowColor.values().length);
     private static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
@@ -67,7 +66,7 @@ public class ArconiumTreeRootBlock extends BaseEntityBlock implements BlockColor
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new ArconiumTreeRootTileEntity(tier, pos, state);
+        return new ArconiumTreeRootBlockEntity(tier, pos, state);
     }
 
     @Nullable
@@ -75,13 +74,13 @@ public class ArconiumTreeRootBlock extends BaseEntityBlock implements BlockColor
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> type) {
         if (!level.isClientSide) {
-            return createTickerHelper(type, ModTiles.getTreeRootBlockTileEntityType(tier), ArconiumTreeRootTileEntity::tick);
+            return createTickerHelper(type, ModBlockEntities.getTreeRootBlockBlockEntityType(tier), ArconiumTreeRootBlockEntity::tick);
         }
         return null;
     }
 
-    public static BlockEntityType<ArconiumTreeRootTileEntity> getTileEntityTypeByTier(RainbowColor tier) {
-        return ModTiles.getTreeRootBlockTileEntityType(tier);
+    public static BlockEntityType<ArconiumTreeRootBlockEntity> getBlockEntityTypeByTier(RainbowColor tier) {
+        return ModBlockEntities.getTreeRootBlockBlockEntityType(tier);
     }
 
     @Override

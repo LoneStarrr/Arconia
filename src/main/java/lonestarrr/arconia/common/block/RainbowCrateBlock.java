@@ -1,9 +1,8 @@
 package lonestarrr.arconia.common.block;
 
 import lonestarrr.arconia.client.gui.crate.RainbowCrateContainer;
-import lonestarrr.arconia.common.block.tile.ArconiumTreeRootTileEntity;
-import lonestarrr.arconia.common.block.tile.ModTiles;
-import lonestarrr.arconia.common.block.tile.RainbowCrateTileEntity;
+import lonestarrr.arconia.common.block.tile.ModBlockEntities;
+import lonestarrr.arconia.common.block.tile.RainbowCrateBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
@@ -90,7 +89,7 @@ public class RainbowCrateBlock extends BaseEntityBlock implements BlockColor {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new RainbowCrateTileEntity(this.tier, pos, state);
+        return new RainbowCrateBlockEntity(this.tier, pos, state);
     }
 
     @Nullable
@@ -98,7 +97,7 @@ public class RainbowCrateBlock extends BaseEntityBlock implements BlockColor {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> type) {
         if (!level.isClientSide) {
-            return createTickerHelper(type, ModTiles.getRainbowCrateTileEntityType(tier), RainbowCrateTileEntity::tick);
+            return createTickerHelper(type, ModBlockEntities.getRainbowCrateBlockEntityType(tier), RainbowCrateBlockEntity::tick);
         }
         return null;
     }
@@ -133,8 +132,8 @@ public class RainbowCrateBlock extends BaseEntityBlock implements BlockColor {
     public void onRemove(BlockState state, Level world, BlockPos blockPos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity tileentity = world.getBlockEntity(blockPos);
-            if (tileentity instanceof RainbowCrateTileEntity) {
-                RainbowCrateTileEntity tileEntity = (RainbowCrateTileEntity) tileentity;
+            if (tileentity instanceof RainbowCrateBlockEntity) {
+                RainbowCrateBlockEntity tileEntity = (RainbowCrateBlockEntity) tileentity;
                 tileEntity.dropAllContents(world, blockPos);
             }
 //          world.updateComparatorOutputLevel(pos, this);  if the inventory is used to set redstone power for comparators

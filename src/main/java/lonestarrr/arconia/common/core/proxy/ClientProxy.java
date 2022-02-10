@@ -1,7 +1,7 @@
 package lonestarrr.arconia.common.core.proxy;
 
 import lonestarrr.arconia.client.core.handler.ColorHandler;
-import lonestarrr.arconia.client.core.handler.TileEntityRendererHandler;
+import lonestarrr.arconia.client.core.handler.BlockEntityRendererHandler;
 import lonestarrr.arconia.client.effects.BuildPatternPreview;
 import lonestarrr.arconia.client.effects.PotItemTransfers;
 import lonestarrr.arconia.client.effects.RainbowBeamRenderer;
@@ -33,7 +33,7 @@ public class ClientProxy implements IProxy {
         modBus.addListener(this::clientSetup);
         modBus.addListener(this::loadComplete);
         modBus.addListener(RainbowBeamRenderer::onTextureStitch);
-        modBus.addGenericListener(EntityRenderersEvent.class, TileEntityRendererHandler::registerBlockEntityRenderers);
+        modBus.addGenericListener(EntityRenderersEvent.class, BlockEntityRendererHandler::registerBlockEntityRenderers);
 
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
         forgeBus.addListener(BuildPatternPreview::render);

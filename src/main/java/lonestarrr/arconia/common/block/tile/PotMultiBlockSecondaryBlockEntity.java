@@ -1,17 +1,17 @@
 package lonestarrr.arconia.common.block.tile;
 
-import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
+import lonestarrr.arconia.common.lib.tile.BaseBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 
-public class PotMultiBlockSecondaryTileEntity extends BaseTileEntity {
+public class PotMultiBlockSecondaryBlockEntity extends BaseBlockEntity {
     BlockPos primaryPos;
 
-    public PotMultiBlockSecondaryTileEntity(BlockPos pos, BlockState state) {
-        super(ModTiles.POT_MULTIBLOCK_SECONDARY, pos, state);
+    public PotMultiBlockSecondaryBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.POT_MULTIBLOCK_SECONDARY, pos, state);
     }
 
     public void setPrimaryPos(@Nonnull final BlockPos primaryPos) {

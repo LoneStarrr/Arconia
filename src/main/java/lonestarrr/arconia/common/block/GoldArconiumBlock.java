@@ -1,6 +1,6 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.GoldArconiumTileEntity;
+import lonestarrr.arconia.common.block.tile.GoldArconiumBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.compat.theoneprobe.TOPDriver;
 import mcjty.theoneprobe.api.*;
@@ -9,7 +9,6 @@ import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -48,10 +47,10 @@ public class GoldArconiumBlock extends BaseEntityBlock implements BlockColor, TO
             ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
         // The One Probe extra block information
         BlockEntity te = world.getBlockEntity(data.getPos());
-        if (te == null || !(te instanceof GoldArconiumTileEntity)) {
+        if (te == null || !(te instanceof GoldArconiumBlockEntity)) {
             return;
         }
-        GoldArconiumTileEntity goldTE = (GoldArconiumTileEntity)te;
+        GoldArconiumBlockEntity goldTE = (GoldArconiumBlockEntity)te;
         int pct = goldTE.coinsLeftAsPercentage();
         probeInfo.progress(pct, 100, progressStyleTOP);
     }
@@ -59,6 +58,6 @@ public class GoldArconiumBlock extends BaseEntityBlock implements BlockColor, TO
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new GoldArconiumTileEntity(tier, false, pos, state);
+        return new GoldArconiumBlockEntity(tier, false, pos, state);
     }
 }

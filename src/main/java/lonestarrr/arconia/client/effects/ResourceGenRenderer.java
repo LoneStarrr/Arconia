@@ -1,11 +1,11 @@
 package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import lonestarrr.arconia.common.block.tile.ResourceGenTileEntity;
+import lonestarrr.arconia.common.block.tile.ResourceGenBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.ItemStack;
@@ -13,15 +13,13 @@ import net.minecraft.world.level.Level;
 
 import java.util.Random;
 
-public class ResourceGenRenderer extends BlockEntityRenderer<ResourceGenTileEntity> {
+public class ResourceGenRenderer implements BlockEntityRenderer<ResourceGenBlockEntity> {
 
-    public ResourceGenRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
-    }
+    public ResourceGenRenderer(BlockEntityRendererProvider.Context ctx) {}
 
     @Override
     public void render(
-            ResourceGenTileEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
+            ResourceGenBlockEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
             int combinedOverlay) {
         ItemStack stack = tileEntity.getItemStack();
         if (stack == ItemStack.EMPTY) {

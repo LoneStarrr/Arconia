@@ -14,12 +14,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.minecraftforge.common.util.FakePlayer;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
 
@@ -74,12 +76,12 @@ public class PlayerNeedsGuideBook implements LootItemCondition {
         return ModLootModifiers.PLAYER_NEEDS_GUIDEBOOK;
     }
 
-    public static class Serializer implements Serializer<PlayerNeedsGuideBook> {
+    public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<PlayerNeedsGuideBook> {
         @Override
-        public void serialize(JsonObject json, PlayerNeedsGuideBook condition, JsonSerializationContext ctx) {}
+        public void serialize(@Nonnull JsonObject json, @Nonnull PlayerNeedsGuideBook value, @Nonnull JsonSerializationContext context) {}
 
         @Override
-        public PlayerNeedsGuideBook deserialize(JsonObject json, JsonDeserializationContext ctx) {
+        public PlayerNeedsGuideBook deserialize(@Nonnull JsonObject json, @Nonnull JsonDeserializationContext context) {
             return new PlayerNeedsGuideBook();
         }
     }

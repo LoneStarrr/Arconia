@@ -3,27 +3,25 @@ package lonestarrr.arconia.client.effects;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
-import lonestarrr.arconia.common.block.tile.OrbTileEntity;
+import lonestarrr.arconia.common.block.tile.OrbBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public class OrbRenderer extends BlockEntityRenderer<OrbTileEntity> {
-    public OrbRenderer(BlockEntityRenderDispatcher dispatcher) {
-        super(dispatcher);
-    }
+public class OrbRenderer implements BlockEntityRenderer<OrbBlockEntity> {
+    public OrbRenderer(BlockEntityRendererProvider.Context ctx) {}
 
     @Override
     public void render(
-            OrbTileEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
+            OrbBlockEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
             int combinedOverlay) {
         List<ItemStack> items = tileEntity.getItems();
         if (items.isEmpty()) {
@@ -59,7 +57,7 @@ public class OrbRenderer extends BlockEntityRenderer<OrbTileEntity> {
             matrixStack.translate(0.3f, 0.0f, 0.0f);
             matrixStack.scale(0.4f, 0.4f, 0.4f);
             Minecraft.getInstance().getItemRenderer()
-                    .renderStatic(item, ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
+                    .renderStatic(item, ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer, 0);
             matrixStack.popPose();
         }
 

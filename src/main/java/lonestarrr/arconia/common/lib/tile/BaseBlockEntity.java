@@ -14,8 +14,8 @@ import javax.annotation.Nonnull;
 
 /** Base class for tile entities that implements the standard data syncing
  */
-public abstract class BaseTileEntity extends BlockEntity {
-    public BaseTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+public abstract class BaseBlockEntity extends BlockEntity {
+    public BaseBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 

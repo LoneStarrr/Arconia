@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.RegistryEvent;
 
@@ -16,9 +17,8 @@ import java.util.Map;
  * Register new recipe types for custom crafting methods
  */
 public class ModRecipeTypes {
-    public static final RecipeType<IPedestalRecipe> PEDESTAL_TYPE = new RecipeType<>(); // Crafting with pedestals
+    public static final RecipeType<IPedestalRecipe> PEDESTAL_TYPE = RecipeType.register("arconia_pedestal"); // Crafting with pedestals
     public static final RecipeSerializer<PedestalRecipe> PEDESTAL_SERIALIZER = new PedestalRecipe.Serializer();
-
 
     public static void registerRecipeTypes(RegistryEvent.Register<RecipeSerializer<?>> event) {
         ResourceLocation id = new ResourceLocation(Arconia.MOD_ID, "pedestal");
@@ -28,17 +28,8 @@ public class ModRecipeTypes {
 
     }
 
-    private static class RecipeType<T extends Recipe<?>> implements RecipeType<T> {
-        @Override
-        public String toString() {
-            return Registry.RECIPE_TYPE.getKey(this).toString();
-        }
-    }
-
     public static <C extends Container, T extends Recipe<C>> Map<ResourceLocation, Recipe<C>> getRecipes(Level world, RecipeType<T> type) {
-        // RecipeManger.getRecipes() is private, custom mixin makes it available
+        // RecipeManger.byType() is private, custom mixin makes it available
         return ((AccessorRecipeManager) world.getRecipeManager()).arconia_getRecipes(type);
     }
-
-
 }

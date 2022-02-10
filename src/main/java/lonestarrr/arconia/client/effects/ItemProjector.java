@@ -58,7 +58,7 @@ public class ItemProjector {
         matrixStack.scale(scale, scale, scale);
 
         Minecraft.getInstance().getItemRenderer()
-                .renderStatic(stack, ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
+                .renderStatic(stack, ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer, 0);
         matrixStack.popPose();
     }
 }

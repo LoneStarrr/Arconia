@@ -1,6 +1,6 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.ResourceGenTileEntity;
+import lonestarrr.arconia.common.block.tile.ResourceGenBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.core.BlockPos;
@@ -69,10 +69,10 @@ public class RainbowCropBlock extends CropBlock {
         }
 
         BlockEntity te = worldIn.getBlockEntity(pos);
-        if (te == null || !(te instanceof ResourceGenTileEntity)) {
+        if (te == null || !(te instanceof ResourceGenBlockEntity)) {
             return false;
         }
-        ResourceGenTileEntity rgte = (ResourceGenTileEntity)te;
+        ResourceGenBlockEntity rgte = (ResourceGenBlockEntity)te;
         RainbowColor tier = rgte.getTier();
         // Only can be placed on  blocks of the same or higher tier
         return tier.compareTo(this.color) >= 0;

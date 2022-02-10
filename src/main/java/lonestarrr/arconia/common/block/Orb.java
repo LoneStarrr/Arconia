@@ -1,8 +1,7 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.ArconiumTreeRootTileEntity;
-import lonestarrr.arconia.common.block.tile.ModTiles;
-import lonestarrr.arconia.common.block.tile.OrbTileEntity;
+import lonestarrr.arconia.common.block.tile.ModBlockEntities;
+import lonestarrr.arconia.common.block.tile.OrbBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -59,7 +58,7 @@ public class Orb extends BaseEntityBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new OrbTileEntity(pos, state);
+        return new OrbBlockEntity(pos, state);
     }
 
     @Nullable
@@ -67,7 +66,7 @@ public class Orb extends BaseEntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> type) {
         if (!level.isClientSide) {
-            return createTickerHelper(type, ModTiles.ORB, OrbTileEntity::tick);
+            return createTickerHelper(type, ModBlockEntities.ORB, OrbBlockEntity::tick);
         }
         return null;
     }
@@ -76,9 +75,9 @@ public class Orb extends BaseEntityBlock {
     public InteractionResult use(
             BlockState blockState, Level world, BlockPos blockPos, Player playerEntity, InteractionHand hand, BlockHitResult rayTraceResult) {
 //        return super.onBlockActivated(blockState, world, blockPos, playerEntity, hand, rayTraceResult);
-        OrbTileEntity tile = null;
-        if (world.getBlockEntity(blockPos) != null && world.getBlockEntity(blockPos) instanceof OrbTileEntity) {
-            tile = (OrbTileEntity) world.getBlockEntity(blockPos);
+        OrbBlockEntity tile = null;
+        if (world.getBlockEntity(blockPos) != null && world.getBlockEntity(blockPos) instanceof OrbBlockEntity) {
+            tile = (OrbBlockEntity) world.getBlockEntity(blockPos);
         }
 
         if (tile == null) {

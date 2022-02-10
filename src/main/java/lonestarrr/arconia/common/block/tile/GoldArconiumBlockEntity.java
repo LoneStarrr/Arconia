@@ -2,7 +2,7 @@ package lonestarrr.arconia.common.block.tile;
 
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
-import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
+import lonestarrr.arconia.common.lib.tile.BaseBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
  * Gold Arconium blocks are used as a gold source for the pot of gold multiblock. This entity tracks the available gold before it is depleted, and manages
  * gold coin collection interval / counts.
  */
-public class GoldArconiumTileEntity extends BaseTileEntity {
+public class GoldArconiumBlockEntity extends BaseBlockEntity {
     public static final String TAG_COINS = "coins"; //nbt tag
     public static final String TAG_INFINITE = "infinite"; //nbt tag
 
@@ -25,8 +25,8 @@ public class GoldArconiumTileEntity extends BaseTileEntity {
      * @param tier
      * @param infinite
      */
-    public GoldArconiumTileEntity(RainbowColor tier, boolean infinite, BlockPos pos, BlockState state) {
-        super(infinite ? ModTiles.getInfiniteGoldArconiumTileEntityType(tier) : ModTiles.getGoldArconiumTileEntityType(tier), pos, state);
+    public GoldArconiumBlockEntity(RainbowColor tier, boolean infinite, BlockPos pos, BlockState state) {
+        super(infinite ? ModBlockEntities.getInfiniteGoldArconiumBlockEntityType(tier) : ModBlockEntities.getGoldArconiumBlockEntityType(tier), pos, state);
         this.tier = tier;
         setInitialCoinCount();
         this.infinite = infinite;

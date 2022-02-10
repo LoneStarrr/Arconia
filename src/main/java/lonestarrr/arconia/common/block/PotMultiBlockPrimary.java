@@ -1,9 +1,9 @@
 package lonestarrr.arconia.common.block;
 
 import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.tile.ModTiles;
-import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryTileEntity;
-import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryTileEntity;
+import lonestarrr.arconia.common.block.tile.ModBlockEntities;
+import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryBlockEntity;
+import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -33,14 +33,14 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new PotMultiBlockPrimaryTileEntity(pos, state); }
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new PotMultiBlockPrimaryBlockEntity(pos, state); }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> type) {
         if (!level.isClientSide) {
-            return createTickerHelper(type, ModTiles.POT_MULTIBLOCK_PRIMARY, PotMultiBlockPrimaryTileEntity::tick);
+            return createTickerHelper(type, ModBlockEntities.POT_MULTIBLOCK_PRIMARY, PotMultiBlockPrimaryBlockEntity::tick);
         }
         return null;
     }
@@ -82,12 +82,12 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
                     }
                     world.setBlock(toReplace, ModBlocks.potMultiBlockSecondary.defaultBlockState(), 3);
                     BlockEntity te = world.getBlockEntity(toReplace);
-                    if (te == null || !(te instanceof PotMultiBlockSecondaryTileEntity)) {
+                    if (te == null || !(te instanceof PotMultiBlockSecondaryBlockEntity)) {
                         Arconia.logger.error("Error setting up pot multiblock - expected to find a secondary multiblock tile entity at " + toReplace);
                         return false;
                     }
-                    PotMultiBlockSecondaryTileEntity secondaryTE = (PotMultiBlockSecondaryTileEntity) te;
-                    ((PotMultiBlockSecondaryTileEntity) te).setPrimaryPos(primaryPos);
+                    PotMultiBlockSecondaryBlockEntity secondaryTE = (PotMultiBlockSecondaryBlockEntity) te;
+                    ((PotMultiBlockSecondaryBlockEntity) te).setPrimaryPos(primaryPos);
                 }
             }
         }
@@ -100,7 +100,7 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
         }
 
         BlockEntity te = world.getBlockEntity(primaryPos);
-        if (te == null || !(te instanceof PotMultiBlockPrimaryTileEntity)) {
+        if (te == null || !(te instanceof PotMultiBlockPrimaryBlockEntity)) {
             return;
         }
 

@@ -1,7 +1,7 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryTileEntity;
-import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryTileEntity;
+import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryBlockEntity;
+import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryBlockEntity;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
 import lonestarrr.arconia.compat.theoneprobe.TOPDriver;
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -31,8 +31,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayer;
-
-import javax.annotation.Nullable;
 
 /**
  * Block that is part of a large multiblock pot - this is the secondary, passive block. It is invisible in the world, as the primary block
@@ -69,7 +67,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
             return InteractionResult.PASS;
         }
 
-        PotMultiBlockPrimaryTileEntity primTile = getPrimaryTileEntity(world, pos);
+        PotMultiBlockPrimaryBlockEntity primTile = getPrimaryTileEntity(world, pos);
         if (primTile == null) {
             return InteractionResult.PASS;
         }
@@ -84,7 +82,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new PotMultiBlockSecondaryTileEntity(pos, state); }
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new PotMultiBlockSecondaryBlockEntity(pos, state); }
 
         // inspired by Barrier block
     @Override
@@ -116,21 +114,21 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
 
     private BlockPos getPrimaryBlockPos(Level world, BlockPos pos) {
         BlockEntity te = world.getBlockEntity(pos);
-        if (te == null || !(te instanceof PotMultiBlockSecondaryTileEntity)) {
+        if (te == null || !(te instanceof PotMultiBlockSecondaryBlockEntity)) {
             return null;
         }
-        PotMultiBlockSecondaryTileEntity secondaryTE = (PotMultiBlockSecondaryTileEntity) te;
+        PotMultiBlockSecondaryBlockEntity secondaryTE = (PotMultiBlockSecondaryBlockEntity) te;
         return secondaryTE.getPrimaryPos();
     }
 
-    private PotMultiBlockPrimaryTileEntity getPrimaryTileEntity(Level world, BlockPos pos) {
+    private PotMultiBlockPrimaryBlockEntity getPrimaryTileEntity(Level world, BlockPos pos) {
         BlockPos primaryPos = getPrimaryBlockPos(world, pos);
         if (primaryPos == null) {
             return null;
         }
 
         BlockEntity te = world.getBlockEntity(primaryPos);
-        return te != null && te instanceof PotMultiBlockPrimaryTileEntity ? (PotMultiBlockPrimaryTileEntity) te : null;
+        return te != null && te instanceof PotMultiBlockPrimaryBlockEntity ? (PotMultiBlockPrimaryBlockEntity) te : null;
     }
 
     /**
@@ -145,11 +143,11 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
     public VoxelShape getShape(
             BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         BlockEntity te = worldIn.getBlockEntity(pos);
-        if (te == null || !(te instanceof PotMultiBlockSecondaryTileEntity)) {
+        if (te == null || !(te instanceof PotMultiBlockSecondaryBlockEntity)) {
             return defaultShape;
         }
-        PotMultiBlockSecondaryTileEntity secondaryTE = (PotMultiBlockSecondaryTileEntity)te;
-        BlockPos primaryPos = ((PotMultiBlockSecondaryTileEntity) te).getPrimaryPos();
+        PotMultiBlockSecondaryBlockEntity secondaryTE = (PotMultiBlockSecondaryBlockEntity)te;
+        BlockPos primaryPos = ((PotMultiBlockSecondaryBlockEntity) te).getPrimaryPos();
         if (primaryPos == null) {
             return defaultShape;
         }
@@ -203,7 +201,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
     @Override
     public void addProbeInfo(
             ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
-        PotMultiBlockPrimaryTileEntity entity = getPrimaryTileEntity(world, data.getPos());
+        PotMultiBlockPrimaryBlockEntity entity = getPrimaryTileEntity(world, data.getPos());
         if (entity == null) {
             return;
         }

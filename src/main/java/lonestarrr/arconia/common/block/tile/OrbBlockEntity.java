@@ -1,7 +1,7 @@
 package lonestarrr.arconia.common.block.tile;
 
 import lonestarrr.arconia.common.core.helper.InventoryHelper;
-import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
+import lonestarrr.arconia.common.lib.tile.BaseBlockEntity;
 import lonestarrr.arconia.common.network.ModPackets;
 import lonestarrr.arconia.common.network.OrbLaserPacket;
 import net.minecraft.core.BlockPos;
@@ -24,7 +24,7 @@ import java.util.List;
  * Responsible for pulling in nearby item entities of a specific type, like a magnet. If an inventory is below the tile entity, it will attempt to
  * store them in there.  Has no buffer of its own.
  */
-public class OrbTileEntity extends BaseTileEntity {
+public class OrbBlockEntity extends BaseBlockEntity {
     private List<ItemStack> itemsToPull = new ArrayList<>();
     private static final int MAX_ITEMS = 9;
     public static final String TAG_ITEM = "item";
@@ -32,8 +32,8 @@ public class OrbTileEntity extends BaseTileEntity {
     private static final int RANGE = 10;
     private int ticksElapsed;
 
-    public OrbTileEntity(BlockPos pos, BlockState state) {
-        super(ModTiles.ORB, pos, state);
+    public OrbBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.ORB, pos, state);
     }
 
     public boolean addItem(ItemStack item) {
@@ -90,7 +90,7 @@ public class OrbTileEntity extends BaseTileEntity {
         }
     }
 
-    public static void tick(Level level, BlockPos pos, BlockState state, OrbTileEntity blockEntity) {
+    public static void tick(Level level, BlockPos pos, BlockState state, OrbBlockEntity blockEntity) {
         blockEntity.tickInternal(level, pos, state);
     }
 

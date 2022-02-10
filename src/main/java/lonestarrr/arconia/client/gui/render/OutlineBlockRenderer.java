@@ -15,6 +15,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import org.lwjgl.opengl.GL11;
 
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 /**
  * Renders block outlines
  */
+@OnlyIn(Dist.CLIENT)
 public class OutlineBlockRenderer extends RenderType {
     private static final RenderStateShard.TransparencyStateShard TRANSLUCENT_TRANSPARENCY;
     private static final MultiBufferSource.BufferSource LINE_BUFFERS;

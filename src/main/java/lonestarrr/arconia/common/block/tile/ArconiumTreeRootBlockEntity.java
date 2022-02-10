@@ -4,7 +4,7 @@ import lonestarrr.arconia.common.block.ArconiumTreeLeaves;
 import lonestarrr.arconia.common.block.ArconiumTreeRootBlock;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
+import lonestarrr.arconia.common.lib.tile.BaseBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -26,7 +25,7 @@ import java.util.*;
 /**
  * Responsible for morphing tree leaves into the next tier's leaves.
  */
-public class ArconiumTreeRootTileEntity extends BaseTileEntity {
+public class ArconiumTreeRootBlockEntity extends BaseBlockEntity {
     private static final int LOOT_DROP_INTERVAL = 100; // How often to drop loot
 
     private static final String TAG_LEAF_CHANGER = "leafChanger";
@@ -40,11 +39,11 @@ public class ArconiumTreeRootTileEntity extends BaseTileEntity {
     private boolean hasNextTier;
     private LeafChanger leafChanger;
 
-    public ArconiumTreeRootTileEntity(RainbowColor tier, BlockPos pos, BlockState state) {
-        this(ArconiumTreeRootBlock.getTileEntityTypeByTier(tier), tier, pos, state);
+    public ArconiumTreeRootBlockEntity(RainbowColor tier, BlockPos pos, BlockState state) {
+        this(ArconiumTreeRootBlock.getBlockEntityTypeByTier(tier), tier, pos, state);
     }
 
-    public ArconiumTreeRootTileEntity(BlockEntityType<?> tileEntityTypeIn, RainbowColor tier, BlockPos pos, BlockState state) {
+    public ArconiumTreeRootBlockEntity(BlockEntityType<?> tileEntityTypeIn, RainbowColor tier, BlockPos pos, BlockState state) {
         super(tileEntityTypeIn, pos, state);
         this.tier = tier;
         RainbowColor nextTier = tier.getNextTier();
@@ -62,7 +61,7 @@ public class ArconiumTreeRootTileEntity extends BaseTileEntity {
         return tier;
     }
 
-    public static void tick(Level level, BlockPos pos, BlockState state, ArconiumTreeRootTileEntity blockEntity) {
+    public static void tick(Level level, BlockPos pos, BlockState state, ArconiumTreeRootBlockEntity blockEntity) {
         blockEntity.tickInternal(level, pos, state);
     }
 
@@ -111,7 +110,7 @@ LeafChanger {
     private static final String TAG_INTERVAL_COUNT = "intervalCount";
 
 
-    private final ArconiumTreeRootTileEntity tile;
+    private final ArconiumTreeRootBlockEntity tile;
     private final BlockState toChangeTo;
 
     // Parameters determining speed/chance, tiered
@@ -125,7 +124,7 @@ LeafChanger {
     private long lastInterval;
     private LinkedList<BlockPos> nearbyLeaves;
 
-    public LeafChanger(@Nonnull ArconiumTreeRootTileEntity tile, @Nonnull BlockState toChangeTo) {
+    public LeafChanger(@Nonnull ArconiumTreeRootBlockEntity tile, @Nonnull BlockState toChangeTo) {
         this.tile = tile;
         final int tierNum = tile.getTier().getTier(); // higher tier -> higher ordinal, 1..
         changeInterval = 60 * 20 * (long) Math.pow(1.5, tierNum - 1);
@@ -231,10 +230,10 @@ class LeafDropLootDispenser {
     private int lastLeafScanTick;
     private int tickCount = 0;
     final private int dropInterval;
-    final private ArconiumTreeRootTileEntity tileEntity;
+    final private ArconiumTreeRootBlockEntity tileEntity;
     final private Random rand;
 
-    public LeafDropLootDispenser(ArconiumTreeRootTileEntity tileEntity, int dropInterval) {
+    public LeafDropLootDispenser(ArconiumTreeRootBlockEntity tileEntity, int dropInterval) {
         this.dropInterval = dropInterval;
         this.tileEntity = tileEntity;
         lastLeafScanTick = -10000;
@@ -257,7 +256,7 @@ class LeafDropLootDispenser {
         }
 
         // Locate ResourceGen blocks around the tree root that have a resource tree leaf above it of a valid tier
-        List<Pair<ResourceGenTileEntity, BlockPos>> generatorsAndLeaves = new ArrayList<>();
+        List<Pair<ResourceGenBlockEntity, BlockPos>> generatorsAndLeaves = new ArrayList<>();
 
         int scanRadius = 1;
         BlockPos startPos = tileEntity.getBlockPos().offset(-scanRadius, 0, -scanRadius);
@@ -265,8 +264,8 @@ class LeafDropLootDispenser {
 
         for(BlockPos scanPos: BlockPos.betweenClosed(startPos, endPos)) {
             BlockEntity te = world.getBlockEntity(scanPos);
-            if (te !=null && te instanceof ResourceGenTileEntity) {
-                ResourceGenTileEntity rte = (ResourceGenTileEntity) te;
+            if (te !=null && te instanceof ResourceGenBlockEntity) {
+                ResourceGenBlockEntity rte = (ResourceGenBlockEntity) te;
                 if (rte.getTier().compareTo(tileEntity.getTier()) <= 0) {
                     // only consider resource generators with a valid leaf over them, THEN pick one or more of those to dispense loot
                     BlockPos leafPos = findLeaf(scanPos.getX(), scanPos.getY(), scanPos.getZ(), rte.getTier());
@@ -281,7 +280,7 @@ class LeafDropLootDispenser {
         Collections.shuffle(generatorsAndLeaves);
         int maxGenerators = 1;
         for (int i = 0; i < maxGenerators && i < generatorsAndLeaves.size(); i++) {
-            Pair<ResourceGenTileEntity, BlockPos> pair = generatorsAndLeaves.get(i);
+            Pair<ResourceGenBlockEntity, BlockPos> pair = generatorsAndLeaves.get(i);
             dispenseLoot(pair.getLeft(), pair.getRight());
         }
     }
@@ -340,7 +339,7 @@ class LeafDropLootDispenser {
      * Dispense loot, such that it appears as if it 'rains' from the leaves.
      * @param leafPos Block position that contains an arconium tree leaf
      */
-    private void dispenseLoot(ResourceGenTileEntity generator, BlockPos leafPos) {
+    private void dispenseLoot(ResourceGenBlockEntity generator, BlockPos leafPos) {
         Level world = tileEntity.getLevel();
         if (world.isClientSide) {
             return;

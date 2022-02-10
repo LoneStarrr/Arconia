@@ -3,8 +3,8 @@ package lonestarrr.arconia.common.item;
 import lonestarrr.arconia.common.advancements.PotOfGoldTrigger;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.PotMultiBlockPrimary;
-import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryTileEntity;
-import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryTileEntity;
+import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryBlockEntity;
+import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryBlockEntity;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -77,11 +77,11 @@ public class CloverStaff extends Item {
         String lang = LANG_PREFIX + ".linkhat";
 
         BlockEntity te = world.getBlockEntity(potPos);
-        if (te == null || !(te instanceof PotMultiBlockPrimaryTileEntity)) {
+        if (te == null || !(te instanceof PotMultiBlockPrimaryBlockEntity)) {
             lang += ".invalidpot";
         } else {
             // TODO the hat must track which pot it is linked to as well - to prevent double linking/unlinkin the wrong one
-            PotMultiBlockPrimaryTileEntity potTE = (PotMultiBlockPrimaryTileEntity) te;
+            PotMultiBlockPrimaryBlockEntity potTE = (PotMultiBlockPrimaryBlockEntity) te;
             if (potTE.isHatLinked(hatPos)) {
                 if (potTE.unlinkHat(hatPos)) {
                     lang += ".unlinked";
@@ -92,7 +92,7 @@ public class CloverStaff extends Item {
                 try {
                     potTE.linkHat(hatPos);
                     lang += ".linked";
-                } catch (PotMultiBlockPrimaryTileEntity.LinkHatException exc) {
+                } catch (PotMultiBlockPrimaryBlockEntity.LinkHatException exc) {
                     switch (exc.code) {
                         case HAT_TOO_FAR:
                             lang += ".toofar";
@@ -128,10 +128,10 @@ public class CloverStaff extends Item {
 
     private static BlockPos storePotCoordinate(Level world, BlockPos pos, ItemStack staff) {
         BlockEntity te = world.getBlockEntity(pos);
-        if (!(te instanceof PotMultiBlockSecondaryTileEntity)) {
+        if (!(te instanceof PotMultiBlockSecondaryBlockEntity)) {
             return null;
         }
-        PotMultiBlockSecondaryTileEntity potTE = (PotMultiBlockSecondaryTileEntity) te;
+        PotMultiBlockSecondaryBlockEntity potTE = (PotMultiBlockSecondaryBlockEntity) te;
         BlockPos primaryPos = potTE.getPrimaryPos();
         if (primaryPos != null) {
             CompoundTag tag = staff.getOrCreateTag();

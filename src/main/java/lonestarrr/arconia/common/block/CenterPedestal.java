@@ -1,8 +1,7 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.ArconiumTreeRootTileEntity;
-import lonestarrr.arconia.common.block.tile.CenterPedestalTileEntity;
-import lonestarrr.arconia.common.block.tile.ModTiles;
+import lonestarrr.arconia.common.block.tile.CenterPedestalBlockEntity;
+import lonestarrr.arconia.common.block.tile.ModBlockEntities;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.Util;
@@ -17,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -61,14 +59,14 @@ public class CenterPedestal extends BaseEntityBlock {
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new CenterPedestalTileEntity(pos, state); }
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new CenterPedestalBlockEntity(pos, state); }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> type) {
         if (!level.isClientSide) {
-            return createTickerHelper(type, ModTiles.CENTER_PEDESTAL, CenterPedestalTileEntity::tick);
+            return createTickerHelper(type, ModBlockEntities.CENTER_PEDESTAL, CenterPedestalBlockEntity::tick);
         }
         return null;
     }
@@ -80,10 +78,10 @@ public class CenterPedestal extends BaseEntityBlock {
         ItemStack playerStack = player.getItemInHand(hand);
 
         BlockEntity tile = world.getBlockEntity(pos);
-        if (tile == null || !(tile instanceof CenterPedestalTileEntity)) {
+        if (tile == null || !(tile instanceof CenterPedestalBlockEntity)) {
             return InteractionResult.PASS;
         }
-        CenterPedestalTileEntity cte = (CenterPedestalTileEntity) tile;
+        CenterPedestalBlockEntity cte = (CenterPedestalBlockEntity) tile;
 
         if (!cte.getItemOnDisplay().isEmpty()) {
             ItemStack displayedItem = cte.getItemOnDisplay();

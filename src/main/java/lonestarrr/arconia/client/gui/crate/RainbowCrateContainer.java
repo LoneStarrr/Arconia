@@ -1,7 +1,7 @@
 package lonestarrr.arconia.client.gui.crate;
 
 import lonestarrr.arconia.common.block.RainbowCrateBlock;
-import lonestarrr.arconia.common.block.tile.RainbowCrateTileEntity;
+import lonestarrr.arconia.common.block.tile.RainbowCrateBlockEntity;
 import lonestarrr.arconia.common.block.tile.crate.RainbowCrateItemStackHandler;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.core.BlockPos;
@@ -73,8 +73,8 @@ public class RainbowCrateContainer extends AbstractContainerMenu {
             }
         }
 
-        if (RainbowCrateTileEntity.NUM_SLOTS != chestContents.getSlots()) {
-            LOGGER.warn("Mismatched slot count in RainbowCrateContainer(" + RainbowCrateTileEntity.NUM_SLOTS
+        if (RainbowCrateBlockEntity.NUM_SLOTS != chestContents.getSlots()) {
+            LOGGER.warn("Mismatched slot count in RainbowCrateContainer(" + RainbowCrateBlockEntity.NUM_SLOTS
                     + ") and TileInventory (" + chestContents.getSlots()+")");
         }
 
@@ -82,9 +82,9 @@ public class RainbowCrateContainer extends AbstractContainerMenu {
         final int SLOT_X_SPACING = 18;
         final int SLOT_Y_SPACING = 21;
         // Add the tile inventory container to the gui
-        for (int y =0; y < RainbowCrateTileEntity.ROWS; y++) {
-            for (int x = 0; x < RainbowCrateTileEntity.COLUMNS; x++) {
-                int slotNumber = y * RainbowCrateTileEntity.COLUMNS + x;
+        for (int y = 0; y < RainbowCrateBlockEntity.ROWS; y++) {
+            for (int x = 0; x < RainbowCrateBlockEntity.COLUMNS; x++) {
+                int slotNumber = y * RainbowCrateBlockEntity.COLUMNS + x;
                 addSlot(new SlotItemHandler(chestContents, slotNumber, TILE_INVENTORY_XPOS + SLOT_X_SPACING * x,
                         TILE_INVENTORY_YPOS + y * SLOT_Y_SPACING));
             }
@@ -99,13 +99,13 @@ public class RainbowCrateContainer extends AbstractContainerMenu {
         BlockPos tileEntityPos = extraData.readBlockPos();
         BlockEntity te = playerInventory.player.level.getBlockEntity(tileEntityPos);
         RainbowCrateItemStackHandler inventory;
-        if (te instanceof RainbowCrateTileEntity) {
-            RainbowCrateTileEntity rcte = (RainbowCrateTileEntity)te;
+        if (te instanceof RainbowCrateBlockEntity) {
+            RainbowCrateBlockEntity rcte = (RainbowCrateBlockEntity)te;
             inventory = rcte.getInventory();
         } else {
             // TODO can I just return null here and expect that to do something meaningfully?
             LOGGER.warn("Tile entity no longer exists for rainbow crate?");
-            inventory = RainbowCrateTileEntity.createInventory(tier);
+            inventory = RainbowCrateBlockEntity.createInventory(tier);
         }
         return new RainbowCrateContainer(tier, windowId, playerInventory, inventory);
     }
@@ -134,7 +134,7 @@ public class RainbowCrateContainer extends AbstractContainerMenu {
         if (!isCrateSlot(sourceSlotIndex)) {
             // This is a vanilla container slot so merge the stack into the tile inventory
             if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX,
-                    TE_INVENTORY_FIRST_SLOT_INDEX + RainbowCrateTileEntity.NUM_SLOTS,
+                    TE_INVENTORY_FIRST_SLOT_INDEX + RainbowCrateBlockEntity.NUM_SLOTS,
                     false)){
                 return ItemStack.EMPTY;  // EMPTY_ITEM
             }
@@ -164,7 +164,7 @@ public class RainbowCrateContainer extends AbstractContainerMenu {
     }
 
     private boolean isCrateSlot(int slotIndex) {
-        return slotIndex >= TE_INVENTORY_FIRST_SLOT_INDEX && slotIndex < TE_INVENTORY_FIRST_SLOT_INDEX + RainbowCrateTileEntity.NUM_SLOTS;
+        return slotIndex >= TE_INVENTORY_FIRST_SLOT_INDEX && slotIndex < TE_INVENTORY_FIRST_SLOT_INDEX + RainbowCrateBlockEntity.NUM_SLOTS;
     }
 
     /**

@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * Tile Entity responsible for processing pedestal crafting rituals
  */
-public class CenterPedestalTileEntity extends BasePedestalTileEntity {
+public class CenterPedestalBlockEntity extends BasePedestalTileEntity {
     private boolean ritualOngoing = false; // persisted
     private float ritualTicksElapsed = 0; // persisted
     private ResourceLocation currentRecipeID; // persisted
@@ -32,8 +32,8 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity {
     private static final String TAG_ELAPSED = "ritualTicksElapsed";
     private static final long TICK_UPDATE_INTERVAL = 20; // How often to do work in tick()
 
-    public CenterPedestalTileEntity(BlockPos pos, BlockState state) {
-        super(ModTiles.CENTER_PEDESTAL, pos, state);
+    public CenterPedestalBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.CENTER_PEDESTAL, pos, state);
     }
 
     private IPedestalRecipe getCurrentRecipe() {
@@ -82,7 +82,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity {
             return false;
         }
 
-        List<PedestalTileEntity> pedestals = findPedestals();
+        List<PedestalBlockEntity> pedestals = findPedestals();
         Arconia.logger.debug("Found " + pedestals.size() + " ritual pedestal(s)");
         SimpleContainer inv = getPedestalItems(pedestals);
 
@@ -126,7 +126,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity {
             return;
         }
 
-        List<PedestalTileEntity> pedestals = findPedestals();
+        List<PedestalBlockEntity> pedestals = findPedestals();
         SimpleContainer inv = getPedestalItems(pedestals);
 
         if (currentRecipe.matches(inv, level)) {
@@ -137,7 +137,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity {
         resetRitual();
     }
 
-    private void consumePedestalItems(List<PedestalTileEntity> pedestals) {
+    private void consumePedestalItems(List<PedestalBlockEntity> pedestals) {
         pedestals.forEach(pedestal->pedestal.removeItem());
     }
 
@@ -161,18 +161,18 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity {
     }
 
     // Find nearby pedestals
-    private List<PedestalTileEntity> findPedestals() {
-        List<PedestalTileEntity> pedestals = new ArrayList<>();
+    private List<PedestalBlockEntity> findPedestals() {
+        List<PedestalBlockEntity> pedestals = new ArrayList<>();
 
         for (BlockPos posNear: BlockPos.betweenClosed(worldPosition.west(3).north(3), worldPosition.east(3).south(3))) {
             BlockEntity te = level.getBlockEntity(posNear);
             if (te == null) {
                 continue;
             }
-            if (!(te instanceof PedestalTileEntity)) {
+            if (!(te instanceof PedestalBlockEntity)) {
                 continue;
             }
-            PedestalTileEntity pte = (PedestalTileEntity) te;
+            PedestalBlockEntity pte = (PedestalBlockEntity) te;
             // TODO pedestals should link to 1 specific center pedestal, done when placing down, but I did not build that yet. So yeeeeah you can cheat the
             // system by sharing a single pedestal with MULTIPLE crafting setups! :)
             pedestals.add(pte);
@@ -180,9 +180,9 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity {
         return pedestals;
     }
 
-    private SimpleContainer getPedestalItems(List<PedestalTileEntity> pedestals) {
+    private SimpleContainer getPedestalItems(List<PedestalBlockEntity> pedestals) {
         List<ItemStack> stacks = new ArrayList<>(pedestals.size());
-        for (PedestalTileEntity entity: pedestals) {
+        for (PedestalBlockEntity entity: pedestals) {
             if (!entity.getItemOnDisplay().isEmpty()) {
                 stacks.add(entity.getItemOnDisplay());
             }
@@ -206,7 +206,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity {
         return null;
     }
 
-    public static void tick(Level level, BlockPos pos, BlockState state, CenterPedestalTileEntity blockEntity) {
+    public static void tick(Level level, BlockPos pos, BlockState state, CenterPedestalBlockEntity blockEntity) {
         blockEntity.tickInternal(level, pos, state);
     }
 

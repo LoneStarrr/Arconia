@@ -5,6 +5,7 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import lonestarrr.arconia.common.core.helper.VectorHelper;
+import lonestarrr.arconia.mixin.client.AccessorRenderType;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -59,7 +60,7 @@ public class RainbowRenderer {
         // FIXME How am I supposed to indicate that I'm done drawing? Closing the polygon? Nope. This here works, but something
         // tells me I am not supposed to be doing this this way.
         RainbowSegmentRenderType.RAINBOW_SEGMENT.end((BufferBuilder)builder, 0, 0, 0);
-        ((BufferBuilder)builder).begin(GL11.GL_QUADS, DefaultVertexFormat.POSITION_COLOR);
+        ((BufferBuilder)builder).begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
         matrixStack.popPose();
     }
@@ -98,20 +99,20 @@ public class RainbowRenderer {
  */
 @OnlyIn(Dist.CLIENT)
 class RainbowSegmentRenderType extends RenderType {
+    // Default constructor to satisfy compiler
     public RainbowSegmentRenderType(
-            String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn,
-            boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
-        super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
+            String p_173178_, VertexFormat p_173179_, VertexFormat.Mode p_173180_, int p_173181_, boolean p_173182_, boolean p_173183_,
+            Runnable p_173184_, Runnable p_173185_) {
+        super(p_173178_, p_173179_, p_173180_, p_173181_, p_173182_, p_173183_, p_173184_, p_173185_);
     }
 
-    public static final RenderType RAINBOW_SEGMENT = create("rainbow_segment",
-            DefaultVertexFormat.POSITION_COLOR, GL11.GL_QUADS, 32768,
-            RenderType.CompositeState.builder()
+    public static final RenderType RAINBOW_SEGMENT = AccessorRenderType.create("rainbow_segment",
+           DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 32768, false, false,
+           RenderType.CompositeState.builder()
+                    .setShaderState(RenderStateShard.NO_SHADER)
                     .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
-                    .setAlphaState(RenderStateShard.NO_ALPHA)
                     .setTransparencyState(TransparencyStateShard.LIGHTNING_TRANSPARENCY)
                     .setLightmapState(RenderStateShard.NO_LIGHTMAP)
-                    .setShadeModelState(RenderStateShard.SMOOTH_SHADE)
                     .setTextureState(RenderStateShard.NO_TEXTURE)
                     .setWriteMaskState(RenderStateShard.COLOR_WRITE)
                     .setCullState(RenderStateShard.NO_CULL)

@@ -2,28 +2,23 @@ package lonestarrr.arconia.common.block.tile;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
+import lonestarrr.arconia.common.lib.tile.BaseBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-
-import javax.annotation.Nullable;
 
 /**
  * Tile Entity that stores a tier and type of resource to generate. Otherwise, this entity is passive. The resource generation magic happens in the
  * tile entity for the tree root block.
  */
-public class ResourceGenTileEntity extends BaseTileEntity {
+public class ResourceGenBlockEntity extends BaseBlockEntity {
     private RainbowColor tier;
     private ItemStack itemStack; // item to generate (should this be an ItemStack?)
     public long nextTickParticleRender = 0; // used by TE renderer to track particle rendering - not persisted
 
-    public ResourceGenTileEntity(BlockPos pos, BlockState state) {
-        super(ModTiles.RESOURCEGEN, pos, state);
+    public ResourceGenBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.RESOURCEGEN, pos, state);
         this.tier = RainbowColor.RED;
         this.itemStack = ItemStack.EMPTY;
     }

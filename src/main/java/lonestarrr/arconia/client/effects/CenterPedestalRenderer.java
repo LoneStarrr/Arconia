@@ -1,21 +1,19 @@
 package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import lonestarrr.arconia.common.block.tile.CenterPedestalTileEntity;
+import lonestarrr.arconia.common.block.tile.CenterPedestalBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
-public class CenterPedestalRenderer extends BlockEntityRenderer<CenterPedestalTileEntity> {
-    public CenterPedestalRenderer(BlockEntityRenderDispatcher dispatcher) {
-        super(dispatcher);
-    }
+public class CenterPedestalRenderer implements BlockEntityRenderer<CenterPedestalBlockEntity> {
+    public CenterPedestalRenderer(BlockEntityRendererProvider.Context ctx) {}
 
     @Override
     public void render(
-            CenterPedestalTileEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
+            CenterPedestalBlockEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
             int combinedOverlay) {
         ItemStack stack = tileEntity.getItemOnDisplay();
         if (stack == ItemStack.EMPTY) {
@@ -35,8 +33,9 @@ public class CenterPedestalRenderer extends BlockEntityRenderer<CenterPedestalTi
         matrixStack.popPose();
     }
 
-    private void renderRitualProgress(CenterPedestalTileEntity tileEntity, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
-                                      int combinedOverlay) {
+    private void renderRitualProgress(
+            CenterPedestalBlockEntity tileEntity, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
+            int combinedOverlay) {
 
         BlockPos tePos = tileEntity.getBlockPos();
         matrixStack.pushPose();

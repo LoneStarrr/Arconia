@@ -34,7 +34,7 @@ import java.util.Map;
 /**
  * Tile entity for rainbow crates, managing the crate's inventory.
  */
-public class RainbowCrateTileEntity extends BlockEntity implements MenuProvider {
+public class RainbowCrateBlockEntity extends BlockEntity implements MenuProvider {
     public static final int ROWS = 8;
     public static final int COLUMNS = 13;
     public static final int NUM_SLOTS = ROWS * COLUMNS; // TODO This should be tiered - have fun refactoring
@@ -57,8 +57,8 @@ public class RainbowCrateTileEntity extends BlockEntity implements MenuProvider 
         }
     }
 
-    public RainbowCrateTileEntity(RainbowColor tier, BlockPos pos, BlockState state) {
-        super(ModTiles.getRainbowCrateTileEntityType(tier), pos, state);
+    public RainbowCrateBlockEntity(RainbowColor tier, BlockPos pos, BlockState state) {
+        super(ModBlockEntities.getRainbowCrateBlockEntityType(tier), pos, state);
         this.tier = tier;
         this.inventory = createInventory(tier);
         this.itemCap = LazyOptional.of(() -> inventory);
@@ -138,7 +138,7 @@ public class RainbowCrateTileEntity extends BlockEntity implements MenuProvider 
             }
         }
     }
-    public static void tick(Level level, BlockPos pos, BlockState state, RainbowCrateTileEntity blockEntity) {
+    public static void tick(Level level, BlockPos pos, BlockState state, RainbowCrateBlockEntity blockEntity) {
         blockEntity.tickInternal(level, pos, state);
     }
 

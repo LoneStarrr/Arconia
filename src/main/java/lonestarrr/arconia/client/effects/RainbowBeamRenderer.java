@@ -8,7 +8,7 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.tile.ArconiumTreeRootTileEntity;
+import lonestarrr.arconia.common.block.tile.ArconiumTreeRootBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.VectorHelper;
 import lonestarrr.arconia.mixin.client.AccessorRenderType;
@@ -17,8 +17,8 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -42,7 +42,7 @@ import java.util.OptionalDouble;
  *
  * TODO deprecated - remove me
  */
-public class RainbowBeamRenderer extends BlockEntityRenderer<ArconiumTreeRootTileEntity>  {
+public class RainbowBeamRenderer implements BlockEntityRenderer<ArconiumTreeRootBlockEntity>  {
     public static final ResourceLocation BEAM_TEXTURE = new ResourceLocation(Arconia.MOD_ID, "effects/link");
     public static final ResourceLocation BEAM_ANIMATED_TEXTURE = new ResourceLocation(Arconia.MOD_ID, "effects/beam_animated");
     public static final ResourceLocation BEAM_SINE = new ResourceLocation(Arconia.MOD_ID, "effects/sine_wave");
@@ -50,9 +50,7 @@ public class RainbowBeamRenderer extends BlockEntityRenderer<ArconiumTreeRootTil
     private static List<Vec2> sinPrecalculated;
     private static final int NUM_SIN_VERTICES = 40;
     private int sinRenderOffsetGlobal = 0;
-    public RainbowBeamRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
-    }
+    public RainbowBeamRenderer(BlockEntityRendererProvider.Context ctx) {}
 
     static {
         sinPrecalculated = new ArrayList<>(NUM_SIN_VERTICES);
@@ -62,11 +60,12 @@ public class RainbowBeamRenderer extends BlockEntityRenderer<ArconiumTreeRootTil
         }
     }
 
+
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
         // All textures are stitched into 1 large atlas texture - regular item / block models automatically take care of this,
         // but other textures need to be manually added to it for it to be available for rendering.
         // In this case, add the texture for the beam to the main atlas.
-        if (event.getMap().location().equals((TextureAtlas.LOCATION_BLOCKS))) {
+        if (event.getAtlas().location().equals((TextureAtlas.LOCATION_BLOCKS))) {
             event.addSprite(BEAM_TEXTURE);
             event.addSprite(BEAM_ANIMATED_TEXTURE);
             event.addSprite(BEAM_SINE);
@@ -75,7 +74,7 @@ public class RainbowBeamRenderer extends BlockEntityRenderer<ArconiumTreeRootTil
 
     @Override
     public void render(
-            ArconiumTreeRootTileEntity tileEntity, float partialTicks, PoseStack matrixStack,
+            ArconiumTreeRootBlockEntity tileEntity, float partialTicks, PoseStack matrixStack,
             MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
         BlockPos startPos = tileEntity.getBlockPos();
         BlockPos treeBasePos = startPos.above(2);
@@ -392,14 +391,15 @@ class RainbowBeamRenderType extends RenderType {
     private static final RenderStateShard.LineStateShard THICK_LINE = new RenderStateShard.LineStateShard(OptionalDouble.of(12));
     private static final RenderStateShard.LineStateShard THIN_LINE = new RenderStateShard.LineStateShard(OptionalDouble.of(4));
 
+    // Default constructor to satisfy the compiler
     public RainbowBeamRenderType(
-            String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn,
-            boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
-        super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
+            String p_173178_, VertexFormat p_173179_, VertexFormat.Mode p_173180_, int p_173181_, boolean p_173182_, boolean p_173183_,
+            Runnable p_173184_, Runnable p_173185_) {
+        super(p_173178_, p_173179_, p_173180_, p_173181_, p_173182_, p_173183_, p_173184_, p_173185_);
     }
 
     public static final RenderType BEAM_LINE_THICK = AccessorRenderType.create("beam_line_thick",
-            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.LINES, 256,
+            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.LINES, 256, false, false,
             RenderType.CompositeState.builder().setLineState(THICK_LINE)
                     .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
                     .setTransparencyState(TransparencyStateShard.LIGHTNING_TRANSPARENCY)
@@ -410,7 +410,7 @@ class RainbowBeamRenderType extends RenderType {
     );
 
     public static final RenderType BEAM_LINE_THIN = create("beam_line_thin",
-            DefaultVertexFormat.POSITION_COLOR, GL11.GL_LINES, 256,
+            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.LINES, 256, false, false,
             RenderType.CompositeState.builder().setLineState(THIN_LINE)
                     .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
                     .setTransparencyState(RenderStateShard.TransparencyStateShard.TRANSLUCENT_TRANSPARENCY)
@@ -421,8 +421,8 @@ class RainbowBeamRenderType extends RenderType {
     );
 
     // RenderType for rendering a texture in 2D in the world. Note that the source here is not the texture, but the ATLAS containing the texture
-    public static final RenderType BEAM_TEXTURED = create("beam_textured",
-            DefaultVertexFormat.POSITION_TEX_COLOR, 7, 262144,
+    public static final RenderType BEAM_TEXTURED = AccessorRenderType.create("beam_textured",
+            DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 262144, false, false,
             RenderType.CompositeState.builder()
                     .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, false))
                     .setTransparencyState(TransparencyStateShard.TRANSLUCENT_TRANSPARENCY)
