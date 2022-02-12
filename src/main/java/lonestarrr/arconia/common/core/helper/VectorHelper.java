@@ -1,9 +1,8 @@
 package lonestarrr.arconia.common.core.helper;
 
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector3i;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.world.phys.Vec3;
 
 public class VectorHelper {
     /**
@@ -18,7 +17,7 @@ public class VectorHelper {
      * @param endPos End position for vector to rotate along
      * @return
      */
-    public static Quaternion getRotation(Vector3d startPos, Vector3d endPos) {
+    public static Quaternion getRotation(Vec3 startPos, Vec3 endPos) {
         /*
          * http://web.archive.org/web/20060914224155/
          * http://web.archive.org/web/20041029003853/
@@ -33,10 +32,10 @@ public class VectorHelper {
          *
          */
 
-        Vector3d diff = endPos.subtract(startPos);
+        Vec3 diff = endPos.subtract(startPos);
         float distance = (float)startPos.distanceTo(endPos);
         float rotationY, rotationZ;
-        Vector3d vectorXZPlane = new Vector3d(diff.x(), 0, diff.z());
+        Vec3 vectorXZPlane = new Vec3(diff.x(), 0, diff.z());
         double vectorXZPlaneLength = vectorXZPlane.length();
         // Rotation in radians.
         rotationY = vectorXZPlaneLength == 0 ? 0 : (float)Math.acos(Math.abs(diff.x()) / vectorXZPlaneLength);
@@ -58,17 +57,17 @@ public class VectorHelper {
      * @param b Rotated vector
      * @return The quaternion needed to rotate vector a so that it matches vector b.
      */
-    public static Quaternion getRotationBetweenVectors(Vector3d a, Vector3d b) {
-        Vector3d start = a.normalize();
-        Vector3d dest = b.normalize();
+    public static Quaternion getRotationBetweenVectors(Vec3 a, Vec3 b) {
+        Vec3 start = a.normalize();
+        Vec3 dest = b.normalize();
         float cosTheta = (float)start.dot(dest);
-        Vector3d rotationAxis;
+        Vec3 rotationAxis;
 
         if (cosTheta < -1 + 0.001f) {
             // Special case when vectors are in opposite direction. Guess one, as long as it's perpendicular to start
-            rotationAxis = new Vector3d(0,0, 1).cross(start);
+            rotationAxis = new Vec3(0,0, 1).cross(start);
             if (rotationAxis.length() < 0.01) {
-                rotationAxis = new Vector3d(1, 0, 0).cross(start);
+                rotationAxis = new Vec3(1, 0, 0).cross(start);
             }
             rotationAxis = rotationAxis.normalize();
             return new Quaternion(new Vector3f((float)rotationAxis.x, (float)rotationAxis.y, (float)rotationAxis.z), 180f, true);

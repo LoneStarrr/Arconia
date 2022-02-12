@@ -1,7 +1,6 @@
 package lonestarrr.arconia.common.core.helper;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.Vec3i;
 
 /**
  * Matrix helper methods
@@ -36,7 +35,7 @@ public abstract class Matrix {
      * @param rotationCount Number of clock-wise 90 degree rotations of the 2d matrix
      * @return coordinate in matrix after rotations
      */
-    public static Vector3i getRotatedCoordinate(final Vector3i coordinate, final int matrixWidth, final int matrixHeight, final int rotationCount) {
+    public static Vec3i getRotatedCoordinate(final Vec3i coordinate, final int matrixWidth, final int matrixHeight, final int rotationCount) {
         int x = coordinate.getX();
         int z = coordinate.getZ();
         int xNew = x, zNew = z;
@@ -52,6 +51,6 @@ public abstract class Matrix {
             zNew = x;
         }
 
-        return new Vector3i(xNew, coordinate.getY(), zNew);
+        return new Vec3i(xNew, coordinate.getY(), zNew);
     }
 }

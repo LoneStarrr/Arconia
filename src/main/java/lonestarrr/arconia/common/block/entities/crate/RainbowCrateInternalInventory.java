@@ -1,10 +1,7 @@
-package lonestarrr.arconia.common.block.tile.crate;
+package lonestarrr.arconia.common.block.entities.crate;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-
-import java.util.List;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Internal inventory of a rainbow crate.

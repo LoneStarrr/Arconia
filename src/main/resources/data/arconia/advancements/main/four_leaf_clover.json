@@ -20,7 +20,7 @@
       "conditions": {
         "items": [
           {
-            "item": "arconia:four_leaf_clover"
+            "items": [ "arconia:four_leaf_clover" ]
           }
         ]
       }

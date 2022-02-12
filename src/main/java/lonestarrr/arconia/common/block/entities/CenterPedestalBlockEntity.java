@@ -1,28 +1,28 @@
-package lonestarrr.arconia.common.block.tile;
+package lonestarrr.arconia.common.block.entities;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.crafting.IPedestalRecipe;
 import lonestarrr.arconia.common.crafting.ModRecipeTypes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Tile Entity responsible for processing pedestal crafting rituals
+ * Block Entity responsible for processing pedestal crafting rituals
  */
-public class CenterPedestalTileEntity extends BasePedestalTileEntity implements ITickableTileEntity {
+public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     private boolean ritualOngoing = false; // persisted
     private float ritualTicksElapsed = 0; // persisted
     private ResourceLocation currentRecipeID; // persisted
@@ -32,15 +32,15 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
     private static final String TAG_ELAPSED = "ritualTicksElapsed";
     private static final long TICK_UPDATE_INTERVAL = 20; // How often to do work in tick()
 
-    public CenterPedestalTileEntity() {
-        super(ModTiles.CENTER_PEDESTAL);
+    public CenterPedestalBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.CENTER_PEDESTAL, pos, state);
     }
 
     private IPedestalRecipe getCurrentRecipe() {
         if (currentRecipeID == null) {
             return null;
         }
-        Optional<? extends IRecipe> recipe = level.getRecipeManager().byKey(currentRecipeID);
+        Optional<? extends Recipe> recipe = level.getRecipeManager().byKey(currentRecipeID);
         if (recipe.isPresent() && recipe.get() instanceof IPedestalRecipe) {
             return (IPedestalRecipe)recipe.get();
         }
@@ -48,7 +48,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
     }
 
     @Override
-    public void writePacketNBT(CompoundNBT tag) {
+    public void writePacketNBT(CompoundTag tag) {
         super.writePacketNBT(tag);
         if (currentRecipeID != null) {
             tag.putString(TAG_RECIPE, currentRecipeID.toString());
@@ -58,7 +58,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
     }
 
     @Override
-    public void readPacketNBT(CompoundNBT tag) {
+    public void readPacketNBT(CompoundTag tag) {
         super.readPacketNBT(tag);
         if (tag.contains(TAG_RECIPE)) {
             currentRecipeID = new ResourceLocation(tag.getString(TAG_RECIPE));
@@ -82,9 +82,9 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
             return false;
         }
 
-        List<PedestalTileEntity> pedestals = findPedestals();
+        List<PedestalBlockEntity> pedestals = findPedestals();
         Arconia.logger.debug("Found " + pedestals.size() + " ritual pedestal(s)");
-        Inventory inv = getPedestalItems(pedestals);
+        SimpleContainer inv = getPedestalItems(pedestals);
 
         if (inv.isEmpty()) {
             return false;
@@ -92,12 +92,9 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
 
         IPedestalRecipe recipe = findRecipe(inv);
 
-        // TODO actually start a nice visual ritual. For now, just produce the output immediately, then iterate.
         if (recipe == null) {
             return false;
         }
-
-        Arconia.logger.debug("Found a recipe for the ritual: " + recipe);
 
         currentRecipeID = recipe.getId();
         ritualOngoing = true;
@@ -126,18 +123,18 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
             return;
         }
 
-        List<PedestalTileEntity> pedestals = findPedestals();
-        Inventory inv = getPedestalItems(pedestals);
+        List<PedestalBlockEntity> pedestals = findPedestals();
+        SimpleContainer inv = getPedestalItems(pedestals);
 
         if (currentRecipe.matches(inv, level)) {
             produceRecipeOutput();
             consumePedestalItems(pedestals);
-            level.playSound(null, worldPosition, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundCategory.AMBIENT, 1, 1);
+            level.playSound(null, worldPosition, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.AMBIENT, 1, 1);
         }
         resetRitual();
     }
 
-    private void consumePedestalItems(List<PedestalTileEntity> pedestals) {
+    private void consumePedestalItems(List<PedestalBlockEntity> pedestals) {
         pedestals.forEach(pedestal->pedestal.removeItem());
     }
 
@@ -161,18 +158,18 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
     }
 
     // Find nearby pedestals
-    private List<PedestalTileEntity> findPedestals() {
-        List<PedestalTileEntity> pedestals = new ArrayList<>();
+    private List<PedestalBlockEntity> findPedestals() {
+        List<PedestalBlockEntity> pedestals = new ArrayList<>();
 
         for (BlockPos posNear: BlockPos.betweenClosed(worldPosition.west(3).north(3), worldPosition.east(3).south(3))) {
-            TileEntity te = level.getBlockEntity(posNear);
+            BlockEntity te = level.getBlockEntity(posNear);
             if (te == null) {
                 continue;
             }
-            if (!(te instanceof PedestalTileEntity)) {
+            if (!(te instanceof PedestalBlockEntity)) {
                 continue;
             }
-            PedestalTileEntity pte = (PedestalTileEntity) te;
+            PedestalBlockEntity pte = (PedestalBlockEntity) te;
             // TODO pedestals should link to 1 specific center pedestal, done when placing down, but I did not build that yet. So yeeeeah you can cheat the
             // system by sharing a single pedestal with MULTIPLE crafting setups! :)
             pedestals.add(pte);
@@ -180,15 +177,15 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
         return pedestals;
     }
 
-    private Inventory getPedestalItems(List<PedestalTileEntity> pedestals) {
+    private SimpleContainer getPedestalItems(List<PedestalBlockEntity> pedestals) {
         List<ItemStack> stacks = new ArrayList<>(pedestals.size());
-        for (PedestalTileEntity entity: pedestals) {
+        for (PedestalBlockEntity entity: pedestals) {
             if (!entity.getItemOnDisplay().isEmpty()) {
                 stacks.add(entity.getItemOnDisplay());
             }
         }
 
-        Inventory inv = new Inventory(stacks.size());
+        SimpleContainer inv = new SimpleContainer(stacks.size());
         for (int i = 0; i < stacks.size(); i++) {
             ItemStack ingredient = stacks.get(i);
             inv.setItem(i, ingredient);
@@ -197,7 +194,7 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
         return inv;
     }
 
-    private IPedestalRecipe findRecipe(Inventory inv) {
+    private IPedestalRecipe findRecipe(SimpleContainer inv) {
         Optional<IPedestalRecipe> hasRecipe = level.getRecipeManager().getRecipeFor(ModRecipeTypes.PEDESTAL_TYPE, inv, level);
         if (hasRecipe.isPresent()) {
             return hasRecipe.get();
@@ -206,9 +203,12 @@ public class CenterPedestalTileEntity extends BasePedestalTileEntity implements 
         return null;
     }
 
-    @Override
-    public void tick() {
-        if (level.isClientSide() || !isRitualOngoing()) {
+    public static void tick(Level level, BlockPos pos, BlockState state, CenterPedestalBlockEntity blockEntity) {
+        blockEntity.tickInternal(level, pos, state);
+    }
+
+    private void tickInternal(Level level, BlockPos pos, BlockState state) {
+        if (!isRitualOngoing()) {
             return;
         }
 

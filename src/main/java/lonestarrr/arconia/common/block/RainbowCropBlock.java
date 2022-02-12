@@ -1,21 +1,22 @@
 package lonestarrr.arconia.common.block;
 
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import org.apache.logging.log4j.Logger;
-import lonestarrr.arconia.common.block.tile.ResourceGenTileEntity;
-import lonestarrr.arconia.common.core.ItemNames;
+import lonestarrr.arconia.common.block.entities.ResourceGenBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ModItems;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
 
@@ -23,7 +24,7 @@ import java.util.Random;
  * A crop that can imbue gold coins with a magic rainbow color property. Once it's matured, gold coins can be added
  * to it that will then slowly be imbued with the color. Tiered, because progression.
  */
-public class RainbowCropBlock extends CropsBlock {
+public class RainbowCropBlock extends CropBlock {
     // bounding box for this crop per growth stage
     private static final VoxelShape shapeAge0 = Block.box(3.0D, 0.0D, 3.0D, 13.0D, 8.0D, 13.0D);
     public static final IntegerProperty CROP_AGE = IntegerProperty.create("age",0,4);
@@ -51,28 +52,28 @@ public class RainbowCropBlock extends CropsBlock {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(CROP_AGE);
     }
 
     @Override
-    public boolean isBonemealSuccess(World worldIn, Random rand, BlockPos pos, BlockState state) {
+    public boolean isBonemealSuccess(Level worldIn, Random rand, BlockPos pos, BlockState state) {
         return true;
     }
 
     @Override
-    public boolean mayPlaceOn(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public boolean mayPlaceOn(BlockState state, BlockGetter worldIn, BlockPos pos) {
         Block soil = state.getBlock();
         if (!(soil instanceof ResourceGenBlock)) {
             return false;
         }
 
-        TileEntity te = worldIn.getBlockEntity(pos);
-        if (te == null || !(te instanceof ResourceGenTileEntity)) {
+        BlockEntity be = worldIn.getBlockEntity(pos);
+        if (be == null || !(be instanceof ResourceGenBlockEntity)) {
             return false;
         }
-        ResourceGenTileEntity rgte = (ResourceGenTileEntity)te;
-        RainbowColor tier = rgte.getTier();
+        ResourceGenBlockEntity rgbe = (ResourceGenBlockEntity)be;
+        RainbowColor tier = rgbe.getTier();
         // Only can be placed on  blocks of the same or higher tier
         return tier.compareTo(this.color) >= 0;
     }
@@ -89,7 +90,7 @@ public class RainbowCropBlock extends CropsBlock {
 //    }
 
     @Override
-    public ItemStack getCloneItemStack(IBlockReader worldIn, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(BlockGetter worldIn, BlockPos pos, BlockState state) {
         return new ItemStack(ModItems.getArconiumEssence(this.color));
     }
 

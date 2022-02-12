@@ -20,7 +20,7 @@
       "conditions": {
         "items": [
           {
-            "item": "arconia:hat"
+            "items": [ "arconia:hat" ]
           }
         ]
       }

@@ -1,30 +1,30 @@
-package lonestarrr.arconia.common.block.tile;
+package lonestarrr.arconia.common.block.entities;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import lonestarrr.arconia.client.gui.crate.RainbowCrateContainer;
+import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.common.block.entities.crate.RainbowCrateItemStackHandler;
+import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.network.ModPackets;
+import lonestarrr.arconia.common.network.RainbowCratePacket;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.client.gui.crate.RainbowCrateContainer;
-import lonestarrr.arconia.common.block.tile.crate.RainbowCrateItemStackHandler;
-import lonestarrr.arconia.common.network.ModPackets;
-import lonestarrr.arconia.common.network.RainbowCratePacket;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,9 +32,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Tile entity for rainbow crates, managing the crate's inventory.
+ * Block entity for rainbow crates, managing the crate's inventory.
  */
-public class RainbowCrateTileEntity extends TileEntity implements INamedContainerProvider, ITickableTileEntity {
+public class RainbowCrateBlockEntity extends BlockEntity implements MenuProvider {
     public static final int ROWS = 8;
     public static final int COLUMNS = 13;
     public static final int NUM_SLOTS = ROWS * COLUMNS; // TODO This should be tiered - have fun refactoring
@@ -57,8 +57,8 @@ public class RainbowCrateTileEntity extends TileEntity implements INamedContaine
         }
     }
 
-    public RainbowCrateTileEntity(RainbowColor tier) {
-        super(ModTiles.getRainbowCrateTileEntityType(tier));
+    public RainbowCrateBlockEntity(RainbowColor tier, BlockPos pos, BlockState state) {
+        super(ModBlockEntities.getRainbowCrateBlockEntityType(tier), pos, state);
         this.tier = tier;
         this.inventory = createInventory(tier);
         this.itemCap = LazyOptional.of(() -> inventory);
@@ -74,15 +74,14 @@ public class RainbowCrateTileEntity extends TileEntity implements INamedContaine
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compound) {
+    public void saveAdditional(CompoundTag compound) {
         compound.put("inventory", inventory.serializeNBT());
-        return super.save(compound);
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT compound) {
+    public void load(CompoundTag compound) {
+        super.load(compound);
         inventory.deserializeNBT(compound.getCompound("inventory"));
-        super.load(state, compound);
     }
 
     @Nonnull
@@ -94,7 +93,7 @@ public class RainbowCrateTileEntity extends TileEntity implements INamedContaine
         return super.getCapability(cap, side);
     }
 
-    public void dropAllContents(World world, BlockPos pos) {
+    public void dropAllContents(Level world, BlockPos pos) {
         // TODO implement me - that will be fun with giant stacks, so best to instead preserve inventory through nbt data on the itemstack
     }
 
@@ -103,8 +102,8 @@ public class RainbowCrateTileEntity extends TileEntity implements INamedContaine
     //  2) Creating an instance of container on the server, and linking it to the inventory items stored within the TileEntity
 
     @Override
-    public ITextComponent getDisplayName() {
-        return new TranslationTextComponent("container." + Arconia.MOD_ID + ".rainbow_crate");
+    public Component getDisplayName() {
+        return new TranslatableComponent("container." + Arconia.MOD_ID + ".rainbow_crate");
     }
 
     /**
@@ -116,18 +115,11 @@ public class RainbowCrateTileEntity extends TileEntity implements INamedContaine
      * @return
      */
     @Override
-    public Container createMenu(int windowID, PlayerInventory playerInventory, PlayerEntity playerEntity) {
+    public AbstractContainerMenu createMenu(int windowID, Inventory playerInventory, Player playerEntity) {
         return new RainbowCrateContainer(tier, windowID, playerInventory, inventory);
     }
 
-    @Override
-    public void tick() {
-        // Only manage the inventory on server worlds - data required on the client side is sent through network
-        // packets
-        if (level.isClientSide()) {
-            return;
-        }
-
+    private void tickInternal(Level level, BlockPos pos, BlockState state) {
         // Increase time between ticks if no changes are detected - and vice versa - lag friendly and a better UX
         final int maxTicks = 20;
         this.ticksSinceLastChange++;
@@ -139,12 +131,15 @@ public class RainbowCrateTileEntity extends TileEntity implements INamedContaine
             // TODO Can this be smarter? E.g. only send it to client worlds that have the UI open?
             boolean updates = this.inventory.tick();
             if (updates) {
-                CompoundNBT data = new CompoundNBT();
-                data = this.save(data);
+                CompoundTag data = new CompoundTag();
+                this.saveAdditional(data);
                 ModPackets.sendToNearby(level, worldPosition, new RainbowCratePacket(worldPosition, data));
                 ticksSinceLastChange = 0;
             }
         }
+    }
+    public static void tick(Level level, BlockPos pos, BlockState state, RainbowCrateBlockEntity blockEntity) {
+        blockEntity.tickInternal(level, pos, state);
     }
 
     /**
@@ -163,35 +158,25 @@ public class RainbowCrateTileEntity extends TileEntity implements INamedContaine
 
     @Override
     @Nullable
-    public SUpdateTileEntityPacket getUpdatePacket()
-    {
-        CompoundNBT nbtTagCompound = new CompoundNBT();
-        save(nbtTagCompound);
-        int tileEntityType = 42;  // arbitrary number; only used for vanilla TileEntities.  You can use it, or not, as you want.
-        return new SUpdateTileEntityPacket(this.worldPosition, tileEntityType, nbtTagCompound);
-    }
-
-    // I thought this would be triggered whenever the inv is updated (e.g. hopper) but nope..
-    @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        load(level.getBlockState(pkt.getPos()), pkt.getTag());
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        // Will get tag from #getUpdateTag
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     /* Creates a tag containing all of the TileEntity information, used by vanilla to transmit from server to client
      */
     @Override
-    public CompoundNBT getUpdateTag()
+    public CompoundTag getUpdateTag()
     {
-        CompoundNBT nbtTagCompound = new CompoundNBT();
-        save(nbtTagCompound);
+        CompoundTag nbtTagCompound = new CompoundTag();
+        saveAdditional(nbtTagCompound);
         return nbtTagCompound;
     }
 
     // Triggered when loading the world (and probably chunk loading)
     @Override
-    public void handleUpdateTag(BlockState state, CompoundNBT tag)
-    {
-        load(state, tag);
+    public void handleUpdateTag(CompoundTag tag) {
+        load(tag);
     }
 
 }

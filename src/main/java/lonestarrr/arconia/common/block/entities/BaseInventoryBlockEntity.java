@@ -1,8 +1,11 @@
-package lonestarrr.arconia.common.lib.tile;
+package lonestarrr.arconia.common.block.entities;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import lonestarrr.arconia.common.block.entities.BaseBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -10,24 +13,24 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 /**
- * Base TileEntity that has an inventory
+ * Base BlockEntity that has an inventory
  */
-public abstract class BaseInventoryTileEntity extends BaseTileEntity {
+public abstract class BaseInventoryBlockEntity extends BaseBlockEntity {
     private final LazyOptional<IItemHandler> capability = LazyOptional.of(this::getInventory);
 
-    public BaseInventoryTileEntity(TileEntityType<?> type) {
-        super(type);
+    public BaseInventoryBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     public abstract ItemStackHandler getInventory();
 
     @Override
-    public void writePacketNBT(CompoundNBT tag) {
+    public void writePacketNBT(CompoundTag tag) {
         tag.merge(getInventory().serializeNBT());
     }
 
     @Override
-    public void readPacketNBT(CompoundNBT tag) {
+    public void readPacketNBT(CompoundTag tag) {
         getInventory().deserializeNBT(tag);
     }
 

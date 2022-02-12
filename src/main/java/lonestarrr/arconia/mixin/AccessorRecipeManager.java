@@ -1,17 +1,19 @@
 package lonestarrr.arconia.mixin;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.util.ResourceLocation;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+import java.util.Collections;
 import java.util.Map;
 
 // Mixin generic guide: https://darkhax.net/2020/07/mixins
 @Mixin(RecipeManager.class)
 public interface AccessorRecipeManager {
     @Invoker("byType")
-    <C extends IInventory, T extends IRecipe<C>> Map<ResourceLocation, IRecipe<C>> arconia_getRecipes(IRecipeType<T> type);
+    <C extends Container, T extends Recipe<C>> Map<ResourceLocation, Recipe<C>> arconia_getRecipes(RecipeType<T> type);
 }

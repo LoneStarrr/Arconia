@@ -1,35 +1,30 @@
-package lonestarrr.arconia.common.block.tile;
+package lonestarrr.arconia.common.block.entities;
 
+import lonestarrr.arconia.common.block.ArconiumTreeLeaves;
+import lonestarrr.arconia.common.block.ArconiumTreeRootBlock;
 import lonestarrr.arconia.common.block.ModBlocks;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LeavesBlock;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import lonestarrr.arconia.common.core.RainbowColor;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import lonestarrr.arconia.common.block.ArconiumTreeLeaves;
-import lonestarrr.arconia.common.block.ArconiumTreeRootBlock;
-import lonestarrr.arconia.common.core.RainbowColor;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 
-import static java.lang.Math.max;
-
 /**
  * Responsible for morphing tree leaves into the next tier's leaves.
  */
-public class ArconiumTreeRootTileEntity extends TileEntity implements ITickableTileEntity {
+public class ArconiumTreeRootBlockEntity extends BaseBlockEntity {
     private static final int LOOT_DROP_INTERVAL = 100; // How often to drop loot
 
     private static final String TAG_LEAF_CHANGER = "leafChanger";
@@ -43,12 +38,12 @@ public class ArconiumTreeRootTileEntity extends TileEntity implements ITickableT
     private boolean hasNextTier;
     private LeafChanger leafChanger;
 
-    public ArconiumTreeRootTileEntity(RainbowColor tier) {
-        this(ArconiumTreeRootBlock.getTileEntityTypeByTier(tier), tier);
+    public ArconiumTreeRootBlockEntity(RainbowColor tier, BlockPos pos, BlockState state) {
+        this(ArconiumTreeRootBlock.getBlockEntityTypeByTier(tier), tier, pos, state);
     }
 
-    public ArconiumTreeRootTileEntity(TileEntityType<?> tileEntityTypeIn, RainbowColor tier) {
-        super(tileEntityTypeIn);
+    public ArconiumTreeRootBlockEntity(BlockEntityType<?> blockEntityTypeIn, RainbowColor tier, BlockPos pos, BlockState state) {
+        super(blockEntityTypeIn, pos, state);
         this.tier = tier;
         RainbowColor nextTier = tier.getNextTier();
         hasNextTier = false;
@@ -65,8 +60,11 @@ public class ArconiumTreeRootTileEntity extends TileEntity implements ITickableT
         return tier;
     }
 
-    @Override
-    public void tick() {
+    public static void tick(Level level, BlockPos pos, BlockState state, ArconiumTreeRootBlockEntity blockEntity) {
+        blockEntity.tickInternal(level, pos, state);
+    }
+
+    public void tickInternal(Level level, BlockPos pos, BlockState state) {
         tickCount++;
 
         if (level.isClientSide) {
@@ -82,62 +80,20 @@ public class ArconiumTreeRootTileEntity extends TileEntity implements ITickableT
         }
     }
 
-    private void sendUpdates() {
-        if (level != null && !level.isClientSide) {
-            level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 3);
-            setChanged();
+    @Override
+    public void writePacketNBT(CompoundTag tag) {
+        if (leafChanger != null) {
+            tag.put(TAG_LEAF_CHANGER, leafChanger.write());
         }
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compound) {
-        if (!level.isClientSide()) {
-            if (leafChanger != null) {
-                compound.put(TAG_LEAF_CHANGER, leafChanger.write());
-            }
-        }
-        return super.save(compound);
-    }
-
-    @Override
-    public void load(BlockState state, CompoundNBT compound) {
-        super.load(state, compound);
+    public void readPacketNBT(CompoundTag compound) {
         if (compound.contains(TAG_LEAF_CHANGER)) {
             if (leafChanger != null) {
                 leafChanger.read(compound.getCompound(TAG_LEAF_CHANGER));
             }
         }
-    }
-
-    @Override
-    public CompoundNBT getUpdateTag() {
-        /*
-         * Data to be synced from the server to the clients when a client loads a chunk
-         */
-        return this.save(new CompoundNBT());
-    }
-
-    @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        /*
-         * Called on the server to generate a packet to be sent to the clients on world.notifyBlockUpdate()
-         * May only want to send updates since last time this TE was synced to reduce traffic
-         */
-        CompoundNBT nbt = new CompoundNBT();
-        this.save(nbt);
-
-        // the number here is generally ignored for non-vanilla TileEntities, 0 is safest
-        return new SUpdateTileEntityPacket(this.getBlockPos(), 0, nbt);
-    }
-
-    @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet)
-    {
-        /*
-         * This is received on the client after getUpdatePacket() is handled on the server
-         */
-        super.onDataPacket(net, packet);
-        this.load(level.getBlockState(packet.getPos()), packet.getTag());
     }
 }
 
@@ -153,7 +109,7 @@ LeafChanger {
     private static final String TAG_INTERVAL_COUNT = "intervalCount";
 
 
-    private final ArconiumTreeRootTileEntity tile;
+    private final ArconiumTreeRootBlockEntity rootBlockEntity;
     private final BlockState toChangeTo;
 
     // Parameters determining speed/chance, tiered
@@ -167,9 +123,9 @@ LeafChanger {
     private long lastInterval;
     private LinkedList<BlockPos> nearbyLeaves;
 
-    public LeafChanger(@Nonnull ArconiumTreeRootTileEntity tile, @Nonnull BlockState toChangeTo) {
-        this.tile = tile;
-        final int tierNum = tile.getTier().getTier(); // higher tier -> higher ordinal, 1..
+    public LeafChanger(@Nonnull ArconiumTreeRootBlockEntity atrbe, @Nonnull BlockState toChangeTo) {
+        this.rootBlockEntity = atrbe;
+        final int tierNum = atrbe.getTier().getTier(); // higher tier -> higher ordinal, 1..
         changeInterval = 60 * 20 * (long) Math.pow(1.5, tierNum - 1);
         changeChance = Math.max(5, 100 - tierNum * 15) / 100d;
         this.toChangeTo = toChangeTo; // Block to change leaf into - should be the next tier's leaf block
@@ -180,7 +136,7 @@ LeafChanger {
      * @return True if state was changed that should be persisted
      */
     public boolean tick() {
-        World world = tile.getLevel();
+        Level world = rootBlockEntity.getLevel();
         if (world.isClientSide) {
             return false;
         }
@@ -208,7 +164,7 @@ LeafChanger {
         if (Math.random() > changeChance) {
             return true;
         }
-        Block leafBlock = ModBlocks.getArconiumTreeLeaves(tile.getTier());
+        Block leafBlock = ModBlocks.getArconiumTreeLeaves(rootBlockEntity.getTier());
 
         // Keep popping blocks until we find a leaf block to replace (should some have disappeared)
         while (nearbyLeaves.size() > 0) {
@@ -238,11 +194,11 @@ LeafChanger {
         // Find leaves of the matching tier to potentially change. Any nearby leaf not manually placed will do
         final int scanRadius = 3;
         final int scanHeight = 10;
-        BlockPos startPos = tile.getBlockPos().offset(-scanRadius, 0, -scanRadius);
-        BlockPos endPos = tile.getBlockPos().offset(scanRadius, scanHeight, scanRadius);
-        Block leafBlock = ModBlocks.getArconiumTreeLeaves(tile.getTier());
+        BlockPos startPos = rootBlockEntity.getBlockPos().offset(-scanRadius, 0, -scanRadius);
+        BlockPos endPos = rootBlockEntity.getBlockPos().offset(scanRadius, scanHeight, scanRadius);
+        Block leafBlock = ModBlocks.getArconiumTreeLeaves(rootBlockEntity.getTier());
         for (BlockPos scanPos : BlockPos.betweenClosed(startPos, endPos)) {
-            BlockState state = tile.getLevel().getBlockState(scanPos);
+            BlockState state = rootBlockEntity.getLevel().getBlockState(scanPos);
             if (state.getBlock().equals(leafBlock) && !state.getValue(LeavesBlock.PERSISTENT)) {
                 result.add(scanPos.immutable());
             }
@@ -252,14 +208,14 @@ LeafChanger {
         return new LinkedList<>(result);
     }
 
-    protected CompoundNBT write() {
-        CompoundNBT result = new CompoundNBT();
+    protected CompoundTag write() {
+        CompoundTag result = new CompoundTag();
         result.putInt(TAG_LEAVES_CHANGED, leavesChanged);
         result.putInt(TAG_INTERVAL_COUNT, intervalCount);
         return result;
     }
 
-    protected void read(CompoundNBT nbt) {
+    protected void read(CompoundTag nbt) {
         leavesChanged = nbt.getInt(TAG_LEAVES_CHANGED);
         intervalCount = nbt.getInt(TAG_INTERVAL_COUNT);
     }
@@ -273,12 +229,12 @@ class LeafDropLootDispenser {
     private int lastLeafScanTick;
     private int tickCount = 0;
     final private int dropInterval;
-    final private ArconiumTreeRootTileEntity tileEntity;
+    final private ArconiumTreeRootBlockEntity rootBlockEntity;
     final private Random rand;
 
-    public LeafDropLootDispenser(ArconiumTreeRootTileEntity tileEntity, int dropInterval) {
+    public LeafDropLootDispenser(ArconiumTreeRootBlockEntity atrbe, int dropInterval) {
         this.dropInterval = dropInterval;
-        this.tileEntity = tileEntity;
+        this.rootBlockEntity = atrbe;
         lastLeafScanTick = -10000;
         rand = new Random();
     }
@@ -287,7 +243,7 @@ class LeafDropLootDispenser {
      * Loot is dropped from a leaf at an interval
      */
     public void tick() {
-        World world = tileEntity.getLevel();
+        Level world = rootBlockEntity.getLevel();
         if (world.isClientSide) {
             return;
         }
@@ -299,17 +255,17 @@ class LeafDropLootDispenser {
         }
 
         // Locate ResourceGen blocks around the tree root that have a resource tree leaf above it of a valid tier
-        List<Pair<ResourceGenTileEntity, BlockPos>> generatorsAndLeaves = new ArrayList<>();
+        List<Pair<ResourceGenBlockEntity, BlockPos>> generatorsAndLeaves = new ArrayList<>();
 
         int scanRadius = 1;
-        BlockPos startPos = tileEntity.getBlockPos().offset(-scanRadius, 0, -scanRadius);
-        BlockPos endPos = tileEntity.getBlockPos().offset(scanRadius, 0, scanRadius);
+        BlockPos startPos = rootBlockEntity.getBlockPos().offset(-scanRadius, 0, -scanRadius);
+        BlockPos endPos = rootBlockEntity.getBlockPos().offset(scanRadius, 0, scanRadius);
 
         for(BlockPos scanPos: BlockPos.betweenClosed(startPos, endPos)) {
-            TileEntity te = world.getBlockEntity(scanPos);
-            if (te !=null && te instanceof ResourceGenTileEntity) {
-                ResourceGenTileEntity rte = (ResourceGenTileEntity) te;
-                if (rte.getTier().compareTo(tileEntity.getTier()) <= 0) {
+            BlockEntity te = world.getBlockEntity(scanPos);
+            if (te !=null && te instanceof ResourceGenBlockEntity) {
+                ResourceGenBlockEntity rte = (ResourceGenBlockEntity) te;
+                if (rte.getTier().compareTo(rootBlockEntity.getTier()) <= 0) {
                     // only consider resource generators with a valid leaf over them, THEN pick one or more of those to dispense loot
                     BlockPos leafPos = findLeaf(scanPos.getX(), scanPos.getY(), scanPos.getZ(), rte.getTier());
                     if (leafPos != null) {
@@ -323,7 +279,7 @@ class LeafDropLootDispenser {
         Collections.shuffle(generatorsAndLeaves);
         int maxGenerators = 1;
         for (int i = 0; i < maxGenerators && i < generatorsAndLeaves.size(); i++) {
-            Pair<ResourceGenTileEntity, BlockPos> pair = generatorsAndLeaves.get(i);
+            Pair<ResourceGenBlockEntity, BlockPos> pair = generatorsAndLeaves.get(i);
             dispenseLoot(pair.getLeft(), pair.getRight());
         }
     }
@@ -344,10 +300,10 @@ class LeafDropLootDispenser {
         final int MAX_COLUMN_HEIGHT = 6;
         int maxY = y + MAX_COLUMN_HEIGHT;
         boolean lastBlockWasAir = false;
-        BlockPos.Mutable pos = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         while (++y < maxY) {
             pos.set(x, y, z);
-            BlockState bs = tileEntity.getLevel().getBlockState(pos);
+            BlockState bs = rootBlockEntity.getLevel().getBlockState(pos);
             if (bs.isAir()) {
                 lastBlockWasAir = true;
                 continue;
@@ -369,7 +325,7 @@ class LeafDropLootDispenser {
     }
 
     private boolean isValidLeaf(BlockPos pos, RainbowColor minTier) {
-        BlockState state = tileEntity.getLevel().getBlockState(pos);
+        BlockState state = rootBlockEntity.getLevel().getBlockState(pos);
         if (!(state.getBlock() instanceof ArconiumTreeLeaves)) {
             return false;
         }
@@ -382,8 +338,8 @@ class LeafDropLootDispenser {
      * Dispense loot, such that it appears as if it 'rains' from the leaves.
      * @param leafPos Block position that contains an arconium tree leaf
      */
-    private void dispenseLoot(ResourceGenTileEntity generator, BlockPos leafPos) {
-        World world = tileEntity.getLevel();
+    private void dispenseLoot(ResourceGenBlockEntity generator, BlockPos leafPos) {
+        Level world = rootBlockEntity.getLevel();
         if (world.isClientSide) {
             return;
         }

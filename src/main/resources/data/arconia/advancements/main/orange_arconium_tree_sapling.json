@@ -20,7 +20,7 @@
       "conditions": {
         "items": [
           {
-            "item": "arconia:orange_arconium_tree_sapling"
+            "items": [ "arconia:orange_arconium_tree_sapling" ]
           }
         ]
       }

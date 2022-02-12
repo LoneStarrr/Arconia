@@ -1,15 +1,15 @@
 package lonestarrr.arconia.common.core.helper;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import org.apache.commons.lang3.tuple.Pair;
-import lonestarrr.arconia.common.Arconia;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.stream.Stream;
 
 /**
  * Places block structures in the world
@@ -31,7 +31,7 @@ public abstract class Structures {
      *     List of block positions in the world that did not contain the expected blockstate. Ergo, if empty, the
      *     structure was found
      */
-    public static List<BlockPos> detectStructure(@Nonnull final Map<BlockPos, BlockState> structure, @Nonnull final World world, final boolean matchBlockOnly) {
+    public static List<BlockPos> detectStructure(@Nonnull final Map<BlockPos, BlockState> structure, @Nonnull final Level world, final boolean matchBlockOnly) {
         List<BlockPos> result = new ArrayList<>();
 
         for (Map.Entry<BlockPos, BlockState> entry: structure.entrySet()) {
@@ -62,7 +62,7 @@ public abstract class Structures {
      * @param flags       flags to use when setting block state, see
      * {@link World#setBlockState(BlockPos, BlockState, int)}
      */
-    public static void placeStructure(Iterator<BlockPos> positions, Iterator<BlockState> blockStates, World world,
+    public static void placeStructure(Iterator<BlockPos> positions, Iterator<BlockState> blockStates, Level world,
                                       int flags) {
         placeStructure(positions, blockStates, (pos, state) -> world.setBlock(pos, state, flags));
     }
@@ -91,7 +91,7 @@ public abstract class Structures {
      * @param flags       Flags to use when setting block states, see
      * {@link World#setBlockState(BlockPos, BlockState, int)}
      */
-    public static void placeStructure(Map<BlockPos, BlockState> blockStates, World world, int flags) {
+    public static void placeStructure(Map<BlockPos, BlockState> blockStates, Level world, int flags) {
         for (Map.Entry<BlockPos, BlockState> pair: blockStates.entrySet()) {
             world.setBlock(pair.getKey(), pair.getValue(), flags);
         }

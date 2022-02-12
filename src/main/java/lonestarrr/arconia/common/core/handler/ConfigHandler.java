@@ -3,6 +3,7 @@ package lonestarrr.arconia.common.core.handler;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
@@ -78,9 +79,14 @@ public final class ConfigHandler {
         COMMON = specPair.getLeft();
     }
 
-    public static void onConfigLoad() {
+    public static void onConfigLoad(ModConfigEvent.Loading evt) {
         Arconia.configLoaded = true;
     }
+
+    public static void onConfigReload(ModConfigEvent.Reloading evt) {
+        Arconia.configLoaded = true;
+    }
+
 }
 
 

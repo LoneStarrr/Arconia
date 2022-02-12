@@ -1,18 +1,16 @@
-package lonestarrr.arconia.common.block.tile;
+package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
-import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Gold Arconium blocks are used as a gold source for the pot of gold multiblock. This entity tracks the available gold before it is depleted, and manages
  * gold coin collection interval / counts.
  */
-public class GoldArconiumTileEntity extends BaseTileEntity {
+public class GoldArconiumBlockEntity extends BaseBlockEntity {
     public static final String TAG_COINS = "coins"; //nbt tag
     public static final String TAG_INFINITE = "infinite"; //nbt tag
 
@@ -21,13 +19,13 @@ public class GoldArconiumTileEntity extends BaseTileEntity {
     private boolean infinite; // If set, internal coin store is never depleted and unlimited coins are generated
 
     /**
-     * Tile entity class is shared between regular (coin store depletes) and infinite gold arconium blocks
+     * Block entity class is shared between regular (coin store depletes) and infinite gold arconium blocks
      *
      * @param tier
      * @param infinite
      */
-    public GoldArconiumTileEntity(RainbowColor tier, boolean infinite) {
-        super(infinite ? ModTiles.getInfiniteGoldArconiumTileEntityType(tier) : ModTiles.getGoldArconiumTileEntityType(tier));
+    public GoldArconiumBlockEntity(RainbowColor tier, boolean infinite, BlockPos pos, BlockState state) {
+        super(infinite ? ModBlockEntities.getInfiniteGoldArconiumBlockEntityType(tier) : ModBlockEntities.getGoldArconiumBlockEntityType(tier), pos, state);
         this.tier = tier;
         setInitialCoinCount();
         this.infinite = infinite;
@@ -90,13 +88,13 @@ public class GoldArconiumTileEntity extends BaseTileEntity {
     }
 
     @Override
-    public void writePacketNBT(CompoundNBT tag) {
+    public void writePacketNBT(CompoundTag tag) {
         tag.putLong(TAG_COINS, this.coins);
         tag.putBoolean(TAG_INFINITE, this.infinite);
     }
 
     @Override
-    public void readPacketNBT(CompoundNBT tag) {
+    public void readPacketNBT(CompoundTag tag) {
         this.coins = tag.getLong(TAG_COINS);
         this.infinite = tag.getBoolean(TAG_INFINITE);
     }

@@ -1,19 +1,19 @@
 package lonestarrr.arconia.data.client;
 
-import net.minecraft.block.Block;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.util.Direction;
-import net.minecraft.util.registry.Registry;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
-
-import static lonestarrr.arconia.common.core.helper.ResourceLocationHelper.prefix;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
+
+import static lonestarrr.arconia.common.core.helper.ResourceLocationHelper.prefix;
 
 /**
  * Dynamically generate blockstates, block models, and item models by invoking the runData gradle target.

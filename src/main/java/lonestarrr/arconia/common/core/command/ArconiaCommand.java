@@ -3,37 +3,24 @@ package lonestarrr.arconia.common.core.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.item.ColoredRoot;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.LeavesBlock;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.ItemArgument;
-import net.minecraft.command.arguments.ItemInput;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
-
-import java.util.EmptyStackException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.item.ItemArgument;
+import net.minecraft.commands.arguments.item.ItemInput;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Commands for arconia
  */
 public class ArconiaCommand {
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         // Command structure:
         //   /arconia <subcommand> <subcommand args>
         dispatcher.register(
@@ -59,19 +46,19 @@ public class ArconiaCommand {
     }
 
     private static int enchantRoot(
-            CommandContext<CommandSource> ctx, ItemInput itemInput, int itemCount, int generationInterval, int coinCost) throws CommandSyntaxException {
-        PlayerEntity player = ctx.getSource().getPlayerOrException();
+            CommandContext<CommandSourceStack> ctx, ItemInput itemInput, int itemCount, int generationInterval, int coinCost) throws CommandSyntaxException {
+        Player player = ctx.getSource().getPlayerOrException();
         Item resourceItem = itemInput.getItem();
 
         // Enchant resourceItem in player's hand
-        ItemStack rootItem = player.inventory.getSelected();
+        ItemStack rootItem = player.getInventory().getSelected();
         if (rootItem.isEmpty() || !(rootItem.getItem() instanceof ColoredRoot)) {
-            player.sendMessage(new StringTextComponent("A colored root is expected in your active hotbar slot for this to work"), Util.NIL_UUID);
+            player.sendMessage(new TextComponent("A colored root is expected in your active hotbar slot for this to work"), Util.NIL_UUID);
             return Command.SINGLE_SUCCESS;
         }
 
         ColoredRoot.setResourceItem(rootItem, resourceItem, generationInterval, itemCount, coinCost);
-        player.sendMessage(new StringTextComponent("Enchanted the colored root with resourceItem " + resourceItem.getRegistryName()), Util.NIL_UUID);
+        player.sendMessage(new TextComponent("Enchanted the colored root with resourceItem " + resourceItem.getRegistryName()), Util.NIL_UUID);
         return Command.SINGLE_SUCCESS;
     }
 }

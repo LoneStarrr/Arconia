@@ -1,28 +1,28 @@
-package lonestarrr.arconia.common.block.tile;
+package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
 import lonestarrr.arconia.common.item.ModItems;
-import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
 import lonestarrr.arconia.common.network.ModPackets;
 import lonestarrr.arconia.common.network.PotItemTransferPacket;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements ITickableTileEntity {
+public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     private static final int MAX_COIN_SUPPLIERS = 1; // How many hats may supply coins per coin collection tick?
     private static final String TAG_HAT_POSITIONS = "hat_positions";
     private static final String TAG_COIN_COUNT = "coin_count";
@@ -33,8 +33,8 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
 
     private final List<HatData> hats = new ArrayList<>();
 
-    public PotMultiBlockPrimaryTileEntity() {
-        super(ModTiles.POT_MULTIBLOCK_PRIMARY);
+    public PotMultiBlockPrimaryBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.POT_MULTIBLOCK_PRIMARY, pos, state);
         // TODO check for valid structure at an interval, if not, destroy ourselves
         coinCount = 0;
     }
@@ -74,13 +74,13 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
             throw new LinkHatException(LinkErrorCode.ALREADY_LINKED);
         }
 
-        TileEntity te = level.getBlockEntity(hatPos);
-        if (te == null || !(te instanceof HatTileEntity)) {
+        BlockEntity be = level.getBlockEntity(hatPos);
+        if (be == null || !(be instanceof HatBlockEntity)) {
             throw new LinkHatException(LinkErrorCode.HAT_NOT_FOUND);
         }
 
-        HatTileEntity hatTE = (HatTileEntity)te;
-        BlockPos potPos = hatTE.getLinkedPot();
+        HatBlockEntity hatBE = (HatBlockEntity)be;
+        BlockPos potPos = hatBE.getLinkedPot();
         if (potPos != null) {
             if (potPos.equals(worldPosition)) {
                 throw new LinkHatException(LinkErrorCode.ALREADY_LINKED);
@@ -89,7 +89,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
             }
         }
         hats.add(new HatData(hatPos));
-        hatTE.linkToPot(worldPosition);
+        hatBE.linkToPot(worldPosition);
         setChanged();
     }
 
@@ -99,12 +99,12 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         if (hat != null) {
             hats.remove(hat);
             setChanged();
-            TileEntity te = level.getBlockEntity(hatPos);
-            if (te != null && te instanceof HatTileEntity) {
-                HatTileEntity hatTE = (HatTileEntity) te;
-                BlockPos linkedPot = hatTE.getLinkedPot();
+            BlockEntity be = level.getBlockEntity(hatPos);
+            if (be != null && be instanceof HatBlockEntity) {
+                HatBlockEntity hatBE = (HatBlockEntity) be;
+                BlockPos linkedPot = hatBE.getLinkedPot();
                 if (linkedPot != null && linkedPot.equals(worldPosition)) {
-                    hatTE.unlink();
+                    hatBE.unlink();
                 }
             }
             return true;
@@ -128,24 +128,23 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
 
     /**
      * @param goldArconiumPos Position of hat in world
-     * @return If the hat has a gold arconium tile entity under it, return that, otherwise return null
+     * @return If the hat has a gold arconium block entity under it, return that, otherwise return null
      */
-    private GoldArconiumTileEntity getGoldArconiumInWorld(BlockPos goldArconiumPos) {
-        TileEntity te = level.getBlockEntity(goldArconiumPos);
+    private GoldArconiumBlockEntity getGoldArconiumInWorld(BlockPos goldArconiumPos) {
+        BlockEntity be = level.getBlockEntity(goldArconiumPos);
 
-        if (te == null || !(te instanceof GoldArconiumTileEntity)) {
+        if (be == null || !(be instanceof GoldArconiumBlockEntity)) {
             return null;
         }
 
-        return (GoldArconiumTileEntity)te;
+        return (GoldArconiumBlockEntity)be;
     }
 
-    @Override
-    public void tick() {
-        if (level.isClientSide) {
-            return;
-        }
+    public static void tick(Level level, BlockPos pos, BlockState state, PotMultiBlockPrimaryBlockEntity blockEntity) {
+        blockEntity.tickInternal(level, pos, state);
+    }
 
+    public void tickInternal(Level level, BlockPos pos, BlockState state) {
         // Track world game time to thwart tick accelerators
         if (lastIntervalGameTime == 0) {
             lastIntervalGameTime = level.getGameTime();
@@ -169,7 +168,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
      *
      * @return Number of coins collected
      */
-    private int collectCoins(GoldArconiumTileEntity goldArconiumTE, BlockPos goldArconiumPos) {
+    private int collectCoins(GoldArconiumBlockEntity goldArconiumTE, BlockPos goldArconiumPos) {
         // TODO interval for this should probably be independent of the item sending logic
         int coinCount = goldArconiumTE.collectCoins();
         if (coinCount > 0) {
@@ -181,7 +180,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
 
         if (goldArconiumTE.isDepleted()) {
             level.setBlock(goldArconiumPos, ModBlocks.getArconiumBlock(goldArconiumTE.getTier()).defaultBlockState(), 3);
-            level.playSound(null, worldPosition, SoundEvents.METAL_BREAK, SoundCategory.BLOCKS, 1, 1);
+            level.playSound(null, worldPosition, SoundEvents.METAL_BREAK, SoundSource.BLOCKS, 1, 1);
         }
 
         return coinCount;
@@ -193,7 +192,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
     private void tickHats() {
         // For now, assume 1 coin = 1 resource, regardless of other parameters
         BlockPos particlePos = worldPosition.above(2);
-        Vector3d particleVec = new Vector3d(particlePos.getX(), particlePos.getY(), particlePos.getZ());
+        Vec3 particleVec = new Vec3(particlePos.getX(), particlePos.getY(), particlePos.getZ());
         particleVec.add(0.5, 1.5, 0.5);
 
         if (level == null || hats.size() == 0) {
@@ -210,7 +209,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         for (HatData hat : hats) {
             BlockPos hatPos = hat.hatPos;
             // TODO consider chunk loading if the hat is in a chunk that is not loaded?
-            HatTileEntity hatEntity = getHatEntity(hatPos);
+            HatBlockEntity hatEntity = getHatEntity(hatPos);
             if (hatEntity == null) {
                 // Hat's gone. Don't try this hat again.
                 hatsToRemove.add(hat);
@@ -237,7 +236,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
                 // placing multiple of a lower tier can still speed it up because the limit is applied per pot tick, which is shorter than the coin collector's
                 // interval. I.e. one can always get coin collection down to 1 per pot tick by placing enough of them. Am I ok with that?
                 BlockPos goldArconiumPos = hatPos.below();
-                GoldArconiumTileEntity te = getGoldArconiumInWorld(goldArconiumPos);
+                GoldArconiumBlockEntity te = getGoldArconiumInWorld(goldArconiumPos);
                 if (te != null && hatsCollectedCoinsFrom < MAX_COIN_SUPPLIERS && this.intervalsElapsed - hat.lastCoinCollectInterval >= te.getCoinGenerationInterval()) {
                     if (collectCoins(te, goldArconiumPos) > 0) {
                         hatsCollectedCoinsFrom++;
@@ -261,7 +260,7 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
      * @param hatEntity
      * @return Whether resources were sent to the specified hat
      */
-    private boolean sendResourceToHat(HatTileEntity hatEntity, BlockPos hatPos) {
+    private boolean sendResourceToHat(HatBlockEntity hatEntity, BlockPos hatPos) {
         if (coinCount < hatEntity.getResourceCoinCost()) {
             return false;
         }
@@ -276,21 +275,21 @@ public class PotMultiBlockPrimaryTileEntity extends BaseTileEntity implements IT
         return false;
     }
 
-    private HatTileEntity getHatEntity(BlockPos hatPos) {
-        TileEntity te = level.getBlockEntity(hatPos);
-        if (te == null || !(te instanceof HatTileEntity)) {
+    private HatBlockEntity getHatEntity(BlockPos hatPos) {
+        BlockEntity te = level.getBlockEntity(hatPos);
+        if (te == null || !(te instanceof HatBlockEntity)) {
             return null;
         }
 
-        return (HatTileEntity) te;
+        return (HatBlockEntity) te;
     }
 
-    public void writePacketNBT(CompoundNBT tag) {
+    public void writePacketNBT(CompoundTag tag) {
         tag.putLongArray(TAG_HAT_POSITIONS, hats.stream().map(hat -> hat.hatPos.asLong()).collect(Collectors.toList()));
         tag.putInt(TAG_COIN_COUNT, coinCount);
     }
 
-    public void readPacketNBT(CompoundNBT tag) {
+    public void readPacketNBT(CompoundTag tag) {
         long[] longPositions = tag.getLongArray(TAG_HAT_POSITIONS);
         hats.clear();
         for (long longPos: longPositions) {

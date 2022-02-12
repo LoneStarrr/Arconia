@@ -1,27 +1,22 @@
-package lonestarrr.arconia.common.block.tile;
+package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.InventoryHelper;
-import lonestarrr.arconia.common.lib.tile.BaseTileEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
- * Hats linked to a pot of gold can produce a specific resource, and are tiered using RainbowColor. The tile entity stores the resource to be generated.
+ * Hats linked to a pot of gold can produce a specific resource, and are tiered using RainbowColor. The block entity stores the resource to be generated.
  */
-public class HatTileEntity extends BaseTileEntity {
+public class HatBlockEntity extends BaseBlockEntity {
     private RainbowColor tier;
     private BlockPos linkedPotPos;
     private ItemStack itemStack; // item to generate (should this be an ItemStack?)
@@ -29,8 +24,8 @@ public class HatTileEntity extends BaseTileEntity {
     private int resourceCoinCost;
     public long nextTickParticleRender = 0; // used by TE renderer to track particle rendering - not persisted
 
-    public HatTileEntity() {
-        super(ModTiles.HAT);
+    public HatBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.HAT, pos, state);
         this.tier = RainbowColor.RED;
         this.itemStack = ItemStack.EMPTY;
     }
@@ -89,7 +84,7 @@ public class HatTileEntity extends BaseTileEntity {
      * @return True if this is invoked on the server side, and a non-zero item count was inserted into the inventory below.
      */
     @Nonnull
-    public ItemStack generateResource(World world) {
+    public ItemStack generateResource(Level world) {
         if (world.isClientSide) {
             return ItemStack.EMPTY;
         }
@@ -111,7 +106,7 @@ public class HatTileEntity extends BaseTileEntity {
     }
 
     @Override
-    public void writePacketNBT(CompoundNBT tag) {
+    public void writePacketNBT(CompoundTag tag) {
         if (!level.isClientSide()) {
             tag.putInt("tier", tier.getTier());
             tag.put("item", this.itemStack.serializeNBT());
@@ -124,7 +119,7 @@ public class HatTileEntity extends BaseTileEntity {
     }
 
     @Override
-    public void readPacketNBT(CompoundNBT tag) {
+    public void readPacketNBT(CompoundTag tag) {
         ItemStack stack = ItemStack.EMPTY;
         RainbowColor tier = RainbowColor.RED;
         int interval = 1;
@@ -150,7 +145,7 @@ public class HatTileEntity extends BaseTileEntity {
             }
             Arconia.logger.debug("***** World remote = " + (level != null ? level.isClientSide() : "null") + ", itemStack = " + stack);
         } catch(Exception e) {
-            Arconia.logger.error("Failed to read tile entity data: " + e.getMessage(), e);
+            Arconia.logger.error("Failed to read block entity data: " + e.getMessage(), e);
         }
         setResourceGenerated(tier, stack, interval, coinCost <= 0 ? 1: coinCost);
     }

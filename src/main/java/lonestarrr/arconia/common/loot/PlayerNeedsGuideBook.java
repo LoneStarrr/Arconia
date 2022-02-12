@@ -7,17 +7,21 @@ import com.google.gson.JsonSerializationContext;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.helper.PatchouliHelper;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.*;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.minecraftforge.common.util.FakePlayer;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
 
@@ -25,16 +29,16 @@ import java.util.Set;
  * Returns true if looter is a real player, who hasn't found the guide book yet
  * Should really break this up into 2 conditions, is a real player, and has found guidebook
  */
-public class PlayerNeedsGuideBook implements ILootCondition {
+public class PlayerNeedsGuideBook implements LootItemCondition {
     @Override
     public boolean test(LootContext lootContext) {
-        Entity looter = lootContext.getParamOrNull(LootParameters.THIS_ENTITY);
-        if (!(looter instanceof ServerPlayerEntity) || looter instanceof FakePlayer) {
+        Entity looter = lootContext.getParamOrNull(LootContextParams.THIS_ENTITY);
+        if (!(looter instanceof ServerPlayer) || looter instanceof FakePlayer) {
             return false;
         }
 
-        ServerPlayerEntity player = (ServerPlayerEntity)looter;
-        ServerWorld world = player.getLevel();
+        ServerPlayer player = (ServerPlayer)looter;
+        ServerLevel world = player.getLevel();
         // Only drop a book if the player does not have the advancement yet, AND there is no nearby guide book entity (you could mine a whole bunch of dirt
         // without picking up the book!). I suppose you could game this with e.g. a hopper if you really, really wanted to have a large collection of useless
         // guide books!
@@ -63,21 +67,21 @@ public class PlayerNeedsGuideBook implements ILootCondition {
     }
 
     @Override
-    public Set<LootParameter<?>> getReferencedContextParams() {
-        return ImmutableSet.of(LootParameters.THIS_ENTITY);
+    public Set<LootContextParam<?>> getReferencedContextParams() {
+        return ImmutableSet.of(LootContextParams.THIS_ENTITY);
     }
 
     @Override
-    public LootConditionType getType() {
+    public LootItemConditionType getType() {
         return ModLootModifiers.PLAYER_NEEDS_GUIDEBOOK;
     }
 
-    public static class Serializer implements ILootSerializer<PlayerNeedsGuideBook> {
+    public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<PlayerNeedsGuideBook> {
         @Override
-        public void serialize(JsonObject json, PlayerNeedsGuideBook condition, JsonSerializationContext ctx) {}
+        public void serialize(@Nonnull JsonObject json, @Nonnull PlayerNeedsGuideBook value, @Nonnull JsonSerializationContext context) {}
 
         @Override
-        public PlayerNeedsGuideBook deserialize(JsonObject json, JsonDeserializationContext ctx) {
+        public PlayerNeedsGuideBook deserialize(@Nonnull JsonObject json, @Nonnull JsonDeserializationContext context) {
             return new PlayerNeedsGuideBook();
         }
     }

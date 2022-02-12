@@ -3,16 +3,16 @@ package lonestarrr.arconia.common.crafting;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
@@ -34,7 +34,7 @@ public class PedestalRecipe implements IPedestalRecipe {
 
 
     @Override
-    public boolean matches(IInventory inv, World world) {
+    public boolean matches(Container inv, Level world) {
         List<Ingredient> missing = new ArrayList<>(inputs);
 
         for (int i = 0; i < inv.getContainerSize(); i++) {
@@ -64,7 +64,7 @@ public class PedestalRecipe implements IPedestalRecipe {
     }
 
     @Override
-    public ItemStack assemble(IInventory iInventory) {
+    public ItemStack assemble(Container iInventory) {
         return getResultItem().copy();
     }
 
@@ -84,7 +84,7 @@ public class PedestalRecipe implements IPedestalRecipe {
 
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return null;
     }
 
@@ -93,14 +93,14 @@ public class PedestalRecipe implements IPedestalRecipe {
         return inputs;
     }
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<PedestalRecipe> {
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<PedestalRecipe> {
 
         @Override
         public PedestalRecipe fromJson(ResourceLocation id, JsonObject json) {
             // Serializer is in PedestalProvider which is part of data generation
-            ItemStack output = ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(json, "output"));
-            int durationTicks = JSONUtils.getAsInt(json, "durationTicks");
-            JsonArray ingrs = JSONUtils.getAsJsonArray(json, "ingredients");
+            ItemStack output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "output"));
+            int durationTicks = GsonHelper.getAsInt(json, "durationTicks");
+            JsonArray ingrs = GsonHelper.getAsJsonArray(json, "ingredients");
             List<Ingredient> inputs = new ArrayList<>();
             for (JsonElement e : ingrs) {
                 inputs.add(Ingredient.fromJson(e));
@@ -110,7 +110,7 @@ public class PedestalRecipe implements IPedestalRecipe {
 
         @Nullable
         @Override
-        public PedestalRecipe fromNetwork(ResourceLocation id, PacketBuffer buf) {
+        public PedestalRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
             Ingredient[] inputs = new Ingredient[buf.readVarInt()];
             for (int i = 0; i < inputs.length; i++) {
                 inputs[i] = Ingredient.fromNetwork(buf);
@@ -122,7 +122,7 @@ public class PedestalRecipe implements IPedestalRecipe {
         }
 
         @Override
-        public void toNetwork(PacketBuffer buf, PedestalRecipe recipe) {
+        public void toNetwork(FriendlyByteBuf buf, PedestalRecipe recipe) {
             buf.writeVarInt(recipe.getIngredients().size());
             for (Ingredient input : recipe.getIngredients()) {
                 input.toNetwork(buf);

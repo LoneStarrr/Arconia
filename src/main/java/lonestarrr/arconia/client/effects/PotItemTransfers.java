@@ -1,17 +1,17 @@
 package lonestarrr.arconia.client.effects;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.RenderLevelLastEvent;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,41 +26,41 @@ public class PotItemTransfers {
     private static final Set<ItemTransfer> transfers = new HashSet<>();
 
     public static void addItemTransfer(BlockPos hatPos, BlockPos potPos, ItemStack itemStack) {
-        World world = Minecraft.getInstance().level;
+        Level world = Minecraft.getInstance().level;
 
         if (!world.isClientSide()) {
             return;
         }
 
         long startTick = world.getGameTime();
-        Vector3d hatPosExact = new Vector3d(hatPos.getX() + 0.5, hatPos.getY() + 0.5, hatPos.getZ() + 0.5);
-        Vector3d potPosExact = new Vector3d(potPos.getX(), potPos.getY(), potPos.getZ());
+        Vec3 hatPosExact = new Vec3(hatPos.getX() + 0.5, hatPos.getY() + 0.5, hatPos.getZ() + 0.5);
+        Vec3 potPosExact = new Vec3(potPos.getX(), potPos.getY(), potPos.getZ());
         ItemTransfer transfer = new ItemTransfer(hatPosExact, potPosExact, itemStack, startTick);
         transfers.add(transfer);
     }
 
-    public static void render(RenderWorldLastEvent event) {
-        World world = Minecraft.getInstance().level;
+    public static void render(RenderLevelLastEvent event) {
+        Level world = Minecraft.getInstance().level;
 
         long now = world.getGameTime();
         List<ItemTransfer> toRemove = new ArrayList<>();
 
-        MatrixStack matrix = event.getMatrixStack();
+        PoseStack matrix = event.getPoseStack();
         matrix.pushPose();
 
         // Correct for player projection view
-        Vector3d projected = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition();
+        Vec3 projected = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition();
         matrix.translate(-projected.x(), -projected.y(), -projected.z());
 
         // 2021-11-14 XXX This code crashes when a nether star is being transferred. I think it's because it has a glint.
         // I attempted to use my own buffer to no avail, it might be a bug in the mojang code?
 //        BufferBuilder bufferBuilder = new BufferBuilder(2097152); // taken from Tesselator
 //        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(bufferBuilder);
-        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+        MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 
         // Probably also add a random delay and don't fire them all at the same tick
         for (ItemTransfer transfer: transfers) {
-            if (transfer.isComplete(event.getPartialTicks())) {
+            if (transfer.isComplete(event.getPartialTick())) {
                 toRemove.add(transfer);
                 continue;
             }
@@ -71,7 +71,7 @@ public class PotItemTransfers {
                 continue;
             }
 
-            renderItemTransfer(transfer, event.getMatrixStack(), buffer, event.getPartialTicks());
+            renderItemTransfer(transfer, event.getPoseStack(), buffer, event.getPartialTick());
             // TODO: Temporary - testing rainbow rendering
 //            RainbowRenderer.renderRainbow(transfer.potPos, transfer.hatPos, event.getMatrixStack(), buffer);
         }
@@ -84,14 +84,14 @@ public class PotItemTransfers {
         matrix.popPose();
     }
 
-    private static void renderItemTransfer(ItemTransfer transfer, MatrixStack matrixStack, IRenderTypeBuffer buffer, float partialTicks) {
+    private static void renderItemTransfer(ItemTransfer transfer, PoseStack matrixStack, MultiBufferSource buffer, float partialTicks) {
         double elapsedTicks = transfer.getTicksElapsed() + partialTicks;
-        Vector3d itemPos = transfer.getPosition(elapsedTicks);
-        int light = WorldRenderer.getLightColor(Minecraft.getInstance().level, new BlockPos(itemPos.x, itemPos.y, itemPos.z));
+        Vec3 itemPos = transfer.getPosition(elapsedTicks);
+        int light = LevelRenderer.getLightColor(Minecraft.getInstance().level, new BlockPos(itemPos.x, itemPos.y, itemPos.z));
         matrixStack.pushPose();
         matrixStack.translate(itemPos.x, itemPos.y, itemPos.z);
         Minecraft.getInstance().getItemRenderer()
-                .renderStatic(transfer.itemStack, ItemCameraTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
+                .renderStatic(transfer.itemStack, ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer, 0);
         matrixStack.popPose();
         // TODO temporarily rendering a rainbow just to see what it looks like
 
@@ -102,14 +102,14 @@ class ItemTransfer {
     public static final int DISPLAY_TICKS = 20;
     public static final double GRAVITY = 2 / 20d;
 
-    public final Vector3d hatPos;
-    public final Vector3d potPos;
+    public final Vec3 hatPos;
+    public final Vec3 potPos;
     public final long startTick;
     public final ItemStack itemStack;
     private final double gravity;
     private final double displayTicks;
 
-    public ItemTransfer(Vector3d hatPos, Vector3d potPos, ItemStack itemStack, long startTick) {
+    public ItemTransfer(Vec3 hatPos, Vec3 potPos, ItemStack itemStack, long startTick) {
         this.hatPos = hatPos;
         this.potPos = potPos;
         this.itemStack = itemStack.copy();
@@ -128,24 +128,24 @@ class ItemTransfer {
      * @return
      *  Item location in transfer animation
      */
-    public Vector3d getPosition(double elapsedTicks) {
-        Vector3d velocity = getVelocity();
+    public Vec3 getPosition(double elapsedTicks) {
+        Vec3 velocity = getVelocity();
         // TODO move code below into ItemTransfer
         double itemX = potPos.x + velocity.x * elapsedTicks;
         double itemY = potPos.y + velocity.y * elapsedTicks - (ItemTransfer.GRAVITY * elapsedTicks * elapsedTicks) / 2d;
         double itemZ = potPos.z + velocity.z * elapsedTicks;
-        return new Vector3d(itemX, itemY, itemZ);
+        return new Vec3(itemX, itemY, itemZ);
     }
 
     /**
      * @return
      *     A velocity vector V for a parabolic animation of an item being flung at the hat where the fling time is constant.
      */
-    public Vector3d getVelocity() {
+    public Vec3 getVelocity() {
         final double vx = (hatPos.x - potPos.x) / displayTicks;
         final double vz = (hatPos.z - potPos.z) / displayTicks;
         final double vy = (hatPos.y - potPos.y + (gravity * displayTicks * displayTicks) / 2d) / displayTicks;
-        return new Vector3d(vx, vy, vz);
+        return new Vec3(vx, vy, vz);
     }
     /**
      * @return Elapsed time % as a fraction [0..1]

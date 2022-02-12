@@ -1,34 +1,26 @@
 package lonestarrr.arconia.client.effects;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import jdk.nashorn.internal.runtime.regexp.joni.exception.ValueException;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 import lonestarrr.arconia.common.core.helper.VectorHelper;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import net.minecraft.client.renderer.RenderState.TransparencyState;
 
 /**
  * Render a rainbow between two points, with 1 or more colors
  */
 public class RainbowRenderer {
-    public static void renderRainbow(Vector3d origin, Vector3d destination, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
+    public static void renderRainbow(Vec3 origin, Vec3 destination, PoseStack matrixStack, MultiBufferSource buffer) {
         // for the test-integration from pot item transfer: matrix has already been translated to compensate for player pov
         float radiusOuter = (float)origin.distanceTo(destination) / 2f;
         float radiusInner = radiusOuter * 0.8f;
@@ -44,7 +36,7 @@ public class RainbowRenderer {
         matrixStack.translate(origin.x, origin.y, origin.z);
         matrixStack.mulPose(rotation);
 
-        IVertexBuilder builder = buffer.getBuffer(RainbowSegmentRenderType.RAINBOW_SEGMENT);
+        VertexConsumer builder = buffer.getBuffer(RainbowSegmentRenderType.RAINBOW_SEGMENT);
         Matrix4f positionMatrix = matrixStack.last().pose();
 
 
@@ -66,7 +58,7 @@ public class RainbowRenderer {
         // FIXME How am I supposed to indicate that I'm done drawing? Closing the polygon? Nope. This here works, but something
         // tells me I am not supposed to be doing this this way.
         RainbowSegmentRenderType.RAINBOW_SEGMENT.end((BufferBuilder)builder, 0, 0, 0);
-        ((BufferBuilder)builder).begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        ((BufferBuilder)builder).begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
         matrixStack.popPose();
     }
@@ -105,23 +97,23 @@ public class RainbowRenderer {
  */
 @OnlyIn(Dist.CLIENT)
 class RainbowSegmentRenderType extends RenderType {
+    // Default constructor to satisfy compiler
     public RainbowSegmentRenderType(
-            String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn,
-            boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
-        super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
+            String p_173178_, VertexFormat p_173179_, VertexFormat.Mode p_173180_, int p_173181_, boolean p_173182_, boolean p_173183_,
+            Runnable p_173184_, Runnable p_173185_) {
+        super(p_173178_, p_173179_, p_173180_, p_173181_, p_173182_, p_173183_, p_173184_, p_173185_);
     }
 
     public static final RenderType RAINBOW_SEGMENT = create("rainbow_segment",
-            DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 32768,
-            RenderType.State.builder()
-                    .setLayeringState(RenderState.VIEW_OFFSET_Z_LAYERING)
-                    .setAlphaState(RenderState.NO_ALPHA)
-                    .setTransparencyState(TransparencyState.LIGHTNING_TRANSPARENCY)
-                    .setLightmapState(RenderState.NO_LIGHTMAP)
-                    .setShadeModelState(RenderState.SMOOTH_SHADE)
-                    .setTextureState(RenderState.NO_TEXTURE)
-                    .setWriteMaskState(RenderState.COLOR_WRITE)
-                    .setCullState(RenderState.NO_CULL)
+           DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 32768, false, false,
+           RenderType.CompositeState.builder()
+                    .setShaderState(RenderStateShard.NO_SHADER)
+                    .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
+                    .setTransparencyState(TransparencyStateShard.LIGHTNING_TRANSPARENCY)
+                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
+                    .setTextureState(RenderStateShard.NO_TEXTURE)
+                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+                    .setCullState(RenderStateShard.NO_CULL)
                     .createCompositeState(false)
     );
 }

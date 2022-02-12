@@ -1,19 +1,21 @@
 package lonestarrr.arconia.client.gui.crate;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.RainbowCrateBlock;
 import lonestarrr.arconia.common.core.RainbowColor;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 
-public class RainbowCrateContainerScreen extends ContainerScreen<RainbowCrateContainer> {
+public class RainbowCrateContainerScreen extends AbstractContainerScreen<RainbowCrateContainer> {
     // Texture containing the background image and overlay sprites
     private static final ResourceLocation CRATE_UI_TEXTURE = new ResourceLocation(Arconia.MOD_ID, "textures/gui" +
             "/crate_ui.png");
@@ -30,8 +32,8 @@ public class RainbowCrateContainerScreen extends ContainerScreen<RainbowCrateCon
     private static final int TEXTURE_WIDTH = 256;
     private static final int TEXTURE_HEIGHT = 272;
 
-    public RainbowCrateContainerScreen(RainbowCrateContainer container, PlayerInventory playerInventory,
-                                       ITextComponent title) {
+    public RainbowCrateContainerScreen(RainbowCrateContainer container, Inventory playerInventory,
+                                       Component title) {
         super(container, playerInventory, title);
 
         imageWidth = BACKGROUND_WIDTH;
@@ -43,14 +45,15 @@ public class RainbowCrateContainerScreen extends ContainerScreen<RainbowCrateCon
         super.init();
         // Use our own item renderer to draw the little bars under each item in the GUI
         Minecraft mc = Minecraft.getInstance();
-        this.itemRenderer = new RainbowCrateItemRenderer(mc.textureManager, mc.getModelManager(), mc.getItemColors());
+        BlockEntityWithoutLevelRenderer blockentitywithoutlevelrenderer = new BlockEntityWithoutLevelRenderer(mc.getBlockEntityRenderDispatcher(), mc.getEntityModels());
+        this.itemRenderer = new RainbowCrateItemRenderer(mc.textureManager, mc.getModelManager(), mc.getItemColors(), blockentitywithoutlevelrenderer);
 
         // Could add buttons here
         // this.addButton(new Button(this.guiLeft + this.xSize / 2 - 10, this.guiTop + 20, 50, 20, "1", null));
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(stack);
         super.render(stack, mouseX, mouseY, partialTicks);
         renderTooltip(stack, mouseX, mouseY);
@@ -60,7 +63,7 @@ public class RainbowCrateContainerScreen extends ContainerScreen<RainbowCrateCon
      * Each slot in the crate's inventory has a bar underneath displaying total capacity used, since a crate's slot
      * can actually contain more than 64 items.
      */
-    private void drawSlotCapacityBars(MatrixStack stack) {
+    private void drawSlotCapacityBars(PoseStack stack) {
         // coordinates to render at are slot.xPos and slot.yPos
         RainbowCrateContainer container = this.menu;
         // I think blit (invoked in the draw method) simply draws whatever texture is active.
@@ -72,7 +75,7 @@ public class RainbowCrateContainerScreen extends ContainerScreen<RainbowCrateCon
      * same time.
      * @param s
      */
-    private void drawCapacityBar(MatrixStack stack, Slot s) {
+    private void drawCapacityBar(PoseStack stack, Slot s) {
         int maxCapacity = this.menu.getInternalSlotLimit();
         int itemCount = this.menu.getInternalSlotCount(s.index);
 
@@ -105,12 +108,13 @@ public class RainbowCrateContainerScreen extends ContainerScreen<RainbowCrateCon
 
     /**
      * Draws the background layer of this container (behind the items).
-     * Taken directly from ChestScreen / BeaconScreen
+     * Inspired by BeaconScreen
      */
     @Override
-    protected void renderBg(MatrixStack stack, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bind(CRATE_UI_TEXTURE);
+    protected void renderBg(PoseStack stack, float partialTicks, int mouseX, int mouseY) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, CRATE_UI_TEXTURE);
 
         // Render background in the middle of the provided window (this.width/height)
         int edgeOffsetX = (this.width - this.imageWidth) / 2;
@@ -125,7 +129,7 @@ public class RainbowCrateContainerScreen extends ContainerScreen<RainbowCrateCon
      */
     public static void registerContainerScreens() {
         for (RainbowColor tier : RainbowColor.values()) {
-            ScreenManager.register(RainbowCrateBlock.getContainerTypeByTier(tier),
+            MenuScreens.register(RainbowCrateBlock.getContainerTypeByTier(tier),
                     RainbowCrateContainerScreen::new);
         }
     }

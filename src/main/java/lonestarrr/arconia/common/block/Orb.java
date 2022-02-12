@@ -1,23 +1,28 @@
 package lonestarrr.arconia.common.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import lonestarrr.arconia.common.block.tile.OrbTileEntity;
+import lonestarrr.arconia.common.block.entities.ModBlockEntities;
+import lonestarrr.arconia.common.block.entities.OrbBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,7 +30,7 @@ import javax.annotation.Nullable;
 /**
  * Pulls in items of a specific type near it.
  */
-public class Orb extends Block {
+public class Orb extends BaseEntityBlock {
     public static final VoxelShape SHAPE;
 
     static {
@@ -39,7 +44,7 @@ public class Orb extends Block {
         VoxelShape layer12 = box(3, 12, 3, 13, 13, 13);
         VoxelShape layer13 = box(4, 13, 4, 12, 14, 12);
         VoxelShape layer14 = box(5, 14, 5, 11, 15, 11);
-        SHAPE = VoxelShapes.or(layer1, layer2, layer3, layer4, layer5_10, layer11, layer12, layer13, layer14);
+        SHAPE = Shapes.or(layer1, layer2, layer3, layer4, layer5_10, layer11, layer12, layer13, layer14);
     }
 
     public Orb() {
@@ -48,50 +53,60 @@ public class Orb extends Block {
 
     @Nonnull
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext ctx) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext ctx) {
         return SHAPE;
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new OrbBlockEntity(pos, state);
     }
+
+    @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
+    }
+
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new OrbTileEntity();
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            Level level, BlockState state, BlockEntityType<T> type) {
+        if (!level.isClientSide) {
+            return createTickerHelper(type, ModBlockEntities.ORB, OrbBlockEntity::tick);
+        }
+        return null;
     }
 
     @Override
-    public ActionResultType use(
-            BlockState blockState, World world, BlockPos blockPos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult rayTraceResult) {
+    public InteractionResult use(
+            BlockState blockState, Level world, BlockPos blockPos, Player playerEntity, InteractionHand hand, BlockHitResult rayTraceResult) {
 //        return super.onBlockActivated(blockState, world, blockPos, playerEntity, hand, rayTraceResult);
-        OrbTileEntity tile = null;
-        if (world.getBlockEntity(blockPos) != null && world.getBlockEntity(blockPos) instanceof OrbTileEntity) {
-            tile = (OrbTileEntity) world.getBlockEntity(blockPos);
+        OrbBlockEntity orbEntity = null;
+        if (world.getBlockEntity(blockPos) != null && world.getBlockEntity(blockPos) instanceof OrbBlockEntity) {
+            orbEntity = (OrbBlockEntity) world.getBlockEntity(blockPos);
         }
 
-        if (tile == null) {
-            return ActionResultType.PASS;
+        if (orbEntity == null) {
+            return InteractionResult.PASS;
         }
 
         if (playerEntity.isShiftKeyDown()) {
-            ItemStack stack = tile.popItem();
+            ItemStack stack = orbEntity.popItem();
             if (stack.isEmpty()) {
-                return ActionResultType.PASS;
+                return InteractionResult.PASS;
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         } else {
             ItemStack held = playerEntity.getItemInHand(hand);
             if (held.isEmpty()) {
-                return ActionResultType.PASS;
+                return InteractionResult.PASS;
             }
-            if (tile.addItem(held)) {
-                return ActionResultType.SUCCESS;
+            if (orbEntity.addItem(held)) {
+                return InteractionResult.SUCCESS;
                 // TODO play 'positive ploink' sound effect
             }
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
     }
 }

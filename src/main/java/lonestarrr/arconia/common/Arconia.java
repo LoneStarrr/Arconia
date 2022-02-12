@@ -3,7 +3,7 @@ package lonestarrr.arconia.common;
 import lonestarrr.arconia.common.advancements.ModCriterialTriggers;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.RainbowCrateBlock;
-import lonestarrr.arconia.common.block.tile.ModTiles;
+import lonestarrr.arconia.common.block.entities.ModBlockEntities;
 import lonestarrr.arconia.common.core.command.ArconiaCommand;
 import lonestarrr.arconia.common.core.command.FractalTreeCommand;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
@@ -19,12 +19,12 @@ import lonestarrr.arconia.common.network.ModPackets;
 import lonestarrr.arconia.common.world.ModFeatures;
 import lonestarrr.arconia.compat.theoneprobe.TheOneProbe;
 import lonestarrr.arconia.data.DataGenerators;
-import net.minecraft.block.Block;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
@@ -67,13 +67,13 @@ public class Arconia {
         modBus.addGenericListener(Block.class, ModBlocks::registerBlocks);
         modBus.addGenericListener(Item.class, ModBlocks::registerItemBlocks);
         modBus.addGenericListener(Item.class, ModItems::registerItems);
-        modBus.addGenericListener(TileEntityType.class, ModTiles::registerTileEntities);
-        modBus.addGenericListener(ContainerType.class, RainbowCrateBlock::registerContainers);
-        modBus.addGenericListener(IRecipeSerializer.class, ModRecipeTypes::registerRecipeTypes);
+        modBus.addGenericListener(BlockEntityType.class, ModBlockEntities::registerBlockEntities);
+        modBus.addGenericListener(MenuType.class, RainbowCrateBlock::registerContainers);
+        modBus.addGenericListener(RecipeSerializer.class, ModRecipeTypes::registerRecipeTypes);
         modBus.addGenericListener(Feature.class, ModFeatures::registerFeatures);
 
-        modBus.addListener((ModConfig.Loading e) -> ConfigHandler.onConfigLoad());
-        modBus.addListener((ModConfig.Reloading e) -> ConfigHandler.onConfigLoad());
+        modBus.addListener(ConfigHandler::onConfigLoad);
+        modBus.addListener(ConfigHandler::onConfigReload);
 
         ModLootModifiers.LOOT_MODIFIERS.register(modBus);
 

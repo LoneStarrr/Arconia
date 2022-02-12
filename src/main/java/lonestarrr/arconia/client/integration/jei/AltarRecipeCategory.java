@@ -1,7 +1,10 @@
 package lonestarrr.arconia.client.integration.jei;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.common.block.ModBlocks;
+import lonestarrr.arconia.common.crafting.IPedestalRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -9,13 +12,11 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.ModBlocks;
-import lonestarrr.arconia.common.crafting.IPedestalRecipe;
-import lonestarrr.arconia.common.item.ModItems;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -27,13 +28,11 @@ public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
     public static final ResourceLocation UID = new ResourceLocation(Arconia.MOD_ID, "altar");
 
     private final IDrawable background;
-    private final String localizedName;
     private final IDrawable overlay;
     private final IDrawable icon;
 
     public AltarRecipeCategory(@Nonnull IGuiHelper guiHelper) {
         this.background = guiHelper.createBlankDrawable(144, 81);
-        this.localizedName = I18n.get("jei.arconia.recipe_category.altar");
         this.overlay = guiHelper.createDrawable(new ResourceLocation(Arconia.MOD_ID, "textures/gui/jei/altar_overlay.png"),
                 0, 0, 144, 81);
         this.icon = guiHelper.createDrawableIngredient(new ItemStack(ModBlocks.centerPedestal.asItem()));
@@ -50,8 +49,8 @@ public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
     }
 
     @Override
-    public String getTitle() {
-        return localizedName;
+    public Component getTitle() {
+        return new TranslatableComponent("jei.arconia.recipe_category.altar");
     }
 
     @Override
@@ -65,12 +64,10 @@ public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
     }
 
     @Override
-    public void draw(IPedestalRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
-        RenderSystem.enableAlphaTest();
+    public void draw(IPedestalRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
         RenderSystem.enableBlend();
         overlay.draw(matrixStack, 0, 0);
         RenderSystem.disableBlend();
-        RenderSystem.disableAlphaTest();
     }
 
     @Override

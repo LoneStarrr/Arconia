@@ -2,8 +2,8 @@ package lonestarrr.arconia.common.item;
 
 import lonestarrr.arconia.common.core.ItemNames;
 import lonestarrr.arconia.common.core.RainbowColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -27,7 +27,7 @@ public final class ModItems {
 
     public static Item.Properties defaultBuilder() {
         // TODO make my own creative tab. With blackjack, and hookers.
-        return new Item.Properties().tab(ItemGroup.TAB_MISC);
+        return new Item.Properties().tab(CreativeModeTab.TAB_MISC);
     }
 
     public static void registerItems(RegistryEvent.Register<Item> evt) {
