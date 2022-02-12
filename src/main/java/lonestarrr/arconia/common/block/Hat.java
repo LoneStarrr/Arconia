@@ -1,6 +1,6 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.HatBlockEntity;
+import lonestarrr.arconia.common.block.entities.HatBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -48,10 +48,10 @@ public class Hat extends BaseEntityBlock {
          * @return True if a hat was placed in the world at the given location
          */
     public static boolean setResourceGenerated(Level world, BlockPos pos, RainbowColor tier, ItemStack resource, int interval, int coinCost) {
-        BlockEntity te = world.getBlockEntity(pos);
-        if (te != null && te instanceof HatBlockEntity) {
-            HatBlockEntity rte = (HatBlockEntity) te;
-            rte.setResourceGenerated(tier, resource, interval, coinCost);
+        BlockEntity be = world.getBlockEntity(pos);
+        if (be != null && be instanceof HatBlockEntity) {
+            HatBlockEntity hbe = (HatBlockEntity) be;
+            hbe.setResourceGenerated(tier, resource, interval, coinCost);
             return true;
         }
         return false;

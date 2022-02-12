@@ -8,7 +8,7 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.tile.ArconiumTreeRootBlockEntity;
+import lonestarrr.arconia.common.block.entities.ArconiumTreeRootBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.VectorHelper;
 import net.minecraft.client.Minecraft;
@@ -93,12 +93,12 @@ public class RainbowBeamRenderer implements BlockEntityRenderer<ArconiumTreeRoot
     /**
      * Funky lightning effects appearing from a tree makes for a very colorful experience
      *
-     * @param tePos Position of tile entity
+     * @param bePos Position of block entity
      * @param treeBasePos Position of first log of tree
      * @param matrixStack
      * @param buffer
      */
-    private void renderRainbowLightning(BlockPos tePos, BlockPos treeBasePos, RainbowColor tier, PoseStack matrixStack, MultiBufferSource buffer) {
+    private void renderRainbowLightning(BlockPos bePos, BlockPos treeBasePos, RainbowColor tier, PoseStack matrixStack, MultiBufferSource buffer) {
         // Find the top of the tree trunk - that's where we want to generate the effect from
         final int maxLogCount = 7;
         final Block logBlock = Blocks.OAK_LOG;
@@ -114,7 +114,7 @@ public class RainbowBeamRenderer implements BlockEntityRenderer<ArconiumTreeRoot
         while (trunkValid && centerPos == null) {
             scanPos = scanPos.above();
             if (world.getBlockState(scanPos).getBlock() != logBlock) {
-                centerPos = scanPos.below().subtract(tePos); // Center of the visual effect
+                centerPos = scanPos.below().subtract(bePos); // Center of the visual effect
             } else if (++logsFound > maxLogCount) {
                 trunkValid = false;
             }

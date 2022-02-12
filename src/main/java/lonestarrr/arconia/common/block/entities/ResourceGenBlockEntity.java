@@ -1,16 +1,15 @@
-package lonestarrr.arconia.common.block.tile;
+package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.lib.tile.BaseBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Tile Entity that stores a tier and type of resource to generate. Otherwise, this entity is passive. The resource generation magic happens in the
- * tile entity for the tree root block.
+ * Block Entity that stores a tier and type of resource to generate. Otherwise, this entity is passive. The resource generation magic happens in the
+ * block entity for the tree root block.
  */
 public class ResourceGenBlockEntity extends BaseBlockEntity {
     private RainbowColor tier;
@@ -55,7 +54,7 @@ public class ResourceGenBlockEntity extends BaseBlockEntity {
             itemStack = ItemStack.of(tag.getCompound("item"));
             Arconia.logger.debug("***** World remote = " + (level != null ? level.isClientSide() : "null") + ", itemStack = " + itemStack);
         } catch(Exception e) {
-            Arconia.logger.error("Failed to read tile entity data: " + e.getMessage(), e);
+            Arconia.logger.error("Failed to read block entity data: " + e.getMessage(), e);
             tier = RainbowColor.RED;
             itemStack = ItemStack.EMPTY;
         }

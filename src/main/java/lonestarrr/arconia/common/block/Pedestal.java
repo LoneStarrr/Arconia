@@ -1,6 +1,6 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.PedestalBlockEntity;
+import lonestarrr.arconia.common.block.entities.PedestalBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -58,18 +58,18 @@ public class Pedestal extends BaseEntityBlock {
             BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult traceResult) {
         ItemStack playerStack = player.getItemInHand(hand);
 
-        BlockEntity tile = world.getBlockEntity(pos);
-        if (tile == null || !(tile instanceof PedestalBlockEntity)) {
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (blockEntity == null || !(blockEntity instanceof PedestalBlockEntity)) {
             return InteractionResult.PASS;
         }
 
-        ItemStack currentItem = ((PedestalBlockEntity) tile).getItemOnDisplay();
+        ItemStack currentItem = ((PedestalBlockEntity) blockEntity).getItemOnDisplay();
 
         if (currentItem.isEmpty()) {
             if (playerStack.isEmpty()) {
                 return InteractionResult.FAIL;
             }
-            ((PedestalBlockEntity) tile).putItem(playerStack);
+            ((PedestalBlockEntity) blockEntity).putItem(playerStack);
             if (playerStack.getCount() > 1) {
                 playerStack.setCount(playerStack.getCount() - 1);
             } else {
@@ -78,7 +78,7 @@ public class Pedestal extends BaseEntityBlock {
             return InteractionResult.SUCCESS;
         } else {
             if (player.addItem(currentItem)) {
-                ((PedestalBlockEntity) tile).removeItem();
+                ((PedestalBlockEntity) blockEntity).removeItem();
                 return InteractionResult.SUCCESS;
             }
             return InteractionResult.PASS;

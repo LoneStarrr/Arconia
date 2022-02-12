@@ -1,7 +1,6 @@
-package lonestarrr.arconia.common.block.tile;
+package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.core.helper.InventoryHelper;
-import lonestarrr.arconia.common.lib.tile.BaseBlockEntity;
 import lonestarrr.arconia.common.network.ModPackets;
 import lonestarrr.arconia.common.network.OrbLaserPacket;
 import net.minecraft.core.BlockPos;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Responsible for pulling in nearby item entities of a specific type, like a magnet. If an inventory is below the tile entity, it will attempt to
+ * Responsible for pulling in nearby item entities of a specific type, like a magnet. If an inventory is below the block entity, it will attempt to
  * store them in there.  Has no buffer of its own.
  */
 public class OrbBlockEntity extends BaseBlockEntity {

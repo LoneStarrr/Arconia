@@ -1,4 +1,4 @@
-package lonestarrr.arconia.common.block.tile;
+package lonestarrr.arconia.common.block.entities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * This tile entity keeps an inventory of gold coins, as well as ticks to convert the gold coins into rainbow coins.
+ * This block entity keeps an inventory of gold coins, as well as ticks to convert the gold coins into rainbow coins.
  * Inspiration: https://wiki.mcjty.eu/modding/index.php?title=TileEntity_Data-1.12
  */
 public class RainbowCropBlockEntity extends BlockEntity {

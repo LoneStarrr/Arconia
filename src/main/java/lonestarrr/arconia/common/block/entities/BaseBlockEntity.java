@@ -1,4 +1,4 @@
-package lonestarrr.arconia.common.lib.tile;
+package lonestarrr.arconia.common.block.entities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

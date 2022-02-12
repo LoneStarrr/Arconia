@@ -1,4 +1,4 @@
-package lonestarrr.arconia.common.block.tile.crate;
+package lonestarrr.arconia.common.block.entities.crate;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;

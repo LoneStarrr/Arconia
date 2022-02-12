@@ -1,5 +1,6 @@
-package lonestarrr.arconia.common.lib.tile;
+package lonestarrr.arconia.common.block.entities;
 
+import lonestarrr.arconia.common.block.entities.BaseBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -12,12 +13,12 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 /**
- * Base TileEntity that has an inventory
+ * Base BlockEntity that has an inventory
  */
-public abstract class BaseInventoryTileEntity extends BaseBlockEntity {
+public abstract class BaseInventoryBlockEntity extends BaseBlockEntity {
     private final LazyOptional<IItemHandler> capability = LazyOptional.of(this::getInventory);
 
-    public BaseInventoryTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+    public BaseInventoryBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 

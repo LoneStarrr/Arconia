@@ -1,6 +1,6 @@
 package lonestarrr.arconia.common.network;
 
-import lonestarrr.arconia.common.block.tile.RainbowCrateBlockEntity;
+import lonestarrr.arconia.common.block.entities.RainbowCrateBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -48,9 +48,9 @@ public class RainbowCratePacket {
                 public void run() {
                     Minecraft mc = Minecraft.getInstance();
                     Level level = mc.level;
-                    BlockEntity te = level.getBlockEntity(message.pos);
-                    if (te instanceof RainbowCrateBlockEntity) {
-                        RainbowCrateBlockEntity rcbe = (RainbowCrateBlockEntity)te;
+                    BlockEntity be = level.getBlockEntity(message.pos);
+                    if (be instanceof RainbowCrateBlockEntity) {
+                        RainbowCrateBlockEntity rcbe = (RainbowCrateBlockEntity)be;
                         //rcbe.receiveServerSideInventoryData(message.itemCounts);
                         rcbe.load(message.inventory);
                     }

@@ -3,7 +3,7 @@ package lonestarrr.arconia.client.effects;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
-import lonestarrr.arconia.common.block.tile.OrbBlockEntity;
+import lonestarrr.arconia.common.block.entities.OrbBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -21,14 +21,14 @@ public class OrbRenderer implements BlockEntityRenderer<OrbBlockEntity> {
 
     @Override
     public void render(
-            OrbBlockEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
+            OrbBlockEntity blockEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
             int combinedOverlay) {
-        List<ItemStack> items = tileEntity.getItems();
+        List<ItemStack> items = blockEntity.getItems();
         if (items.isEmpty()) {
             return;
         }
 
-        BlockPos tePos = tileEntity.getBlockPos();
+        BlockPos tePos = blockEntity.getBlockPos();
         BlockPos itemPos = tePos;
 
         matrixStack.pushPose();

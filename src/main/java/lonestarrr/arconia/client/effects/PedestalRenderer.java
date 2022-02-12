@@ -1,7 +1,7 @@
 package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import lonestarrr.arconia.common.block.tile.PedestalBlockEntity;
+import lonestarrr.arconia.common.block.entities.PedestalBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -13,20 +13,20 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalBlockEntity
 
     @Override
     public void render(
-            PedestalBlockEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
+            PedestalBlockEntity blockEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
             int combinedOverlay) {
         // TODO Duplicate logic w/ResourceGenRenderer - separate out into shared code
-        ItemStack stack = tileEntity.getItemOnDisplay();
+        ItemStack stack = blockEntity.getItemOnDisplay();
         if (stack == ItemStack.EMPTY) {
             return;
         }
 
-        BlockPos tePos = tileEntity.getBlockPos();
-        BlockPos itemPos = tePos.above();
+        BlockPos bePos = blockEntity.getBlockPos();
+        BlockPos itemPos = bePos.above();
 
         matrixStack.pushPose();
-        // TER's have the tile entity at (0, 0, 0), compensate
-        matrixStack.translate(-tePos.getX(), -tePos.getY(), -tePos.getZ());
+        // BERs have the block entity at (0, 0, 0), compensate
+        matrixStack.translate(-bePos.getX(), -bePos.getY(), -bePos.getZ());
         ItemProjector.projectItem(stack, itemPos, matrixStack, buffer, combinedLight, combinedOverlay, false);
 
         matrixStack.popPose();

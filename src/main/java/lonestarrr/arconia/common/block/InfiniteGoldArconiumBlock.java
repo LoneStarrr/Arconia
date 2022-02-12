@@ -1,6 +1,6 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.GoldArconiumBlockEntity;
+import lonestarrr.arconia.common.block.entities.GoldArconiumBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;

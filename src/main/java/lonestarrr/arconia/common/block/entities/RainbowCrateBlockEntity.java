@@ -1,8 +1,8 @@
-package lonestarrr.arconia.common.block.tile;
+package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.client.gui.crate.RainbowCrateContainer;
 import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.tile.crate.RainbowCrateItemStackHandler;
+import lonestarrr.arconia.common.block.entities.crate.RainbowCrateItemStackHandler;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.network.ModPackets;
 import lonestarrr.arconia.common.network.RainbowCratePacket;
@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Tile entity for rainbow crates, managing the crate's inventory.
+ * Block entity for rainbow crates, managing the crate's inventory.
  */
 public class RainbowCrateBlockEntity extends BlockEntity implements MenuProvider {
     public static final int ROWS = 8;

@@ -1,10 +1,9 @@
-package lonestarrr.arconia.common.block.tile;
+package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
 import lonestarrr.arconia.common.item.ModItems;
-import lonestarrr.arconia.common.lib.tile.BaseBlockEntity;
 import lonestarrr.arconia.common.network.ModPackets;
 import lonestarrr.arconia.common.network.PotItemTransferPacket;
 import net.minecraft.core.BlockPos;
@@ -75,13 +74,13 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             throw new LinkHatException(LinkErrorCode.ALREADY_LINKED);
         }
 
-        BlockEntity te = level.getBlockEntity(hatPos);
-        if (te == null || !(te instanceof HatBlockEntity)) {
+        BlockEntity be = level.getBlockEntity(hatPos);
+        if (be == null || !(be instanceof HatBlockEntity)) {
             throw new LinkHatException(LinkErrorCode.HAT_NOT_FOUND);
         }
 
-        HatBlockEntity hatTE = (HatBlockEntity)te;
-        BlockPos potPos = hatTE.getLinkedPot();
+        HatBlockEntity hatBE = (HatBlockEntity)be;
+        BlockPos potPos = hatBE.getLinkedPot();
         if (potPos != null) {
             if (potPos.equals(worldPosition)) {
                 throw new LinkHatException(LinkErrorCode.ALREADY_LINKED);
@@ -90,7 +89,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             }
         }
         hats.add(new HatData(hatPos));
-        hatTE.linkToPot(worldPosition);
+        hatBE.linkToPot(worldPosition);
         setChanged();
     }
 
@@ -100,12 +99,12 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         if (hat != null) {
             hats.remove(hat);
             setChanged();
-            BlockEntity te = level.getBlockEntity(hatPos);
-            if (te != null && te instanceof HatBlockEntity) {
-                HatBlockEntity hatTE = (HatBlockEntity) te;
-                BlockPos linkedPot = hatTE.getLinkedPot();
+            BlockEntity be = level.getBlockEntity(hatPos);
+            if (be != null && be instanceof HatBlockEntity) {
+                HatBlockEntity hatBE = (HatBlockEntity) be;
+                BlockPos linkedPot = hatBE.getLinkedPot();
                 if (linkedPot != null && linkedPot.equals(worldPosition)) {
-                    hatTE.unlink();
+                    hatBE.unlink();
                 }
             }
             return true;
@@ -129,16 +128,16 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
     /**
      * @param goldArconiumPos Position of hat in world
-     * @return If the hat has a gold arconium tile entity under it, return that, otherwise return null
+     * @return If the hat has a gold arconium block entity under it, return that, otherwise return null
      */
     private GoldArconiumBlockEntity getGoldArconiumInWorld(BlockPos goldArconiumPos) {
-        BlockEntity te = level.getBlockEntity(goldArconiumPos);
+        BlockEntity be = level.getBlockEntity(goldArconiumPos);
 
-        if (te == null || !(te instanceof GoldArconiumBlockEntity)) {
+        if (be == null || !(be instanceof GoldArconiumBlockEntity)) {
             return null;
         }
 
-        return (GoldArconiumBlockEntity)te;
+        return (GoldArconiumBlockEntity)be;
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, PotMultiBlockPrimaryBlockEntity blockEntity) {

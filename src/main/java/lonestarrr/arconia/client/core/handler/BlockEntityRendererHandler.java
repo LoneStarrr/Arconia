@@ -2,7 +2,7 @@ package lonestarrr.arconia.client.core.handler;
 
 import lonestarrr.arconia.client.effects.*;
 import lonestarrr.arconia.common.block.ArconiumTreeRootBlock;
-import lonestarrr.arconia.common.block.tile.ModBlockEntities;
+import lonestarrr.arconia.common.block.entities.ModBlockEntities;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 

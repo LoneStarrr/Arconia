@@ -1,7 +1,7 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.ArconiumTreeRootBlockEntity;
-import lonestarrr.arconia.common.block.tile.ModBlockEntities;
+import lonestarrr.arconia.common.block.entities.ArconiumTreeRootBlockEntity;
+import lonestarrr.arconia.common.block.entities.ModBlockEntities;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
@@ -22,12 +22,10 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Tree root block to be placed under a resource tree of the matching tier. Combined with one or more Resource Gen blocks placed near the base of the tree, this
- * will determine the resources to be generated. The root block has a tile entity which is responsible for the resource generation.
+ * will determine the resources to be generated. The root block has a block entity which is responsible for the resource generation.
  */
 public class ArconiumTreeRootBlock extends BaseEntityBlock implements BlockColor {
     private final RainbowColor tier;

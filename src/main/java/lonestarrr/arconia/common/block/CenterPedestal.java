@@ -1,7 +1,7 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.CenterPedestalBlockEntity;
-import lonestarrr.arconia.common.block.tile.ModBlockEntities;
+import lonestarrr.arconia.common.block.entities.CenterPedestalBlockEntity;
+import lonestarrr.arconia.common.block.entities.ModBlockEntities;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.Util;
@@ -77,16 +77,16 @@ public class CenterPedestal extends BaseEntityBlock {
             BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult traceResult) {
         ItemStack playerStack = player.getItemInHand(hand);
 
-        BlockEntity tile = world.getBlockEntity(pos);
-        if (tile == null || !(tile instanceof CenterPedestalBlockEntity)) {
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (blockEntity == null || !(blockEntity instanceof CenterPedestalBlockEntity)) {
             return InteractionResult.PASS;
         }
-        CenterPedestalBlockEntity cte = (CenterPedestalBlockEntity) tile;
+        CenterPedestalBlockEntity cbe = (CenterPedestalBlockEntity) blockEntity;
 
-        if (!cte.getItemOnDisplay().isEmpty()) {
-            ItemStack displayedItem = cte.getItemOnDisplay();
+        if (!cbe.getItemOnDisplay().isEmpty()) {
+            ItemStack displayedItem = cbe.getItemOnDisplay();
             if (player.addItem(displayedItem)) {
-                cte.removeItem();
+                cbe.removeItem();
             }
             return InteractionResult.SUCCESS;
         }
@@ -96,8 +96,8 @@ public class CenterPedestal extends BaseEntityBlock {
         }
 
         if (!world.isClientSide()) {
-            if (!cte.isRitualOngoing()) {
-                if (cte.startRitual()) {
+            if (!cbe.isRitualOngoing()) {
+                if (cbe.startRitual()) {
                     world.playSound(null, pos, SoundEvents.NOTE_BLOCK_HARP, SoundSource.AMBIENT, 1, 10);
                 } else {
                     player.sendMessage(new TranslatableComponent(LANG_PREFIX + ".ritual_start_failed"), Util.NIL_UUID);

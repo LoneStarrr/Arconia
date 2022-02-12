@@ -24,15 +24,15 @@ public class InventoryHelper {
      */
     @Nullable
     public static IItemHandler getInventory(Level world, BlockPos pos, Direction side) {
-        BlockEntity te = world.getBlockEntity(pos);
+        BlockEntity be = world.getBlockEntity(pos);
 
-        if (te == null) {
+        if (be == null) {
             return null;
         }
 
-        LazyOptional<IItemHandler> ret = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+        LazyOptional<IItemHandler> ret = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
         if (!ret.isPresent()) {
-            ret = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+            ret = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
         }
         return ret.orElse(null);
     }

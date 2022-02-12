@@ -1,8 +1,8 @@
 package lonestarrr.arconia.common.block;
 
 import lonestarrr.arconia.client.gui.crate.RainbowCrateContainer;
-import lonestarrr.arconia.common.block.tile.ModBlockEntities;
-import lonestarrr.arconia.common.block.tile.RainbowCrateBlockEntity;
+import lonestarrr.arconia.common.block.entities.ModBlockEntities;
+import lonestarrr.arconia.common.block.entities.RainbowCrateBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
@@ -111,7 +111,7 @@ public class RainbowCrateBlock extends BaseEntityBlock implements BlockColor {
 
         LOGGER.info("onBlockActivate: world is server");
 
-        // namedContainerProvider -> this is the tile entity
+        // namedContainerProvider -> this is the block entity
         MenuProvider namedContainerProvider = this.getMenuProvider(state, level, pos);
         if (namedContainerProvider != null) {
             if (!(player instanceof ServerPlayer)) {
@@ -119,8 +119,8 @@ public class RainbowCrateBlock extends BaseEntityBlock implements BlockColor {
                 return InteractionResult.FAIL;  // should always be true, but just in case...
             }
             ServerPlayer serverPlayerEntity = (ServerPlayer)player;
-            // Write location of the crate so the client can find the associated tile entity - other packets will
-            // keep the server tile entity in sync with the tile entity because its data is needed to render the GUI
+            // Write location of the crate so the client can find the associated block entity - other packets will
+            // keep the server block entity in sync with the block entity because its data is needed to render the GUI
             NetworkHooks.openGui(serverPlayerEntity, namedContainerProvider,
                     (packetBuffer)->{packetBuffer.writeBlockPos(pos);});
         }
@@ -131,13 +131,13 @@ public class RainbowCrateBlock extends BaseEntityBlock implements BlockColor {
     // Code is copied directly from vanilla eg ChestBlock, CampfireBlock
     public void onRemove(BlockState state, Level world, BlockPos blockPos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
-            BlockEntity tileentity = world.getBlockEntity(blockPos);
-            if (tileentity instanceof RainbowCrateBlockEntity) {
-                RainbowCrateBlockEntity tileEntity = (RainbowCrateBlockEntity) tileentity;
-                tileEntity.dropAllContents(world, blockPos);
+            BlockEntity blockEntity = world.getBlockEntity(blockPos);
+            if (blockEntity instanceof RainbowCrateBlockEntity) {
+                RainbowCrateBlockEntity crateEntity = (RainbowCrateBlockEntity) blockEntity;
+                crateEntity.dropAllContents(world, blockPos);
             }
 //          world.updateComparatorOutputLevel(pos, this);  if the inventory is used to set redstone power for comparators
-            super.onRemove(state, world, blockPos, newState, isMoving);  // call it last, because it removes the TileEntity
+            super.onRemove(state, world, blockPos, newState, isMoving);  // call it last, because it removes the BlockEntity
         }
     }
 

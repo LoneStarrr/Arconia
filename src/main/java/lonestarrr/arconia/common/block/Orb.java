@@ -1,7 +1,7 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.ModBlockEntities;
-import lonestarrr.arconia.common.block.tile.OrbBlockEntity;
+import lonestarrr.arconia.common.block.entities.ModBlockEntities;
+import lonestarrr.arconia.common.block.entities.OrbBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -75,17 +75,17 @@ public class Orb extends BaseEntityBlock {
     public InteractionResult use(
             BlockState blockState, Level world, BlockPos blockPos, Player playerEntity, InteractionHand hand, BlockHitResult rayTraceResult) {
 //        return super.onBlockActivated(blockState, world, blockPos, playerEntity, hand, rayTraceResult);
-        OrbBlockEntity tile = null;
+        OrbBlockEntity orbEntity = null;
         if (world.getBlockEntity(blockPos) != null && world.getBlockEntity(blockPos) instanceof OrbBlockEntity) {
-            tile = (OrbBlockEntity) world.getBlockEntity(blockPos);
+            orbEntity = (OrbBlockEntity) world.getBlockEntity(blockPos);
         }
 
-        if (tile == null) {
+        if (orbEntity == null) {
             return InteractionResult.PASS;
         }
 
         if (playerEntity.isShiftKeyDown()) {
-            ItemStack stack = tile.popItem();
+            ItemStack stack = orbEntity.popItem();
             if (stack.isEmpty()) {
                 return InteractionResult.PASS;
             }
@@ -95,7 +95,7 @@ public class Orb extends BaseEntityBlock {
             if (held.isEmpty()) {
                 return InteractionResult.PASS;
             }
-            if (tile.addItem(held)) {
+            if (orbEntity.addItem(held)) {
                 return InteractionResult.SUCCESS;
                 // TODO play 'positive ploink' sound effect
             }

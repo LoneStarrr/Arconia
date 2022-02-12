@@ -1,7 +1,7 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryBlockEntity;
-import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryBlockEntity;
+import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
+import lonestarrr.arconia.common.block.entities.PotMultiBlockSecondaryBlockEntity;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
 import lonestarrr.arconia.compat.theoneprobe.TOPDriver;
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -67,12 +67,12 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
             return InteractionResult.PASS;
         }
 
-        PotMultiBlockPrimaryBlockEntity primTile = getPrimaryTileEntity(world, pos);
-        if (primTile == null) {
+        PotMultiBlockPrimaryBlockEntity primaryBE = getPrimaryBlockEntity(world, pos);
+        if (primaryBE == null) {
             return InteractionResult.PASS;
         }
 
-        int coinsAdded = primTile.addCoins(1);
+        int coinsAdded = primaryBE.addCoins(1);
         if (coinsAdded > 0) {
             itemUsed.setCount(itemUsed.getCount() - coinsAdded);
             world.playSound(null, pos, SoundEvents.CHAIN_PLACE, SoundSource.BLOCKS, 1, 1.3f);
@@ -113,22 +113,22 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
     }
 
     private BlockPos getPrimaryBlockPos(Level world, BlockPos pos) {
-        BlockEntity te = world.getBlockEntity(pos);
-        if (te == null || !(te instanceof PotMultiBlockSecondaryBlockEntity)) {
+        BlockEntity be = world.getBlockEntity(pos);
+        if (be == null || !(be instanceof PotMultiBlockSecondaryBlockEntity)) {
             return null;
         }
-        PotMultiBlockSecondaryBlockEntity secondaryTE = (PotMultiBlockSecondaryBlockEntity) te;
-        return secondaryTE.getPrimaryPos();
+        PotMultiBlockSecondaryBlockEntity secondaryBE = (PotMultiBlockSecondaryBlockEntity) be;
+        return secondaryBE.getPrimaryPos();
     }
 
-    private PotMultiBlockPrimaryBlockEntity getPrimaryTileEntity(Level world, BlockPos pos) {
+    private PotMultiBlockPrimaryBlockEntity getPrimaryBlockEntity(Level world, BlockPos pos) {
         BlockPos primaryPos = getPrimaryBlockPos(world, pos);
         if (primaryPos == null) {
             return null;
         }
 
-        BlockEntity te = world.getBlockEntity(primaryPos);
-        return te != null && te instanceof PotMultiBlockPrimaryBlockEntity ? (PotMultiBlockPrimaryBlockEntity) te : null;
+        BlockEntity be = world.getBlockEntity(primaryPos);
+        return be != null && be instanceof PotMultiBlockPrimaryBlockEntity ? (PotMultiBlockPrimaryBlockEntity) be : null;
     }
 
     /**
@@ -142,12 +142,12 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
     @Override
     public VoxelShape getShape(
             BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        BlockEntity te = worldIn.getBlockEntity(pos);
-        if (te == null || !(te instanceof PotMultiBlockSecondaryBlockEntity)) {
+        BlockEntity be = worldIn.getBlockEntity(pos);
+        if (be == null || !(be instanceof PotMultiBlockSecondaryBlockEntity)) {
             return defaultShape;
         }
-        PotMultiBlockSecondaryBlockEntity secondaryTE = (PotMultiBlockSecondaryBlockEntity)te;
-        BlockPos primaryPos = ((PotMultiBlockSecondaryBlockEntity) te).getPrimaryPos();
+        PotMultiBlockSecondaryBlockEntity secondaryBE = (PotMultiBlockSecondaryBlockEntity)be;
+        BlockPos primaryPos = ((PotMultiBlockSecondaryBlockEntity) be).getPrimaryPos();
         if (primaryPos == null) {
             return defaultShape;
         }
@@ -201,7 +201,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
     @Override
     public void addProbeInfo(
             ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
-        PotMultiBlockPrimaryBlockEntity entity = getPrimaryTileEntity(world, data.getPos());
+        PotMultiBlockPrimaryBlockEntity entity = getPrimaryBlockEntity(world, data.getPos());
         if (entity == null) {
             return;
         }

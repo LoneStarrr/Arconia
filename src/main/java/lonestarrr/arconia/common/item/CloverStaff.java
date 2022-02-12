@@ -3,8 +3,8 @@ package lonestarrr.arconia.common.item;
 import lonestarrr.arconia.common.advancements.PotOfGoldTrigger;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.PotMultiBlockPrimary;
-import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryBlockEntity;
-import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryBlockEntity;
+import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
+import lonestarrr.arconia.common.block.entities.PotMultiBlockSecondaryBlockEntity;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -76,21 +76,21 @@ public class CloverStaff extends Item {
     private static void linkOrUnlinkHat(Level world, BlockPos hatPos, BlockPos potPos, UseOnContext context) {
         String lang = LANG_PREFIX + ".linkhat";
 
-        BlockEntity te = world.getBlockEntity(potPos);
-        if (te == null || !(te instanceof PotMultiBlockPrimaryBlockEntity)) {
+        BlockEntity be = world.getBlockEntity(potPos);
+        if (be == null || !(be instanceof PotMultiBlockPrimaryBlockEntity)) {
             lang += ".invalidpot";
         } else {
             // TODO the hat must track which pot it is linked to as well - to prevent double linking/unlinkin the wrong one
-            PotMultiBlockPrimaryBlockEntity potTE = (PotMultiBlockPrimaryBlockEntity) te;
-            if (potTE.isHatLinked(hatPos)) {
-                if (potTE.unlinkHat(hatPos)) {
+            PotMultiBlockPrimaryBlockEntity potBE = (PotMultiBlockPrimaryBlockEntity) be;
+            if (potBE.isHatLinked(hatPos)) {
+                if (potBE.unlinkHat(hatPos)) {
                     lang += ".unlinked";
                 } else {
                     lang += ".unlink_failed";
                 }
             } else {
                 try {
-                    potTE.linkHat(hatPos);
+                    potBE.linkHat(hatPos);
                     lang += ".linked";
                 } catch (PotMultiBlockPrimaryBlockEntity.LinkHatException exc) {
                     switch (exc.code) {

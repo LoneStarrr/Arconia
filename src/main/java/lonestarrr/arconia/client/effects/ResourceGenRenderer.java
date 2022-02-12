@@ -1,7 +1,7 @@
 package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import lonestarrr.arconia.common.block.tile.ResourceGenBlockEntity;
+import lonestarrr.arconia.common.block.entities.ResourceGenBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -19,19 +19,19 @@ public class ResourceGenRenderer implements BlockEntityRenderer<ResourceGenBlock
 
     @Override
     public void render(
-            ResourceGenBlockEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
+            ResourceGenBlockEntity blockEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
             int combinedOverlay) {
-        ItemStack stack = tileEntity.getItemStack();
+        ItemStack stack = blockEntity.getItemStack();
         if (stack == ItemStack.EMPTY) {
             return;
         }
 
-        BlockPos tePos = tileEntity.getBlockPos();
-        BlockPos itemPos = tePos.above();
+        BlockPos bePos = blockEntity.getBlockPos();
+        BlockPos itemPos = bePos.above();
 
         matrixStack.pushPose();
-        // TER's have the tile entity at (0, 0, 0), compensate
-        matrixStack.translate(-tePos.getX(), -tePos.getY(), -tePos.getZ());
+        // BERs have the block entity at (0, 0, 0), compensate
+        matrixStack.translate(-bePos.getX(), -bePos.getY(), -bePos.getZ());
         ItemProjector.projectItem(stack, itemPos, matrixStack, buffer, combinedLight, combinedOverlay, true);
 
         matrixStack.popPose();
@@ -41,8 +41,8 @@ public class ResourceGenRenderer implements BlockEntityRenderer<ResourceGenBlock
         long ticks = Minecraft.getInstance().level.getGameTime();
 
         Random random = world.getRandom();
-        if (ticks > tileEntity.nextTickParticleRender) {
-            tileEntity.nextTickParticleRender = ticks + 20 + random.nextInt(20);
+        if (ticks > blockEntity.nextTickParticleRender) {
+            blockEntity.nextTickParticleRender = ticks + 20 + random.nextInt(20);
             double yOffset = 0.03125D;
             double xzOffset = (double) 0.3F;
             double xzVariation = (double) 0.4F;

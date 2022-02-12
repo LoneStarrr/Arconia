@@ -1,6 +1,6 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.ResourceGenBlockEntity;
+import lonestarrr.arconia.common.block.entities.ResourceGenBlockEntity;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;

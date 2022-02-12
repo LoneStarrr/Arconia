@@ -1,4 +1,4 @@
-package lonestarrr.arconia.common.block.tile;
+package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.crafting.IPedestalRecipe;
@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Tile Entity responsible for processing pedestal crafting rituals
+ * Block Entity responsible for processing pedestal crafting rituals
  */
-public class CenterPedestalBlockEntity extends BasePedestalTileEntity {
+public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     private boolean ritualOngoing = false; // persisted
     private float ritualTicksElapsed = 0; // persisted
     private ResourceLocation currentRecipeID; // persisted

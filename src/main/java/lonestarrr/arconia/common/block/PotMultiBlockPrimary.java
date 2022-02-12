@@ -1,9 +1,9 @@
 package lonestarrr.arconia.common.block;
 
 import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.tile.ModBlockEntities;
-import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryBlockEntity;
-import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryBlockEntity;
+import lonestarrr.arconia.common.block.entities.ModBlockEntities;
+import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
+import lonestarrr.arconia.common.block.entities.PotMultiBlockSecondaryBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -24,7 +24,7 @@ import net.minecraft.world.level.material.MaterialColor;
 import javax.annotation.Nullable;
 
 /**
- * Block that is part of a large multiblock pot - this is the primary block. It will render a large model, and has a ticking tile entity dealing
+ * Block that is part of a large multiblock pot - this is the primary block. It will render a large model, and has a ticking block entity dealing
  * with the pot's logic
  */
 public class PotMultiBlockPrimary extends BaseEntityBlock {
@@ -81,13 +81,13 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
                         continue;
                     }
                     world.setBlock(toReplace, ModBlocks.potMultiBlockSecondary.defaultBlockState(), 3);
-                    BlockEntity te = world.getBlockEntity(toReplace);
-                    if (te == null || !(te instanceof PotMultiBlockSecondaryBlockEntity)) {
-                        Arconia.logger.error("Error setting up pot multiblock - expected to find a secondary multiblock tile entity at " + toReplace);
+                    BlockEntity be = world.getBlockEntity(toReplace);
+                    if (be == null || !(be instanceof PotMultiBlockSecondaryBlockEntity)) {
+                        Arconia.logger.error("Error setting up pot multiblock - expected to find a secondary multiblock block entity at " + toReplace);
                         return false;
                     }
-                    PotMultiBlockSecondaryBlockEntity secondaryTE = (PotMultiBlockSecondaryBlockEntity) te;
-                    ((PotMultiBlockSecondaryBlockEntity) te).setPrimaryPos(primaryPos);
+                    PotMultiBlockSecondaryBlockEntity secondaryBE = (PotMultiBlockSecondaryBlockEntity) be;
+                    ((PotMultiBlockSecondaryBlockEntity) be).setPrimaryPos(primaryPos);
                 }
             }
         }

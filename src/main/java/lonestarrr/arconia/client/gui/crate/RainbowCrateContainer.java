@@ -1,8 +1,8 @@
 package lonestarrr.arconia.client.gui.crate;
 
 import lonestarrr.arconia.common.block.RainbowCrateBlock;
-import lonestarrr.arconia.common.block.tile.RainbowCrateBlockEntity;
-import lonestarrr.arconia.common.block.tile.crate.RainbowCrateItemStackHandler;
+import lonestarrr.arconia.common.block.entities.RainbowCrateBlockEntity;
+import lonestarrr.arconia.common.block.entities.crate.RainbowCrateItemStackHandler;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -94,17 +94,17 @@ public class RainbowCrateContainer extends AbstractContainerMenu {
     public static RainbowCrateContainer createContainerClientSide(
             RainbowColor tier, int windowId,
             Inventory playerInventory, net.minecraft.network.FriendlyByteBuf extraData) {
-        // Server sends the position of the associated tile entity tracking the inventory. This is used to
+        // Server sends the position of the associated block entity tracking the inventory. This is used to
         // query the internal inventory capacity in the UI
-        BlockPos tileEntityPos = extraData.readBlockPos();
-        BlockEntity te = playerInventory.player.level.getBlockEntity(tileEntityPos);
+        BlockPos blockEntityPos = extraData.readBlockPos();
+        BlockEntity te = playerInventory.player.level.getBlockEntity(blockEntityPos);
         RainbowCrateItemStackHandler inventory;
         if (te instanceof RainbowCrateBlockEntity) {
             RainbowCrateBlockEntity rcte = (RainbowCrateBlockEntity)te;
             inventory = rcte.getInventory();
         } else {
             // TODO can I just return null here and expect that to do something meaningfully?
-            LOGGER.warn("Tile entity no longer exists for rainbow crate?");
+            LOGGER.warn("Block entity no longer exists for rainbow crate?");
             inventory = RainbowCrateBlockEntity.createInventory(tier);
         }
         return new RainbowCrateContainer(tier, windowId, playerInventory, inventory);

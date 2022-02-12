@@ -1,9 +1,8 @@
-package lonestarrr.arconia.common.block.tile;
+package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.InventoryHelper;
-import lonestarrr.arconia.common.lib.tile.BaseBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -15,7 +14,7 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 
 /**
- * Hats linked to a pot of gold can produce a specific resource, and are tiered using RainbowColor. The tile entity stores the resource to be generated.
+ * Hats linked to a pot of gold can produce a specific resource, and are tiered using RainbowColor. The block entity stores the resource to be generated.
  */
 public class HatBlockEntity extends BaseBlockEntity {
     private RainbowColor tier;
@@ -146,7 +145,7 @@ public class HatBlockEntity extends BaseBlockEntity {
             }
             Arconia.logger.debug("***** World remote = " + (level != null ? level.isClientSide() : "null") + ", itemStack = " + stack);
         } catch(Exception e) {
-            Arconia.logger.error("Failed to read tile entity data: " + e.getMessage(), e);
+            Arconia.logger.error("Failed to read block entity data: " + e.getMessage(), e);
         }
         setResourceGenerated(tier, stack, interval, coinCost <= 0 ? 1: coinCost);
     }

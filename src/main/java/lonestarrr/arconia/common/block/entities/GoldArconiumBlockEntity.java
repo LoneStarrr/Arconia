@@ -1,8 +1,7 @@
-package lonestarrr.arconia.common.block.tile;
+package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
-import lonestarrr.arconia.common.lib.tile.BaseBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,7 +19,7 @@ public class GoldArconiumBlockEntity extends BaseBlockEntity {
     private boolean infinite; // If set, internal coin store is never depleted and unlimited coins are generated
 
     /**
-     * Tile entity class is shared between regular (coin store depletes) and infinite gold arconium blocks
+     * Block entity class is shared between regular (coin store depletes) and infinite gold arconium blocks
      *
      * @param tier
      * @param infinite

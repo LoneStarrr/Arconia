@@ -1,6 +1,6 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.GoldArconiumBlockEntity;
+import lonestarrr.arconia.common.block.entities.GoldArconiumBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.compat.theoneprobe.TOPDriver;
 import mcjty.theoneprobe.api.*;
@@ -46,12 +46,12 @@ public class GoldArconiumBlock extends BaseEntityBlock implements BlockColor, TO
     public void addProbeInfo(
             ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
         // The One Probe extra block information
-        BlockEntity te = world.getBlockEntity(data.getPos());
-        if (te == null || !(te instanceof GoldArconiumBlockEntity)) {
+        BlockEntity be = world.getBlockEntity(data.getPos());
+        if (be == null || !(be instanceof GoldArconiumBlockEntity)) {
             return;
         }
-        GoldArconiumBlockEntity goldTE = (GoldArconiumBlockEntity)te;
-        int pct = goldTE.coinsLeftAsPercentage();
+        GoldArconiumBlockEntity goldBE = (GoldArconiumBlockEntity)be;
+        int pct = goldBE.coinsLeftAsPercentage();
         probeInfo.progress(pct, 100, progressStyleTOP);
     }
 

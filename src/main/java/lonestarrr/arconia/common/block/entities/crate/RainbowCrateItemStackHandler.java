@@ -1,4 +1,4 @@
-package lonestarrr.arconia.common.block.tile.crate;
+package lonestarrr.arconia.common.block.entities.crate;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
