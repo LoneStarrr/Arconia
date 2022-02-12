@@ -13,6 +13,8 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -26,13 +28,11 @@ public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
     public static final ResourceLocation UID = new ResourceLocation(Arconia.MOD_ID, "altar");
 
     private final IDrawable background;
-    private final String localizedName;
     private final IDrawable overlay;
     private final IDrawable icon;
 
     public AltarRecipeCategory(@Nonnull IGuiHelper guiHelper) {
         this.background = guiHelper.createBlankDrawable(144, 81);
-        this.localizedName = I18n.get("jei.arconia.recipe_category.altar");
         this.overlay = guiHelper.createDrawable(new ResourceLocation(Arconia.MOD_ID, "textures/gui/jei/altar_overlay.png"),
                 0, 0, 144, 81);
         this.icon = guiHelper.createDrawableIngredient(new ItemStack(ModBlocks.centerPedestal.asItem()));
@@ -49,8 +49,8 @@ public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
     }
 
     @Override
-    public String getTitle() {
-        return localizedName;
+    public Component getTitle() {
+        return new TranslatableComponent("jei.arconia.recipe_category.altar");
     }
 
     @Override
@@ -65,11 +65,9 @@ public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
 
     @Override
     public void draw(IPedestalRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
-        RenderSystem.enableAlphaTest();
         RenderSystem.enableBlend();
         overlay.draw(matrixStack, 0, 0);
         RenderSystem.disableBlend();
-        RenderSystem.disableAlphaTest();
     }
 
     @Override

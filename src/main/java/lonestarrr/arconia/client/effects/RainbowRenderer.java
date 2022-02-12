@@ -5,14 +5,12 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import lonestarrr.arconia.common.core.helper.VectorHelper;
-import lonestarrr.arconia.mixin.client.AccessorRenderType;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -106,7 +104,7 @@ class RainbowSegmentRenderType extends RenderType {
         super(p_173178_, p_173179_, p_173180_, p_173181_, p_173182_, p_173183_, p_173184_, p_173185_);
     }
 
-    public static final RenderType RAINBOW_SEGMENT = AccessorRenderType.create("rainbow_segment",
+    public static final RenderType RAINBOW_SEGMENT = create("rainbow_segment",
            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 32768, false, false,
            RenderType.CompositeState.builder()
                     .setShaderState(RenderStateShard.NO_SHADER)

@@ -2,6 +2,7 @@ package lonestarrr.arconia.common.block.tile.crate;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.items.ItemStackHandler;
@@ -250,7 +251,7 @@ public class RainbowCrateItemStackHandler  extends ItemStackHandler {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        ListTag tagList = nbt.getList("InternalInventory", Constants.NBT.TAG_COMPOUND);
+        ListTag tagList = nbt.getList("InternalInventory", Tag.TAG_COMPOUND);
         internalInventory.clear();
         for (int i = 0; i < tagList.size(); i++)
         {

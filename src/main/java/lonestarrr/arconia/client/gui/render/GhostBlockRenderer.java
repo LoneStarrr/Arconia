@@ -42,10 +42,10 @@ public class GhostBlockRenderer {
         //getCrumblingBufferSource -> display as part of chunk rendering
 
         // overlay: first int is light level (0..15)
-        // looking at implementation: 2nd val = 3 or 10, is that 'UV'? No, 'UV' is used in models to indicate a texture area size (e.g. if not 16x16).
+        // looking at implementation: 2nd val = 3 or 10, is that 'UV'? No, 'UV' is used in models to indicate a crop of a texture area
         int combinedOverlayIn = OverlayTexture.pack(lightLevel, 10);
         int combinedLightIn = 240<<16 + 240; // What do these values represent?
-        Minecraft.getInstance().getBlockRenderer().renderBlock(state, matrixStack, Minecraft.getInstance().renderBuffers().crumblingBufferSource(), combinedLightIn, combinedOverlayIn, model);
+        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, matrixStack, Minecraft.getInstance().renderBuffers().crumblingBufferSource(), combinedLightIn, combinedOverlayIn, model);
         matrixStack.popPose();
     }
 }

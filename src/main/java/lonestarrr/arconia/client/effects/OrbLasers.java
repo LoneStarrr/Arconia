@@ -46,7 +46,7 @@ public class OrbLasers {
         long now = world.getGameTime();
         List<LaserBeam> toRemove = new ArrayList<>();
 
-        PoseStack matrix = event.getMatrixStack();
+        PoseStack matrix = event.getPoseStack();
         matrix.pushPose();
 
         // Correct for player projection view
@@ -67,7 +67,7 @@ public class OrbLasers {
                 continue;
             }
 
-            renderBeamItem(beam, event.getMatrixStack(), buffer, event.getPartialTicks());
+            renderBeamItem(beam, event.getPoseStack(), buffer, event.getPartialTick());
         }
         buffer.endBatch();
 
@@ -90,7 +90,7 @@ public class OrbLasers {
         matrixStack.pushPose();
         matrixStack.translate(itemX, itemY, itemZ);
         Minecraft.getInstance().getItemRenderer()
-                .renderStatic(beam.itemStack, ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
+                .renderStatic(beam.itemStack, ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer, 0);
         matrixStack.popPose();
     }
 }

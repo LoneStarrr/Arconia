@@ -8,6 +8,8 @@ import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -43,7 +45,8 @@ public class RainbowCrateContainerScreen extends AbstractContainerScreen<Rainbow
         super.init();
         // Use our own item renderer to draw the little bars under each item in the GUI
         Minecraft mc = Minecraft.getInstance();
-        this.itemRenderer = new RainbowCrateItemRenderer(mc.textureManager, mc.getModelManager(), mc.getItemColors());
+        BlockEntityWithoutLevelRenderer blockentitywithoutlevelrenderer = new BlockEntityWithoutLevelRenderer(mc.getBlockEntityRenderDispatcher(), mc.getEntityModels());
+        this.itemRenderer = new RainbowCrateItemRenderer(mc.textureManager, mc.getModelManager(), mc.getItemColors(), blockentitywithoutlevelrenderer);
 
         // Could add buttons here
         // this.addButton(new Button(this.guiLeft + this.xSize / 2 - 10, this.guiTop + 20, 50, 20, "1", null));
@@ -105,12 +108,13 @@ public class RainbowCrateContainerScreen extends AbstractContainerScreen<Rainbow
 
     /**
      * Draws the background layer of this container (behind the items).
-     * Taken directly from ChestScreen / BeaconScreen
+     * Inspired by BeaconScreen
      */
     @Override
     protected void renderBg(PoseStack stack, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bind(CRATE_UI_TEXTURE);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, CRATE_UI_TEXTURE);
 
         // Render background in the middle of the provided window (this.width/height)
         int edgeOffsetX = (this.width - this.imageWidth) / 2;

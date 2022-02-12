@@ -98,7 +98,7 @@ public class PedestalRecipe implements IPedestalRecipe {
         @Override
         public PedestalRecipe fromJson(ResourceLocation id, JsonObject json) {
             // Serializer is in PedestalProvider which is part of data generation
-            ItemStack output = ShapedRecipe.itemFromJson(GsonHelper.getAsJsonObject(json, "output"));
+            ItemStack output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "output"));
             int durationTicks = GsonHelper.getAsInt(json, "durationTicks");
             JsonArray ingrs = GsonHelper.getAsJsonArray(json, "ingredients");
             List<Ingredient> inputs = new ArrayList<>();

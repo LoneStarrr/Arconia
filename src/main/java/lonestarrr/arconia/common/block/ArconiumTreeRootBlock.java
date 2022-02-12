@@ -31,8 +31,6 @@ import java.util.Map;
  */
 public class ArconiumTreeRootBlock extends BaseEntityBlock implements BlockColor {
     private final RainbowColor tier;
-    private static final Map<RainbowColor, BlockEntityType<ArconiumTreeRootBlockEntity>> tileEntityTypes =
-            new HashMap<>(RainbowColor.values().length);
     private static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
     public ArconiumTreeRootBlock(RainbowColor tier) {

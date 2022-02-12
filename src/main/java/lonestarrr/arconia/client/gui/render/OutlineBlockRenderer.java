@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.mixin.client.AccessorRenderType;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -44,7 +43,7 @@ public class OutlineBlockRenderer extends RenderType {
 
     private static RenderType makeLayer(String name, VertexFormat format, VertexFormat.Mode mode,
                                         int bufSize, boolean hasCrumbling, boolean sortOnUpload, CompositeState glState) {
-        return AccessorRenderType.create(name, format, mode, bufSize, hasCrumbling, sortOnUpload, glState);
+        return create(name, format, mode, bufSize, hasCrumbling, sortOnUpload, glState);
     }
 
     private static RenderType makeLayer(String name, VertexFormat format, VertexFormat.Mode mode,

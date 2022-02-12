@@ -14,6 +14,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.Tags;
 
+import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 public class VanillaRecipeProvider extends RecipeProvider {
@@ -23,7 +24,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
     }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void buildCraftingRecipes(@Nonnull Consumer<FinishedRecipe> consumer) {
         //addCriterion - makes recipe visible only after you have attained a specific (set of)item(s)
         registerArconiumBlocks(consumer);
         registerArconiumIngots(consumer);

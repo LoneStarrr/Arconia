@@ -34,6 +34,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
@@ -72,8 +73,8 @@ public class Arconia {
         modBus.addGenericListener(RecipeSerializer.class, ModRecipeTypes::registerRecipeTypes);
         modBus.addGenericListener(Feature.class, ModFeatures::registerFeatures);
 
-        modBus.addListener((ModConfig.Loading e) -> ConfigHandler.onConfigLoad());
-        modBus.addListener((ModConfig.Reloading e) -> ConfigHandler.onConfigLoad());
+        modBus.addListener(ConfigHandler::onConfigLoad);
+        modBus.addListener(ConfigHandler::onConfigReload);
 
         ModLootModifiers.LOOT_MODIFIERS.register(modBus);
 

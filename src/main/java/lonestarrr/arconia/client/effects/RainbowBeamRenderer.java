@@ -11,7 +11,6 @@ import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.tile.ArconiumTreeRootBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.VectorHelper;
-import lonestarrr.arconia.mixin.client.AccessorRenderType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -30,7 +29,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -398,7 +396,7 @@ class RainbowBeamRenderType extends RenderType {
         super(p_173178_, p_173179_, p_173180_, p_173181_, p_173182_, p_173183_, p_173184_, p_173185_);
     }
 
-    public static final RenderType BEAM_LINE_THICK = AccessorRenderType.create("beam_line_thick",
+    public static final RenderType BEAM_LINE_THICK = create("beam_line_thick",
             DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.LINES, 256, false, false,
             RenderType.CompositeState.builder().setLineState(THICK_LINE)
                     .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
@@ -421,7 +419,7 @@ class RainbowBeamRenderType extends RenderType {
     );
 
     // RenderType for rendering a texture in 2D in the world. Note that the source here is not the texture, but the ATLAS containing the texture
-    public static final RenderType BEAM_TEXTURED = AccessorRenderType.create("beam_textured",
+    public static final RenderType BEAM_TEXTURED = create("beam_textured",
             DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 262144, false, false,
             RenderType.CompositeState.builder()
                     .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, false))

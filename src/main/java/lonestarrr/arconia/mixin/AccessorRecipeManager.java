@@ -8,6 +8,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+import java.util.Collections;
 import java.util.Map;
 
 // Mixin generic guide: https://darkhax.net/2020/07/mixins

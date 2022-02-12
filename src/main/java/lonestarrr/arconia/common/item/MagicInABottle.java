@@ -128,8 +128,8 @@ public class MagicInABottle extends Item {
             if (gameTime % (tickEvalInterval * 3) == 0){
                 ServerPlayer player = (ServerPlayer) entity;
 
-                for (int slot = 0; slot < player.inventory.getContainerSize(); slot++) {
-                    ItemStack otherStack = player.inventory.getItem(slot);
+                for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
+                    ItemStack otherStack = player.getInventory().getItem(slot);
                     if (otherStack.getItem() == this && otherStack != stack) {
                         int otherTicksElapsed = getTicksElapsed(otherStack);
                         if (otherTicksElapsed < ticksElapsed) {
@@ -211,7 +211,7 @@ public class MagicInABottle extends Item {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static float getFilledPercentage(ItemStack stack, ClientLevel world, LivingEntity entity) {
+    public static float getFilledPercentage(ItemStack stack, ClientLevel world, LivingEntity entity, int seed) {
         // Used to register ItemProperty, used to render model based on filled %
         return Math.min(100f, (float)getTicksElapsed(stack) / getTicksBetweenLoot(stack));
     }

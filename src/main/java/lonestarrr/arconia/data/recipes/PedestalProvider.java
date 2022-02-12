@@ -14,6 +14,7 @@ import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -46,7 +47,7 @@ public class PedestalProvider extends RecipeProvider {
     }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         registerColoredRootRecipes(consumer);
         registerGoldArconiumBlocks(consumer);
         // TODO have yet to implement visually different rendering based on it having infinite turned on
@@ -173,7 +174,7 @@ public class PedestalProvider extends RecipeProvider {
         Ingredient essence = Ingredient.of(ModItems.getArconiumEssence(color));
         ResourceLocation recipeId = id(color.getTierName() + BlockNames.GOLD_ARCONIUM_BLOCK_SUFFIX);
         final int durationTicks = 100 + (color.getTier() * 100);
-        return new FinishedRecipe(recipeId, output, durationTicks, goldBlock, essence, essence, essence, essence, essence, essence);
+        return new PedestalFinishedRecipe(recipeId, output, durationTicks, goldBlock, essence, essence, essence, essence, essence, essence);
     }
 
     private static FinishedRecipe makeInfiniteGoldArconiumBlock(RainbowColor color) {
@@ -182,7 +183,7 @@ public class PedestalProvider extends RecipeProvider {
         Ingredient arconiumBlock = Ingredient.of(ModBlocks.getArconiumBlock(color).asItem());
         ResourceLocation recipeId = id(color.getTierName() + BlockNames.INFINITE_GOLD_ARCONIUM_BLOCK_SUFFIX);
         final int durationTicks = 100 + (color.getTier() * 100);
-        return new FinishedRecipe(recipeId, output, durationTicks, goldArconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock);
+        return new PedestalFinishedRecipe(recipeId, output, durationTicks, goldArconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock, arconiumBlock);
     }
 
 
@@ -208,7 +209,7 @@ public class PedestalProvider extends RecipeProvider {
         Arconia.logger.info("***** Recipe ID: " + recipeId);
         Ingredient[] newIngredients = Arrays.copyOf(ingredients, ingredients.length + 1);
         newIngredients[ingredients.length] = Ingredient.of(root);
-        return new FinishedRecipe(recipeId, coloredRoot, durationTicks, newIngredients);
+        return new PedestalFinishedRecipe(recipeId, coloredRoot, durationTicks, newIngredients);
     }
 
     private static ResourceLocation id(String s) {
@@ -216,13 +217,13 @@ public class PedestalProvider extends RecipeProvider {
     }
 
 
-    private static class FinishedRecipe implements FinishedRecipe {
+    private static class PedestalFinishedRecipe implements FinishedRecipe {
         private final ResourceLocation id;
         private final ItemStack output;
         private final Ingredient[] inputs;
         private final int durationTicks;
 
-        private FinishedRecipe(ResourceLocation id, ItemStack output, int durationTicks, Ingredient... inputs) {
+        private PedestalFinishedRecipe(ResourceLocation id, ItemStack output, int durationTicks, Ingredient... inputs) {
             this.id = id;
             this.output = output;
             this.durationTicks = durationTicks;
@@ -240,10 +241,6 @@ public class PedestalProvider extends RecipeProvider {
             json.add("ingredients", ingredients);
         }
 
-        /**
-         * Serializes the given stack such that {@link net.minecraft.item.crafting.ShapedRecipe#deserializeItem}
-         * would be able to read the result back
-         */
         private static JsonObject serializeStack(ItemStack stack) {
             CompoundTag nbt = stack.save(new CompoundTag());
             byte c = nbt.getByte("Count");
@@ -286,6 +283,5 @@ public class PedestalProvider extends RecipeProvider {
         public ResourceLocation getAdvancementId() {
             return null;
         }
-
     }
 }

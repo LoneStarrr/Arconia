@@ -33,7 +33,7 @@ public class ClientProxy implements IProxy {
         modBus.addListener(this::clientSetup);
         modBus.addListener(this::loadComplete);
         modBus.addListener(RainbowBeamRenderer::onTextureStitch);
-        modBus.addGenericListener(EntityRenderersEvent.class, BlockEntityRendererHandler::registerBlockEntityRenderers);
+        modBus.addListener(BlockEntityRendererHandler::registerBlockEntityRenderers);
 
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
         forgeBus.addListener(BuildPatternPreview::render);
