@@ -17,7 +17,7 @@ import java.util.Map;
  * Register new recipe types for custom crafting methods
  */
 public class ModRecipeTypes {
-    public static final RecipeType<IPedestalRecipe> PEDESTAL_TYPE = RecipeType.register("arconia_pedestal"); // Crafting with pedestals
+    public static final RecipeType<IPedestalRecipe> PEDESTAL_TYPE = new ModRecipeType<>(); // Crafting with pedestals
     public static final RecipeSerializer<PedestalRecipe> PEDESTAL_SERIALIZER = new PedestalRecipe.Serializer();
 
     public static void registerRecipeTypes(RegistryEvent.Register<RecipeSerializer<?>> event) {
@@ -32,4 +32,12 @@ public class ModRecipeTypes {
         // RecipeManger.byType() is private, custom mixin makes it available
         return ((AccessorRecipeManager) world.getRecipeManager()).arconia_getRecipes(type);
     }
+
+    private static class ModRecipeType<T extends Recipe<?>> implements RecipeType<T> {
+        @Override
+        public String toString() {
+            return Registry.RECIPE_TYPE.getKey(this).toString();
+        }
+    }
+
 }

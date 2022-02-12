@@ -52,39 +52,42 @@ public class ModFeatures {
     private static final Map<RainbowColor, ConfiguredFeature<TreeConfiguration, ?>> configuredTrees =
             new HashMap<>(RainbowColor.values().length);
     private static final Map<RainbowColor, PlacedFeature> placedTrees = new HashMap<>(RainbowColor.values().length);
-    // from minecraft's VegetionFeatures
-    public static final ConfiguredFeature<RandomPatchConfiguration, ?> CLOVER_CONFIGURED = FeatureUtils.register("clover",
-            Feature.FLOWER.configured(new RandomPatchConfiguration(8, 6, 2, () -> {
+    // from minecraft's VegetationFeatures
+    public static final ConfiguredFeature<RandomPatchConfiguration, ?> CLOVER_CONFIGURED = Feature.FLOWER.configured(new RandomPatchConfiguration(8, 6, 2, () -> {
                 return Feature.SIMPLE_BLOCK.configured(new SimpleBlockConfiguration(BlockStateProvider.simple(ModBlocks.clover))).onlyWhenEmpty();
-            })));
-    public static final PlacedFeature PLACED_CLOVER = PlacementUtils.register("placed_clover", CLOVER_CONFIGURED.placed(VegetationPlacements.worldSurfaceSquaredWithCount(2)));
+            }));
+    public static final PlacedFeature PLACED_CLOVER = CLOVER_CONFIGURED.placed(VegetationPlacements.worldSurfaceSquaredWithCount(2));
 
     static {
         for (RainbowColor tier : RainbowColor.values()) {
             // from vanilla's TreeFeatures
-            ConfiguredFeature<TreeConfiguration, ?> treeConfigured = FeatureUtils.register("arconium_tree_" + tier.getTierName(), Feature.TREE.configured(
+            ConfiguredFeature<TreeConfiguration, ?> treeConfigured = Feature.TREE.configured(
                     (new TreeConfiguration.TreeConfigurationBuilder(BlockStateProvider.simple(Blocks.OAK_LOG), new StraightTrunkPlacer(5, 2, 0),
                             BlockStateProvider.simple(ModBlocks.getArconiumTreeLeaves(tier)), new BlobFoliagePlacer(
-                            UniformInt.of(2, 3), ConstantInt.of(0), 3), new TwoLayersFeatureSize(1, 0, 1))).ignoreVines().build()));
+                            UniformInt.of(2, 3), ConstantInt.of(0), 3), new TwoLayersFeatureSize(1, 0, 1))).ignoreVines().build());
             configuredTrees.put(tier, treeConfigured);
 
             // from vanilla VegetationPlacements
-            PlacedFeature arconiumTreePlaced = PlacementUtils.register("arconium_tree_" + tier.getTierName(),
-                    treeConfigured.placed(VegetationPlacements.treePlacement(PlacementUtils.countExtra(10, 0.1F, 1), ModBlocks.getArconiumTreeSapling(tier))));
+            PlacedFeature arconiumTreePlaced = treeConfigured.placed(VegetationPlacements.treePlacement(PlacementUtils.countExtra(10, 0.1F, 1), ModBlocks.getArconiumTreeSapling(tier)));
             placedTrees.put(tier, arconiumTreePlaced);
         }
     }
 
     public static void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
-        IForgeRegistry<Feature<?>> r = event.getRegistry();
+        // This is not even using the event's registry. There is no separate forge registry for configured/placed features so we're piggybacking on this one
+//        IForgeRegistry<Feature<?>> r = event.getRegistry();
         Arconia.logger.info("********* Registering biome features");
 
+        // Registered configured features and their placements
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "clovers"), CLOVER_CONFIGURED);
+        Registry.register(BuiltinRegistries.PLACED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "clovers"), PLACED_CLOVER);
 
         // Using minecraft's built in tree feature for the arconium trees. Each tier has a unique config due to using tiered leaves
         for (RainbowColor tier : RainbowColor.values()) {
             Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "arconium_tree_" + tier.getTierName()),
                     configuredTrees.get(tier));
+            Registry.register(BuiltinRegistries.PLACED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "arconium_tree_" + tier.getTierName()),
+                    placedTrees.get(tier));
         }
     }
 

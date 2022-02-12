@@ -70,7 +70,7 @@ public class ModBlockEntities {
             infiniteGoldArconiumBlockEntityTypes.put(tier, teType);
             register(r, teType, tier.getTierName() + "_infinite_gold_arconium_tile_entity");
         }
-        Arconia.logger.info("************ Registered tile entities");
+        Arconia.logger.info("************ Registered block entities");
 
     }
 

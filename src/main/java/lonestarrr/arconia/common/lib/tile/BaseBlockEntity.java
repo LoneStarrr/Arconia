@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 
-/** Base class for tile entities that implements the standard data syncing
+/** Base class for block entities that implement the standard data syncing
  */
 public abstract class BaseBlockEntity extends BlockEntity {
     public BaseBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {

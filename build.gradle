@@ -207,6 +207,7 @@ dependencies {
     runtimeOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}") { transitive = false }
 
     // Test framework
+    // 2022-02-11 disabled after initial port to 1.18.1
     testImplementation "org.junit.jupiter:junit-jupiter:${junit_version}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
 
@@ -217,6 +218,9 @@ test {
     testLogging {
         events "passed", "skipped", "failed"
     }
+    // 2022-02-11 Disabled after initial port to 1.18
+    onlyIf { false }
+    exclude '**/*'
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
