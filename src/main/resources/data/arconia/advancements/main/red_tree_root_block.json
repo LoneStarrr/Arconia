@@ -20,7 +20,7 @@
       "conditions": {
         "items": [
           {
-            "item": "arconia:red_tree_root_block"
+            "items": [ "arconia:red_tree_root_block" ]
           }
         ]
       }

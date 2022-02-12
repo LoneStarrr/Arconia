@@ -53,10 +53,10 @@ public class ModFeatures {
             new HashMap<>(RainbowColor.values().length);
     private static final Map<RainbowColor, PlacedFeature> placedTrees = new HashMap<>(RainbowColor.values().length);
     // from minecraft's VegetationFeatures
-    public static final ConfiguredFeature<RandomPatchConfiguration, ?> CLOVER_CONFIGURED = Feature.FLOWER.configured(new RandomPatchConfiguration(8, 6, 2, () -> {
+    public static final ConfiguredFeature<RandomPatchConfiguration, ?> CLOVER_CONFIGURED = Feature.FLOWER.configured(new RandomPatchConfiguration(1, 3, 2, () -> {
                 return Feature.SIMPLE_BLOCK.configured(new SimpleBlockConfiguration(BlockStateProvider.simple(ModBlocks.clover))).onlyWhenEmpty();
             }));
-    public static final PlacedFeature PLACED_CLOVER = CLOVER_CONFIGURED.placed(VegetationPlacements.worldSurfaceSquaredWithCount(2));
+    public static final PlacedFeature PLACED_CLOVER = CLOVER_CONFIGURED.placed(VegetationPlacements.worldSurfaceSquaredWithCount(1));
 
     static {
         for (RainbowColor tier : RainbowColor.values()) {
@@ -68,7 +68,7 @@ public class ModFeatures {
             configuredTrees.put(tier, treeConfigured);
 
             // from vanilla VegetationPlacements
-            PlacedFeature arconiumTreePlaced = treeConfigured.placed(VegetationPlacements.treePlacement(PlacementUtils.countExtra(10, 0.1F, 1), ModBlocks.getArconiumTreeSapling(tier)));
+            PlacedFeature arconiumTreePlaced = treeConfigured.placed(VegetationPlacements.treePlacement(PlacementUtils.countExtra(0, 0.05F, 1), ModBlocks.getArconiumTreeSapling(tier)));
             placedTrees.put(tier, arconiumTreePlaced);
         }
     }
@@ -107,10 +107,8 @@ public class ModFeatures {
         Biome.BiomeCategory category = event.getCategory();
 
         if (category == Biome.BiomeCategory.FOREST) {
-            for (RainbowColor tier : RainbowColor.values()) {
-                event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION,
-                        placedTrees.get(tier));
-            }
+            event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION,
+                    placedTrees.get(RainbowColor.RED));
         }
     }
 
