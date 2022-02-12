@@ -36,9 +36,7 @@ import java.util.List;
 import java.util.OptionalDouble;
 
 /**
- * Draws pretty visual effects related to the resource tree
- *
- * TODO deprecated - remove me
+ * Draws pretty visual effects related to the arconium tree
  */
 public class RainbowBeamRenderer implements BlockEntityRenderer<ArconiumTreeRootBlockEntity>  {
     public static final ResourceLocation BEAM_TEXTURE = new ResourceLocation(Arconia.MOD_ID, "effects/link");

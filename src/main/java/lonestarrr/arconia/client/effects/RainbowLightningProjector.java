@@ -134,6 +134,7 @@ class LightningRenderType extends RenderType {
     public static final RenderType BEAM_TRIANGLE = create("beam_triangle",
             DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES, 32768, false, false,
             RenderType.CompositeState.builder()
+                    .setShaderState(RenderStateShard.RENDERTYPE_LIGHTNING_SHADER)
                     .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
                     .setTransparencyState(TransparencyStateShard.LIGHTNING_TRANSPARENCY)
                     .setLightmapState(RenderStateShard.NO_LIGHTMAP)

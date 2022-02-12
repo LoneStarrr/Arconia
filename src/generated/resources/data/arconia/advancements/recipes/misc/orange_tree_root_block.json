@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "arconia:orange_colored_tree_root"
+            "items": [
+              "arconia:orange_colored_tree_root"
+            ]
           }
         ]
       }

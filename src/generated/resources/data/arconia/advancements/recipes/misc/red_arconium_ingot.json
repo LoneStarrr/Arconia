@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "arconia:red_arconium_block"
+            "items": [
+              "arconia:red_arconium_block"
+            ]
           }
         ]
       }

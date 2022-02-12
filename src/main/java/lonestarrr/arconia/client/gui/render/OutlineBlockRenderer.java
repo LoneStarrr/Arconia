@@ -41,13 +41,15 @@ public class OutlineBlockRenderer extends RenderType {
         super(p_173178_, p_173179_, p_173180_, p_173181_, p_173182_, p_173183_, p_173184_, p_173185_);
     }
 
-    private static RenderType makeLayer(String name, VertexFormat format, VertexFormat.Mode mode,
-                                        int bufSize, boolean hasCrumbling, boolean sortOnUpload, CompositeState glState) {
+    private static RenderType makeLayer(
+            String name, VertexFormat format, VertexFormat.Mode mode,
+            int bufSize, boolean hasCrumbling, boolean sortOnUpload, CompositeState glState) {
         return create(name, format, mode, bufSize, hasCrumbling, sortOnUpload, glState);
     }
 
-    private static RenderType makeLayer(String name, VertexFormat format, VertexFormat.Mode mode,
-                                        int bufSize, CompositeState glState) {
+    private static RenderType makeLayer(
+            String name, VertexFormat format, VertexFormat.Mode mode,
+            int bufSize, CompositeState glState) {
         return makeLayer(name, format, mode, bufSize, false, false, glState);
     }
 
@@ -55,15 +57,29 @@ public class OutlineBlockRenderer extends RenderType {
         // Most of this is gleaned from Botania's RenderHelper
         TRANSLUCENT_TRANSPARENCY = ObfuscationReflectionHelper.getPrivateValue(RenderStateShard.class, null,
                 "TRANSLUCENT_TRANSPARENCY");
-        RenderStateShard.LayeringStateShard projectionLayering = ObfuscationReflectionHelper.getPrivateValue(RenderStateShard.class, null, "VIEW_OFFSET_Z_LAYERING");
+        RenderStateShard.LayeringStateShard projectionLayering = ObfuscationReflectionHelper.getPrivateValue(RenderStateShard.class, null,
+                "VIEW_OFFSET_Z_LAYERING");
         RenderStateShard.WriteMaskStateShard colorMask = new RenderStateShard.WriteMaskStateShard(true, false);
         RenderStateShard.DepthTestStateShard noDepth = new RenderStateShard.DepthTestStateShard("always", GL11.GL_ALWAYS);
 
         // https://github.com/Vazkii/Botania/blob/24715c509e47dfc32a80d7e94aeba6d84c022503/src/main/java/vazkii/botania/client/core/helper/RenderHelper.java
         // May want to enable depthTest() ?
-        RenderType.CompositeState glState = RenderType.CompositeState.builder().setLineState(new RenderStateShard.LineStateShard(OptionalDouble.of(3))).setLayeringState(projectionLayering).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setWriteMaskState(colorMask).setDepthTestState(noDepth).createCompositeState(false);
+        RenderType.CompositeState glState = RenderType.CompositeState.builder()
+                .setShaderState(POSITION_COLOR_SHADER)
+                .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.of(3)))
+                .setLayeringState(projectionLayering)
+                .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                .setWriteMaskState(colorMask)
+                .setDepthTestState(noDepth)
+                .createCompositeState(false);
         LINE_3_NO_DEPTH = makeLayer(Arconia.MOD_ID + ":line_3_no_depth", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.LINES, 128, glState);
-        glState = RenderType.CompositeState.builder().setLineState(new RenderStateShard.LineStateShard(OptionalDouble.of(8))).setLayeringState(projectionLayering).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setWriteMaskState(colorMask).setDepthTestState(noDepth).createCompositeState(false);
+        glState = RenderType.CompositeState.builder()
+                .setShaderState(POSITION_COLOR_SHADER)
+                .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.of(8)))
+                .setLayeringState(projectionLayering)
+                .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                .setWriteMaskState(colorMask).setDepthTestState(noDepth)
+                .createCompositeState(false);
         LINE_8_NO_DEPTH = makeLayer(Arconia.MOD_ID + ":line_8_no_depth", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.LINES, 128, glState);
         // https://github.com/Vazkii/Botania/blob/master/src/main/java/vazkii/botania/client/core/handler/BoundTileRenderer.java
         LINE_BUFFERS = MultiBufferSource.immediateWithBuffers(Util.make(() -> {
@@ -76,6 +92,7 @@ public class OutlineBlockRenderer extends RenderType {
 
     /**
      * Renders a wireframe-like outline that will always be on top.
+     *
      * @param hue Outline hue
      */
     public static void renderOutline(@Nonnull final PoseStack matrixStack, @Nonnull final BlockPos pos, float hue, RenderType lineType) {

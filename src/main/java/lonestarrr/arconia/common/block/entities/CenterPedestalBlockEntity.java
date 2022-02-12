@@ -92,12 +92,9 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
 
         IPedestalRecipe recipe = findRecipe(inv);
 
-        // TODO actually start a nice visual ritual. For now, just produce the output immediately, then iterate.
         if (recipe == null) {
             return false;
         }
-
-        Arconia.logger.debug("Found a recipe for the ritual: " + recipe);
 
         currentRecipeID = recipe.getId();
         ritualOngoing = true;

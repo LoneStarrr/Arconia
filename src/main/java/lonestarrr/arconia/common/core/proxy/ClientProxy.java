@@ -59,11 +59,11 @@ public class ClientProxy implements IProxy {
                 ItemBlockRenderTypes.setRenderLayer(ModBlocks.getRainbowCrateBlock(tier), cutout);
                 // gleaned from Blocks.GRASS_BLOCK - this is for overlaying the top with a rainbow tint
                 ItemBlockRenderTypes.setRenderLayer(ModBlocks.getArconiumTreeRootBlocks(tier), RenderType.cutoutMipped());
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.getGoldArconiumBlock(tier), RenderType.cutoutMipped());
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.getGoldArconiumBlock(tier), cutout);
                 ItemBlockRenderTypes.setRenderLayer(ModBlocks.getInfiniteGoldArconiumBlock(tier), RenderType.cutoutMipped());
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.orb, RenderType.translucent());
             }
 
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.orb, RenderType.translucent());
             // gleaned from Blocks.GRASS_BLOCK - this is for overlaying the sides with the tinted grass
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.resourceGenBlock, RenderType.cutoutMipped());
 
