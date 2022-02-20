@@ -1,6 +1,6 @@
 package lonestarrr.arconia.common.block.entities;
 
-import lonestarrr.arconia.common.core.helper.InventoryHelper;
+import lonestarrr.arconia.common.core.helper.BlockInventoryHelper;
 import lonestarrr.arconia.common.network.ModPackets;
 import lonestarrr.arconia.common.network.OrbLaserPacket;
 import net.minecraft.core.BlockPos;
@@ -104,7 +104,7 @@ public class OrbBlockEntity extends BaseBlockEntity {
         double z = worldPosition.getZ() + 0.5;
 
         List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, new AABB(x - RANGE, y - RANGE, z - RANGE, x + RANGE, y + RANGE, z + RANGE));
-        IItemHandler inv = InventoryHelper.getInventory(getLevel(), worldPosition.below(), Direction.UP);
+        IItemHandler inv = BlockInventoryHelper.getInventory(getLevel(), worldPosition.below(), Direction.UP);
 
         final int maxHandled = 64;
         int handled = 0;
@@ -123,7 +123,7 @@ public class OrbBlockEntity extends BaseBlockEntity {
                 int beforeCount = before.getCount();
                 if (!before.isEmpty()) {
                     if (!level.isClientSide()) {
-                        ItemStack left = InventoryHelper.insertItem(inv, item.getItem(), false);
+                        ItemStack left = BlockInventoryHelper.insertItem(inv, item.getItem(), false);
                         item.setItem(left);
                         // Send to client to render visualization of item being captured
                         // TODO: bunch up into a list to send

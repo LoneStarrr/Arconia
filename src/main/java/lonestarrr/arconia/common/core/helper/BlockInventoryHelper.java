@@ -12,10 +12,10 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class InventoryHelper {
+public class BlockInventoryHelper {
 
     /**
-     * Get inventory for a given position and side - taken verbatim from Botania, thanks Vazkii!
+     * Get inventory for a block at a given position and side - taken verbatim from Botania
      *
      * @param world
      * @param pos
@@ -38,7 +38,7 @@ public class InventoryHelper {
     }
 
     /**
-     * Attempt to insert items in an inventory - taken verbatim from Botania src -thanks Vazkii!
+     * Attempt to insert items in a block's inventory - taken verbatim from Botania
      * @param dest
      * @param stack
      * @param simulate If set, no items will actually be transferred, but the return value represents of what would happen
@@ -61,6 +61,4 @@ public class InventoryHelper {
 
         return stack;
     }
-
-
 }

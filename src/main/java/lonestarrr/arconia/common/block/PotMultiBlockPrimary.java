@@ -29,6 +29,9 @@ import javax.annotation.Nullable;
  * with the pot's logic
  */
 public class PotMultiBlockPrimary extends BaseEntityBlock {
+    private static final Block centerBlock = Blocks.GOLD_BLOCK;
+    private static final Block outerBlock = Blocks.SMOOTH_STONE;
+
     public PotMultiBlockPrimary() {
         super(Block.Properties.of(Material.METAL, MaterialColor.COLOR_BLACK).strength(4.0F));
     }
@@ -113,8 +116,8 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
         BlockPos corner = primaryPos.offset(-1, 0, -1);
         BlockPos goldPos = primaryPos.above();
 
-        ItemStack goldBlock = new ItemStack(Blocks.GOLD_BLOCK, 0);
-        ItemStack cauldrons = new ItemStack(Blocks.CAULDRON, 0);
+        ItemStack goldBlock = new ItemStack(centerBlock, 0);
+        ItemStack outerBlocks = new ItemStack(outerBlock, 0);
         for (int x = 0; x < 3; x++) {
             for (int z = 0; z < 3; z++) {
                 for (int y = 0; y < 2; y++) {
@@ -125,7 +128,7 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
                         if (toReplace.equals(goldPos)) {
                             goldBlock.setCount(1);
                         } else {
-                            cauldrons.setCount(cauldrons.getCount() + 1);
+                            outerBlocks.setCount(outerBlocks.getCount() + 1);
                         }
                         world.setBlockAndUpdate(toReplace, Blocks.AIR.defaultBlockState());
                     }
@@ -134,7 +137,7 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
         }
 
         boolean playedSound = false;
-        for (ItemStack item: new ItemStack[] { goldBlock, cauldrons }) {
+        for (ItemStack item: new ItemStack[] { goldBlock, outerBlocks }) {
             if (item.getCount() == 0) {
                 continue;
             }
@@ -151,7 +154,7 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
 
     public static boolean canFormMultiBlock(Level world, BlockPos goldPos) {
         // Expecting pos to be a block of gold, surrounded by cauldrons in a 3x3 grid, and another layer of 3x3 cauldrons below it
-        if (world.getBlockState(goldPos).getBlock() != Blocks.GOLD_BLOCK) {
+        if (world.getBlockState(goldPos).getBlock() != centerBlock) {
             return false;
         }
 
@@ -164,7 +167,7 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
                         continue;
                     }
                     BlockState bs = world.getBlockState(toCheck);
-                    if (bs.getBlock() != Blocks.CAULDRON) {
+                    if (bs.getBlock() != outerBlock) {
                         return false;
                     }
                 }

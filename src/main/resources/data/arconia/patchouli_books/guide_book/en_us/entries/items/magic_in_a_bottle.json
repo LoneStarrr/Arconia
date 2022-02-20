@@ -1,0 +1,19 @@
+{
+    "name": "Magic in a bottle",
+    "icon": "arconia:magic_in_a_bottle{fillPercentage:100}",
+    "category": "arconia:items",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "text": "I saw the master magician craft this bottle on his ritual altar. It appears to gift the holder with seemingly random items simply by having the time pass. $(italic)Using$() the bottle, when full, shall reward you. Shaking it through jumping while holding it in your hotbar speeds it up a little!"
+        },
+        {
+            "type": "patchouli:spotlight",
+            "item": "arconia:magic_in_a_bottle{fillPercentage:100}",
+            "title": "Magic, in a bottle",
+            "text": "Whispers from another dimension tell me that a similar item exists there, warping time instead? Maybe I should hold off on the grog for a while.."
+        }
+    ]
+}
+
+

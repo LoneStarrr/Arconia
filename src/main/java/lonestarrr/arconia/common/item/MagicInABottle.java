@@ -2,6 +2,7 @@ package lonestarrr.arconia.common.item;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.core.helper.PlayerInventoryHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -20,6 +21,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -31,6 +33,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.FakePlayer;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -42,51 +45,26 @@ import java.util.List;
  */
 public class MagicInABottle extends Item {
     private static final String TAG_TICKS_ELAPSED = "ticksElapsed";
+    private static final String TAG_FILL_PERCENTAGE = "fillPercentage";
+    private static final String TAG_COLOR = "color";
+    private static final int fillPercentageTimeBased = 10; // Percentage of bottle to fill based on just time progression (mod cfg TODO)
 
     public MagicInABottle(Item.Properties builder) {
         super(builder.stacksTo(1));
     }
 
+    public static ItemStack getBottleForTier(RainbowColor tier) {
+        ItemStack stack = new ItemStack(ModItems.magicInABottle);
+        CompoundTag tag = new CompoundTag();
+        tag.putString(TAG_COLOR, tier.getTierName());
+        stack.setTag(tag);
+        return stack;
+    }
 
     @Override
     public boolean isFoil(ItemStack stack) {
         // for that visual enchanted effect only
         return false;
-    }
-
-    @Override
-    public InteractionResult useOn(UseOnContext context) {
-        Level world = context.getLevel();
-        Player player = context.getPlayer();
-        BlockPos pos = context.getClickedPos(); // TODO this is pos player is AT, not looking at. That is a client-side thing..
-        ItemStack itemStack = player.getItemInHand(context.getHand());
-
-        // For testing purposes, just cycle through the tiers for now when it's used on anything
-        if (!world.isClientSide()) {
-            RainbowColor currentTier = getTier(itemStack);
-            int tierNum = currentTier.ordinal();
-            tierNum = (tierNum >= RainbowColor.values().length - 1 ? 0: tierNum + 1);
-            RainbowColor newTier = RainbowColor.values()[tierNum];
-            CompoundTag tag = itemStack.getTag();
-            if (tag == null) {
-                tag = new CompoundTag();
-                itemStack.setTag(tag);
-            }
-            tag.putString("tier", newTier.name());
-            player.displayClientMessage(new TextComponent("Taste the " + newTier.getTierName() + " rainbow!"), true);
-        }
-        return InteractionResult.SUCCESS;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(
-            ItemStack stack, @Nullable Level world, List<Component> toolTips, TooltipFlag flag) {
-        super.appendHoverText(stack, world, toolTips, flag);
-        int ticksElapsed = getTicksElapsed(stack);
-        int ticksBetweenLoot = getTicksBetweenLoot(stack);
-        int pct = (int)Math.min(100, (int)(ticksElapsed * 100d / ticksBetweenLoot));
-        toolTips.add(new TranslatableComponent(stack.getDescriptionId() + ".tooltip", pct).withStyle(ChatFormatting.AQUA, ChatFormatting.ITALIC));
     }
 
     public static int getTicksElapsed(ItemStack stack) {
@@ -104,42 +82,88 @@ public class MagicInABottle extends Item {
         }
     }
 
+    // Fills up the bottle by a partial amount, if it's not full already. Alerts the player if it just filled up
+    private static int fill(Level world, ServerPlayer player, ItemStack stack, int percent) {
+        int fillPct = getFillPercentage(stack);
+        if (fillPct < 100) {
+            fillPct = Math.min(100, fillPct + percent);
+            CompoundTag tag = stack.getOrCreateTag();
+            tag.putInt(TAG_FILL_PERCENTAGE, fillPct);
+            if (fillPct == 100) {
+                player.playSound(SoundEvents.BREWING_STAND_BREW, 1, 1);
+            }
+        }
+
+        return fillPct;
+    }
+
+    private static void resetFillPercentage(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt(TAG_FILL_PERCENTAGE, 0);
+    }
+
+    private static int getFillPercentage(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+        return tag.getInt(TAG_FILL_PERCENTAGE);
+    }
+
     @Override
     public void inventoryTick(ItemStack stack, Level world, Entity entity, int slotIn, boolean selected) {
+        // Time passing will slowly fill up the bottle
         if (world.isClientSide() || !(entity instanceof ServerPlayer)) {
             return;
         }
         final int tickEvalInterval = 20;
+        ServerPlayer player = (ServerPlayer)entity;
 
         long gameTime = world.getGameTime();
 
         if (gameTime % tickEvalInterval == 0) {
-            int ticksElapsed = getTicksElapsed(stack);
-            int ticksNextLoot = getTicksBetweenLoot(stack);
-            if (ticksElapsed < ticksNextLoot) {
-                ticksElapsed += tickEvalInterval;
+            int ticksElapsed = getTicksElapsed(stack) + tickEvalInterval;
+            int ticksNextFill = getTicksPerFill(stack);
+
+            if (ticksElapsed >= ticksNextFill) {
+                fill(world, player, stack, fillPercentageTimeBased);
+                setTicksElapsed(stack, 0);
+            } else {
                 setTicksElapsed(stack, ticksElapsed);
-                if (ticksElapsed >= ticksNextLoot) {
-                    world.playSound(null, entity.blockPosition(), SoundEvents.BREWING_STAND_BREW, SoundSource.PLAYERS, 1, 1);
-                }
             }
 
-
             if (gameTime % (tickEvalInterval * 3) == 0){
-                ServerPlayer player = (ServerPlayer) entity;
+                resetOtherBottles(player, stack);
+            }
+        }
+    }
 
-                for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
-                    ItemStack otherStack = player.getInventory().getItem(slot);
-                    if (otherStack.getItem() == this && otherStack != stack) {
-                        int otherTicksElapsed = getTicksElapsed(otherStack);
-                        if (otherTicksElapsed < ticksElapsed) {
-                            setTicksElapsed(otherStack, 0);
-                        }
-                    }
+    /**
+     * Jumping with the bottle in the hotbar will speed up filling the bottle
+     * @param living
+     */
+    public static void onPlayerJump(LivingEntity living) {
+        if (living instanceof ServerPlayer && !(living instanceof FakePlayer)) {
+            ServerPlayer player = (ServerPlayer)living;
+            int hotbarSlot = PlayerInventoryHelper.findSlotMatchingItem(player.getInventory(), new ItemStack(ModItems.magicInABottle, 1), false, PlayerInventoryHelper.SLOT_HOTBAR);
+            if (hotbarSlot != -1) {
+                ItemStack bottle = player.getInventory().getItem(hotbarSlot);
+                fill(player.level, player, bottle, getFillPercentagePerJump(bottle));
+            }
+        }
+    }
+
+    // Prevents multiple bottles in a player's inv from getting ticked by resetting all counts but one. This works because they all get ticked and the
+    // highest will 'win'
+    private static void resetOtherBottles(ServerPlayer player, ItemStack stack) {
+        int filledPct = getFillPercentage(stack);
+
+        for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
+            ItemStack otherStack = player.getInventory().getItem(slot);
+            if (otherStack.getItem() == stack.getItem() && otherStack != stack) {
+                int otherFilledPct = getFillPercentage(otherStack);
+                if (otherFilledPct > 0 && otherFilledPct < filledPct) {
+                    resetFillPercentage(otherStack);
                 }
             }
         }
-
     }
 
     @Override
@@ -154,8 +178,8 @@ public class MagicInABottle extends Item {
             return InteractionResultHolder.consume(stack);
         }
 
-        int ticks = getTicksElapsed(stack);
-        if (ticks < getTicksBetweenLoot(stack)) {
+        int filledPct = getFillPercentage(stack);
+        if (filledPct < 100) {
             return InteractionResultHolder.fail(stack);
         }
 
@@ -173,13 +197,27 @@ public class MagicInABottle extends Item {
             world.playSound(null, spawnPos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1, 1);
         }
 
-        setTicksElapsed(stack, 0);
+        resetFillPercentage(stack);
         return InteractionResultHolder.success(stack);
     }
 
-    public static int getTicksBetweenLoot(ItemStack stack) {
+    /**
+     * How many ticks have to elapse before the bottle gets automatically filled up by a partial amount?
+     * @param stack
+     * @return
+     */
+    public static int getTicksPerFill(ItemStack stack) {
         RainbowColor tier = getTier(stack);
-        return (int)(60 * 20 * Math.pow(0.8, tier.ordinal()));
+        return (int)(10 * 20 * Math.pow(0.8, tier.getTier()));
+    }
+
+    /**
+     * @param stack
+     * @return Percentage of the bottle will be filled per player jump
+     */
+    public static int getFillPercentagePerJump(ItemStack stack) {
+        RainbowColor tier = getTier(stack);
+        return 5; // TODO modconfig
     }
 
     public static RainbowColor getTier(ItemStack stack) {
@@ -189,14 +227,11 @@ public class MagicInABottle extends Item {
             return tier;
         }
 
-        CompoundTag tag = stack.getTag();
-        if (tag != null) {
-            String tierStr = tag.getString("tier");
-            try {
-                tier = RainbowColor.valueOf(tierStr);
-            } catch (IllegalArgumentException e) {}
-        }
-
+        CompoundTag tag = stack.getOrCreateTag();
+        String tierStr = tag.getString(TAG_COLOR);
+        try {
+            tier = RainbowColor.valueOf(tierStr);
+        } catch (IllegalArgumentException e) {}
         return tier;
     }
 
@@ -211,8 +246,17 @@ public class MagicInABottle extends Item {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static float getFilledPercentage(ItemStack stack, ClientLevel world, LivingEntity entity, int seed) {
+    public static float getFilledItemProperty(ItemStack stack, ClientLevel world, LivingEntity entity, int seed) {
         // Used to register ItemProperty, used to render model based on filled %
-        return Math.min(100f, (float)getTicksElapsed(stack) / getTicksBetweenLoot(stack));
+        return getFillPercentage(stack) / 100f;
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void appendHoverText(
+            ItemStack stack, @Nullable Level world, List<Component> toolTips, TooltipFlag flag) {
+        super.appendHoverText(stack, world, toolTips, flag);
+        int pct = getFillPercentage(stack);
+        toolTips.add(new TranslatableComponent(stack.getDescriptionId() + ".tooltip", pct).withStyle(ChatFormatting.AQUA, ChatFormatting.ITALIC));
     }
 }

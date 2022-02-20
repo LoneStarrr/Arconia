@@ -13,6 +13,7 @@ import lonestarrr.arconia.common.core.proxy.ClientProxy;
 import lonestarrr.arconia.common.core.proxy.IProxy;
 import lonestarrr.arconia.common.core.proxy.ServerProxy;
 import lonestarrr.arconia.common.crafting.ModRecipeTypes;
+import lonestarrr.arconia.common.item.MagicInABottle;
 import lonestarrr.arconia.common.item.ModItems;
 import lonestarrr.arconia.common.loot.ModLootModifiers;
 import lonestarrr.arconia.common.network.ModPackets;
@@ -27,6 +28,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -77,10 +79,15 @@ public class Arconia {
 
         ModLootModifiers.LOOT_MODIFIERS.register(modBus);
 
+        // Events
+
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
         forgeBus.addListener(EventPriority.HIGH, this::biomeSetup);
         forgeBus.addListener(EventPriority.HIGH, this::registerCommands);
 
+        forgeBus.addListener((LivingEvent.LivingJumpEvent e) -> MagicInABottle.onPlayerJump(e.getEntityLiving()));
+
+        // Various other registries
         ModLootModifiers.init();
         ModCriterialTriggers.init();
     }
@@ -91,6 +98,7 @@ public class Arconia {
         ModPackets.init();
         // The One Probe - optional, checks for mod presence
         TheOneProbe.init();
+
 
         try {
             BuildPatternTier.loadPatterns();

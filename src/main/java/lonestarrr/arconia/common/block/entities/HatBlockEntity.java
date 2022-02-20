@@ -2,7 +2,7 @@ package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.core.helper.InventoryHelper;
+import lonestarrr.arconia.common.core.helper.BlockInventoryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -94,13 +94,13 @@ public class HatBlockEntity extends BaseBlockEntity {
             return ItemStack.EMPTY;
         }
 
-        IItemHandler inv = InventoryHelper.getInventory(world, worldPosition.below(), Direction.UP);
+        IItemHandler inv = BlockInventoryHelper.getInventory(world, worldPosition.below(), Direction.UP);
         if (inv == null) {
             return ItemStack.EMPTY;
         }
 
         ItemStack sent = toGenerate.copy();
-        ItemStack left = InventoryHelper.insertItem(inv, toGenerate, false);
+        ItemStack left = BlockInventoryHelper.insertItem(inv, toGenerate, false);
         sent.setCount(sent.getCount() - left.getCount());
         return sent;
     }

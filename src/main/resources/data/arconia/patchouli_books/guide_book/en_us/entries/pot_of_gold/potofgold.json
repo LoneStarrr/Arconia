@@ -16,8 +16,8 @@
                   [ "CCC", "C0C", "CCC" ]
                 ],
                 "mapping": {
-                    "C": "minecraft:cauldron",
-                    "0": "minecraft:cauldron",
+                    "C": "minecraft:smooth_stone",
+                    "0": "minecraft:smooth_stone",
                     "G": "minecraft:gold_block"
                 },
                 "symmetrical": true

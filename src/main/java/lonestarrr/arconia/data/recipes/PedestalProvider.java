@@ -8,9 +8,11 @@ import com.mojang.serialization.JsonOps;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.BlockNames;
+import lonestarrr.arconia.common.core.ItemNames;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.crafting.ModRecipeTypes;
 import lonestarrr.arconia.common.item.ColoredRoot;
+import lonestarrr.arconia.common.item.MagicInABottle;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
@@ -50,8 +52,8 @@ public class PedestalProvider extends RecipeProvider {
     protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         registerColoredRootRecipes(consumer);
         registerGoldArconiumBlocks(consumer);
-        // TODO have yet to implement visually different rendering based on it having infinite turned on
         registerInfiniteGoldArconiumBlocks(consumer);
+        registerMisc(consumer);
     }
 
     /*
@@ -166,6 +168,18 @@ public class PedestalProvider extends RecipeProvider {
 
     private void registerInfiniteGoldArconiumBlocks(Consumer<FinishedRecipe> consumer) {
         RainbowColor.stream().forEach(color -> consumer.accept(makeInfiniteGoldArconiumBlock(color)));
+    }
+
+    private void registerMisc(Consumer<FinishedRecipe> consumer) {
+        // Register Magic-In-A-Bottle (TM) for each tier
+        RainbowColor.stream().forEach(color -> {
+           ItemStack output = MagicInABottle.getBottleForTier(color);
+           Ingredient bottle = Ingredient.of(Items.GLASS_BOTTLE);
+           Ingredient essence = Ingredient.of(ModItems.getArconiumEssence(color));
+           ResourceLocation recipeId = id(color.getTierName() + "_" + ItemNames.MAGIC_IN_A_BOTTLE);
+           final int durationTicks = 100 + (color.getTier() * 100);
+           consumer.accept(new PedestalFinishedRecipe(recipeId, output, durationTicks, bottle, essence));
+        });
     }
 
     private static FinishedRecipe makeGoldArconiumBlock(RainbowColor color) {

@@ -1,0 +1,18 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "nbt": {
+      "color": "magenta"
+    },
+    "item": "arconia:magic_in_a_bottle"
+  },
+  "durationTicks": 900,
+  "ingredients": [
+    {
+      "item": "minecraft:glass_bottle"
+    },
+    {
+      "item": "arconia:magenta_arconium_essence"
+    }
+  ]
+}
