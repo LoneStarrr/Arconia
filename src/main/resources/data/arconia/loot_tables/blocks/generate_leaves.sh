@@ -23,7 +23,7 @@ do
                     {
                       "condition": "minecraft:match_tool",
                       "predicate": {
-                        "item": "minecraft:shears"
+                        "items": [ "minecraft:shears" ]
                       }
                     },
                     {
@@ -129,7 +129,7 @@ do
               {
                 "condition": "minecraft:match_tool",
                 "predicate": {
-                  "item": "minecraft:shears"
+                  "items": [ "minecraft:shears" ]
                 }
               },
               {
