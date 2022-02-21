@@ -3,7 +3,7 @@
   "output": {
     "nbt": {
       "item": {
-        "id": "minecraft:cooked_beef",
+        "id": "minecraft:egg",
         "Count": 1
       },
       "interval": 9,
@@ -20,7 +20,7 @@
       "item": "arconia:four_leaf_clover"
     },
     {
-      "item": "minecraft:cooked_beef"
+      "item": "minecraft:egg"
     },
     {
       "item": "arconia:orange_colored_tree_root"

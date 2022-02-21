@@ -1,6 +1,7 @@
 package lonestarrr.arconia.common;
 
 import lonestarrr.arconia.common.advancements.ModCriterialTriggers;
+import lonestarrr.arconia.common.block.ArconiumTreeSapling;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.RainbowCrateBlock;
 import lonestarrr.arconia.common.block.entities.ModBlockEntities;
@@ -30,6 +31,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.event.world.SaplingGrowTreeEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -86,6 +88,7 @@ public class Arconia {
         forgeBus.addListener(EventPriority.HIGH, this::registerCommands);
 
         forgeBus.addListener((LivingEvent.LivingJumpEvent e) -> MagicInABottle.onPlayerJump(e.getEntityLiving()));
+//        forgeBus.addListener((SaplingGrowTreeEvent e) -> ArconiumTreeSapling.onGrowth(e)); <-- useless, it does not guarantee the tree actually forms
 
         // Various other registries
         ModLootModifiers.init();

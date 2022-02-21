@@ -3,7 +3,7 @@
   "output": {
     "nbt": {
       "item": {
-        "id": "minecraft:kelp",
+        "id": "minecraft:clay",
         "Count": 1
       },
       "interval": 10,
@@ -20,7 +20,7 @@
       "item": "arconia:four_leaf_clover"
     },
     {
-      "item": "minecraft:kelp"
+      "item": "minecraft:clay"
     },
     {
       "item": "arconia:red_colored_tree_root"

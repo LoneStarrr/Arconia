@@ -3,7 +3,7 @@
   "output": {
     "nbt": {
       "item": {
-        "id": "minecraft:cooked_porkchop",
+        "id": "minecraft:grass_block",
         "Count": 1
       },
       "interval": 8,
@@ -20,7 +20,7 @@
       "item": "arconia:four_leaf_clover"
     },
     {
-      "item": "minecraft:cooked_porkchop"
+      "item": "minecraft:grass_block"
     },
     {
       "item": "arconia:yellow_colored_tree_root"

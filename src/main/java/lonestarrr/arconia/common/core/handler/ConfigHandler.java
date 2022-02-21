@@ -33,8 +33,15 @@ public final class ConfigHandler {
         public final ForgeConfigSpec.IntValue potOfGoldMaxHats;
         public final ForgeConfigSpec.IntValue potOfGoldTicksPerInterval;
         public final ForgeConfigSpec.IntValue potOfGoldMaxHatDistance;
+        public final ForgeConfigSpec.BooleanValue skyBlock;
 
         public Common(ForgeConfigSpec.Builder builder) {
+            builder.push("misc");
+            skyBlock = builder
+                    .comment("Whether the mod is used in a skyblock setting")
+                    .define("isSkyblock", false);
+            builder.pop();
+
             builder.push("potOfGold");
 
             potOfGoldMaxHats = builder
@@ -65,8 +72,6 @@ public final class ConfigHandler {
                 defaultCoinInterval -= 1;
             }
             builder.pop();
-
-
         }
     }
 

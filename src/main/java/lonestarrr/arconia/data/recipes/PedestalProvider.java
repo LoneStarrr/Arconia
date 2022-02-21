@@ -68,8 +68,8 @@ public class PedestalProvider extends RecipeProvider {
         int cost = 1; // Number of coins the resource generated should cost
         RainbowColor tier = RainbowColor.RED;
 
-        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, clover, clover, Ingredient.of(Items.RED_WOOL)));
-        for (Item item: new Item[] { Items.OAK_LOG, Items.DARK_OAK_LOG, Items.BIRCH_LOG, Items.JUNGLE_LOG, Items.ACACIA_LOG, Items.SPRUCE_LOG, Items.SAND, Items.GRAVEL, Items.DIRT, Items.KELP }) {
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, clover, clover, clover));
+        for (Item item: new Item[] { Items.OAK_LOG, Items.DARK_OAK_LOG, Items.BIRCH_LOG, Items.JUNGLE_LOG, Items.ACACIA_LOG, Items.SPRUCE_LOG, Items.SAND, Items.GRAVEL, Items.DIRT, Items.CLAY }) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(tier)), clover, Ingredient.of(item)));
         }
 
@@ -78,8 +78,8 @@ public class PedestalProvider extends RecipeProvider {
         interval = 9;
         cost = 2;
 
-        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(RainbowColor.RED)), clover, Ingredient.of(Items.ORANGE_WOOL)));
-        for (Item item: new Item[] { Items.ORANGE_DYE, Items.COAL, Items.STONE, Items.DIORITE, Items.GRANITE, Items.ANDESITE, Items.STRING, Items.COOKED_BEEF, Items.SUGAR_CANE }) {
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(RainbowColor.RED)), clover, clover));
+        for (Item item: new Item[] { Items.ORANGE_DYE, Items.COAL, Items.COBBLESTONE, Items.DIORITE, Items.GRANITE, Items.ANDESITE, Items.STRING, Items.EGG, Items.SUGAR_CANE }) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(tier)), clover, Ingredient.of(item)));
         }
 
@@ -88,8 +88,8 @@ public class PedestalProvider extends RecipeProvider {
         interval = 8;
         cost = 4;
 
-        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(RainbowColor.ORANGE)), clover, Ingredient.of(Items.YELLOW_WOOL)));
-        for (Item item: new Item[] { Items.YELLOW_DYE, Items.IRON_INGOT, Items.ARROW, Items.LEATHER, Items.COOKED_PORKCHOP }) {
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(RainbowColor.ORANGE)), clover, clover));
+        for (Item item: new Item[] { Items.YELLOW_DYE, Items.IRON_INGOT, Items.ARROW, Items.GRASS_BLOCK }) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(tier)), clover, Ingredient.of(item)));
         }
 
@@ -98,7 +98,7 @@ public class PedestalProvider extends RecipeProvider {
         interval = 7;
         cost = 8;
 
-        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(RainbowColor.YELLOW)), clover, Ingredient.of(Items.GREEN_WOOL)));
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(RainbowColor.YELLOW)), clover, clover));
         for (Item item: new Item[] { Items.GREEN_DYE, Items.GOLD_INGOT, Items.LAPIS_LAZULI, Items.REDSTONE, Items.GUNPOWDER }) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(tier)), clover, Ingredient.of(item)));
         }
@@ -108,7 +108,7 @@ public class PedestalProvider extends RecipeProvider {
         interval = 6;
         cost = 16;
 
-        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(RainbowColor.GREEN)), clover, Ingredient.of(Items.LIGHT_BLUE_WOOL)));
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(RainbowColor.GREEN)), clover, clover));
         for (Item item: new Item[] { Items.LIGHT_BLUE_DYE, Items.DIAMOND, Items.OBSIDIAN, Items.ENDER_PEARL }) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(tier)), clover, Ingredient.of(item)));
         }
@@ -118,7 +118,7 @@ public class PedestalProvider extends RecipeProvider {
         interval = 5;
         cost = 32;
 
-        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(RainbowColor.LIGHT_BLUE)), clover, Ingredient.of(Items.BLUE_WOOL)));
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(RainbowColor.LIGHT_BLUE)), clover, clover));
         for (Item item: new Item[] { Items.BLUE_DYE, Items.NETHERRACK, Items.SOUL_SAND, Items.SOUL_SOIL, Items.BLAZE_ROD, Items.WARPED_STEM, Items.EMERALD, Items.NETHER_WART }) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(tier)), clover, Ingredient.of(item)));
         }
@@ -128,7 +128,7 @@ public class PedestalProvider extends RecipeProvider {
         interval = 4;
         cost = 64;
 
-        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(RainbowColor.BLUE)), clover, Ingredient.of(Items.PURPLE_WOOL)));
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(RainbowColor.BLUE)), clover, clover));
         for (Item item: new Item[] { Items.PURPLE_DYE, Items.END_STONE, Items.CHORUS_FRUIT, Items.GHAST_TEAR }) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(tier)), clover, Ingredient.of(item)));
         }
@@ -142,7 +142,7 @@ public class PedestalProvider extends RecipeProvider {
         interval = 3;
         cost = 128;
 
-        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(RainbowColor.PURPLE)), clover, Ingredient.of(Items.MAGENTA_WOOL)));
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(RainbowColor.PURPLE)), clover, clover));
         for (Item item: new Item[] { Items.MAGENTA_DYE, Items.SHULKER_SHELL }) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(tier)), clover, Ingredient.of(item)));
         }
@@ -155,7 +155,7 @@ public class PedestalProvider extends RecipeProvider {
         interval = 2;
         cost = 256;
 
-        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(RainbowColor.MAGENTA)), clover, Ingredient.of(Items.PINK_WOOL)));
+        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier), durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(RainbowColor.MAGENTA)), clover, clover));
         for (Item item: new Item[] { Items.PINK_DYE }) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, interval, count, cost, Ingredient.of(ModItems.getArconiumIngot(tier)), clover, Ingredient.of(item)));
         }

@@ -21,9 +21,6 @@ public class ArconiumTree extends AbstractTreeGrower {
         this.tier = tier;
     }
 
-    /**
-     * Get a {@link net.minecraft.world.gen.feature.ConfiguredFeature} of tree
-     */
     @Nullable
     protected ConfiguredFeature<TreeConfiguration, ?> getConfiguredFeature(Random randomIn, boolean largeHive) {
         return ModFeatures.getArconiumTreeConfigured(this.tier);

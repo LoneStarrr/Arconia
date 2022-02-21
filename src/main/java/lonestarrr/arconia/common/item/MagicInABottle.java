@@ -208,7 +208,7 @@ public class MagicInABottle extends Item {
      */
     public static int getTicksPerFill(ItemStack stack) {
         RainbowColor tier = getTier(stack);
-        return (int)(10 * 20 * Math.pow(0.8, tier.getTier()));
+        return (int)(30 * 20 * Math.pow(0.8, tier.getTier()));
     }
 
     /**
