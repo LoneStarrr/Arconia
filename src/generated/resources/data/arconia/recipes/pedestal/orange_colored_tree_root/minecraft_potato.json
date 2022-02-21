@@ -1,0 +1,29 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "nbt": {
+      "item": {
+        "id": "minecraft:potato",
+        "Count": 1
+      },
+      "interval": 9,
+      "coin_cost": 2
+    },
+    "item": "arconia:orange_colored_tree_root"
+  },
+  "durationTicks": 200,
+  "ingredients": [
+    {
+      "item": "arconia:orange_arconium_ingot"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "minecraft:poisonous_potato"
+    },
+    {
+      "item": "arconia:orange_colored_tree_root"
+    }
+  ]
+}

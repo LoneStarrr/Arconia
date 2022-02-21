@@ -1,0 +1,35 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "nbt": {
+      "item": {
+        "id": "minecraft:wither_skeleton_skull",
+        "Count": 1
+      },
+      "interval": 4,
+      "coin_cost": 64
+    },
+    "item": "arconia:purple_colored_tree_root"
+  },
+  "durationTicks": 800,
+  "ingredients": [
+    {
+      "item": "arconia:purple_arconium_ingot"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "minecraft:wither_skeleton_skull"
+    },
+    {
+      "item": "minecraft:wither_skeleton_skull"
+    },
+    {
+      "item": "minecraft:wither_skeleton_skull"
+    },
+    {
+      "item": "arconia:purple_colored_tree_root"
+    }
+  ]
+}

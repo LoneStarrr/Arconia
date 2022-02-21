@@ -1,0 +1,45 @@
+{
+  "pools": [
+    {
+      "name": "yellow_generator_items",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:pointed_dripstone",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:dark_oak_log",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:jungle_log",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:granite",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:iron_bars",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:red_mushroom",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:beetroot_seeds",
+          "weight": 10
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "pools": [
+    {
+      "name": "purple_generator_items",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:end_stone",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:purpur_block",
+          "weight": 10
+        }
+      ]
+    }
+  ]
+}

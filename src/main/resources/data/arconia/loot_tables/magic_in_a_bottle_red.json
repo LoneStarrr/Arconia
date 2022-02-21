@@ -1,17 +1,17 @@
 {
   "pools": [
     {
-      "name": "tier1_generator_items",
+      "name": "red_generator_items",
       "rolls": 1,
       "entries": [
         {
           "type": "item",
-          "name": "minecraft:sand",
+          "name": "minecraft:birch_log",
           "weight": 10
         },
         {
           "type": "item",
-          "name": "minecraft:cobblestone",
+          "name": "minecraft:sand",
           "weight": 10
         },
         {
@@ -22,11 +22,6 @@
         {
           "type": "item",
           "name": "minecraft:dirt",
-          "weight": 10
-        },
-        {
-          "type": "item",
-          "name": "minecraft:clay_ball",
           "weight": 10
         }
       ]

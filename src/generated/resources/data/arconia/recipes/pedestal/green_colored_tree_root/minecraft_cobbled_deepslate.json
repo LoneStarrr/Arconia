@@ -1,0 +1,29 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "nbt": {
+      "item": {
+        "id": "minecraft:cobbled_deepslate",
+        "Count": 1
+      },
+      "interval": 7,
+      "coin_cost": 8
+    },
+    "item": "arconia:green_colored_tree_root"
+  },
+  "durationTicks": 400,
+  "ingredients": [
+    {
+      "item": "arconia:green_arconium_ingot"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "minecraft:cobbled_deepslate"
+    },
+    {
+      "item": "arconia:green_colored_tree_root"
+    }
+  ]
+}

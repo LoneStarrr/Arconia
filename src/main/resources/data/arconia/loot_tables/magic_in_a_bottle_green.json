@@ -1,0 +1,25 @@
+{
+  "pools": [
+    {
+      "name": "green_generator_items",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:diorite",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:lapis_lazuli",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:cobbled_deepslate",
+          "weight": 10
+        }
+      ]
+    }
+  ]
+}

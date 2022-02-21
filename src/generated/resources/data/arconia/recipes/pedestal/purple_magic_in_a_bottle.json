@@ -9,7 +9,7 @@
   "durationTicks": 800,
   "ingredients": [
     {
-      "item": "minecraft:glass_bottle"
+      "item": "arconia:magic_in_a_bottle"
     },
     {
       "item": "arconia:purple_arconium_essence"

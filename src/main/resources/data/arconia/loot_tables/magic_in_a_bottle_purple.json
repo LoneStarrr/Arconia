@@ -1,0 +1,15 @@
+{
+  "pools": [
+    {
+      "name": "purple_generator_items",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:crying_obsidian",
+          "weight": 10
+        }
+      ]
+    }
+  ]
+}

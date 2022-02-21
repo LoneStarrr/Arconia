@@ -1,0 +1,45 @@
+{
+  "pools": [
+    {
+      "name": "light_blue_generator_items",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:soul_sand",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:netherrack",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:crimson_stem",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:warped_stem",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:blackstone",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:basalt",
+          "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:redstone",
+          "weight": 10
+        }
+      ]
+    }
+  ]
+}
