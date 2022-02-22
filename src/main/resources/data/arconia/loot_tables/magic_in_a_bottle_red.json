@@ -23,6 +23,11 @@
           "type": "item",
           "name": "minecraft:dirt",
           "weight": 10
+        },
+        {
+          "type": "item",
+          "name": "minecraft:vine",
+          "weight": 10
         }
       ]
     }
