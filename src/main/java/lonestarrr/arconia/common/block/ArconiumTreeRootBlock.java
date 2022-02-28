@@ -13,10 +13,12 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 
 import javax.annotation.Nullable;
 
@@ -29,7 +31,7 @@ public class ArconiumTreeRootBlock extends BaseEntityBlock implements BlockColor
     private static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
     public ArconiumTreeRootBlock(RainbowColor tier) {
-        super(Block.Properties.of(Material.WOOD).strength(0.8f).sound(SoundType.WOOD));
+        super(BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(0.8f).sound(SoundType.WOOD));
         this.tier = tier;
         BlockState defaultBlockState = this.stateDefinition.any().setValue(FACING, Direction.NORTH);
         this.registerDefaultState(defaultBlockState);

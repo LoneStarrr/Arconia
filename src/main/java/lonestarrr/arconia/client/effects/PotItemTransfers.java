@@ -25,6 +25,12 @@ import java.util.Set;
 public class PotItemTransfers {
     private static final Set<ItemTransfer> transfers = new HashSet<>();
 
+    /**
+     * Adds a visualization for an item transfer
+     * @param hatPos Position to move item to
+     * @param potPos Position to move item from
+     * @param itemStack
+     */
     public static void addItemTransfer(BlockPos hatPos, BlockPos potPos, ItemStack itemStack) {
         Level world = Minecraft.getInstance().level;
 
@@ -33,8 +39,8 @@ public class PotItemTransfers {
         }
 
         long startTick = world.getGameTime();
-        Vec3 hatPosExact = new Vec3(hatPos.getX() + 0.5, hatPos.getY() + 0.5, hatPos.getZ() + 0.5);
-        Vec3 potPosExact = new Vec3(potPos.getX(), potPos.getY(), potPos.getZ());
+        Vec3 hatPosExact = new Vec3(hatPos.getX() + 0.5d, hatPos.getY() + 0.5d, hatPos.getZ() + 0.5d);
+        Vec3 potPosExact = new Vec3(potPos.getX() + 0.5d, potPos.getY() + 0.5d, potPos.getZ() + 0.5d);
         ItemTransfer transfer = new ItemTransfer(hatPosExact, potPosExact, itemStack, startTick);
         transfers.add(transfer);
     }

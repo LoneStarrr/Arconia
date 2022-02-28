@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "arconia:red_arconium_tree_sapling",
+    "arconia:orange_arconium_tree_sapling",
+    "arconia:yellow_arconium_tree_sapling",
+    "arconia:green_arconium_tree_sapling",
+    "arconia:light_blue_arconium_tree_sapling",
+    "arconia:blue_arconium_tree_sapling",
+    "arconia:purple_arconium_tree_sapling",
+    "arconia:magenta_arconium_tree_sapling",
+    "arconia:pink_arconium_tree_sapling"
+  ]
+}

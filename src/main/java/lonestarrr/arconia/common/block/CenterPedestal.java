@@ -50,7 +50,7 @@ public class CenterPedestal extends BaseEntityBlock {
     }
 
     public CenterPedestal() {
-        super(Properties.of(Material.STONE, MaterialColor.STONE).strength(1.5F).sound(SoundType.STONE));
+        super(Properties.of(Material.STONE, MaterialColor.STONE).requiresCorrectToolForDrops().strength(1.5F).sound(SoundType.STONE));
     }
 
     @Nonnull

@@ -175,7 +175,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             addCoins(coinCount);
             ItemStack sent = new ItemStack(ModItems.goldCoin, Math.min(coinCount, 64));
             // TODO Have a dedicated packet OR rename this one
-            ModPackets.sendToNearby(level, goldArconiumPos, new PotItemTransferPacket(worldPosition.above(1).offset(0.5, 0.5, 0.5), goldArconiumPos.above().offset(0.5, 0.5, 0.5), sent));
+            ModPackets.sendToNearby(level, goldArconiumPos, new PotItemTransferPacket(worldPosition.above(1), goldArconiumPos.above(), sent));
         }
 
         if (goldArconiumTE.isDepleted()) {
@@ -268,7 +268,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         if (!sent.isEmpty()) {
             coinCount -= hatEntity.getResourceCoinCost();
             setChanged();
-            PotItemTransferPacket packet = new PotItemTransferPacket(hatPos.offset(0.5, 0.5, 0.5), worldPosition.above(1).offset(0.5, 0.5, 0.5), sent);
+            PotItemTransferPacket packet = new PotItemTransferPacket(hatPos, worldPosition.above(1), sent);
             ModPackets.sendToNearby(level, worldPosition, packet);
             return true;
         }

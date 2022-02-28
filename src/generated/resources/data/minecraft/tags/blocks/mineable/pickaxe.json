@@ -1,0 +1,33 @@
+{
+  "replace": false,
+  "values": [
+    "arconia:red_gold_arconium_block",
+    "arconia:red_arconium_block",
+    "arconia:red_infinite_gold_arconium_block",
+    "arconia:orange_gold_arconium_block",
+    "arconia:orange_arconium_block",
+    "arconia:orange_infinite_gold_arconium_block",
+    "arconia:yellow_gold_arconium_block",
+    "arconia:yellow_arconium_block",
+    "arconia:yellow_infinite_gold_arconium_block",
+    "arconia:green_gold_arconium_block",
+    "arconia:green_arconium_block",
+    "arconia:green_infinite_gold_arconium_block",
+    "arconia:light_blue_gold_arconium_block",
+    "arconia:light_blue_arconium_block",
+    "arconia:light_blue_infinite_gold_arconium_block",
+    "arconia:blue_gold_arconium_block",
+    "arconia:blue_arconium_block",
+    "arconia:blue_infinite_gold_arconium_block",
+    "arconia:purple_gold_arconium_block",
+    "arconia:purple_arconium_block",
+    "arconia:purple_infinite_gold_arconium_block",
+    "arconia:magenta_gold_arconium_block",
+    "arconia:magenta_arconium_block",
+    "arconia:magenta_infinite_gold_arconium_block",
+    "arconia:pink_gold_arconium_block",
+    "arconia:pink_arconium_block",
+    "arconia:pink_infinite_gold_arconium_block",
+    "arconia:center_pedestal"
+  ]
+}

@@ -2,6 +2,7 @@
 
 # Lazy man's data generators - bite me
 
+# drop chance: start, start * 1.1, prev * 1.2, prev * 1.3, prev * 1.4
 for clr in red orange yellow green blue light_blue purple magenta pink
 do
     cat << EOF > ${clr}_arconium_tree_leaves.json
@@ -164,11 +165,11 @@ do
               "condition": "minecraft:table_bonus",
               "enchantment": "minecraft:fortune",
               "chances": [
-                0.02,
-                0.022,
-                0.0264,
-                0.0343,
-                0.1
+                0.06,
+                0.066,
+                0.0792,
+                0.103,
+                0.144
               ]
             }
           ],

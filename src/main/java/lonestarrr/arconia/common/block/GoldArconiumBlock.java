@@ -15,8 +15,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 
 import javax.annotation.Nullable;
 
@@ -28,7 +30,7 @@ public class GoldArconiumBlock extends BaseEntityBlock implements BlockColor, TO
             .borderColor(Color.rgb(99, 97, 97)).showText(false);
 
     public GoldArconiumBlock(RainbowColor tier) {
-        super(Block.Properties.of(Material.METAL).requiresCorrectToolForDrops().strength(5.0f, 6.0f).sound(SoundType.METAL));
+        super(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.GOLD).requiresCorrectToolForDrops().strength(5.0f, 6.0f).sound(SoundType.METAL));
         this.tier = tier;
     }
 
