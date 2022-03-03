@@ -90,7 +90,7 @@ public class MagicInABottle extends Item {
             CompoundTag tag = stack.getOrCreateTag();
             tag.putInt(TAG_FILL_PERCENTAGE, fillPct);
             if (fillPct == 100) {
-                player.playSound(SoundEvents.BREWING_STAND_BREW, 1, 1);
+                world.playSound(null, player.blockPosition(), SoundEvents.BREWING_STAND_BREW, SoundSource.PLAYERS, 1, 1);
             }
         }
 

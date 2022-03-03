@@ -28,11 +28,17 @@ public final class ConfigHandler {
     }
 
     public static class Common {
+        // pot of gold
         public final Map<RainbowColor, ForgeConfigSpec.IntValue> goldArconiumCoinCounts = new HashMap<>(RainbowColor.values().length);
         public final Map<RainbowColor, ForgeConfigSpec.IntValue> goldArconiumCoinInterval = new HashMap<>(RainbowColor.values().length);
         public final ForgeConfigSpec.IntValue potOfGoldMaxHats;
         public final ForgeConfigSpec.IntValue potOfGoldTicksPerInterval;
         public final ForgeConfigSpec.IntValue potOfGoldMaxHatDistance;
+
+        // arconium trees
+        public final Map<RainbowColor, ForgeConfigSpec.IntValue> leafChangeIntervals = new HashMap<>(RainbowColor.values().length);
+
+        //misc
         public final ForgeConfigSpec.BooleanValue skyBlock;
 
         public Common(ForgeConfigSpec.Builder builder) {
@@ -72,6 +78,21 @@ public final class ConfigHandler {
                 defaultCoinInterval -= 1;
             }
             builder.pop();
+            builder.pop();
+
+            builder.push("arconiumTree");
+
+            int leafChangeInterval; // ticks
+            for (RainbowColor color : RainbowColor.values()) {
+                if (color.getNextTier() != null) {
+                    // just picked something that looked nice on a graph between [1:8] where f(1) is 20 and f(8) ~= 600 and grows slower at first
+                    leafChangeInterval = 20 + (int)(6.5f * (int)Math.pow(color.getTier() - 1, 2.3));
+                    ForgeConfigSpec.IntValue interval = builder
+                            .comment("Number of seconds between leaf changes caused by a tree root block")
+                            .defineInRange(color.getTierName() + "LeafChangeInterval", leafChangeInterval, 10, Integer.MAX_VALUE);
+                    leafChangeIntervals.put(color, interval);
+                }
+            }
         }
     }
 
