@@ -2,9 +2,11 @@ package lonestarrr.arconia.common.core.helper;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.JsonSyntaxException;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.registry.Bootstrap;
+import net.minecraft.SharedConstants;
+import net.minecraft.server.Bootstrap;
+import net.minecraft.server.Main;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -28,11 +30,8 @@ public class LibPatternBlockTests {
     @BeforeAll
     public static void setup() {
         // Setup enough minecraft context to be able to access block registry
-        //Loader.instance();
+        SharedConstants.tryDetectVersion();
         Bootstrap.bootStrap();
-//        Loader.instance().setupTestHarness(new DummyModContainer(new ModMetadata() {{
-//            modId = "test";
-//        }}));
     }
 
     @Test
