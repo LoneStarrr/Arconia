@@ -73,7 +73,7 @@ public class PlayerNeedsGuideBook implements LootItemCondition {
 
     @Override
     public LootItemConditionType getType() {
-        return ModLootModifiers.PLAYER_NEEDS_GUIDEBOOK;
+        return ModLootModifiers.NEEDS_GUIDEBOOK.get();
     }
 
     public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<PlayerNeedsGuideBook> {

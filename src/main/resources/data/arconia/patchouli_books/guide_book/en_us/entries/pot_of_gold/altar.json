@@ -14,7 +14,7 @@
         },
         {
             "type": "patchouli:text",
-            "text": "There are many rituals available. I have not documented them in this notebook, however some other clever individual has told me they can be find through something called $(italic)JEI$() by looking at how the center pedestal can be $(italic)$(bold)u$()$(italic)sed$()." 
+            "text": "There are many rituals available. I have not documented them in this notebook, however some other clever individual has told me they can be found through something called $(italic)JEI$() by looking at how the center pedestal can be $(italic)$(bold)u$()$(italic)sed$()." 
         },
         {
             "type": "patchouli:crafting",

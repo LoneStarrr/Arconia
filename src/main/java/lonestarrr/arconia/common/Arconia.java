@@ -24,7 +24,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
@@ -70,18 +69,17 @@ public class Arconia {
         modBus.addGenericListener(BlockEntityType.class, ModBlockEntities::registerBlockEntities);
         modBus.addGenericListener(MenuType.class, RainbowCrateBlock::registerContainers);
         modBus.addGenericListener(RecipeSerializer.class, ModRecipeTypes::registerRecipeTypes);
-        modBus.addGenericListener(Feature.class, ModFeatures::registerFeatures);
+//        modBus.addGenericListener(Feature.class, ModFeatures::registerFeatures);
+        ModFeatures.register(modBus);
+        ModLootModifiers.register(modBus);
 
         modBus.addListener(ConfigHandler::onConfigLoad);
         modBus.addListener(ConfigHandler::onConfigReload);
-
-        ModLootModifiers.LOOT_MODIFIERS.register(modBus);
 
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
         forgeBus.addListener(EventPriority.HIGH, this::biomeSetup);
         forgeBus.addListener(EventPriority.HIGH, this::registerCommands);
 
-        ModLootModifiers.init();
         ModCriterialTriggers.init();
     }
 

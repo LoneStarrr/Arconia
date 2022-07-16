@@ -3,6 +3,7 @@ package lonestarrr.arconia.common.world.trees;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.world.ModFeatures;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.grower.AbstractTreeGrower;
@@ -21,11 +22,8 @@ public class ArconiumTree extends AbstractTreeGrower {
         this.tier = tier;
     }
 
-    /**
-     * Get a {@link net.minecraft.world.gen.feature.ConfiguredFeature} of tree
-     */
     @Nullable
-    protected ConfiguredFeature<TreeConfiguration, ?> getConfiguredFeature(Random randomIn, boolean largeHive) {
+    protected Holder<ConfiguredFeature<?, ?>> getConfiguredFeature(Random randomIn, boolean largeHive) {
         return ModFeatures.getArconiumTreeConfigured(this.tier);
     }
 

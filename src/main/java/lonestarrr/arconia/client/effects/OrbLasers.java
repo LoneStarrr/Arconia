@@ -62,8 +62,7 @@ public class OrbLasers {
             }
 
             BlockPos playerPos = Minecraft.getInstance().player.blockPosition();
-            boolean fromCenter = true;
-            if (playerPos.distSqr(beam.orbPos.x, beam.orbPos.y, beam.orbPos.z, fromCenter) > 64 * 64) {
+            if (playerPos.distToCenterSqr(beam.orbPos.x, beam.orbPos.y, beam.orbPos.z) > 64 * 64) {
                 continue;
             }
 

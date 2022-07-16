@@ -17,6 +17,7 @@ public class ArconiumBlock extends Block implements BlockColor {
     public ArconiumBlock(RainbowColor tier) {
         super(Block.Properties.of(Material.METAL).requiresCorrectToolForDrops().strength(5.0f, 6.0f).sound(SoundType.METAL));
         this.tier = tier;
+
     }
 
     @Override

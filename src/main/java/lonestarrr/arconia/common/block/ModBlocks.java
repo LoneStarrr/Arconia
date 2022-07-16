@@ -29,27 +29,45 @@ public class ModBlocks {
     private static final Map<RainbowColor, GoldArconiumBlock> goldArconiumBlocks = new HashMap<>();
     private static final Map<RainbowColor, InfiniteGoldArconiumBlock> infiniteGoldArconiumBlocks = new HashMap<>();
 
-    public static final CloverBlock clover = new CloverBlock();
-    public static final PotBlock pot = new PotBlock();
-    public static final ResourceGenBlock resourceGenBlock = new ResourceGenBlock();
-    public static final Pedestal pedestal = new Pedestal();
-    public static final CenterPedestal centerPedestal = new CenterPedestal();
-    public static final Orb orb = new Orb();
-    public static final Hat hat = new Hat(); // TODO hat
-    public static final PotMultiBlockPrimary potMultiBlockPrimary = new PotMultiBlockPrimary(); //no associated item
-    public static final PotMultiBlockSecondary potMultiBlockSecondary = new PotMultiBlockSecondary(); //no associated item
+    public static CloverBlock clover;
+    public static PotBlock pot;
+    public static ResourceGenBlock resourceGenBlock;
+    public static Pedestal pedestal;
+    public static CenterPedestal centerPedestal;
+    public static Orb orb;
+    public static Hat hat;
+    public static PotMultiBlockPrimary potMultiBlockPrimary; //no associated item
+    public static PotMultiBlockSecondary potMultiBlockSecondary; //no associated item
 
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         IForgeRegistry<Block> r = event.getRegistry();
 
+        // TODO port to DeferredRegistry
+        clover = new CloverBlock();
         register(r, clover, BlockNames.CLOVER);
+
+        pot = new PotBlock();
         register(r, pot, BlockNames.POT);
+
+        resourceGenBlock = new ResourceGenBlock();
         register(r, resourceGenBlock, BlockNames.RESOURCEGEN_BLOCK);
+
+        pedestal = new Pedestal();
         register(r, pedestal, BlockNames.PEDESTAL);
+
+        centerPedestal = new CenterPedestal();
         register(r, centerPedestal, BlockNames.CENTER_PEDESTAL);
+
+        orb = new Orb();
         register(r, orb, BlockNames.ORB);
+
+        hat = new Hat();
         register(r, hat, BlockNames.HAT);
+
+        potMultiBlockPrimary = new PotMultiBlockPrimary();
         register(r, potMultiBlockPrimary, BlockNames.POT_MULTIBLOCK_PRIMARY);
+
+        potMultiBlockSecondary = new PotMultiBlockSecondary();
         register(r, potMultiBlockSecondary, BlockNames.POT_MULTIBLOCK_SECONDARY);
 
         // RainbowColor tiered colorBlocks

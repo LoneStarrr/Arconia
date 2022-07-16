@@ -13,12 +13,11 @@ import java.util.Map;
 import static lonestarrr.arconia.common.block.ModBlocks.register;
 
 public final class ModItems {
-    public static final Item clover = new Item(defaultBuilder());
-    public static final Item goldCoin = new Item(defaultBuilder());
-    public static final Item cloverStaff = new CloverStaff(defaultBuilder().stacksTo(1));
-    public static final Item fourLeafClover = new Item(defaultBuilder());
-    public static final Item threeLeafClover = new Item(defaultBuilder());
-    public static final Item magicInABottle = new MagicInABottle(defaultBuilder());
+    public static Item goldCoin;
+    public static Item cloverStaff;
+    public static Item fourLeafClover;
+    public static Item threeLeafClover;
+    public static Item magicInABottle;
 
     private static final Map<RainbowColor, Item> arconiumEssences = new HashMap<>();
     private static final Map<RainbowColor, Item> rainbowSeeds = new HashMap<>();
@@ -38,10 +37,21 @@ public final class ModItems {
 
         builder = defaultBuilder();
 
+        // TODO port to DeferredRegistry
+
+        goldCoin = new Item(defaultBuilder());
         register(r, goldCoin, ItemNames.GOLD_COIN);
+
+        cloverStaff = new CloverStaff(defaultBuilder().stacksTo(1));
         register(r, cloverStaff, ItemNames.CLOVER_STAFF);
+
+        fourLeafClover = new Item(defaultBuilder());
         register(r, fourLeafClover, ItemNames.FOUR_LEAF_CLOVER);
+
+        threeLeafClover = new Item(defaultBuilder());
         register(r, threeLeafClover, ItemNames.THREE_LEAF_CLOVER);
+
+        magicInABottle = new MagicInABottle(defaultBuilder());
         register(r, magicInABottle, ItemNames.MAGIC_IN_A_BOTTLE);
 
         for (RainbowColor tier: RainbowColor.values()) {

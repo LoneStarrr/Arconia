@@ -66,8 +66,7 @@ public class PotItemTransfers {
             }
 
             BlockPos playerPos = Minecraft.getInstance().player.blockPosition();
-            boolean fromCenter = true;
-            if (playerPos.distSqr(transfer.hatPos.x, transfer.hatPos.y, transfer.hatPos.z, fromCenter) > 64 * 64) {
+            if (playerPos.distToCenterSqr(transfer.hatPos.x, transfer.hatPos.y, transfer.hatPos.z) > 64 * 64) {
                 continue;
             }
 
