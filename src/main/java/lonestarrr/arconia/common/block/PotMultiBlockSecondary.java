@@ -132,7 +132,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
     }
 
     /**
-     * The shape is determined on the position of this multiblock block relative to the center primary block, since this multiblock isn't a simple cuboid.
+     * The shape is determined by the position of this multiblock block relative to the center primary block, since this multiblock isn't a simple cuboid.
      * @param state
      * @param worldIn
      * @param pos

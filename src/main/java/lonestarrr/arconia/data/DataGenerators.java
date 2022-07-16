@@ -19,6 +19,7 @@ public class DataGenerators {
         if (evt.includeServer()) {
             evt.getGenerator().addProvider(new PedestalProvider(evt.getGenerator()));
             evt.getGenerator().addProvider(new VanillaRecipeProvider(evt.getGenerator()));
+            evt.getGenerator().addProvider(new ModBlockTagsProvider(evt.getGenerator(), helper));
         }
         if (evt.includeClient()) {
             evt.getGenerator().addProvider(new ModBlockStateProvider(evt.getGenerator(), helper));
