@@ -12,6 +12,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -24,6 +25,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -31,23 +34,39 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayer;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Block that is part of a large multiblock pot - this is the secondary, passive block. It is invisible in the world, as the primary block
  * will render the large model
  */
 public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver {
-    private static final VoxelShape[] shapes;
-    private static final VoxelShape defaultShape = box(0, 0,0, 16, 16, 16);
-    private static final int MAX_SHAPE_IDX = 2 << 2 | 2; // see calcShapeIndex()
-
+    private static final Map<PotPosition, VoxelShape> posShapes = new HashMap<>();
     static {
-        shapes = calculateShapes();
+        posShapes.put(PotPosition.CENTER, box(0, 0, 0, 16, 16, 16));
+        posShapes.put(PotPosition.N, box(0, 0, 0, 16, 16, 11));
+        posShapes.put(PotPosition.NW, box(7, 0, 0, 16, 16, 9));
+        posShapes.put(PotPosition.W, box(5, 0, 0, 16, 16, 16));
+        posShapes.put(PotPosition.SW, box(7, 0, 7, 16, 16, 16));
+        posShapes.put(PotPosition.S, box(0, 0, 5, 16, 16, 16));
+        posShapes.put(PotPosition.SE, box(0, 0, 7, 9, 16, 16));
+        posShapes.put(PotPosition.E, box(0, 0, 0, 11, 16, 16));
+        posShapes.put(PotPosition.NE, box(0, 0, 0, 9, 16, 9));
     }
 
-    public PotMultiBlockSecondary() {
+    public static EnumProperty<PotPosition> POT_POSITION = EnumProperty.create("pot_position", PotPosition.class);
 
+    public PotMultiBlockSecondary() {
         super(Block.Properties.of(Material.METAL).strength(4.0F).noOcclusion());
+        registerDefaultState(this.getStateDefinition().any().setValue(POT_POSITION, PotPosition.CENTER));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(POT_POSITION);
     }
 
     @Override
@@ -134,68 +153,15 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
     /**
      * The shape is determined by the position of this multiblock block relative to the center primary block, since this multiblock isn't a simple cuboid.
      * @param state
-     * @param worldIn
+     * @param level
      * @param pos
      * @param context
      * @return
      */
     @Override
     public VoxelShape getShape(
-            BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        BlockEntity be = worldIn.getBlockEntity(pos);
-        if (be == null || !(be instanceof PotMultiBlockSecondaryBlockEntity)) {
-            return defaultShape;
-        }
-        PotMultiBlockSecondaryBlockEntity secondaryBE = (PotMultiBlockSecondaryBlockEntity)be;
-        BlockPos primaryPos = ((PotMultiBlockSecondaryBlockEntity) be).getPrimaryPos();
-        if (primaryPos == null) {
-            return defaultShape;
-        }
-
-        int deltaX = primaryPos.getX() - pos.getX();
-        int deltaZ = primaryPos.getZ() - pos.getZ();
-        return shapes[calcShapeIndex(deltaX, deltaZ)];
-    }
-
-    private static int calcShapeIndex(final int deltaX, final int deltaZ) {
-        int dx = (deltaX > 0 ? 2 : deltaX < 0 ? 0 : 1);
-        int dz = (deltaZ > 0 ? 2 : deltaZ < 0 ? 0 : 1);
-        return dx << 2 | dz;
-    }
-
-    // Precalculates all possible shapes for the multiblock blocks as the getShape() method gets called frequently
-    private static VoxelShape[] calculateShapes() {
-        VoxelShape[] shapes = new VoxelShape[MAX_SHAPE_IDX + 1];
-        for (int deltaX = -1; deltaX <2; deltaX++) {
-            for (int deltaZ = -1; deltaZ < 2; deltaZ++) {
-                int idx = calcShapeIndex(deltaX, deltaZ);
-                shapes[idx] = calculateShape(deltaX, deltaZ);
-            }
-        }
-        return shapes;
-    }
-
-    private static VoxelShape calculateShape(int deltaX, int deltaZ) {
-        final int PADDING = 5;
-        int x1 = 0, x2 = 16, y1 = 0, y2 = 16, z1 = 0, z2 = 16;
-
-        if (deltaX > 0) {
-            x1 = PADDING;
-            x2 = 16;
-        } else if (deltaX < 0) {
-            x1 = 0;
-            x2 = 16 - PADDING;
-        }
-
-        if (deltaZ > 0) {
-            z1 = PADDING;
-            z2 = 16;
-        } else if (deltaZ < 0) {
-            z1 = 0;
-            z2 = 16 - PADDING;
-        }
-
-        return box(x1, y1, z1, x2, y2, z2);
+            BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return posShapes.get(state.getValue(POT_POSITION));
     }
 
     @Override
@@ -224,5 +190,50 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
 
         // TODO use icons instead..?
         probeInfo.text(new TranslatableComponent(LanguageHelper.block("pot_multiblock") + ".coin_count." + lang));
+    }
+
+    public enum PotPosition implements StringRepresentable {
+        N("n"),
+        NW("nw"),
+        W("w"),
+        SW("sw"),
+        S("s"),
+        SE("se"),
+        E("e"),
+        NE("ne"),
+        CENTER("center");
+
+        private final String name;
+
+        PotPosition(String name) {
+            this.name = name;
+        }
+
+        /**
+         *
+         * @param x 0 <= x <= 2
+         * @param z 0 <= z <= 2
+         * @return
+         */
+        public static PotPosition getPositionFromOffset(int x, int z) {
+            // TODO do this less horrible, move it elsewhere, coding with sleep deprivation = bad, mkay
+            int idx = x << 2 | z;
+            switch (idx) {
+                case ((1 << 2) | 2): return N;
+                case ((0 << 2) | 2): return NW;
+                case ((0 << 2) | 1): return W;
+                case ((0 << 2) | 0): return SW;
+                case ((1 << 2) | 0): return S;
+                case ((2 << 2) | 0): return SE;
+                case ((2 << 2) | 1): return E;
+                case ((2 << 2) | 2): return NE;
+                default: return CENTER;
+            }
+        }
+        @NotNull
+        @Override
+        public String getSerializedName() {
+            return name;
+        }
     }
 }
