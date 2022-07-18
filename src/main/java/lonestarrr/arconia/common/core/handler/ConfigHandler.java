@@ -30,13 +30,15 @@ public final class ConfigHandler {
     public static class Common {
         public final Map<RainbowColor, ForgeConfigSpec.IntValue> goldArconiumCoinCounts = new HashMap<>(RainbowColor.values().length);
         public final Map<RainbowColor, ForgeConfigSpec.IntValue> goldArconiumCoinInterval = new HashMap<>(RainbowColor.values().length);
+        public final Map<RainbowColor, ForgeConfigSpec.IntValue> treeLeafChangeInterval = new HashMap<>(RainbowColor.values().length);
+        public final Map<RainbowColor, ForgeConfigSpec.IntValue> treeLeafChangeChance = new HashMap<>(RainbowColor.values().length);
+
         public final ForgeConfigSpec.IntValue potOfGoldMaxHats;
         public final ForgeConfigSpec.IntValue potOfGoldTicksPerInterval;
         public final ForgeConfigSpec.IntValue potOfGoldMaxHatDistance;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("potOfGold");
-
             potOfGoldMaxHats = builder
                     .comment("Maximum number of hats that can be linked to a single pot of gold")
                     .defineInRange("maxHats", 32, 2, 64);
@@ -46,6 +48,7 @@ public final class ConfigHandler {
             potOfGoldMaxHatDistance = builder
                     .comment("Maximum distance at which hats can be linked to a pot of gold")
                     .defineInRange("maxHatDistance", 16, 4, 64);
+            builder.pop(); // potOfGold
 
             builder.push("goldArconiumBlock");
             int defaultCoinCount = (int) Math.pow(2, 8);
@@ -64,9 +67,23 @@ public final class ConfigHandler {
                 goldArconiumCoinInterval.put(color, coinInterval);
                 defaultCoinInterval -= 1;
             }
-            builder.pop();
+            builder.pop(); // goldArconiumBlock
 
+            builder.push("arconiaTrees");
+            for (RainbowColor color: RainbowColor.values()) {
+                int defaultChangeInterval = (int)(10 * 1.5f * Math.pow(1.5, color.getTier() - 1));
+                ForgeConfigSpec.IntValue changeInterval = builder
+                    .comment("Number of seconds in between " + color.getTierName() + " Arconia tree leaf change attempts")
+                    .defineInRange(color.getTierName() + "LeafChangeInterval", defaultChangeInterval, 1, Integer.MAX_VALUE);
+                treeLeafChangeInterval.put(color, changeInterval);
 
+                int defaultChangeChance = Math.max(5, 100 - color.getTier() * 15);
+                ForgeConfigSpec.IntValue changeChance = builder
+                        .comment("The chance per attempt made, as a percentage, of a " + color.getTierName() + " leaf to change into the next tier")
+                        .defineInRange(color.getTierName() + "LeafChangeChance", defaultChangeChance, 1, 100);
+                treeLeafChangeChance.put(color, changeChance);
+            }
+            builder.pop(); //arconiaTrees
         }
     }
 
