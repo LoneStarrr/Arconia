@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "arconia:red_tree_root_block",
+    "arconia:orange_tree_root_block",
+    "arconia:yellow_tree_root_block",
+    "arconia:green_tree_root_block",
+    "arconia:light_blue_tree_root_block",
+    "arconia:blue_tree_root_block",
+    "arconia:purple_tree_root_block",
+    "arconia:magenta_tree_root_block",
+    "arconia:pink_tree_root_block"
+  ]
+}
