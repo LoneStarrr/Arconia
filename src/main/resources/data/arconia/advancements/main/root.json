@@ -10,7 +10,7 @@
     "description": {
       "translate": "advancement.arconia.main.root.desc"
     },
-    "background": "arconia:textures/block/tree_root_block_sides.png",
+    "background": "minecraft:textures/block/stripped_oak_log.png",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false

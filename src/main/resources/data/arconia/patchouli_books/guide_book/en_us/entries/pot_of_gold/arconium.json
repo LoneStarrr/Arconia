@@ -6,11 +6,11 @@
     "pages": [
         {
             "type": "patchouli:text",
-            "text": "Once you have acquired arconium essence, it can be infused with a block of gold using an altar ritual (see JEI). The resulting arconium gold block gives it a special ability. If placed under a leprechaun hat that is linked to a pot of gold, the pot will slowly drain its gold contents, which it uses to automatically top itself up."
+            "text": "Once you have acquired arconium essence, it can be infused with a block of gold using a pedestal ritual. The resulting arconium gold block has a special ability. If placed under a leprechaun hat that is linked to a pot of gold, the pot will slowly absorb the gold, leaving behind a block of pure arconium."
         },
         {
             "type": "patchouli:text",
-            "text": "This is a far cheaper method to fill the pot than right-clicking it with gold ingots. Once the arconium gold block is drained, it will transform into a block of pure arconium which can then be mined. In pure form, it is used in altar rituals to enchant roots that will make the pot produce various items."
+            "text": "The absorbed gold will fill the pot far more efficiently than feeding it gold directly. Once the gold arconium block has been purified, it can then be mined and converted to ingots."
         }
     ]
 }
