@@ -10,5 +10,6 @@ public final class ItemNames {
     public static final String FOUR_LEAF_CLOVER = "four_leaf_clover";
     public static final String THREE_LEAF_CLOVER = "three_leaf_clover";
     public static final String COLORED_TREE_ROOT_SUFFIX = "_colored_tree_root";
+    public static final String SICKLE_SUFFIX = "_arconium_sickle";
     public static final String MAGIC_IN_A_BOTTLE = "magic_in_a_bottle";
 }

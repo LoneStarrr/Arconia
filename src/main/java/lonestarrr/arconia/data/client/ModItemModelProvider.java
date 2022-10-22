@@ -23,6 +23,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         registerArconiumIngots();
         registerArconiumEssence();
+        registerArconiumSickles();
         registerTreeRoots();
     }
 
@@ -47,6 +48,20 @@ public class ModItemModelProvider extends ItemModelProvider {
 
         for (RainbowColor color: RainbowColor.values()) {
             Item item = ModItems.getArconiumEssence(color);
+            String name = Registry.ITEM.getKey(item).getPath();
+            withExistingParent(name, prefix(modelName));
+        }
+    }
+
+    private void registerArconiumSickles() {
+        // All hoes share a single model. Layer1 is dynamically colored based on tier.
+        final String modelName = "item/arconium_sickle";
+        withExistingParent(modelName, GENERATED)
+                .texture("layer0", prefix("item/sickle_handle"))
+                .texture("layer1", prefix("item/sickle_head"));
+
+        for (RainbowColor color: RainbowColor.values()) {
+            Item item = ModItems.getArconiumSickle(color);
             String name = Registry.ITEM.getKey(item).getPath();
             withExistingParent(name, prefix(modelName));
         }

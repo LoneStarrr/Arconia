@@ -28,6 +28,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
         //addCriterion - makes recipe visible only after you have attained a specific (set of)item(s)
         registerArconiumBlocks(consumer);
         registerArconiumIngots(consumer);
+        registerArconiumSickles(consumer);
         registerTreeRootBlocks(consumer);
         registerCrates(consumer);
         registerMisc(consumer);
@@ -71,6 +72,24 @@ public class VanillaRecipeProvider extends RecipeProvider {
                     .save(consumer);
         }
     }
+
+    private void registerArconiumSickles(Consumer<FinishedRecipe> consumer) {
+        for (RainbowColor tier : RainbowColor.values()) {
+            Item ingot = ModItems.getArconiumIngot(tier);
+            Item sickle = ModItems.getArconiumSickle(tier);
+            Item stick = Items.STICK;
+
+            ShapedRecipeBuilder.shaped(sickle)
+                    .define('S', Items.STICK)
+                    .define('I', ingot)
+                    .pattern("II ")
+                    .pattern(" S ")
+                    .pattern(" S ")
+                    .unlockedBy("has_item", has(ingot))
+                    .save(consumer);
+        }
+    }
+
 
     private void registerArconiumBlocks(Consumer<FinishedRecipe> consumer) {
         for (RainbowColor tier : RainbowColor.values()) {

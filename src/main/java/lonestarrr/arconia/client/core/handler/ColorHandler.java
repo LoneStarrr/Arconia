@@ -125,6 +125,18 @@ public class ColorHandler {
             items.register((stack, layer) -> {
                 return tier.getColorValue();
             }, ModItems.getArconiumIngot(tier));
+
+            // Colored arconium hoes
+            // Hoes are colored differently based on ItemStack NBT data
+            // 'color' corresponds to the layer in the model (layer0 -> color 0, etc)
+            // layer 0 is not dynamically colored, only layer1 is
+            items.register((stack, layer) -> {
+                // only the overlay is colored - each layer is a tint index
+                if (layer == 0) {
+                    return 0xffffff;
+                }
+                return tier.getColorValue();
+            }, ModItems.getArconiumSickle(tier));
         }
     }
 }

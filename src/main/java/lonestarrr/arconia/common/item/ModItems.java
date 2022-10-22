@@ -3,7 +3,9 @@ package lonestarrr.arconia.common.item;
 import lonestarrr.arconia.common.core.ItemNames;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Tiers;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -23,6 +25,8 @@ public final class ModItems {
     private static final Map<RainbowColor, Item> rainbowSeeds = new HashMap<>();
     private static final Map<RainbowColor, ColoredRoot> coloredRoots = new HashMap<>();
     private static final Map<RainbowColor, Item> arconiumIngots = new HashMap<>();
+
+    private static final Map<RainbowColor, Item> arconiumSickles = new HashMap<>();
 
     public static Item.Properties defaultBuilder() {
         // TODO make my own creative tab. With blackjack, and hookers.
@@ -74,6 +78,22 @@ public final class ModItems {
 //            register(r, seed, crop.getSeedResourceName());
 //            rainbowSeeds.put(tier, seed);
         }
+
+        // Arconium sickles. Numerical values: base attack modifier, attack speed modifier.
+        registerSickle(r, RainbowColor.RED, new HoeItem(Tiers.WOOD, 4, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
+        registerSickle(r, RainbowColor.ORANGE, new HoeItem(Tiers.STONE, 4, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
+        registerSickle(r, RainbowColor.YELLOW, new HoeItem(Tiers.IRON, 4, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
+        registerSickle(r, RainbowColor.GREEN, new HoeItem(Tiers.GOLD, 7, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
+        registerSickle(r, RainbowColor.LIGHT_BLUE, new HoeItem(Tiers.DIAMOND, 5, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
+        registerSickle(r, RainbowColor.BLUE, new HoeItem(Tiers.NETHERITE, 5, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS).fireResistant()));
+        registerSickle(r, RainbowColor.PURPLE, new HoeItem(Tiers.NETHERITE, 6, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS).fireResistant()));
+        registerSickle(r, RainbowColor.MAGENTA, new HoeItem(Tiers.NETHERITE, 7, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS).fireResistant()));
+        registerSickle(r, RainbowColor.PINK, new HoeItem(Tiers.NETHERITE, 8, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS).fireResistant()));
+    }
+
+    private static void registerSickle(IForgeRegistry<Item> r, RainbowColor tier, HoeItem hoe) {
+        arconiumSickles.put(tier, hoe);
+        register(r, hoe, tier.getTierName() + ItemNames.SICKLE_SUFFIX);
     }
 
 //    public static final Item getRainbowSeed(RainbowColor tier) {
@@ -87,6 +107,8 @@ public final class ModItems {
     public static final Item getArconiumIngot(RainbowColor tier) {
         return arconiumIngots.get(tier);
     }
+
+    public static final Item getArconiumSickle(RainbowColor tier) { return arconiumSickles.get(tier); }
 
     public static final ColoredRoot getColoredRoot(RainbowColor tier) {
         return coloredRoots.get(tier);
