@@ -1,13 +1,13 @@
 {
   "display": {
     "icon": {
-      "item": "arconia:red_tree_root_block"
+      "item": "arconia:red_arconium_sickle"
     },
     "title": {
-      "translate": "advancement.arconia.main.red_tree_root_block.title"
+      "translate": "advancement.arconia.main.red_arconium_sickle.title"
     },
     "description": {
-      "translate": "advancement.arconia.main.red_tree_root_block.desc"
+      "translate": "advancement.arconia.main.red_arconium_sickle.desc"
     },
     "show_toast": true,
     "announce_to_chat": true,
@@ -15,12 +15,12 @@
   },
   "parent": "arconia:main/red_arconium_block",
   "criteria": {
-    "red_tree_root_block": {
+    "red_arconium_sickle": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": [ "arconia:red_tree_root_block" ]
+            "items": [ "arconia:red_arconium_sickle" ]
           }
         ]
       }

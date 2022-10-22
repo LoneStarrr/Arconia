@@ -29,29 +29,6 @@ public class ArconiumTreeSapling extends SaplingBlock implements BlockColor {
     }
 
     @Override
-    protected boolean mayPlaceOn(BlockState state, BlockGetter world, BlockPos pos) {
-        /*
-        !!!!!!!!!!!!!!!!!
-        Trees have their OWN method to check for valid ground to see if they can grow. This is currently defined in TreeFeature.isDirtOrFarmlandAt(),
-        and there's a forge add-on that checks for the FORGE dirt tag. So, I added all the tree root blocks to the forge dirt tag so that one will work
-        as well. Kind of dirt...y.
-         */
-        Block block = state.getBlock();
-        // Trees can spawn in the overworld - they don't do anything special if not placed on our custom tree root block - and the player will need the
-        // saplings and other resources
-        if (super.mayPlaceOn(state, world, pos)) {
-            return true;
-        }
-
-        if (!(block instanceof ArconiumTreeRootBlock)) {
-            return false;
-        }
-
-        ArconiumTreeRootBlock rootBlock = (ArconiumTreeRootBlock) block;
-        return rootBlock.getTier().ordinal() >= this.tier.ordinal();
-    }
-
-    @Override
     public int getColor(
             BlockState blockState, @Nullable BlockAndTintGetter iBlockDisplayReader, @Nullable BlockPos blockPos, int tintIndex) {
         // Colors are not dependent on tint index, but on rainbow tier (though may use tintIndex later for less saturated versions)

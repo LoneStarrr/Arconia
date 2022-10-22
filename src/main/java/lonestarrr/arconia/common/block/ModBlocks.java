@@ -24,7 +24,6 @@ public class ModBlocks {
     private static final Map<RainbowColor, RainbowCrateBlock> rainbowCrates = new HashMap<>();
     private static final Map<RainbowColor, ArconiumTreeLeaves> arconiumTreeLeaves = new HashMap<>();
     private static final Map<RainbowColor, ArconiumTreeSapling> arconiumTreeSaplings = new HashMap<>();
-    private static final Map<RainbowColor, ArconiumTreeRootBlock> treeRootBlocks = new HashMap<>();
     private static final Map<RainbowColor, ArconiumBlock> arconiumBlocks = new HashMap<>();
     private static final Map<RainbowColor, GoldArconiumBlock> goldArconiumBlocks = new HashMap<>();
     private static final Map<RainbowColor, InfiniteGoldArconiumBlock> infiniteGoldArconiumBlocks = new HashMap<>();
@@ -76,10 +75,6 @@ public class ModBlocks {
             register(r, crate, color.getTierName() + BlockNames.RAINBOW_CRATE_SUFFIX);
             rainbowCrates.put(color, crate);
 
-            ArconiumTreeRootBlock arconiumTreeRootBlock = new ArconiumTreeRootBlock(color);
-            register(r, arconiumTreeRootBlock, color.getTierName() + BlockNames.TREE_ROOT_BLOCK_SUFFIX);
-            treeRootBlocks.put(color, arconiumTreeRootBlock);
-
             ArconiumTreeLeaves leaves = new ArconiumTreeLeaves(color);
             register(r, leaves, color.getTierName() + BlockNames.LEAVES_SUFFIX);
             arconiumTreeLeaves.put(color, leaves);
@@ -120,7 +115,6 @@ public class ModBlocks {
         registerBlockItem(r, orb, builder); // TODO replace me with actual item?
         registerBlockItem(r, hat, builder);
 
-        treeRootBlocks.values().stream().forEach(b -> registerBlockItem(r, b, builder));
         rainbowCrates.values().stream().forEach(b -> registerBlockItem(r, b, builder));
         arconiumTreeSaplings.values().stream().forEach(b -> registerBlockItem(r, b, builder));
         arconiumTreeLeaves.values().stream().forEach(b -> registerBlockItem(r, b, builder));
@@ -150,11 +144,6 @@ public class ModBlocks {
     public static ArconiumTreeLeaves getArconiumTreeLeaves(RainbowColor tier) {
         return arconiumTreeLeaves.get(tier);
     }
-
-    public static ArconiumTreeRootBlock getArconiumTreeRootBlocks(RainbowColor tier) {
-        return treeRootBlocks.get(tier);
-    }
-
 
     public static <V extends IForgeRegistryEntry<V>> void registerBlockItem(IForgeRegistry<Item> reg, Block block, Item.Properties builder) {
         register(reg, new BlockItem(block, builder), block.getRegistryName());

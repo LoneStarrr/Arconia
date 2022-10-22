@@ -4,7 +4,6 @@ import lonestarrr.arconia.client.core.handler.ColorHandler;
 import lonestarrr.arconia.client.core.handler.BlockEntityRendererHandler;
 import lonestarrr.arconia.client.effects.BuildPatternPreview;
 import lonestarrr.arconia.client.effects.PotItemTransfers;
-import lonestarrr.arconia.client.effects.RainbowBeamRenderer;
 import lonestarrr.arconia.client.gui.crate.RainbowCrateContainerScreen;
 import lonestarrr.arconia.client.gui.render.HighlightPatternStructure;
 import lonestarrr.arconia.common.Arconia;
@@ -32,7 +31,6 @@ public class ClientProxy implements IProxy {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addListener(this::clientSetup);
         modBus.addListener(this::loadComplete);
-        modBus.addListener(RainbowBeamRenderer::onTextureStitch);
         modBus.addListener(BlockEntityRendererHandler::registerBlockEntityRenderers);
 
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
@@ -58,7 +56,6 @@ public class ClientProxy implements IProxy {
                 // Crates are solid, but use overlapping textures with gaps
                 ItemBlockRenderTypes.setRenderLayer(ModBlocks.getRainbowCrateBlock(tier), cutout);
                 // gleaned from Blocks.GRASS_BLOCK - this is for overlaying the top with a rainbow tint
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.getArconiumTreeRootBlocks(tier), RenderType.cutoutMipped());
                 ItemBlockRenderTypes.setRenderLayer(ModBlocks.getGoldArconiumBlock(tier), cutout);
                 ItemBlockRenderTypes.setRenderLayer(ModBlocks.getInfiniteGoldArconiumBlock(tier), RenderType.cutoutMipped());
             }

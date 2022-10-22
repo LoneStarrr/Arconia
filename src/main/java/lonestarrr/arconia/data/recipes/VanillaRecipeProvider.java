@@ -29,7 +29,6 @@ public class VanillaRecipeProvider extends RecipeProvider {
         registerArconiumBlocks(consumer);
         registerArconiumIngots(consumer);
         registerArconiumSickles(consumer);
-        registerTreeRootBlocks(consumer);
         registerCrates(consumer);
         registerMisc(consumer);
     }
@@ -43,22 +42,6 @@ public class VanillaRecipeProvider extends RecipeProvider {
                 .pattern("   ")
                 .unlockedBy("has_item", has(Items.GOLDEN_HELMET))
                 .save(consumer);
-    }
-
-    private void registerTreeRootBlocks(Consumer<FinishedRecipe> consumer) {
-        for (RainbowColor tier : RainbowColor.values()) {
-            Item treeRoot = ModItems.getColoredRoot(tier);
-            Item treeRootBlock = ModBlocks.getArconiumTreeRootBlocks(tier).asItem();
-            Item arconiumBlock = ModBlocks.getArconiumBlock(tier).asItem();
-            ShapedRecipeBuilder.shaped(treeRootBlock)
-                    .define('R', treeRoot)
-                    .define('A', arconiumBlock)
-                    .pattern("RRR")
-                    .pattern("RAR")
-                    .pattern("RRR")
-                    .unlockedBy("has_item", has(treeRoot))
-                    .save(consumer);
-        }
     }
 
     private void registerArconiumIngots(Consumer<FinishedRecipe> consumer) {

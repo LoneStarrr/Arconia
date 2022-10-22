@@ -33,7 +33,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
     protected void registerStatesAndModels() {
         //TODO: default language too?
         registerLeaves();
-        registerTreeRoots();
         registerSaplings();
         registerCrates();
 //        registerCrops();
@@ -125,17 +124,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
         }
     }
 
-    private void registerTreeRoots() {
-        //Tree roots
-        for (RainbowColor color: RainbowColor.values()) {
-            Block rootBlock = ModBlocks.getArconiumTreeRootBlocks(color);
-            String rootName = Registry.BLOCK.getKey(rootBlock).getPath();
-            ModelFile rootModel = models().getExistingFile(prefix("block/tree_root_block"));
-            horizontalBlock(rootBlock, rootModel);
-            itemModels().withExistingParent(rootName, prefix("block/tree_root_block"));
-        }
-
-    }
     private void registerLeaves() {
         //Arconium tree leaves
         //TODO: single texture for all, use tints to dynamically color - like TreeRoots (probably use a manual model file)

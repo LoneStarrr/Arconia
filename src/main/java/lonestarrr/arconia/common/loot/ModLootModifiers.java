@@ -24,7 +24,7 @@ public class ModLootModifiers {
     public static final RegistryObject<LootItemConditionType> NEEDS_GUIDEBOOK = LOOT_CONDITION_TYPES.register("player_needs_guidebook", () -> new LootItemConditionType(new PlayerNeedsGuideBook.Serializer()));
 
     public static void register(IEventBus modBus) {
-        // TODO remove me
         LOOT_MODIFIERS.register(modBus);
+        LOOT_CONDITION_TYPES.register(modBus);
     }
 }

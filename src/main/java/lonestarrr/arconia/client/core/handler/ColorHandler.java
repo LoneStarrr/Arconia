@@ -39,15 +39,6 @@ public class ColorHandler {
         }, ModItems.magicInABottle);
 
         for (RainbowColor tier: RainbowColor.values()) {
-            // Tree root tops are modified using the corresponding rainbow color.
-            ArconiumTreeRootBlock treeRoot = ModBlocks.getArconiumTreeRootBlocks(tier);
-            colorBlocks.register(treeRoot, treeRoot);
-            // Taken from minecraft's ItemColors
-            items.register((stack, layer) -> {
-                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
-                return colorBlocks.getColor(blockstate, (BlockAndTintGetter)null, (BlockPos)null, layer);
-            }, Item.byBlock(treeRoot));
-
             // Tree leaves
             ArconiumTreeLeaves treeLeaf = ModBlocks.getArconiumTreeLeaves(tier);
             colorBlocks.register(treeLeaf, treeLeaf);

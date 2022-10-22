@@ -22,7 +22,6 @@ public class ModBlockEntities {
     public static final BlockEntityType<PotMultiBlockPrimaryBlockEntity> POT_MULTIBLOCK_PRIMARY = BlockEntityType.Builder.of(PotMultiBlockPrimaryBlockEntity::new, ModBlocks.potMultiBlockPrimary).build(null);
     public static final BlockEntityType<PotMultiBlockSecondaryBlockEntity> POT_MULTIBLOCK_SECONDARY = BlockEntityType.Builder.of(
             PotMultiBlockSecondaryBlockEntity::new, ModBlocks.potMultiBlockSecondary).build(null);
-    private static final Map<RainbowColor, BlockEntityType<ArconiumTreeRootBlockEntity>> treeRootBlockBlockEntityTypes = new HashMap<>(RainbowColor.values().length);
     private static final Map<RainbowColor, BlockEntityType<RainbowCrateBlockEntity>> rainbowCrateBlockEntityTypes =
             new HashMap<>(RainbowColor.values().length);
     private static final Map<RainbowColor, BlockEntityType<GoldArconiumBlockEntity>> goldArconiumBlockEntityTypes = new HashMap<>(RainbowColor.values().length);
@@ -38,15 +37,6 @@ public class ModBlockEntities {
         register(r, ORB, BlockNames.ORB);
         register(r, POT_MULTIBLOCK_PRIMARY, BlockNames.POT_MULTIBLOCK_PRIMARY);
         register(r, POT_MULTIBLOCK_SECONDARY, BlockNames.POT_MULTIBLOCK_SECONDARY);
-
-        // tree root blocks
-        for (RainbowColor tier: RainbowColor.values()) {
-            BlockEntityType<ArconiumTreeRootBlockEntity> teType =
-                    BlockEntityType.Builder.of((pos, state) -> new ArconiumTreeRootBlockEntity(tier, pos, state),
-                            ModBlocks.getArconiumTreeRootBlocks(tier)).build(null);
-            treeRootBlockBlockEntityTypes.put(tier, teType);
-            register(r, teType, tier.getTierName() + "_pattern_lootblock_tile_entity");
-        }
 
         // Rainbow crates
         for (RainbowColor tier: RainbowColor.values()) {
@@ -72,10 +62,6 @@ public class ModBlockEntities {
         }
         Arconia.logger.info("************ Registered block entities");
 
-    }
-
-    public static BlockEntityType<ArconiumTreeRootBlockEntity> getTreeRootBlockBlockEntityType(RainbowColor tier) {
-        return treeRootBlockBlockEntityTypes.get(tier);
     }
 
     public static BlockEntityType<RainbowCrateBlockEntity> getRainbowCrateBlockEntityType(RainbowColor tier) {
