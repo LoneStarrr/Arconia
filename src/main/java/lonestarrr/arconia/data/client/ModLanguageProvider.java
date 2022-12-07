@@ -74,13 +74,13 @@ public class ModLanguageProvider extends LanguageProvider {
                 { "advancement.arconia.main.root.title", "Arconia" },
                 { "advancement.arconia.main.root.desc", "Dig up dirt and find some memoirs" },
                 { "advancement.arconia.main.four_leaf_clover.title", "Get lucky" },
-                { "advancement.arconia.main.four_leaf_clover.desc", "Those clovers were asking for it" },
+                { "advancement.arconia.main.four_leaf_clover.desc", "Find a four-leaf clover" },
                 { "advancement.arconia.main.clover_staff.title", "You're a wizard now" },
-                { "advancement.arconia.main.clover_staff.desc", "Make a clover staff to increase your luck punching clovers" },
+                { "advancement.arconia.main.clover_staff.desc", "Make a clover staff" },
                 { "advancement.arconia.main.red_arconium_sickle.title", "Leaf breaker 9000" },
                 { "advancement.arconia.main.red_arconium_sickle.desc", "Craft a red arconium sickle" },
-                { "advancement.arconia.main.pedestal.title", "Pedestals? How original" },
-                { "advancement.arconia.main.pedestal.desc", "Craft pedestals to place items on for performing rituals" },
+                { "advancement.arconia.main.pedestal.title", "All mods need these" },
+                { "advancement.arconia.main.pedestal.desc", "Craft some pedestals" },
                 { "advancement.arconia.main.center_pedestal.title", "Let the rituals begin" },
                 { "advancement.arconia.main.center_pedestal.desc", "Craft a center pedestal to perform rituals" },
                 { "advancement.arconia.main.red_root_of_essence.title", "Arconium?" },
@@ -89,12 +89,14 @@ public class ModLanguageProvider extends LanguageProvider {
                 { "advancement.arconia.main.pot_of_gold.desc", "Build a pot of gold" },
                 { "advancement.arconia.main.hat.title", "I've hat it with these puns" },
                 { "advancement.arconia.main.hat.desc", "Craft a leprechaun hat" },
+                { "advancement.arconia.main.red_arconium_block.title", "Pure Arconium" },
+                { "advancement.arconia.main.red_arconium_block.desc", "Convert your first gold arconium gold block" },
                 { "advancement.arconia.main.red_arconium_essence.title", "Arconium Essence" },
                 { "advancement.arconia.main.red_arconium_essence.desc", "Get your first red arconium essence" },
                 { "advancement.arconia.main.red_gold_arconium_block.title", "Arconium Gold" },
                 { "advancement.arconia.main.red_gold_arconium_block.desc", "Get your first arconium infused gold" },
-                { "advancement.arconia.main.red_arconium_block.title", "Pure Arconium" },
-                { "advancement.arconia.main.red_arconium_block.desc", "Convert your first gold arconium gold block" },
+                { "advancement.arconia.main.red_tree_root.title", "Arconium Tree Root" },
+                { "advancement.arconia.main.red_tree_root.desc", "Harvest arconium trees for some roots" },
                 { "advancement.arconia.main.orange_arconium_tree_sapling.title", "Orange you glad" },
                 { "advancement.arconia.main.orange_arconium_tree_sapling.desc", "Harvest your first orange arconium sapling" },
         }).forEach(adv -> add(adv[0], adv[1]));
@@ -128,7 +130,7 @@ public class ModLanguageProvider extends LanguageProvider {
         add("arconia.block.pot_multiblock.coin_count.thousands", "There are thousands of coins");
         add("arconia.block.pot_multiblock.coin_count.ludicrous", "There is an insane amount of coins");
         // Guide book
-        add("arconia.guide_book.landing_text", "A collection of notes on my studies of a dwindling race.");
+        add("arconia.guide_book.landing_text", "A collection of notes on my discovery of the secrets to the Leprechaun's wealth, and how to help myself to some of that.");
         add("arconia.guide_book.name", "Arconia Notebook");
     }
 }

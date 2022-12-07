@@ -1,0 +1,12 @@
+{
+    "name": "Tree roots",
+    "icon": "arconia:red_colored_tree_root",
+    "category": "arconia:pot_of_gold",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "text": "There are colorful trees to be found in forests, with bright colored leaves with a gold sparkle. Harvesting these gets you colorful tree roots. The leprechauns enchanted these to give them special abilities."
+        }
+    ]
+}
+

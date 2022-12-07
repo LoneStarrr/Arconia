@@ -1,0 +1,18 @@
+{
+    "name": "Clover staff",
+    "icon": "arconia:clover_staff",
+    "category": "arconia:pot_of_gold",
+    "advancement": "arconia:main/four_leaf_clover",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "text": "I witnessed the Leprechauns use the clover staff for various different purposes. Most interestingly, they would break clover with it to get more of the four-leaf clovers."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "arconia:clover_staff",
+            "text": "I definitely need to make one of these."
+        }
+    ]
+}
+

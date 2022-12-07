@@ -2,16 +2,11 @@
     "name": "Arconium essence",
     "icon": "arconia:red_arconium_essence",
     "category": "arconia:pot_of_gold",
-    "sortnum": 5,
+    "advancement": "arconia:main/center_pedestal",
     "pages": [
-        {
-            "type": "patchouli:text",
-            "text": "Gettings items from the pot of gold requires this colorful metal called arconium. One cannot just craft this. The first step towards making it, is to create an enchanted red tree root that will make the pot produce arconium essence. As I explained elsewhere, enchanting tree roots is done using the pedestal altar setup."
-        },
-        {
-            "type": "patchouli:text",
-            "text": "For this recipe, unless it was altered (consult $(italic)JEI$()!), you have to put four items on four different wood pedestals. The items are a four leaf clover, another four leaf clover, a piece of red wool, and a red tree root. Once they are all in place, right click the center pedestal with the clover staff to start the enchanting ritual."
-        }
+        "One of the rituals I saw being performed by the leprechauns on the pedestals was to enchant tree roots. These enchanted roots were then used to produce all kinds of resources using a pot of gold. Most of the rituals involved a strange kind of metal. I have notes on making this metal, but for now know that it requires a special essence.",
+        "The first step towards getting this essence is to create a special enchanted tree root. The pedestal setup should help with that. For this recipe, unless it was altered, you have to put four items on four different wood pedestals. The items are a four leaf clover, another four leaf clover, a piece of red wool, and a red tree root. ",
+        "Once they are all in place, right click the center pedestal with the clover staff to start the enchanting ritual."
     ]
 }
 

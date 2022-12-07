@@ -1,0 +1,10 @@
+{
+    "name": "I am lost",
+    "icon": "minecraft:writable_book",
+    "category": "arconia:diary",
+    "sortnum": 1,
+    "pages": [
+         "Dear diary. I have been traveling for several days now, and have lost my bearings. It has been days since I departed the last village I visited, but luckily I am no stranger to adventure, and I have stockpiled provisions so I will be fine for quite some time to come."
+    ]
+}
+

@@ -22,7 +22,7 @@
         "items": [
           {
             "items": [ "arconia:red_colored_tree_root" ],
-            "nbt": "{\"item\":\"arconia:red_arconium_essence\"}"
+            "nbt": "{\"item\":{\"id\":\"arconia:red_arconium_essence\"}}"
           }
         ]
       }

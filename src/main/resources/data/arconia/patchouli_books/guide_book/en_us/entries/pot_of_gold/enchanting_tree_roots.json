@@ -2,7 +2,7 @@
     "name": "Enchanting tree roots",
     "icon": "arconia:red_colored_tree_root",
     "category": "arconia:pot_of_gold",
-    "sortnum": 4,
+    "advancement": "arconia:main/center_pedestal",
     "pages": [
         {
             "type": "patchouli:text",

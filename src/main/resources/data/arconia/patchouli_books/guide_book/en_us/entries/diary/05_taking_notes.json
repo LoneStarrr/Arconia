@@ -1,0 +1,12 @@
+{
+    "name": "Taking Notes",
+    "icon": "minecraft:writable_book",
+    "category": "arconia:diary",
+    "sortnum": 5,
+    "pages": [
+         "Dear diary. It's been several days since my discovery, and from what I can tell much of the stories about these so-called Leprechauns is true. My mind is slowly going from lack of food though, but I still have enough to survive for a few days more.",
+         "Meanwhile I am writing down as many details as I can in the back of my notebook so that I can replicate the tricks I've witnessed and finally be able to settle down! At least they are not on to me yet, thanks to my ability to be practically invisible. Who knew that skill would one day prove to be valuable?"
+    ]
+}
+
+

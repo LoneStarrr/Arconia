@@ -1,0 +1,12 @@
+{
+    "name": "In a forest",
+    "icon": "minecraft:writable_book",
+    "category": "arconia:diary",
+    "sortnum": 2,
+    "pages": [
+        "Dear diary. I have ventured into a rather dense forest. I am pretty sure that on the other side is the civilization I seek. I'm going to set up camp high up in the trees to be safe from these pesky zombies that always seem to find me.",
+        "For as dense as this forest is, it seems to be strangely devoid of your typical nasty creatures that lurk in the shadows. I can only hope that this is a positive sign."
+    ]
+}
+
+

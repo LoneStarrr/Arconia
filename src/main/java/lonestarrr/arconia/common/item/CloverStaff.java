@@ -43,7 +43,7 @@ public class CloverStaff extends Item {
         ItemStack staff = context.getItemInHand();
 
         BlockState bs = world.getBlockState(pos);
-        if (bs.getBlock() == Blocks.GOLD_BLOCK) {
+        if (bs.getBlock() == PotMultiBlockPrimary.INSIDE_BLOCK) {
             return attemptFormMultiblock(player, world, pos) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
         } else if (bs.getBlock() == ModBlocks.potMultiBlockSecondary) {
             BlockPos potPos = storePotCoordinate(world, pos, staff);

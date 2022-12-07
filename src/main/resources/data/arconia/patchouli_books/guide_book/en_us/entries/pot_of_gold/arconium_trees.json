@@ -2,7 +2,7 @@
     "name": "Arconium trees",
     "icon": "arconia:red_arconium_tree_sapling",
     "category": "arconia:pot_of_gold",
-    "sortnum": 8,
+    "advancement": "arconia:main/red_arconium_sickle",
     "pages": [
         {
             "type": "patchouli:text",

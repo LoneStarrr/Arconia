@@ -2,15 +2,15 @@
     "name": "Arconium",
     "icon": "arconia:red_arconium_ingot",
     "category": "arconia:pot_of_gold",
-    "sortnum": 7,
+    "advancement": "arconia:main/red_arconium_essence",
     "pages": [
         {
             "type": "patchouli:text",
-            "text": "Once you have acquired arconium essence, it can be infused with a block of gold using a pedestal ritual. The resulting arconium gold block has a special ability. If placed under a leprechaun hat that is linked to a pot of gold, the pot will slowly absorb the gold, leaving behind a block of pure arconium."
+            "text": "The leprechauns infused the arconium essence with a block of gold using a pedestal ritual. The resulting arconium gold block appeared to have a special ability. If placed under a leprechaun hat that is linked to a pot of gold, the pot will slowly absorb the gold, leaving behind a block of pure arconium."
         },
         {
             "type": "patchouli:text",
-            "text": "The absorbed gold will fill the pot far more efficiently than feeding it gold directly. Once the gold arconium block has been purified, it can then be mined and converted to ingots."
+            "text": "The absorbed gold seemed to fill the pot far more efficiently than throwing in gold ingots, and is thus a cheaper way to get other resources from the pot. After a while, the gold appeared to be absorbed and the leprechauns mined the purified arconium block to convert it into to ingots."
         }
     ]
 }
