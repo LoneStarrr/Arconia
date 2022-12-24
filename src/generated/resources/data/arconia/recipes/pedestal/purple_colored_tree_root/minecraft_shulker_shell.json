@@ -3,13 +3,13 @@
   "output": {
     "nbt": {
       "item": {
-        "id": "arconia:magenta_arconium_essence",
+        "id": "minecraft:shulker_shell",
         "Count": 1
       },
-      "interval": 3,
-      "coin_cost": 128
+      "interval": 4,
+      "coin_cost": 64
     },
-    "item": "arconia:magenta_colored_tree_root"
+    "item": "arconia:purple_colored_tree_root"
   },
   "durationTicks": 800,
   "ingredients": [
@@ -20,10 +20,10 @@
       "item": "arconia:four_leaf_clover"
     },
     {
-      "item": "minecraft:magenta_wool"
+      "item": "minecraft:shulker_shell"
     },
     {
-      "item": "arconia:magenta_colored_tree_root"
+      "item": "arconia:purple_colored_tree_root"
     }
   ]
 }

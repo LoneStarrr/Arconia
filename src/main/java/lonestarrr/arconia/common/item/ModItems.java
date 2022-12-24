@@ -87,8 +87,6 @@ public final class ModItems {
         registerSickle(r, RainbowColor.LIGHT_BLUE, new HoeItem(Tiers.DIAMOND, 5, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
         registerSickle(r, RainbowColor.BLUE, new HoeItem(Tiers.NETHERITE, 5, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS).fireResistant()));
         registerSickle(r, RainbowColor.PURPLE, new HoeItem(Tiers.NETHERITE, 6, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS).fireResistant()));
-        registerSickle(r, RainbowColor.MAGENTA, new HoeItem(Tiers.NETHERITE, 7, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS).fireResistant()));
-        registerSickle(r, RainbowColor.PINK, new HoeItem(Tiers.NETHERITE, 8, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS).fireResistant()));
     }
 
     private static void registerSickle(IForgeRegistry<Item> r, RainbowColor tier, HoeItem hoe) {

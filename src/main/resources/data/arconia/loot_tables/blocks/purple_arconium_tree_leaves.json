@@ -39,7 +39,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "arconia:magenta_arconium_tree_sapling",
+              "name": "arconia:purple_arconium_tree_sapling",
               "conditions": [
                 {
                   "condition": "minecraft:match_tool",

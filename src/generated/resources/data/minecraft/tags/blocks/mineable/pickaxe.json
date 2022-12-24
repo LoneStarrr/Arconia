@@ -21,12 +21,6 @@
     "arconia:blue_infinite_gold_arconium_block",
     "arconia:purple_arconium_block",
     "arconia:purple_gold_arconium_block",
-    "arconia:purple_infinite_gold_arconium_block",
-    "arconia:magenta_arconium_block",
-    "arconia:magenta_gold_arconium_block",
-    "arconia:magenta_infinite_gold_arconium_block",
-    "arconia:pink_arconium_block",
-    "arconia:pink_gold_arconium_block",
-    "arconia:pink_infinite_gold_arconium_block"
+    "arconia:purple_infinite_gold_arconium_block"
   ]
 }

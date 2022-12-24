@@ -2,7 +2,7 @@
 
 # Lazy man's data generators - bite me
 
-for clr in red orange yellow green blue light_blue purple magenta pink
+for clr in red orange yellow green blue light_blue purple
 do
     cat << EOF > ${clr}_infinite_gold_arconium_block.json
 {
