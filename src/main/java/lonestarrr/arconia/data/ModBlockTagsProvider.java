@@ -20,9 +20,6 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
             tag(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.getArconiumBlock(tier));
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.getArconiumBlock(tier));
 
-            tag(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.getGoldArconiumBlock(tier));
-            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.getGoldArconiumBlock(tier));
-
             tag(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.getInfiniteGoldArconiumBlock(tier));
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.getInfiniteGoldArconiumBlock(tier));
 

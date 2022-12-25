@@ -14,13 +14,13 @@ import java.util.function.Supplier;
  * Packet containing data for Orb lasers to visualize on the client side.
  */
 public class PotItemTransferPacket {
-    private final BlockPos hatPos;
-    private final BlockPos potPos;
+    private final BlockPos startPos;
+    private final BlockPos endPos;
     private final ItemStack itemStack;
 
-    public PotItemTransferPacket(BlockPos hatPos, BlockPos potPos, ItemStack itemStack) {
-        this.hatPos = hatPos;
-        this.potPos = potPos;
+    public PotItemTransferPacket(BlockPos startPos, BlockPos endPos, ItemStack itemStack) {
+        this.startPos = startPos;
+        this.endPos = endPos;
         this.itemStack = itemStack.copy();
     }
 
@@ -29,8 +29,8 @@ public class PotItemTransferPacket {
     }
 
     public static void encode(PotItemTransferPacket msg, FriendlyByteBuf buf) {
-        buf.writeBlockPos(msg.hatPos);
-        buf.writeBlockPos(msg.potPos);
+        buf.writeBlockPos(msg.startPos);
+        buf.writeBlockPos(msg.endPos);
         buf.writeItem(msg.itemStack);
     }
 
@@ -47,7 +47,7 @@ public class PotItemTransferPacket {
                 public void run() {
                     Minecraft mc = Minecraft.getInstance();
                     Level world = mc.level;
-                    PotItemTransfers.addItemTransfer(msg.hatPos, msg.potPos, msg.itemStack);
+                    PotItemTransfers.addItemTransfer(msg.startPos, msg.endPos, msg.itemStack);
                 }
             });
             ctx.get().setPacketHandled(true);

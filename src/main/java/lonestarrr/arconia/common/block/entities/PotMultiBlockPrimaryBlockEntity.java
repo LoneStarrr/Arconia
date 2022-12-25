@@ -174,13 +174,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         if (coinCount > 0) {
             addCoins(coinCount);
             ItemStack sent = new ItemStack(ModItems.goldCoin, Math.min(coinCount, 64));
-            // TODO Have a dedicated packet OR rename this one
-            ModPackets.sendToNearby(level, goldArconiumPos, new PotItemTransferPacket(worldPosition.above(1).offset(0.5, 0.5, 0.5), goldArconiumPos.above().offset(0.5, 0.5, 0.5), sent));
-        }
-
-        if (goldArconiumTE.isDepleted()) {
-            level.setBlock(goldArconiumPos, ModBlocks.getArconiumBlock(goldArconiumTE.getTier()).defaultBlockState(), 3);
-            level.playSound(null, worldPosition, SoundEvents.METAL_BREAK, SoundSource.BLOCKS, 1, 1);
+            ModPackets.sendToNearby(level, goldArconiumPos, new PotItemTransferPacket(worldPosition.above(2), goldArconiumPos.above(), sent));
         }
 
         return coinCount;
@@ -232,7 +226,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
                     hat.lastResourceGenInterval = this.intervalsElapsed;
                 }
             } else {
-                // This prevents sending more frequently than the dictated interval of the gold arconium block AND it limits to 1 coin collector, but..
+                // This prevents sending more frequently than the dictated interval of the gold arconium block AND it limits to a max number of  coin collectors, but..
                 // placing multiple of a lower tier can still speed it up because the limit is applied per pot tick, which is shorter than the coin collector's
                 // interval. I.e. one can always get coin collection down to 1 per pot tick by placing enough of them. Am I ok with that?
                 BlockPos goldArconiumPos = hatPos.below();
@@ -268,7 +262,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         if (!sent.isEmpty()) {
             coinCount -= hatEntity.getResourceCoinCost();
             setChanged();
-            PotItemTransferPacket packet = new PotItemTransferPacket(hatPos.offset(0.5, 0.5, 0.5), worldPosition.above(1).offset(0.5, 0.5, 0.5), sent);
+            PotItemTransferPacket packet = new PotItemTransferPacket(hatPos.above(), worldPosition.above(), sent);
             ModPackets.sendToNearby(level, worldPosition, packet);
             return true;
         }

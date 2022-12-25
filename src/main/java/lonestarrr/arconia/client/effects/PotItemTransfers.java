@@ -25,7 +25,7 @@ import java.util.Set;
 public class PotItemTransfers {
     private static final Set<ItemTransfer> transfers = new HashSet<>();
 
-    public static void addItemTransfer(BlockPos hatPos, BlockPos potPos, ItemStack itemStack) {
+    public static void addItemTransfer(BlockPos startPos, BlockPos endPos, ItemStack itemStack) {
         Level world = Minecraft.getInstance().level;
 
         if (!world.isClientSide()) {
@@ -33,9 +33,9 @@ public class PotItemTransfers {
         }
 
         long startTick = world.getGameTime();
-        Vec3 hatPosExact = new Vec3(hatPos.getX() + 0.5, hatPos.getY() + 0.5, hatPos.getZ() + 0.5);
-        Vec3 potPosExact = new Vec3(potPos.getX(), potPos.getY(), potPos.getZ());
-        ItemTransfer transfer = new ItemTransfer(hatPosExact, potPosExact, itemStack, startTick);
+        Vec3 startPosExact = new Vec3(startPos.getX() + 0.5D, startPos.getY(), startPos.getZ() + 0.5D);
+        Vec3 endPosExact = new Vec3(endPos.getX() + 0.5D, endPos.getY(), endPos.getZ() + 0.5D);
+        ItemTransfer transfer = new ItemTransfer(startPosExact, endPosExact, itemStack, startTick);
         transfers.add(transfer);
     }
 
@@ -66,7 +66,7 @@ public class PotItemTransfers {
             }
 
             BlockPos playerPos = Minecraft.getInstance().player.blockPosition();
-            if (playerPos.distToCenterSqr(transfer.hatPos.x, transfer.hatPos.y, transfer.hatPos.z) > 64 * 64) {
+            if (playerPos.distToCenterSqr(transfer.startPos.x, transfer.startPos.y, transfer.startPos.z) > 64 * 64) {
                 continue;
             }
 
@@ -101,16 +101,16 @@ class ItemTransfer {
     public static final int DISPLAY_TICKS = 20;
     public static final double GRAVITY = 2 / 20d;
 
-    public final Vec3 hatPos;
-    public final Vec3 potPos;
+    public final Vec3 startPos;
+    public final Vec3 endPos;
     public final long startTick;
     public final ItemStack itemStack;
     private final double gravity;
     private final double displayTicks;
 
-    public ItemTransfer(Vec3 hatPos, Vec3 potPos, ItemStack itemStack, long startTick) {
-        this.hatPos = hatPos;
-        this.potPos = potPos;
+    public ItemTransfer(Vec3 startPos, Vec3 endPos, ItemStack itemStack, long startTick) {
+        this.startPos = startPos;
+        this.endPos = endPos;
         this.itemStack = itemStack.copy();
         this.startTick = startTick;
         // Vary gravity and speed a little for visual effect
@@ -130,9 +130,9 @@ class ItemTransfer {
     public Vec3 getPosition(double elapsedTicks) {
         Vec3 velocity = getVelocity();
         // TODO move code below into ItemTransfer
-        double itemX = potPos.x + velocity.x * elapsedTicks;
-        double itemY = potPos.y + velocity.y * elapsedTicks - (ItemTransfer.GRAVITY * elapsedTicks * elapsedTicks) / 2d;
-        double itemZ = potPos.z + velocity.z * elapsedTicks;
+        double itemX = endPos.x + velocity.x * elapsedTicks;
+        double itemY = endPos.y + velocity.y * elapsedTicks - (ItemTransfer.GRAVITY * elapsedTicks * elapsedTicks) / 2d;
+        double itemZ = endPos.z + velocity.z * elapsedTicks;
         return new Vec3(itemX, itemY, itemZ);
     }
 
@@ -141,9 +141,9 @@ class ItemTransfer {
      *     A velocity vector V for a parabolic animation of an item being flung at the hat where the fling time is constant.
      */
     public Vec3 getVelocity() {
-        final double vx = (hatPos.x - potPos.x) / displayTicks;
-        final double vz = (hatPos.z - potPos.z) / displayTicks;
-        final double vy = (hatPos.y - potPos.y + (gravity * displayTicks * displayTicks) / 2d) / displayTicks;
+        final double vx = (startPos.x - endPos.x) / displayTicks;
+        final double vz = (startPos.z - endPos.z) / displayTicks;
+        final double vy = (startPos.y - endPos.y + (gravity * displayTicks * displayTicks) / 2d) / displayTicks;
         return new Vec3(vx, vy, vz);
     }
     /**

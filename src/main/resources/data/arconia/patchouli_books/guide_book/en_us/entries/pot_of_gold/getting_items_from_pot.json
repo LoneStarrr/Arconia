@@ -14,11 +14,11 @@
         },
         {
             "type": "patchouli:text",
-            "text": "Items generate only if the pot contains gold. The simplest, yet expensive way, is to right-click the pot of gold with a gold ingot. Based on the item being requested, more than one ingot may be required. Once there is enough gold in the pot, and once enough time has passed, the pot will start flinging items into nearby linked hats."
+            "text": "Items have a gold coin cost, and the pot will only produce items if it contains enough gold. The simplest, yet expensive way, is to right-click the pot of gold with a coin, which you can make using the pedestal ritual. You can inspect how much gold the pot contains by right-clicking it with an empty hand. If multiple hats are linked, the pot will select one at random."
         },
         {
             "type": "patchouli:text",
-            "text": "The first item to collect is arconium essence, as it is vital in producing arconium. This is needed for enchanting other roots. It is also used to infuse blocks of gold with arconium, which is the other, much cheaper and easier method to fill the pot with gold."
+            "text": "The first item to collect is arconium essence, which can be crafted into arconium ingots. These are used for enchanting other roots. They are also used for creating gold arconium blocks, which is an infinitely better method to fill the pot with gold."
         }
     ]
 }

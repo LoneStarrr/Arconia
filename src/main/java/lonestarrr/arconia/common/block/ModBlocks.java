@@ -25,7 +25,6 @@ public class ModBlocks {
     private static final Map<RainbowColor, ArconiumTreeLeaves> arconiumTreeLeaves = new HashMap<>();
     private static final Map<RainbowColor, ArconiumTreeSapling> arconiumTreeSaplings = new HashMap<>();
     private static final Map<RainbowColor, ArconiumBlock> arconiumBlocks = new HashMap<>();
-    private static final Map<RainbowColor, GoldArconiumBlock> goldArconiumBlocks = new HashMap<>();
     private static final Map<RainbowColor, InfiniteGoldArconiumBlock> infiniteGoldArconiumBlocks = new HashMap<>();
 
     public static CloverBlock clover;
@@ -92,10 +91,6 @@ public class ModBlocks {
             register(r, arconiumBlock, color.getTierName() + BlockNames.ARCONIUM_BLOCK_SUFFIX);
             arconiumBlocks.put(color, arconiumBlock);
 
-            GoldArconiumBlock goldArconiumBlock = new GoldArconiumBlock(color);
-            register(r, goldArconiumBlock, color.getTierName() + BlockNames.GOLD_ARCONIUM_BLOCK_SUFFIX);
-            goldArconiumBlocks.put(color, goldArconiumBlock);
-
             InfiniteGoldArconiumBlock infiniteGoldArconiumBlock = new InfiniteGoldArconiumBlock(color);
             register(r, infiniteGoldArconiumBlock, color.getTierName() + BlockNames.INFINITE_GOLD_ARCONIUM_BLOCK_SUFFIX);
             infiniteGoldArconiumBlocks.put(color, infiniteGoldArconiumBlock);
@@ -119,7 +114,6 @@ public class ModBlocks {
         arconiumTreeSaplings.values().stream().forEach(b -> registerBlockItem(r, b, builder));
         arconiumTreeLeaves.values().stream().forEach(b -> registerBlockItem(r, b, builder));
         arconiumBlocks.values().stream().forEach(b -> registerBlockItem(r, b, builder));
-        goldArconiumBlocks.values().stream().forEach(b -> registerBlockItem(r, b, builder));
         infiniteGoldArconiumBlocks.values().stream().forEach(b -> registerBlockItem(r, b, builder));
     }
 
@@ -128,8 +122,6 @@ public class ModBlocks {
 //    }
 
     public static ArconiumBlock getArconiumBlock(RainbowColor tier) { return arconiumBlocks.get(tier); }
-
-    public static GoldArconiumBlock getGoldArconiumBlock(RainbowColor tier) { return goldArconiumBlocks.get(tier); }
 
     public static InfiniteGoldArconiumBlock getInfiniteGoldArconiumBlock(RainbowColor tier) { return infiniteGoldArconiumBlocks.get(tier); }
 

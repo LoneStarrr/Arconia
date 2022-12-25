@@ -33,7 +33,6 @@ public class ModLanguageProvider extends LanguageProvider {
         for (RainbowColor color : RainbowColor.values()) {
             String colorName = color.getUnlocalizedName();
             add(ModBlocks.getArconiumBlock(color), colorName + " Arconium Block");
-            add(ModBlocks.getGoldArconiumBlock(color), colorName + " Gold Arconium Block");
             add(ModBlocks.getInfiniteGoldArconiumBlock(color), colorName + " Infinite Gold Arconium Block");
             add(ModBlocks.getArconiumTreeLeaves(color), colorName + " Arconium Tree Leaves");
             add(ModBlocks.getArconiumTreeSapling(color), colorName + " Arconium Tree Sapling");
@@ -129,6 +128,7 @@ public class ModLanguageProvider extends LanguageProvider {
         add("arconia.block.pot_multiblock.coin_count.hundreds", "There are hundreds of coins");
         add("arconia.block.pot_multiblock.coin_count.thousands", "There are thousands of coins");
         add("arconia.block.pot_multiblock.coin_count.ludicrous", "There is an insane amount of coins");
+        add("arconia.block.pot_multiblock.coin_count.absolute", "The pot contains %s gold coins");
         // Guide book
         add("arconia.guide_book.landing_text", "A collection of notes on my discovery of the secrets to the Leprechaun's wealth, and how to help myself to some of that.");
         add("arconia.guide_book.name", "Arconia Notebook");

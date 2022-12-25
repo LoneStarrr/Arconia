@@ -29,9 +29,9 @@ public final class ConfigHandler {
 
     public static class Common {
         public final Map<RainbowColor, ForgeConfigSpec.IntValue> goldArconiumCoinCounts = new HashMap<>(RainbowColor.values().length);
+        public final Map<RainbowColor, ForgeConfigSpec.IntValue> goldArconiumCoinCapacity = new HashMap<>(RainbowColor.values().length);
         public final Map<RainbowColor, ForgeConfigSpec.IntValue> goldArconiumCoinInterval = new HashMap<>(RainbowColor.values().length);
-        public final Map<RainbowColor, ForgeConfigSpec.IntValue> treeLeafChangeInterval = new HashMap<>(RainbowColor.values().length);
-        public final Map<RainbowColor, ForgeConfigSpec.IntValue> treeLeafChangeChance = new HashMap<>(RainbowColor.values().length);
+        public final Map<RainbowColor, ForgeConfigSpec.BooleanValue> goldArconiumIsInfinite = new HashMap<>(RainbowColor.values().length);
 
         public final ForgeConfigSpec.IntValue potOfGoldMaxHats;
         public final ForgeConfigSpec.IntValue potOfGoldTicksPerInterval;
@@ -43,7 +43,7 @@ public final class ConfigHandler {
                     .comment("Maximum number of hats that can be linked to a single pot of gold")
                     .defineInRange("maxHats", 32, 2, 64);
             potOfGoldTicksPerInterval = builder
-                    .comment("Number of ticks per interval, which defines the speed at which the pot works")
+                    .comment("Number of game ticks per 'pot tick', which defines the base speed the pot operates at.")
                     .defineInRange("ticksPerInterval", 5, 5, 256);
             potOfGoldMaxHatDistance = builder
                     .comment("Maximum distance at which hats can be linked to a pot of gold")
@@ -51,39 +51,35 @@ public final class ConfigHandler {
             builder.pop(); // potOfGold
 
             builder.push("goldArconiumBlock");
-            int defaultCoinCount = (int) Math.pow(2, 8);
-            int defaultCoinInterval = 10;
+            int currentCoinCount = 1;
+            int currentCoinInterval = 13;
+            int currentCoinCapacity = 256;
 
             for (RainbowColor color : RainbowColor.values()) {
-                ForgeConfigSpec.IntValue coinAmount = builder
-                        .comment("Number of gold coins produced before the block transforms into pure arconium")
-                        .defineInRange(color.getTierName() + "CoinCount", defaultCoinCount, 1, Integer.MAX_VALUE);
-                goldArconiumCoinCounts.put(color, coinAmount);
-                defaultCoinCount *= 2;
-
                 ForgeConfigSpec.IntValue coinInterval = builder
-                        .comment("Coin generation interval. Interval tick length is determined by pot of gold")
-                        .defineInRange(color.getTierName() + "CoinInterval", defaultCoinInterval, 1, 256);
+                        .comment("How frequently are coins collected from this tier's gold arconium block by the pot. Expressed as the number of 'pot ticks'. The length of a single 'pot tick' is a configuration parameter of the pot.")
+                        .defineInRange(color.getTierName() + "CoinInterval", currentCoinInterval, 1, 256);
                 goldArconiumCoinInterval.put(color, coinInterval);
-                defaultCoinInterval -= 1;
+                currentCoinInterval -= 2;
+
+                ForgeConfigSpec.IntValue coinAmount = builder
+                        .comment("How many coins are collected by the pot whenever it ticks.")
+                        .defineInRange(color.getTierName() + "CoinCount", currentCoinCount, 1, Integer.MAX_VALUE);
+                goldArconiumCoinCounts.put(color, coinAmount);
+                currentCoinCount *= 3;
+
+                ForgeConfigSpec.BooleanValue isInfinite = builder
+                        .comment("Whether this gold arconium block has infinite capacity, e.g. it never runs out of coins.")
+                        .define(color.getTierName() + "IsInfinite", true);
+                goldArconiumIsInfinite.put(color, isInfinite);
+
+                ForgeConfigSpec.IntValue coinCapacity = builder
+                        .comment("If this gold arconium block does not have an infinite supply, the total amount of gold it has from the start.")
+                        .defineInRange(color.getTierName() + "CoinCapacity", currentCoinCapacity, 1, Integer.MAX_VALUE);
+                goldArconiumCoinCapacity.put(color, coinCapacity);
+                currentCoinCapacity *= 2;
             }
             builder.pop(); // goldArconiumBlock
-
-            builder.push("arconiaTrees");
-            for (RainbowColor color: RainbowColor.values()) {
-                int defaultChangeInterval = (int)(10 * 1.5f * Math.pow(1.5, color.getTier() - 1));
-                ForgeConfigSpec.IntValue changeInterval = builder
-                    .comment("Number of seconds in between " + color.getTierName() + " Arconia tree leaf change attempts")
-                    .defineInRange(color.getTierName() + "LeafChangeInterval", defaultChangeInterval, 1, Integer.MAX_VALUE);
-                treeLeafChangeInterval.put(color, changeInterval);
-
-                int defaultChangeChance = Math.max(5, 100 - color.getTier() * 15);
-                ForgeConfigSpec.IntValue changeChance = builder
-                        .comment("The chance per attempt made, as a percentage, of a " + color.getTierName() + " leaf to change into the next tier")
-                        .defineInRange(color.getTierName() + "LeafChangeChance", defaultChangeChance, 1, 100);
-                treeLeafChangeChance.put(color, changeChance);
-            }
-            builder.pop(); //arconiaTrees
         }
     }
 

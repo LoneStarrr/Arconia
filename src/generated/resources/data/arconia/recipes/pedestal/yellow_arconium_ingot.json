@@ -1,12 +1,21 @@
 {
   "type": "arconia:pedestal",
   "output": {
-    "item": "arconia:yellow_gold_arconium_block"
+    "item": "arconia:yellow_arconium_ingot"
   },
-  "durationTicks": 400,
+  "durationTicks": 100,
   "ingredients": [
     {
-      "item": "minecraft:gold_block"
+      "item": "minecraft:raw_gold"
+    },
+    {
+      "item": "minecraft:dandelion"
+    },
+    {
+      "item": "minecraft:yellow_concrete"
+    },
+    {
+      "item": "minecraft:hay_block"
     },
     {
       "item": "arconia:yellow_arconium_essence"
@@ -18,13 +27,7 @@
       "item": "arconia:yellow_arconium_essence"
     },
     {
-      "item": "arconia:yellow_arconium_essence"
-    },
-    {
-      "item": "arconia:yellow_arconium_essence"
-    },
-    {
-      "item": "arconia:yellow_arconium_essence"
+      "item": "arconia:four_leaf_clover"
     }
   ]
 }

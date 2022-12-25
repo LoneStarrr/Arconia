@@ -2,12 +2,11 @@
   "type": "arconia:pedestal",
   "output": {
     "nbt": {
+      "coin_cost": 2,
       "item": {
         "id": "minecraft:sugar_cane",
         "Count": 1
-      },
-      "interval": 9,
-      "coin_cost": 2
+      }
     },
     "item": "arconia:orange_colored_tree_root"
   },

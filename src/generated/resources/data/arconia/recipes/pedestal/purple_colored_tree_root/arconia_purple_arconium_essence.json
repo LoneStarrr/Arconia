@@ -2,12 +2,11 @@
   "type": "arconia:pedestal",
   "output": {
     "nbt": {
+      "coin_cost": 64,
       "item": {
         "id": "arconia:purple_arconium_essence",
         "Count": 1
-      },
-      "interval": 4,
-      "coin_cost": 64
+      }
     },
     "item": "arconia:purple_colored_tree_root"
   },

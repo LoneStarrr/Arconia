@@ -100,22 +100,19 @@ public class ColoredRoot extends Item {
      *
      * @param coloredRootStack colored root to set resource on
      * @param resourceItem     resource to set
-     * @param interval         Frequency with which resource is generated. An interval of 1 is fastest. Interval length is determined by the pot of gold and is typically
-     *                         no less than 5 ticks.
      * @param count            Number of items generated per event. Must not exceed item's max stack count
      * @param coinCost         Number of coins it takes to generate the resource
      *                         <p>
      *                         Data is stored in NBT so that it can be used for any item from any mod by only adding a pedestal ritual recipe.
      */
     public static void setResourceItem(
-            @Nonnull ItemStack coloredRootStack, @Nonnull ItemLike resourceItem, @Nonnull int interval, @Nonnull int count, int coinCost) {
+            @Nonnull ItemStack coloredRootStack, @Nonnull ItemLike resourceItem, @Nonnull int count, int coinCost) {
         CompoundTag tag = coloredRootStack.getOrCreateTag();
         ItemStack stack = new ItemStack(resourceItem);
         int maxCount = stack.getMaxStackSize();
         int stackCount = count > maxCount ? maxCount : count;
         stack.setCount(stackCount);
         tag.put(TAG_ITEM, stack.serializeNBT());
-        tag.putInt(TAG_INTERVAL, interval < 1 ? 1 : interval);
         tag.putInt(TAG_COIN_COST, coinCost < 1 ? 1 : coinCost);
     }
 

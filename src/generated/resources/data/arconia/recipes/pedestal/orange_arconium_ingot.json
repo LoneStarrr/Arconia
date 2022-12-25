@@ -1,12 +1,21 @@
 {
   "type": "arconia:pedestal",
   "output": {
-    "item": "arconia:orange_gold_arconium_block"
+    "item": "arconia:orange_arconium_ingot"
   },
-  "durationTicks": 300,
+  "durationTicks": 100,
   "ingredients": [
     {
-      "item": "minecraft:gold_block"
+      "item": "minecraft:raw_copper"
+    },
+    {
+      "item": "minecraft:raw_copper"
+    },
+    {
+      "item": "minecraft:stripped_acacia_log"
+    },
+    {
+      "item": "minecraft:pumpkin"
     },
     {
       "item": "arconia:orange_arconium_essence"
@@ -18,13 +27,7 @@
       "item": "arconia:orange_arconium_essence"
     },
     {
-      "item": "arconia:orange_arconium_essence"
-    },
-    {
-      "item": "arconia:orange_arconium_essence"
-    },
-    {
-      "item": "arconia:orange_arconium_essence"
+      "item": "arconia:four_leaf_clover"
     }
   ]
 }

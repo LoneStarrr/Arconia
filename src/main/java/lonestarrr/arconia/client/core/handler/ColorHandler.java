@@ -69,18 +69,6 @@ public class ColorHandler {
                 return colorBlocks.getColor(blockstate, (BlockAndTintGetter)null, (BlockPos)null, layer);
             }, Item.byBlock(arconiumBlock));
 
-            // Gold Arconium Blocks
-            GoldArconiumBlock goldArconiumBlock = ModBlocks.getGoldArconiumBlock(tier);
-            colorBlocks.register(goldArconiumBlock, goldArconiumBlock);
-            // Taken from minecraft's ItemColors
-            items.register((stack, layer) -> {
-                if (layer != 0) {
-                    return 0xFFFFFF;
-                }
-                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
-                return colorBlocks.getColor(blockstate, (BlockAndTintGetter)null, (BlockPos)null, layer);
-            }, Item.byBlock(goldArconiumBlock));
-
             // Infinite Gold Arconium Blocks
             InfiniteGoldArconiumBlock infiniteGoldArconiumBlock = ModBlocks.getInfiniteGoldArconiumBlock(tier);
             colorBlocks.register(infiniteGoldArconiumBlock, infiniteGoldArconiumBlock);

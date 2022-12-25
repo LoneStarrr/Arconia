@@ -2,12 +2,11 @@
   "type": "arconia:pedestal",
   "output": {
     "nbt": {
+      "coin_cost": 32,
       "item": {
         "id": "minecraft:soul_sand",
         "Count": 1
-      },
-      "interval": 5,
-      "coin_cost": 32
+      }
     },
     "item": "arconia:blue_colored_tree_root"
   },

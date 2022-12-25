@@ -30,7 +30,7 @@ public class InfiniteGoldArconiumBlock extends BaseEntityBlock implements BlockC
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new GoldArconiumBlockEntity(tier, true, pos, state);
+        return new GoldArconiumBlockEntity(tier, pos, state);
     }
 
     @Override

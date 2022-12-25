@@ -3,10 +3,12 @@ package lonestarrr.arconia.common.block;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockSecondaryBlockEntity;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
+import lonestarrr.arconia.common.item.ModItems;
 import lonestarrr.arconia.compat.theoneprobe.TOPDriver;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -81,13 +83,19 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
         }
 
         ItemStack itemUsed = player.getInventory().getSelected();
-        // We buy gold
-        if (itemUsed.isEmpty() || itemUsed.getItem() != Items.GOLD_INGOT) {
-            return InteractionResult.PASS;
-        }
 
         PotMultiBlockPrimaryBlockEntity primaryBE = getPrimaryBlockEntity(world, pos);
         if (primaryBE == null) {
+            return InteractionResult.PASS;
+        }
+
+        if (itemUsed.isEmpty()) {
+            String coinCountStr = String.format("%,d", primaryBE.getCoinCount());
+            player.sendMessage(new TranslatableComponent("arconia.block.pot_multiblock.coin_count.absolute", coinCountStr), Util.NIL_UUID);
+            return InteractionResult.SUCCESS;
+        }
+
+        if (itemUsed.getItem() != ModItems.goldCoin) {
             return InteractionResult.PASS;
         }
 

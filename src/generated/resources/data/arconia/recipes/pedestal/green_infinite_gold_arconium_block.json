@@ -6,28 +6,25 @@
   "durationTicks": 500,
   "ingredients": [
     {
-      "item": "arconia:green_gold_arconium_block"
+      "item": "minecraft:gold_block"
     },
     {
-      "item": "arconia:green_arconium_block"
+      "item": "arconia:green_arconium_ingot"
     },
     {
-      "item": "arconia:green_arconium_block"
+      "item": "arconia:green_arconium_ingot"
     },
     {
-      "item": "arconia:green_arconium_block"
+      "item": "arconia:green_arconium_ingot"
     },
     {
-      "item": "arconia:green_arconium_block"
+      "item": "arconia:green_arconium_ingot"
     },
     {
-      "item": "arconia:green_arconium_block"
+      "item": "arconia:green_arconium_ingot"
     },
     {
-      "item": "arconia:green_arconium_block"
-    },
-    {
-      "item": "arconia:green_arconium_block"
+      "item": "arconia:green_arconium_ingot"
     }
   ]
 }

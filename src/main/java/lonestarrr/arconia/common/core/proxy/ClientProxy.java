@@ -56,7 +56,6 @@ public class ClientProxy implements IProxy {
                 // Crates are solid, but use overlapping textures with gaps
                 ItemBlockRenderTypes.setRenderLayer(ModBlocks.getRainbowCrateBlock(tier), cutout);
                 // gleaned from Blocks.GRASS_BLOCK - this is for overlaying the top with a rainbow tint
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.getGoldArconiumBlock(tier), cutout);
                 ItemBlockRenderTypes.setRenderLayer(ModBlocks.getInfiniteGoldArconiumBlock(tier), RenderType.cutoutMipped());
             }
 
