@@ -4,7 +4,6 @@ import lonestarrr.arconia.client.core.handler.ColorHandler;
 import lonestarrr.arconia.client.core.handler.BlockEntityRendererHandler;
 import lonestarrr.arconia.client.effects.BuildPatternPreview;
 import lonestarrr.arconia.client.effects.PotItemTransfers;
-import lonestarrr.arconia.client.gui.crate.RainbowCrateContainerScreen;
 import lonestarrr.arconia.client.gui.render.HighlightPatternStructure;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
@@ -37,7 +36,6 @@ public class ClientProxy implements IProxy {
         forgeBus.addListener(BuildPatternPreview::render);
         forgeBus.addListener(PotItemTransfers::render);
         forgeBus.addListener(HighlightPatternStructure::render);
-//        forgeBus.addListener(OrbLasers::render);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
@@ -50,21 +48,11 @@ public class ClientProxy implements IProxy {
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.clover, cutout);
 
             for (RainbowColor tier : RainbowColor.values()) {
-//            RenderTypeLookup.setRenderLayer(ModBlocks.getRainbowCrop(tier), cutout);
                 ItemBlockRenderTypes.setRenderLayer(ModBlocks.getArconiumTreeLeaves(tier), cutout);
                 ItemBlockRenderTypes.setRenderLayer(ModBlocks.getArconiumTreeSapling(tier), cutout);
-                // Crates are solid, but use overlapping textures with gaps
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.getRainbowCrateBlock(tier), cutout);
                 // gleaned from Blocks.GRASS_BLOCK - this is for overlaying the top with a rainbow tint
                 ItemBlockRenderTypes.setRenderLayer(ModBlocks.getInfiniteGoldArconiumBlock(tier), RenderType.cutoutMipped());
             }
-
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.orb, RenderType.translucent());
-            // gleaned from Blocks.GRASS_BLOCK - this is for overlaying the sides with the tinted grass
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.resourceGenBlock, RenderType.cutoutMipped());
-
-            // GUI screens associated with containers
-            RainbowCrateContainerScreen.registerContainerScreens();
 
             registerItemProperties();
         });

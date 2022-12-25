@@ -36,7 +36,6 @@ public class ModLanguageProvider extends LanguageProvider {
             add(ModBlocks.getInfiniteGoldArconiumBlock(color), colorName + " Infinite Gold Arconium Block");
             add(ModBlocks.getArconiumTreeLeaves(color), colorName + " Arconium Tree Leaves");
             add(ModBlocks.getArconiumTreeSapling(color), colorName + " Arconium Tree Sapling");
-            add(ModBlocks.getRainbowCrateBlock(color), colorName + " Rainbow Crate");
         }
     }
 
@@ -52,8 +51,6 @@ public class ModLanguageProvider extends LanguageProvider {
 
     private void registerModBlocks() {
         add(ModBlocks.clover, "Clover Plant");
-        add(ModBlocks.pot, "Pot");
-        add(ModBlocks.orb, "Orb");
         add(ModBlocks.hat, "Leprechaun Hat");
         add(ModBlocks.pedestal, "Pedestal");
         add(ModBlocks.centerPedestal, "Center Pedestal");
@@ -103,8 +100,6 @@ public class ModLanguageProvider extends LanguageProvider {
 
     private void registerMisc() {
         add("jei.arconia.recipe_category.altar", "Altar");
-        // label in crate GUI
-        add("container.arconia.rainbow_crate", "Rainbow Crate");
         // clover staff messages
         add("arconia.item.cloverstaff.linkhat.invalidpot", "The selected pot of gold appears to be invalid or missing");
         add("arconia.item.cloverstaff.linkhat.linked", "Linked hat");

@@ -10,10 +10,8 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
  */
 public class BlockEntityRendererHandler {
     public static void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers evt) {
-        evt.registerBlockEntityRenderer(ModBlockEntities.RESOURCEGEN, ResourceGenRenderer::new);
         evt.registerBlockEntityRenderer(ModBlockEntities.PEDESTAL, PedestalRenderer::new);
         evt.registerBlockEntityRenderer(ModBlockEntities.CENTER_PEDESTAL, CenterPedestalRenderer::new);
         evt.registerBlockEntityRenderer(ModBlockEntities.HAT, HatRenderer::new);
-        evt.registerBlockEntityRenderer(ModBlockEntities.ORB, OrbRenderer::new);
     }
 }

@@ -11,7 +11,7 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 /**
- * Packet containing data for Orb lasers to visualize on the client side.
+ * Packet containing data for visualisation of item transfer between pot of gold and hats
  */
 public class PotItemTransferPacket {
     private final BlockPos startPos;

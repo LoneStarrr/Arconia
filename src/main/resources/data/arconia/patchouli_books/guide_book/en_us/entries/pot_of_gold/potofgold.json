@@ -1,6 +1,6 @@
 {
     "name": "Pot of Gold",
-    "icon": "arconia:pot",
+    "icon": "arconia:gold_coin",
     "category": "arconia:pot_of_gold",
     "advancement": "arconia:main/clover_staff",
     "pages": [

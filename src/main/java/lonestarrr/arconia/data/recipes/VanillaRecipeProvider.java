@@ -29,7 +29,6 @@ public class VanillaRecipeProvider extends RecipeProvider {
         registerArconiumBlocks(consumer);
         registerArconiumIngots(consumer);
         registerArconiumSickles(consumer);
-        registerCrates(consumer);
         registerMisc(consumer);
     }
 
@@ -87,20 +86,4 @@ public class VanillaRecipeProvider extends RecipeProvider {
                     .save(consumer);
         }
     }
-
-    private void registerCrates(Consumer<FinishedRecipe> consumer) {
-        for (RainbowColor tier : RainbowColor.values()) {
-            Block block = ModBlocks.getRainbowCrateBlock(tier);
-            ShapedRecipeBuilder.shaped(block)
-                    .define('I', ModItems.getArconiumIngot(tier))
-                    .define('C', Tags.Items.CHESTS)
-                    .define('P', ItemTags.PLANKS)
-                    .pattern("IPI")
-                    .pattern("PCP")
-                    .pattern("IPI")
-                    .unlockedBy("has_item", has(ModItems.getArconiumIngot(tier)))
-                    .save(consumer);
-        }
-    }
-
 }

@@ -22,7 +22,6 @@ public final class ModItems {
     public static Item magicInABottle;
 
     private static final Map<RainbowColor, Item> arconiumEssences = new HashMap<>();
-    private static final Map<RainbowColor, Item> rainbowSeeds = new HashMap<>();
     private static final Map<RainbowColor, ColoredRoot> coloredRoots = new HashMap<>();
     private static final Map<RainbowColor, Item> arconiumIngots = new HashMap<>();
 
@@ -70,13 +69,6 @@ public final class ModItems {
             Item arconiumIngot = new Item(builder);
             register(r, arconiumIngot, tier.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX);
             arconiumIngots.put(tier, arconiumIngot);
-
-            // TODO decide the fate of seeds and crops
-            // Seeds are a special case. They are created through BlockItem and thus associated with the crop.
-//            RainbowCropBlock crop = ModBlocks.getRainbowCrop(tier);
-//            Item seed = new BlockNamedItem(crop, builder);
-//            register(r, seed, crop.getSeedResourceName());
-//            rainbowSeeds.put(tier, seed);
         }
 
         // Arconium sickles. Numerical values: base attack modifier, attack speed modifier.
@@ -111,5 +103,4 @@ public final class ModItems {
     public static final ColoredRoot getColoredRoot(RainbowColor tier) {
         return coloredRoots.get(tier);
     }
-
 }

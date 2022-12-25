@@ -19,13 +19,6 @@ public class ColorHandler {
         BlockColors colorBlocks = Minecraft.getInstance().getBlockColors();
         ItemColors items = Minecraft.getInstance().getItemColors();
 
-        colorBlocks.register(ModBlocks.resourceGenBlock, ModBlocks.resourceGenBlock);
-        //taken from minecraft's ItemColors
-        items.register((stack, color) -> {
-            BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
-            return colorBlocks.getColor(blockstate, (BlockAndTintGetter)null, (BlockPos)null, color);
-        }, Item.byBlock(ModBlocks.resourceGenBlock));
-
         //magic in a bottle is colored differently based on ItemStack NBT data
         //'color' corresponds to the layer in the model (layer0 -> color 0, etc)
         //layer 0 is not dynamically colored, only layer1 is
@@ -80,15 +73,6 @@ public class ColorHandler {
                 BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
                 return colorBlocks.getColor(blockstate, (BlockAndTintGetter)null, (BlockPos)null, layer);
             }, Item.byBlock(infiniteGoldArconiumBlock));
-
-            // Rainbow crates
-            RainbowCrateBlock crateBlock = ModBlocks.getRainbowCrateBlock(tier);
-            colorBlocks.register(crateBlock, crateBlock);
-            // Taken from minecraft's ItemColors
-            items.register((stack, layer) -> {
-                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
-                return colorBlocks.getColor(blockstate, (BlockAndTintGetter)null, (BlockPos)null, layer);
-            }, Item.byBlock(crateBlock));
 
             // Colored tree roots
             items.register((stack, layer) -> {

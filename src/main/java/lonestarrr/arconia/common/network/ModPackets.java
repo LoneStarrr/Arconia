@@ -22,10 +22,6 @@ public class ModPackets {
 
     public static void init() {
         int id = 0;
-        HANDLER.registerMessage(id++, RainbowCratePacket.class, RainbowCratePacket::encode,
-                RainbowCratePacket::decode, RainbowCratePacket.Handler::handle);
-        HANDLER.registerMessage(id++, OrbLaserPacket.class, OrbLaserPacket::encode,
-                OrbLaserPacket::decode, OrbLaserPacket.Handler::handle);
         HANDLER.registerMessage(id++, PotItemTransferPacket.class, PotItemTransferPacket::encode,
                 PotItemTransferPacket::decode, PotItemTransferPacket.Handler::handle);
     }

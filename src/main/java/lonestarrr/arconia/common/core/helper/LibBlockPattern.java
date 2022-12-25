@@ -59,7 +59,7 @@ public abstract class LibBlockPattern {
          *   ],
          *   "blocks": {
          *     "1": {"id": "minecraft:lime_wool"},
-         *     "2": {"ID": "arconia:block_colored_soil"}
+         *     "2": {"ID": "mincraft:green_wool"}
          *   }
          */
         InputStream in = Minecraft.getInstance().getResourceManager().getResource(location).getInputStream();

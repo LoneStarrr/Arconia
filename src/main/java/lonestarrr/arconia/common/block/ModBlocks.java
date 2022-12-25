@@ -21,18 +21,14 @@ import java.util.Map;
 
 public class ModBlocks {
 //    private static final Map<RainbowColor, RainbowCropBlock> rainbowCrops = new HashMap<>();
-    private static final Map<RainbowColor, RainbowCrateBlock> rainbowCrates = new HashMap<>();
     private static final Map<RainbowColor, ArconiumTreeLeaves> arconiumTreeLeaves = new HashMap<>();
     private static final Map<RainbowColor, ArconiumTreeSapling> arconiumTreeSaplings = new HashMap<>();
     private static final Map<RainbowColor, ArconiumBlock> arconiumBlocks = new HashMap<>();
     private static final Map<RainbowColor, InfiniteGoldArconiumBlock> infiniteGoldArconiumBlocks = new HashMap<>();
 
     public static CloverBlock clover;
-    public static PotBlock pot;
-    public static ResourceGenBlock resourceGenBlock;
     public static Pedestal pedestal;
     public static CenterPedestal centerPedestal;
-    public static Orb orb;
     public static Hat hat;
     public static PotMultiBlockPrimary potMultiBlockPrimary; //no associated item
     public static PotMultiBlockSecondary potMultiBlockSecondary; //no associated item
@@ -44,20 +40,11 @@ public class ModBlocks {
         clover = new CloverBlock();
         register(r, clover, BlockNames.CLOVER);
 
-        pot = new PotBlock();
-        register(r, pot, BlockNames.POT);
-
-        resourceGenBlock = new ResourceGenBlock();
-        register(r, resourceGenBlock, BlockNames.RESOURCEGEN_BLOCK);
-
         pedestal = new Pedestal();
         register(r, pedestal, BlockNames.PEDESTAL);
 
         centerPedestal = new CenterPedestal();
         register(r, centerPedestal, BlockNames.CENTER_PEDESTAL);
-
-        orb = new Orb();
-        register(r, orb, BlockNames.ORB);
 
         hat = new Hat();
         register(r, hat, BlockNames.HAT);
@@ -70,10 +57,6 @@ public class ModBlocks {
 
         // RainbowColor tiered colorBlocks
         for (RainbowColor color: RainbowColor.values()) {
-            RainbowCrateBlock crate = new RainbowCrateBlock(color);
-            register(r, crate, color.getTierName() + BlockNames.RAINBOW_CRATE_SUFFIX);
-            rainbowCrates.put(color, crate);
-
             ArconiumTreeLeaves leaves = new ArconiumTreeLeaves(color);
             register(r, leaves, color.getTierName() + BlockNames.LEAVES_SUFFIX);
             arconiumTreeLeaves.put(color, leaves);
@@ -81,11 +64,6 @@ public class ModBlocks {
             ArconiumTreeSapling sapling = new ArconiumTreeSapling(color);
             register(r, sapling, color.getTierName() + BlockNames.SAPLING_SUFFIX);
             arconiumTreeSaplings.put(color, sapling);
-
-            // TODO decide on the fate of crops. They are not dynamically colored and they ugly
-//            RainbowCropBlock crop = new RainbowCropBlock(color);
-//            register(r, crop, color.getTierName() + BlockNames.RAINBOW_CROP_SUFFIX);
-//            rainbowCrops.put(color, crop);
 
             ArconiumBlock arconiumBlock = new ArconiumBlock(color);
             register(r, arconiumBlock, color.getTierName() + BlockNames.ARCONIUM_BLOCK_SUFFIX);
@@ -103,14 +81,10 @@ public class ModBlocks {
         Item.Properties builder = ModItems.defaultBuilder();
 
         registerBlockItem(r, clover, builder);
-        registerBlockItem(r, pot, builder);
-        registerBlockItem(r, resourceGenBlock, builder);
         registerBlockItem(r, pedestal, builder);
         registerBlockItem(r, centerPedestal, builder);
-        registerBlockItem(r, orb, builder); // TODO replace me with actual item?
         registerBlockItem(r, hat, builder);
 
-        rainbowCrates.values().stream().forEach(b -> registerBlockItem(r, b, builder));
         arconiumTreeSaplings.values().stream().forEach(b -> registerBlockItem(r, b, builder));
         arconiumTreeLeaves.values().stream().forEach(b -> registerBlockItem(r, b, builder));
         arconiumBlocks.values().stream().forEach(b -> registerBlockItem(r, b, builder));
@@ -124,10 +98,6 @@ public class ModBlocks {
     public static ArconiumBlock getArconiumBlock(RainbowColor tier) { return arconiumBlocks.get(tier); }
 
     public static InfiniteGoldArconiumBlock getInfiniteGoldArconiumBlock(RainbowColor tier) { return infiniteGoldArconiumBlocks.get(tier); }
-
-    public static RainbowCrateBlock getRainbowCrateBlock(RainbowColor tier) {
-        return rainbowCrates.get(tier);
-    }
 
     public static ArconiumTreeSapling getArconiumTreeSapling(RainbowColor tier) {
         return arconiumTreeSaplings.get(tier);

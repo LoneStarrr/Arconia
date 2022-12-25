@@ -1,8 +1,0 @@
-{
-  "variants": {
-    "facing=north": { "model": "arconia:block/resourcegen" },
-    "facing=east": { "model": "arconia:block/resourcegen", "y": 90 },
-    "facing=south": { "model": "arconia:block/resourcegen", "y": 180 },
-    "facing=west": { "model": "arconia:block/resourcegen", "y": 270 }
-  }
-}

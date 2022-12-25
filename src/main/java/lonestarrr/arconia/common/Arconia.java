@@ -2,7 +2,6 @@ package lonestarrr.arconia.common;
 
 import lonestarrr.arconia.common.advancements.ModCriterialTriggers;
 import lonestarrr.arconia.common.block.ModBlocks;
-import lonestarrr.arconia.common.block.RainbowCrateBlock;
 import lonestarrr.arconia.common.block.entities.ModBlockEntities;
 import lonestarrr.arconia.common.core.command.ArconiaCommand;
 import lonestarrr.arconia.common.core.command.FractalTreeCommand;
@@ -67,7 +66,6 @@ public class Arconia {
         modBus.addGenericListener(Item.class, ModBlocks::registerItemBlocks);
         modBus.addGenericListener(Item.class, ModItems::registerItems);
         modBus.addGenericListener(BlockEntityType.class, ModBlockEntities::registerBlockEntities);
-        modBus.addGenericListener(MenuType.class, RainbowCrateBlock::registerContainers);
         modBus.addGenericListener(RecipeSerializer.class, ModRecipeTypes::registerRecipeTypes);
 //        modBus.addGenericListener(Feature.class, ModFeatures::registerFeatures);
         ModFeatures.register(modBus);
