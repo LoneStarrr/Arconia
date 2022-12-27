@@ -2,7 +2,6 @@
   "type": "arconia:pedestal",
   "output": {
     "nbt": {
-      "coin_cost": 32,
       "item": {
         "id": "minecraft:blue_dye",
         "Count": 1

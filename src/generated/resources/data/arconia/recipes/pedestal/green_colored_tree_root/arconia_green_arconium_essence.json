@@ -2,7 +2,6 @@
   "type": "arconia:pedestal",
   "output": {
     "nbt": {
-      "coin_cost": 8,
       "item": {
         "id": "arconia:green_arconium_essence",
         "Count": 1
@@ -13,7 +12,7 @@
   "durationTicks": 400,
   "ingredients": [
     {
-      "item": "arconia:yellow_arconium_ingot"
+      "item": "arconia:green_infinite_gold_arconium_block"
     },
     {
       "item": "arconia:four_leaf_clover"

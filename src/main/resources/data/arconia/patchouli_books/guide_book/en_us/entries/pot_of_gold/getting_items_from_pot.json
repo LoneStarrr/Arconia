@@ -1,5 +1,5 @@
 {
-    "name": "Collecting items",
+    "name": "Obtaining treasure",
     "icon": "arconia:hat",
     "category": "arconia:pot_of_gold",
     "advancement": "arconia:main/red_root_of_essence",
@@ -18,7 +18,7 @@
         },
         {
             "type": "patchouli:text",
-            "text": "The first item to collect is arconium essence, which can be crafted into arconium ingots. These are used for enchanting other roots. They are also used for creating gold arconium blocks, which is an infinitely better method to fill the pot with gold."
+            "text": "The first item to collect is arconium essence, which is a powerful ingredient for various other items that unlock more treasures that can be obtained from the pot of gold."
         }
     ]
 }

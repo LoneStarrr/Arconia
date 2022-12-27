@@ -2,7 +2,6 @@
   "type": "arconia:pedestal",
   "output": {
     "nbt": {
-      "coin_cost": 64,
       "item": {
         "id": "minecraft:end_stone",
         "Count": 1

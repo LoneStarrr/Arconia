@@ -54,20 +54,6 @@ public class ColoredRoot extends Item {
 
     /**
      * @param stack
-     * @return Resource generation interval for enchanted root item
-     */
-    @Nonnull
-    public static int getResourceInterval(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        if (tag == null || !tag.contains(TAG_INTERVAL)) {
-            return 1;
-        }
-
-        return tag.getInt(TAG_INTERVAL);
-    }
-
-    /**
-     * @param stack
      * @return Resource generation count for enchanted root item
      */
     @Nonnull
@@ -81,82 +67,22 @@ public class ColoredRoot extends Item {
     }
 
     /**
-     * @param stack
-     * @return Resource generation count for enchanted root item
-     */
-    @Nonnull
-    public static int getResourceCoinCost(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        if (tag == null || !tag.contains(TAG_COIN_COST)) {
-            return 1;
-        }
-
-        return tag.getInt(TAG_COIN_COST);
-    }
-
-    /**
      * Colored roots can be enchanted through a ritual with a specific item. Once enchanted, right-clicking the root near an activated resource tree will
      * have that tree produce this resource.
      *
      * @param coloredRootStack colored root to set resource on
      * @param resourceItem     resource to set
      * @param count            Number of items generated per event. Must not exceed item's max stack count
-     * @param coinCost         Number of coins it takes to generate the resource
-     *                         <p>
      *                         Data is stored in NBT so that it can be used for any item from any mod by only adding a pedestal ritual recipe.
      */
     public static void setResourceItem(
-            @Nonnull ItemStack coloredRootStack, @Nonnull ItemLike resourceItem, @Nonnull int count, int coinCost) {
+            @Nonnull ItemStack coloredRootStack, @Nonnull ItemLike resourceItem, @Nonnull int count) {
         CompoundTag tag = coloredRootStack.getOrCreateTag();
         ItemStack stack = new ItemStack(resourceItem);
         int maxCount = stack.getMaxStackSize();
         int stackCount = count > maxCount ? maxCount : count;
         stack.setCount(stackCount);
         tag.put(TAG_ITEM, stack.serializeNBT());
-        tag.putInt(TAG_COIN_COST, coinCost < 1 ? 1 : coinCost);
-    }
-
-    /**
-     * Tiered tree roots enchanted through a pedestal crafting ritual with a specific resource are able to assign this resource to a placed down
-     * hat. The hat can then 'draw' this resource from a nearby active and linked pot of gold.
-     *
-     * @param context
-     * @return
-     */
-    @Override
-    public InteractionResult useOn(UseOnContext context) {
-        Level world = context.getLevel();
-        Player player = context.getPlayer();
-        BlockPos pos = context.getClickedPos();
-        ItemStack heldItem = player.getItemInHand(context.getHand());
-
-        if (heldItem.getItem() != this || world.getBlockState(pos).getBlock() != ModBlocks.hat) {
-            return InteractionResult.PASS;
-        }
-
-        ItemStack resource = getResourceItem(heldItem); // Item to be produced
-
-        if (resource.isEmpty()) {
-            return InteractionResult.PASS;
-        }
-
-        int count = getResourceCount(heldItem);
-        resource.setCount(count);
-        int interval = getResourceInterval(heldItem);
-        int coinCost = getResourceCoinCost(heldItem);
-
-        boolean resourceSet = Hat.setResourceGenerated(world, pos, tier, resource, interval, coinCost);
-
-        if (resourceSet) {
-            if (heldItem.getCount() > 1) {
-                heldItem.shrink(1);
-                player.setItemInHand(context.getHand(), heldItem);
-            } else {
-                player.setItemInHand(context.getHand(), ItemStack.EMPTY);
-            }
-        }
-
-        return InteractionResult.SUCCESS;
     }
 
     @OnlyIn(Dist.CLIENT)

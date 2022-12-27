@@ -6,6 +6,7 @@ import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.stream.Stream;
 
@@ -71,6 +72,8 @@ public class ModLanguageProvider extends LanguageProvider {
                 { "advancement.arconia.main.root.desc", "Dig up dirt and find some memoirs" },
                 { "advancement.arconia.main.four_leaf_clover.title", "Get lucky" },
                 { "advancement.arconia.main.four_leaf_clover.desc", "Find a four-leaf clover" },
+                { "advancement.arconia.main.red_tree_root.title", "Arconium Tree Root" },
+                { "advancement.arconia.main.red_tree_root.desc", "Harvest arconium trees for some roots" },
                 { "advancement.arconia.main.clover_staff.title", "You're a wizard now" },
                 { "advancement.arconia.main.clover_staff.desc", "Make a clover staff" },
                 { "advancement.arconia.main.red_arconium_sickle.title", "Leaf breaker 9000" },
@@ -85,21 +88,31 @@ public class ModLanguageProvider extends LanguageProvider {
                 { "advancement.arconia.main.pot_of_gold.desc", "Build a pot of gold" },
                 { "advancement.arconia.main.hat.title", "I've hat it with these puns" },
                 { "advancement.arconia.main.hat.desc", "Craft a leprechaun hat" },
-                { "advancement.arconia.main.red_arconium_block.title", "Pure Arconium" },
-                { "advancement.arconia.main.red_arconium_block.desc", "Convert your first gold arconium gold block" },
                 { "advancement.arconia.main.red_arconium_essence.title", "Arconium Essence" },
                 { "advancement.arconia.main.red_arconium_essence.desc", "Get your first red arconium essence" },
-                { "advancement.arconia.main.red_gold_arconium_block.title", "Arconium Gold" },
-                { "advancement.arconia.main.red_gold_arconium_block.desc", "Get your first arconium infused gold" },
-                { "advancement.arconia.main.red_tree_root.title", "Arconium Tree Root" },
-                { "advancement.arconia.main.red_tree_root.desc", "Harvest arconium trees for some roots" },
+                { "advancement.arconia.main.red_arconium_ingot.title", "Arconium Ingots" },
+                { "advancement.arconia.main.red_arconium_ingot.desc", "Craft your first arconium ingot" },
+                { "advancement.arconia.main.red_infinite_gold_arconium_block.title", "Arconium Gold" },
+                { "advancement.arconia.main.red_infinite_gold_arconium_block.desc", "Get your first arconium infused gold" },
                 { "advancement.arconia.main.orange_arconium_tree_sapling.title", "Orange you glad" },
                 { "advancement.arconia.main.orange_arconium_tree_sapling.desc", "Harvest your first orange arconium sapling" },
+                { "advancement.arconia.main.orange_arconium_ingot.title", "Not so juicy" },
+                { "advancement.arconia.main.orange_arconium_ingot.desc", "Orange arconium ingots!" },
+                { "advancement.arconia.main.yellow_arconium_ingot.title", "Nautical Nonsense" },
+                { "advancement.arconia.main.yellow_arconium_ingot.desc", "Yellow arconium ingots!" },
+                { "advancement.arconia.main.green_arconium_ingot.title", "It's not easy being green" },
+                { "advancement.arconia.main.green_arconium_ingot.desc", "Green arconium ingots!" },
+                { "advancement.arconia.main.light_blue_arconium_ingot.title", "You smurfed another one!" },
+                { "advancement.arconia.main.light_blue_arconium_ingot.desc", "Light blue arconium ingots!" },
+                { "advancement.arconia.main.blue_arconium_ingot.title", "Da Ba Dee" },
+                { "advancement.arconia.main.blue_arconium_ingot.desc", "Blue arconium ingots!" },
+                { "advancement.arconia.main.purple_arconium_ingot.title", "ROYGBIV" },
+                { "advancement.arconia.main.purple_arconium_ingot.desc", "Obtain the last, purple arconium ingot!" },
         }).forEach(adv -> add(adv[0], adv[1]));
     }
 
     private void registerMisc() {
-        add("jei.arconia.recipe_category.altar", "Altar");
+        add("jei.arconia.recipe_category.altar", "Pedestal Ritual");
         // clover staff messages
         add("arconia.item.cloverstaff.linkhat.invalidpot", "The selected pot of gold appears to be invalid or missing");
         add("arconia.item.cloverstaff.linkhat.linked", "Linked hat");
@@ -112,6 +125,18 @@ public class ModLanguageProvider extends LanguageProvider {
         add("arconia.item.cloverstaff.linkhat.unlink_failed", "Hat was not linked");
         add("arconia.item.cloverstaff.selectpot.success", "Stored coordinate of the pot of gold at %s");
         add("arconia.item.cloverstaff.selectpot.failed", "Invalid pot of gold multiblock structure?");
+        // hat messages
+        add("arconia.block.hat.not_linked_to_pot", "The hat is not linked to a pot of gold yet");
+        add("arconia.block.hat.resource_already_set", "The hat is already configured with a resource. Crouch with an empty hand to clear the undo this first");
+        add("arconia.block.hat.resource_tier_too_high", "The linked pot of gold does not have a high enough tier for this resource");
+        add("arconia.block.hat.resource_empty", "The root is not configured with a resource to generate");
+        add("arconia.block.hat.resource_set", "The hat is now setup to receive %s items");
+        add("arconia.block.hat.resource_unset", "The hat will now no longer receive resources");
+        add("arconia.block.hat.info_resource_empty", "The hat is not configured to receive resources");
+        add("arconia.block.hat.info_resource", "The hat is configured to receive %s items, for tier: ");
+        add("arconia.block.hat.info_linked", "The hat is linked to a pot of gold at %s");
+        add("arconia.block.hat.info_unlinked", "The hat is not linked to a pot of gold");
+
         // pedestal ritual messages
         add("arconia.block.center_pedestal.ritual_start_failed", "Failed to start ritual. Perhaps some items are missing?");
         // Pot multiblock

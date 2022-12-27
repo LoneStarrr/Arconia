@@ -6,25 +6,25 @@
   "durationTicks": 300,
   "ingredients": [
     {
-      "item": "minecraft:gold_block"
+      "item": "arconia:red_infinite_gold_arconium_block"
     },
     {
-      "item": "arconia:orange_arconium_ingot"
+      "item": "arconia:red_arconium_ingot"
     },
     {
-      "item": "arconia:orange_arconium_ingot"
+      "item": "arconia:red_arconium_ingot"
     },
     {
-      "item": "arconia:orange_arconium_ingot"
+      "item": "arconia:red_arconium_ingot"
     },
     {
-      "item": "arconia:orange_arconium_ingot"
+      "item": "arconia:red_arconium_ingot"
     },
     {
-      "item": "arconia:orange_arconium_ingot"
+      "item": "arconia:red_arconium_ingot"
     },
     {
-      "item": "arconia:orange_arconium_ingot"
+      "item": "arconia:orange_arconium_tree_sapling"
     }
   ]
 }

@@ -2,11 +2,11 @@
     "name": "Sickle",
     "icon": "arconia:red_arconium_sickle",
     "category": "arconia:pot_of_gold",
-    "advancement": "arconia:main/red_arconium_block",
+    "advancement": "arconia:main/red_arconium_ingot",
     "pages": [
         {
             "type": "patchouli:text",
-            "text": "I noticed that the leprechauns made a sickle from the magic colorful metal to harvest leaves of equally colorful trees. By doing so they were able to occasionally get saplings with a different color. Interesting."
+            "text": "I noticed that the leprechauns made a sickle from the magic colorful metal to harvest leaves of the trees with the same color. By doing so they were able to occasionally get saplings with a different color. Interesting."
         },
         {
             "type": "patchouli:crafting",

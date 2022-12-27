@@ -2,7 +2,6 @@
   "type": "arconia:pedestal",
   "output": {
     "nbt": {
-      "coin_cost": 4,
       "item": {
         "id": "minecraft:iron_ingot",
         "Count": 1

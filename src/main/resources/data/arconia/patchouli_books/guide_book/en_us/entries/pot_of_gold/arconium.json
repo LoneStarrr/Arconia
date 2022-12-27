@@ -4,13 +4,6 @@
     "category": "arconia:pot_of_gold",
     "advancement": "arconia:main/red_arconium_essence",
     "pages": [
-        {
-            "type": "patchouli:text",
-            "text": "The leprechauns infused the arconium essence with a block of gold using a pedestal ritual. The resulting arconium gold block appeared to have a special ability. If placed under a leprechaun hat that is linked to a pot of gold, the pot will slowly absorb the gold, leaving behind a block of pure arconium."
-        },
-        {
-            "type": "patchouli:text",
-            "text": "The absorbed gold seemed to fill the pot far more efficiently than throwing in gold ingots, and is thus a cheaper way to get other resources from the pot. After a while, the gold appeared to be absorbed and the leprechauns mined the purified arconium block to convert it into to ingots."
-        }
+	"Using various items found throughout the world, the leprechauns came up with a pedestal ritual to fabricate arconium ingots. These colorful metals see to possess interesting qualities. I witnessed them craft different colored versions too, but each new color required some rituals and items involving the previously made ingots."
     ]
 }

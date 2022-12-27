@@ -13,20 +13,19 @@ public class HatRenderer implements BlockEntityRenderer<HatBlockEntity> {
 
     @Override
     public void render(
-            HatBlockEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
+            HatBlockEntity hatEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
             int combinedOverlay) {
-        // TODO Duplicate logic w/ResourceGenRenderer - separate out into shared code
-        ItemStack stack = tileEntity.getResourceGenerated();
+        ItemStack stack = hatEntity.getResourceGenerated();
         if (stack == ItemStack.EMPTY) {
             return;
         }
 
-        BlockPos tePos = tileEntity.getBlockPos();
-        BlockPos itemPos = tePos.above();
+        BlockPos hatPos = hatEntity.getBlockPos();
+        BlockPos itemPos = hatPos.above();
 
         matrixStack.pushPose();
-        // TER's have the tile entity at (0, 0, 0), compensate
-        matrixStack.translate(-tePos.getX(), -tePos.getY(), -tePos.getZ());
+        // BERs have the tile entity at (0, 0, 0), compensate
+        matrixStack.translate(-hatPos.getX(), -hatPos.getY(), -hatPos.getZ());
         ItemProjector.projectItem(stack, itemPos, matrixStack, buffer, combinedLight, combinedOverlay, false);
 
         matrixStack.popPose();

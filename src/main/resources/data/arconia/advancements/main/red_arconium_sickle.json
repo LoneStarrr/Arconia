@@ -13,7 +13,7 @@
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "arconia:main/red_arconium_block",
+  "parent": "arconia:main/red_arconium_ingot",
   "criteria": {
     "red_arconium_sickle": {
       "trigger": "minecraft:inventory_changed",

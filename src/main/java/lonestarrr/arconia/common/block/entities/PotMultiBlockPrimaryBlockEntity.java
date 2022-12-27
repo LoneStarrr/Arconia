@@ -2,6 +2,7 @@ package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
+import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
 import lonestarrr.arconia.common.item.ModItems;
 import lonestarrr.arconia.common.network.ModPackets;
@@ -29,6 +30,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
     private int coinCount;
     private int intervalsElapsed = 0;
+    private int lastCoinCollectInterval = 0; // not persisted
     private long lastIntervalGameTime = 0;
 
     private final List<HatData> hats = new ArrayList<>();
@@ -60,6 +62,8 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     public int maxHatDistance() {
         return ConfigHandler.COMMON.potOfGoldMaxHatDistance.get();
     }
+
+    public RainbowColor getTier() { return detectTier(); }
 
     public void linkHat(BlockPos hatPos) throws LinkHatException {
         if (hats.size() >= maxHats()) {
@@ -180,6 +184,33 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         return coinCount;
     }
 
+    /*
+     * Tier of the pot is determined by a linked hat sitting on top of a gold arconium block. The tier of the gold arconium block determines the tier of the pot.
+     * If multiple gold arconium blocks are linked this way, it will pick the highest tier. Linking multiple blocks does not do anything for the production rate.
+     */
+    private RainbowColor detectTier() {
+        // Without a gold arconium block, the minimum tier is always red.
+        RainbowColor detectedTier = RainbowColor.RED;
+        for (HatData hat : hats) {
+            BlockPos hatPos = hat.hatPos;
+            // TODO consider chunk loading if the hat is in a chunk that is not loaded?
+            HatBlockEntity hatEntity = getHatEntity(hatPos);
+            if (hatEntity == null) {
+                continue;
+            }
+            if (!hatEntity.getResourceGenerated().isEmpty()) {
+                continue;
+            }
+            BlockPos goldArconiumPos = hatPos.below();
+            GoldArconiumBlockEntity te = getGoldArconiumInWorld(goldArconiumPos);
+            if (te != null && te.getTier().getTier() > detectedTier.getTier()) {
+                detectedTier = te.getTier();
+            }
+        }
+
+        return detectedTier;
+    }
+
     /**
      * Loop over all hats in random order and collect coins and/or send (generate) resources to them
      */
@@ -195,8 +226,8 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         }
 
         int hatsSentTo = 0;
-        int hatsCollectedCoinsFrom = 0;
         List<HatData> hatsToRemove = new ArrayList<>(hats.size());
+        RainbowColor potTier = detectTier();
 
         Collections.shuffle(hats);
 
@@ -218,23 +249,17 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             }
 
             if (!hatEntity.getResourceGenerated().isEmpty()) {
-                if (this.intervalsElapsed - hat.lastResourceGenInterval < hatEntity.getResourceGenInterval()) {
-                    continue;
-                }
-                if (coinCount > 0 && sendResourceToHat(hatEntity, hatPos)) {
+                if (coinCount > 0 && hatEntity.getTier().getTier() <= potTier.getTier() && sendResourceToHat(hatEntity, hatPos)) {
                     hatsSentTo++;
-                    hat.lastResourceGenInterval = this.intervalsElapsed;
                 }
             } else {
-                // This prevents sending more frequently than the dictated interval of the gold arconium block AND it limits to a max number of  coin collectors, but..
-                // placing multiple of a lower tier can still speed it up because the limit is applied per pot tick, which is shorter than the coin collector's
-                // interval. I.e. one can always get coin collection down to 1 per pot tick by placing enough of them. Am I ok with that?
+                // If the hat sits on top of a coin producer, and the coin generation interval has passed, let's get some gold.
+                // If there are more coin producers, the first one that meets the criteria and has coins available will be used.
                 BlockPos goldArconiumPos = hatPos.below();
                 GoldArconiumBlockEntity te = getGoldArconiumInWorld(goldArconiumPos);
-                if (te != null && hatsCollectedCoinsFrom < MAX_COIN_SUPPLIERS && this.intervalsElapsed - hat.lastCoinCollectInterval >= te.getCoinGenerationInterval()) {
+                if (te != null && this.intervalsElapsed - this.lastCoinCollectInterval >= te.getCoinGenerationInterval()) {
                     if (collectCoins(te, goldArconiumPos) > 0) {
-                        hatsCollectedCoinsFrom++;
-                        hat.lastCoinCollectInterval = this.intervalsElapsed;
+                        this.lastCoinCollectInterval = this.intervalsElapsed;
                     }
                 }
             }
@@ -255,12 +280,15 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
      * @return Whether resources were sent to the specified hat
      */
     private boolean sendResourceToHat(HatBlockEntity hatEntity, BlockPos hatPos) {
-        if (coinCount < hatEntity.getResourceCoinCost()) {
+        RainbowColor tier = hatEntity.getTier();
+        int coinCost = ConfigHandler.COMMON.itemCost.get(tier).get();
+
+        if (coinCount < coinCost) {
             return false;
         }
         ItemStack sent = hatEntity.generateResource(level);
         if (!sent.isEmpty()) {
-            coinCount -= hatEntity.getResourceCoinCost();
+            coinCount -= coinCost;
             setChanged();
             PotItemTransferPacket packet = new PotItemTransferPacket(hatPos.above(), worldPosition.above(), sent);
             ModPackets.sendToNearby(level, worldPosition, packet);
@@ -310,10 +338,6 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 class HatData {
     public HatData(BlockPos hatPos) {
         this.hatPos = hatPos;
-        this.lastResourceGenInterval = 0; //not persisted
-        this.lastCoinCollectInterval = 0; //not persisted
     }
-    public long lastResourceGenInterval;
-    public long lastCoinCollectInterval;
     public BlockPos hatPos;
 }

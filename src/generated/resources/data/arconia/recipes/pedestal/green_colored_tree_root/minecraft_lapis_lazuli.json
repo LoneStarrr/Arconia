@@ -2,7 +2,6 @@
   "type": "arconia:pedestal",
   "output": {
     "nbt": {
-      "coin_cost": 8,
       "item": {
         "id": "minecraft:lapis_lazuli",
         "Count": 1

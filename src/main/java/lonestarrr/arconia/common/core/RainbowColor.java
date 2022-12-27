@@ -1,5 +1,7 @@
 package lonestarrr.arconia.common.core;
 
+import net.minecraft.util.StringRepresentable;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.stream.Stream;
@@ -7,7 +9,7 @@ import java.util.stream.Stream;
 /**
  * All the colors of the Minecraft rainbow roughly matching dye colors - used by various blocks and items
  */
-public enum RainbowColor {
+public enum RainbowColor implements StringRepresentable {
     RED(1, "red", "Red", 0xFF0000),
     ORANGE(2, "orange", "Orange", 0xFF7F00),
     YELLOW(3, "yellow", "Yellow", 0xFFFF00),
@@ -64,7 +66,26 @@ public enum RainbowColor {
         return RainbowColor.values()[this.ordinal() + 1];
     }
 
+    public RainbowColor getPreviousTier() {
+        if (tier == RainbowColor.RED.tier) {
+            return null;
+        }
+        return RainbowColor.values()[this.ordinal() - 1];
+    }
+
+    @Override
+    public String getSerializedName() {
+        return this.tierName;
+    }
+
+    public String toString() {
+        return this.tierName;
+    }
+
+    /**
+     * @return Unlocalized name for default language data generation
+     */
     public String getUnlocalizedName() {
-        return this.unlocalizedName;
+        return unlocalizedName;
     }
 }

@@ -36,6 +36,7 @@ public final class ConfigHandler {
         public final ForgeConfigSpec.IntValue potOfGoldMaxHats;
         public final ForgeConfigSpec.IntValue potOfGoldTicksPerInterval;
         public final ForgeConfigSpec.IntValue potOfGoldMaxHatDistance;
+        public final Map<RainbowColor, ForgeConfigSpec.IntValue> itemCost = new HashMap<>(RainbowColor.values().length);
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("potOfGold");
@@ -48,10 +49,21 @@ public final class ConfigHandler {
             potOfGoldMaxHatDistance = builder
                     .comment("Maximum distance at which hats can be linked to a pot of gold")
                     .defineInRange("maxHatDistance", 16, 4, 64);
+
+            int currentItemCost = 1;
+
+            for (RainbowColor color : RainbowColor.values()) {
+                ForgeConfigSpec.IntValue itemCostForTier = builder
+                        .comment("Number of gold coins required to produce an item of this tier")
+                        .defineInRange(color.getTierName() + "CoinInterval", currentItemCost, 1, Integer.MAX_VALUE);
+                itemCost.put(color, itemCostForTier);
+                currentItemCost *= 2;
+            }
+
             builder.pop(); // potOfGold
 
             builder.push("goldArconiumBlock");
-            int currentCoinCount = 1;
+            int currentCoinCount = 2;
             int currentCoinInterval = 13;
             int currentCoinCapacity = 256;
 
@@ -63,7 +75,7 @@ public final class ConfigHandler {
                 currentCoinInterval -= 2;
 
                 ForgeConfigSpec.IntValue coinAmount = builder
-                        .comment("How many coins are collected by the pot whenever it ticks.")
+                        .comment("How many coins are collected by the pot whenever it ticks. This number should be at least equal to the item cost for the same tier to prevent them from being generated at all.")
                         .defineInRange(color.getTierName() + "CoinCount", currentCoinCount, 1, Integer.MAX_VALUE);
                 goldArconiumCoinCounts.put(color, coinAmount);
                 currentCoinCount *= 3;
@@ -77,7 +89,7 @@ public final class ConfigHandler {
                         .comment("If this gold arconium block does not have an infinite supply, the total amount of gold it has from the start.")
                         .defineInRange(color.getTierName() + "CoinCapacity", currentCoinCapacity, 1, Integer.MAX_VALUE);
                 goldArconiumCoinCapacity.put(color, coinCapacity);
-                currentCoinCapacity *= 2;
+                currentCoinCapacity *= 3;
             }
             builder.pop(); // goldArconiumBlock
         }

@@ -2,6 +2,7 @@ package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.core.handler.ConfigHandler;
 import lonestarrr.arconia.common.core.helper.InventoryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -20,8 +21,6 @@ public class HatBlockEntity extends BaseBlockEntity {
     private RainbowColor tier;
     private BlockPos linkedPotPos;
     private ItemStack itemStack; // item to generate (should this be an ItemStack?)
-    private int resourceGenInterval;
-    private int resourceCoinCost;
     public long nextTickParticleRender = 0; // used by TE renderer to track particle rendering - not persisted
 
     public HatBlockEntity(BlockPos pos, BlockState state) {
@@ -54,12 +53,11 @@ public class HatBlockEntity extends BaseBlockEntity {
         setChanged();
     }
 
-    public void setResourceGenerated(RainbowColor tier, ItemStack itemStack, int interval, int coinCost) {
+    public void setResourceGenerated(RainbowColor tier, ItemStack itemStack) {
         this.tier = tier;
         this.itemStack = itemStack.copy();
-        this.resourceGenInterval = interval;
-        this.resourceCoinCost = coinCost <= 0 ? 1: coinCost;
         setChanged();
+        updateClient();
     }
 
     @Nonnull
@@ -67,11 +65,12 @@ public class HatBlockEntity extends BaseBlockEntity {
         return this.itemStack.copy(); //deals with isEmpty() smartly
     }
 
-    public int getResourceGenInterval() {
-        return resourceGenInterval;
+    public void unsetResourceGenerated() {
+        this.itemStack = ItemStack.EMPTY;
+        this.tier = RainbowColor.RED;
+        setChanged();
+        updateClient();
     }
-
-    public int getResourceCoinCost() { return resourceCoinCost; }
 
     public final ItemStack getItemStack() {
         return this.itemStack.copy();
@@ -110,8 +109,6 @@ public class HatBlockEntity extends BaseBlockEntity {
         if (!level.isClientSide()) {
             tag.putInt("tier", tier.getTier());
             tag.put("item", this.itemStack.serializeNBT());
-            tag.putInt("interval", resourceGenInterval);
-            tag.putInt("coin_cost", resourceCoinCost);
             if (this.linkedPotPos != null) {
                 tag.putLong("pot_pos", this.linkedPotPos.asLong());
             }
@@ -122,8 +119,6 @@ public class HatBlockEntity extends BaseBlockEntity {
     public void readPacketNBT(CompoundTag tag) {
         ItemStack stack = ItemStack.EMPTY;
         RainbowColor tier = RainbowColor.RED;
-        int interval = 1;
-        int coinCost = 1;
 
         try {
             int tierNum = tag.getInt("tier");
@@ -133,10 +128,6 @@ public class HatBlockEntity extends BaseBlockEntity {
                 }
             }
             stack = ItemStack.of(tag.getCompound("item"));
-            if (!stack.isEmpty()) {
-                interval = tag.getInt("interval");
-                coinCost = tag.getInt("coin_cost");
-            }
 
             if (tag.contains("pot_pos")) {
                 this.linkedPotPos = BlockPos.of(tag.getLong("pot_pos"));
@@ -147,6 +138,6 @@ public class HatBlockEntity extends BaseBlockEntity {
         } catch(Exception e) {
             Arconia.logger.error("Failed to read block entity data: " + e.getMessage(), e);
         }
-        setResourceGenerated(tier, stack, interval, coinCost <= 0 ? 1: coinCost);
+        setResourceGenerated(tier, stack);
     }
 }

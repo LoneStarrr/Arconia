@@ -1,32 +1,29 @@
 {
   "display": {
     "icon": {
-      "item": "arconia:red_colored_tree_leaves"
+      "item": "arconia:green_arconium_ingot"
     },
     "title": {
-      "translate": "advancement.arconia.main.red_tree_root.title"
+      "translate": "advancement.arconia.main.green_arconium_ingot.title"
     },
     "description": {
-      "translate": "advancement.arconia.main.red_tree_root.desc"
+      "translate": "advancement.arconia.main.green_arconium_ingot.desc"
     },
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "arconia:main/root",
+  "parent": "arconia:main/yellow_arconium_ingot",
   "criteria": {
-    "red_tree_root": {
+    "green_arconium_ingot": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": [ "arconia:red_colored_tree_root" ]
+            "items": [ "arconia:green_arconium_ingot" ]
           }
         ]
       }
     }
   }
 }
-
-
-

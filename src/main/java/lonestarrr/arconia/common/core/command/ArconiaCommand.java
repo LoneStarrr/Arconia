@@ -27,16 +27,13 @@ public class ArconiaCommand {
                 Commands.literal("arconia").then(
                         Commands.literal("enchant_root").then(
                                 Commands.argument("item_id", ItemArgument.item()).then(
-                                        Commands.argument("item_count", IntegerArgumentType.integer(1, 8)).then(
-                                                Commands.argument("coin_cost", IntegerArgumentType.integer(1, 512))
-                                                        .executes(ctx -> enchantRoot(
-                                                                        ctx,
-                                                                        ItemArgument.getItem(ctx, "item_id"),
-                                                                        IntegerArgumentType.getInteger(ctx, "item_count"),
-                                                                        IntegerArgumentType.getInteger(ctx, "coin_cost")
-                                                                )
+                                        Commands.argument("item_count", IntegerArgumentType.integer(1, 8))
+                                                .executes(ctx -> enchantRoot(
+                                                                ctx,
+                                                                ItemArgument.getItem(ctx, "item_id"),
+                                                                IntegerArgumentType.getInteger(ctx, "item_count")
                                                         )
-                                        )
+                                                )
                                 )
                         )
                 )
@@ -44,7 +41,7 @@ public class ArconiaCommand {
     }
 
     private static int enchantRoot(
-            CommandContext<CommandSourceStack> ctx, ItemInput itemInput, int itemCount, int coinCost) throws CommandSyntaxException {
+            CommandContext<CommandSourceStack> ctx, ItemInput itemInput, int itemCount) throws CommandSyntaxException {
         Player player = ctx.getSource().getPlayerOrException();
         Item resourceItem = itemInput.getItem();
 
@@ -55,7 +52,7 @@ public class ArconiaCommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        ColoredRoot.setResourceItem(rootItem, resourceItem, itemCount, coinCost);
+        ColoredRoot.setResourceItem(rootItem, resourceItem, itemCount);
         player.sendMessage(new TextComponent("Enchanted the colored root with resourceItem " + resourceItem.getRegistryName()), Util.NIL_UUID);
         return Command.SINGLE_SUCCESS;
     }
