@@ -53,6 +53,7 @@ public class ModLanguageProvider extends LanguageProvider {
     private void registerModBlocks() {
         add(ModBlocks.clover, "Clover Plant");
         add(ModBlocks.hat, "Leprechaun Hat");
+        add(ModBlocks.worldBuilder, "World Builder");
         add(ModBlocks.pedestal, "Pedestal");
         add(ModBlocks.centerPedestal, "Center Pedestal");
     }
@@ -149,6 +150,11 @@ public class ModLanguageProvider extends LanguageProvider {
         add("arconia.block.pot_multiblock.coin_count.thousands", "There are thousands of coins");
         add("arconia.block.pot_multiblock.coin_count.ludicrous", "There is an insane amount of coins");
         add("arconia.block.pot_multiblock.coin_count.absolute", "The pot contains %s gold coins");
+        // world builder
+        add("arconia.block.world_builder.in_progress", "The world builder is a little busy right now, please try again later");
+        add("arconia.block.world_builder.start_build", "Starting the builder");
+        add("arconia.block.world_builder.no_blocks_found", "The builder didn't find any blocks to convert");
+
         // Guide book
         add("arconia.guide_book.landing_text", "A collection of notes on my discovery of the secrets to the Leprechaun's wealth, and how to help myself to some of that.");
         add("arconia.guide_book.name", "Arconia Notebook");

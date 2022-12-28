@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "arconia:block/world_builder"
+    }
+  }
+}

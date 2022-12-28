@@ -6,6 +6,7 @@ import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -31,11 +32,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        //TODO: default language too?
         registerLeaves();
         registerSaplings();
         registerArconiumBlocks();
         registerInfiniteGoldArconiumBlocks();
+        registerMisc();
     }
 
     private void registerSaplings() {
@@ -85,5 +86,14 @@ public class ModBlockStateProvider extends BlockStateProvider {
             simpleBlock(block, model);
             itemModels().withExistingParent(name, prefix("block/infinite_gold_arconium_block"));
         }
+    }
+
+    private void registerMisc() {
+        //World Builder
+        Block block = ModBlocks.worldBuilder;
+        String name = Registry.BLOCK.getKey(block).getPath();
+        ModelFile model = models().cubeTop(name, new ResourceLocation("block/oak_planks"), prefix("block/world_builder"));
+        simpleBlock(block, model);
+        itemModels().withExistingParent(name, prefix("block/world_builder"));
     }
 }

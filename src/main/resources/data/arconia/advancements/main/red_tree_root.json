@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "arconia:red_colored_tree_leaves"
+      "item": "arconia:red_arconium_tree_leaves"
     },
     "title": {
       "translate": "advancement.arconia.main.red_tree_root.title"
@@ -15,7 +15,7 @@
   },
   "parent": "arconia:main/root",
   "criteria": {
-    "red_tree_root": {
+    "red_colored_tree_root": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [

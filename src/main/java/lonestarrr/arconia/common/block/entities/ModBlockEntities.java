@@ -15,6 +15,7 @@ import static lonestarrr.arconia.common.block.ModBlocks.register;
 
 public class ModBlockEntities {
     public static final BlockEntityType<HatBlockEntity> HAT = BlockEntityType.Builder.of(HatBlockEntity::new, ModBlocks.hat).build(null);
+    public static final BlockEntityType<WorldBuilderEntity> WORLD_BUILDER = BlockEntityType.Builder.of(WorldBuilderEntity::new, ModBlocks.worldBuilder).build(null);
     public static final BlockEntityType<PedestalBlockEntity> PEDESTAL = BlockEntityType.Builder.of(PedestalBlockEntity::new, ModBlocks.pedestal).build(null);
     public static final BlockEntityType<CenterPedestalBlockEntity> CENTER_PEDESTAL = BlockEntityType.Builder.of(CenterPedestalBlockEntity::new, ModBlocks.centerPedestal).build(null);
     public static final BlockEntityType<PotMultiBlockPrimaryBlockEntity> POT_MULTIBLOCK_PRIMARY = BlockEntityType.Builder.of(PotMultiBlockPrimaryBlockEntity::new, ModBlocks.potMultiBlockPrimary).build(null);
@@ -26,6 +27,7 @@ public class ModBlockEntities {
         IForgeRegistry<BlockEntityType<?>> r = event.getRegistry();
 
         register(r, HAT, BlockNames.HAT);
+        register(r, WORLD_BUILDER, BlockNames.WORLD_BUILDER);
         register(r, PEDESTAL, BlockNames.PEDESTAL);
         register(r, CENTER_PEDESTAL, BlockNames.CENTER_PEDESTAL);
         register(r, POT_MULTIBLOCK_PRIMARY, BlockNames.POT_MULTIBLOCK_PRIMARY);

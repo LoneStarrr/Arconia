@@ -24,6 +24,8 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.getInfiniteGoldArconiumBlock(tier));
 
             tag(BlockTags.MINEABLE_WITH_HOE).add(ModBlocks.getArconiumTreeLeaves(tier));
+
+            tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.worldBuilder);
         }
 
     }

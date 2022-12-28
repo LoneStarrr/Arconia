@@ -3,6 +3,7 @@ package lonestarrr.arconia.common;
 import lonestarrr.arconia.common.advancements.ModCriterialTriggers;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.entities.ModBlockEntities;
+import lonestarrr.arconia.common.block.entities.WorldBuilderEntity;
 import lonestarrr.arconia.common.core.command.ArconiaCommand;
 import lonestarrr.arconia.common.core.command.FractalTreeCommand;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
@@ -33,6 +34,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -83,6 +85,9 @@ public class Arconia {
 
     public void commonSetup(FMLCommonSetupEvent event) {
         Arconia.logger.info("Running commonSetup");
+
+        // !! This mod life cycle event is called in parallel with any other mods - use event.enqueueWork() for things that are not thread-safe.
+
         // Register network packets to synchronize server/client data
         ModPackets.init();
         // The One Probe - optional, checks for mod presence
@@ -94,6 +99,12 @@ public class Arconia {
             throw new RuntimeException("Error loading build patterns", e);
         } catch (BlockPatternException e) {
             throw new RuntimeException("Error parsing build patterns", e);
+        }
+
+        try {
+            WorldBuilderEntity.loadDistributionTables();
+        } catch (IOException e) {
+            throw new RuntimeException("Error loading world builder distribution tables", e);
         }
     }
 

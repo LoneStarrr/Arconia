@@ -30,6 +30,7 @@ public class ModBlocks {
     public static Pedestal pedestal;
     public static CenterPedestal centerPedestal;
     public static Hat hat;
+    public static WorldBuilder worldBuilder;
     public static PotMultiBlockPrimary potMultiBlockPrimary; //no associated item
     public static PotMultiBlockSecondary potMultiBlockSecondary; //no associated item
 
@@ -48,6 +49,9 @@ public class ModBlocks {
 
         hat = new Hat();
         register(r, hat, BlockNames.HAT);
+
+        worldBuilder = new WorldBuilder();
+        register(r, worldBuilder, BlockNames.WORLD_BUILDER);
 
         potMultiBlockPrimary = new PotMultiBlockPrimary();
         register(r, potMultiBlockPrimary, BlockNames.POT_MULTIBLOCK_PRIMARY);
@@ -84,6 +88,7 @@ public class ModBlocks {
         registerBlockItem(r, pedestal, builder);
         registerBlockItem(r, centerPedestal, builder);
         registerBlockItem(r, hat, builder);
+        registerBlockItem(r, worldBuilder, builder);
 
         arconiumTreeSaplings.values().stream().forEach(b -> registerBlockItem(r, b, builder));
         arconiumTreeLeaves.values().stream().forEach(b -> registerBlockItem(r, b, builder));
