@@ -33,9 +33,9 @@ import java.util.*;
 public class WorldBuilderEntity extends BaseBlockEntity {
     private static DistributionTable distributionTable;
 
-    private int blocksPerTick = 2; // How many blocks may be converted per game tick?
-    private int blockRadiusHorizontal = 3;
-    private int blockLevels = 7; // This many vertical levels to convert, starting with the level directly below the builder
+    private int blocksPerTick = 8; // How many blocks may be converted per game tick?
+    private int blockRadiusHorizontal = 5;
+    private int blockLevels = 11; // This many vertical levels to convert, starting with the level directly below the builder
     private int gameTicksPerBuilderTick = 1; // how often to tick
     private float boostFactor = 1F; // Multiplication factor to increase chance to convert into boostable blocks (typically non-stone blocks)
 
