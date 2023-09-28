@@ -118,7 +118,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {
     // JEI repo, from https://github.com/mezz/JustEnoughItems/wiki/Getting-Started-%5B1.13-and-Up%5D
     maven {
-        url = 'https://dvs1.progwml6.com/files/maven/'
+        url = 'https://maven.blamejared.com/'
         metadataSources {
             mavenPom()
             artifact()
@@ -183,9 +183,9 @@ dependencies {
 
     // JEI
     // compile against the JEI API but do not include it at runtime
-    compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") { transitive = false }
+    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}") { transitive = false }
     // at runtime, use the full JEI jar
-    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") { transitive = false }
+    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}") { transitive = false }
 
     // Patchouli
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api") { transitive = false }
