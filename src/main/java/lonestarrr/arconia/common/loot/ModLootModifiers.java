@@ -18,7 +18,7 @@ public class ModLootModifiers {
 //    public static final LootItemConditionType PLAYER_NEEDS_GUIDEBOOK = new LootItemConditionType(new PlayerNeedsGuideBook.Serializer());
 
     // Global modifiers
-    public static final DeferredRegister<GlobalLootModifierSerializer<?>> LOOT_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.LOOT_MODIFIER_SERIALIZERS, Arconia.MOD_ID);
+    public static final DeferredRegister<GlobalLootModifierSerializer<?>> LOOT_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, Arconia.MOD_ID);
     public static final RegistryObject<GlobalLootModifierSerializer<?>> DIRT_MODIFIER = LOOT_MODIFIERS.register("dirt", () -> new DirtLootModifier.Serializer());
     public static final DeferredRegister<LootItemConditionType> LOOT_CONDITION_TYPES = DeferredRegister.create(Registry.LOOT_ITEM_REGISTRY, Arconia.MOD_ID);
     public static final RegistryObject<LootItemConditionType> NEEDS_GUIDEBOOK = LOOT_CONDITION_TYPES.register("player_needs_guidebook", () -> new LootItemConditionType(new PlayerNeedsGuideBook.Serializer()));

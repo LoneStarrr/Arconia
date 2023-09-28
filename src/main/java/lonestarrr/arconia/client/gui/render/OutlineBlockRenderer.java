@@ -23,6 +23,8 @@ import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import net.minecraft.client.renderer.RenderType.CompositeState;
+
 /**
  * Renders block outlines
  */

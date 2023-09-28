@@ -8,8 +8,8 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.ModelDataManager;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataManager;
+import net.minecraftforge.client.model.data.ModelData;
 
 import javax.annotation.Nonnull;
 
@@ -28,7 +28,7 @@ public class GhostBlockRenderer {
     public static void renderGhostBlock(@Nonnull final PoseStack matrixStack, @Nonnull final BlockPos pos, @Nonnull final BlockState state, final int lightLevel, final float scale) {
         BlockRenderDispatcher renderer = Minecraft.getInstance().getBlockRenderer();
         ClientLevel world = Minecraft.getInstance().level;
-        IModelData model = renderer.getBlockModel(state).getModelData(world, new BlockPos(pos), state, ModelDataManager.getModelData(world, new BlockPos(pos)));
+        ModelData model = renderer.getBlockModel(state).getModelData(world, new BlockPos(pos), state, ModelDataManager.getModelData(world, new BlockPos(pos)));
         Camera renderInfo = Minecraft.getInstance().gameRenderer.getMainCamera();
 
         matrixStack.pushPose();

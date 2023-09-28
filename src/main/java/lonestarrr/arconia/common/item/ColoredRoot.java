@@ -21,6 +21,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class ColoredRoot extends Item {
     private RainbowColor tier;
     private static final String TAG_ITEM = "item";

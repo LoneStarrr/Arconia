@@ -7,7 +7,7 @@ import lonestarrr.arconia.data.client.ModLanguageProvider;
 import lonestarrr.arconia.data.recipes.PedestalProvider;
 import lonestarrr.arconia.data.recipes.VanillaRecipeProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.data.event.GatherDataEvent;
 
 /**
  * Executed as part of runData gradle task - need to run this once on a fresh checkout to generate data files which are used automatically when executing
