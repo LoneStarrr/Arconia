@@ -20,7 +20,7 @@
       "conditions": {
         "items": [
           {
-            "item": "arconia:clover_staff"
+            "items": [ "arconia:clover_staff" ]
           }
         ]
       }

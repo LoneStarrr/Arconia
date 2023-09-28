@@ -1,37 +1,35 @@
 package lonestarrr.arconia.common.world.trees;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.trees.Tree;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.server.ServerWorld;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.world.ModFeatures;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.grower.AbstractTreeGrower;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class ArconiumTree extends Tree {
+public class ArconiumTree extends AbstractTreeGrower {
     private final RainbowColor tier;
 
     public ArconiumTree(RainbowColor tier) {
         this.tier = tier;
     }
 
-    /**
-     * Get a {@link net.minecraft.world.gen.feature.ConfiguredFeature} of tree
-     */
     @Nullable
-    protected ConfiguredFeature<BaseTreeFeatureConfig, ?> getConfiguredFeature(Random randomIn, boolean largeHive) {
+    protected Holder<ConfiguredFeature<?, ?>> getConfiguredFeature(Random randomIn, boolean largeHive) {
         return ModFeatures.getArconiumTreeConfigured(this.tier);
     }
 
     @Override
     public boolean growTree(
-            ServerWorld world, ChunkGenerator chunkGenerator, BlockPos pos, BlockState state, Random rand) {
+            ServerLevel world, ChunkGenerator chunkGenerator, BlockPos pos, BlockState state, Random rand) {
         boolean didGrow = super.growTree(world, chunkGenerator, pos, state, rand);
 
         if (didGrow) {
@@ -42,7 +40,7 @@ public class ArconiumTree extends Tree {
         return didGrow;
     }
 
-    private static void attemptPatternCompletion(World world, BlockPos saplingPos, RainbowColor tier) {
+    private static void attemptPatternCompletion(Level world, BlockPos saplingPos, RainbowColor tier) {
         // TODO Do I still need this? I think I care not - in which case this whole custom class can probably go
     }
 }

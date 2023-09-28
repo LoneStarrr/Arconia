@@ -1,0 +1,33 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "item": "arconia:red_arconium_ingot"
+  },
+  "durationTicks": 100,
+  "ingredients": [
+    {
+      "item": "minecraft:red_dye"
+    },
+    {
+      "item": "minecraft:red_dye"
+    },
+    {
+      "item": "minecraft:red_dye"
+    },
+    {
+      "item": "minecraft:red_dye"
+    },
+    {
+      "item": "arconia:red_arconium_essence"
+    },
+    {
+      "item": "arconia:red_arconium_essence"
+    },
+    {
+      "item": "arconia:red_arconium_essence"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    }
+  ]
+}

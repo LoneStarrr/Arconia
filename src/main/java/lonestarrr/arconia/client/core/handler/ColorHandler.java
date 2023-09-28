@@ -1,30 +1,23 @@
 package lonestarrr.arconia.client.core.handler;
 
 import lonestarrr.arconia.common.block.*;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.color.ItemColors;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockDisplayReader;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.MagicInABottle;
 import lonestarrr.arconia.common.item.ModItems;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class ColorHandler {
     public static void registerColorBlocks() {
         BlockColors colorBlocks = Minecraft.getInstance().getBlockColors();
         ItemColors items = Minecraft.getInstance().getItemColors();
-
-        colorBlocks.register(ModBlocks.resourceGenBlock, ModBlocks.resourceGenBlock);
-        //taken from minecraft's ItemColors
-        items.register((stack, color) -> {
-            BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
-            return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, color);
-        }, Item.byBlock(ModBlocks.resourceGenBlock));
 
         //magic in a bottle is colored differently based on ItemStack NBT data
         //'color' corresponds to the layer in the model (layer0 -> color 0, etc)
@@ -39,22 +32,13 @@ public class ColorHandler {
         }, ModItems.magicInABottle);
 
         for (RainbowColor tier: RainbowColor.values()) {
-            // Tree root tops are modified using the corresponding rainbow color.
-            ArconiumTreeRootBlock treeRoot = ModBlocks.getArconiumTreeRootBlocks(tier);
-            colorBlocks.register(treeRoot, treeRoot);
-            // Taken from minecraft's ItemColors
-            items.register((stack, layer) -> {
-                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
-                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
-            }, Item.byBlock(treeRoot));
-
             // Tree leaves
             ArconiumTreeLeaves treeLeaf = ModBlocks.getArconiumTreeLeaves(tier);
             colorBlocks.register(treeLeaf, treeLeaf);
             // Taken from minecraft's ItemColors
             items.register((stack, layer) -> {
                 BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
-                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
+                return colorBlocks.getColor(blockstate, (BlockAndTintGetter)null, (BlockPos)null, layer);
             }, Item.byBlock(treeLeaf));
 
             // Tree saplings
@@ -66,7 +50,7 @@ public class ColorHandler {
                     return 0xFFFFFF;
                 }
                 BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
-                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
+                return colorBlocks.getColor(blockstate, (BlockAndTintGetter)null, (BlockPos)null, layer);
             }, Item.byBlock(treeSapling));
 
             // Arconium blocks
@@ -75,20 +59,8 @@ public class ColorHandler {
             // Taken from minecraft's ItemColors
             items.register((stack, layer) -> {
                 BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
-                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
+                return colorBlocks.getColor(blockstate, (BlockAndTintGetter)null, (BlockPos)null, layer);
             }, Item.byBlock(arconiumBlock));
-
-            // Gold Arconium Blocks
-            GoldArconiumBlock goldArconiumBlock = ModBlocks.getGoldArconiumBlock(tier);
-            colorBlocks.register(goldArconiumBlock, goldArconiumBlock);
-            // Taken from minecraft's ItemColors
-            items.register((stack, layer) -> {
-                if (layer != 0) {
-                    return 0xFFFFFF;
-                }
-                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
-                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
-            }, Item.byBlock(goldArconiumBlock));
 
             // Infinite Gold Arconium Blocks
             InfiniteGoldArconiumBlock infiniteGoldArconiumBlock = ModBlocks.getInfiniteGoldArconiumBlock(tier);
@@ -99,17 +71,8 @@ public class ColorHandler {
                     return 0xFFFFFF;
                 }
                 BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
-                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
+                return colorBlocks.getColor(blockstate, (BlockAndTintGetter)null, (BlockPos)null, layer);
             }, Item.byBlock(infiniteGoldArconiumBlock));
-
-            // Rainbow crates
-            RainbowCrateBlock crateBlock = ModBlocks.getRainbowCrateBlock(tier);
-            colorBlocks.register(crateBlock, crateBlock);
-            // Taken from minecraft's ItemColors
-            items.register((stack, layer) -> {
-                BlockState blockstate = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
-                return colorBlocks.getColor(blockstate, (IBlockDisplayReader)null, (BlockPos)null, layer);
-            }, Item.byBlock(crateBlock));
 
             // Colored tree roots
             items.register((stack, layer) -> {
@@ -125,6 +88,18 @@ public class ColorHandler {
             items.register((stack, layer) -> {
                 return tier.getColorValue();
             }, ModItems.getArconiumIngot(tier));
+
+            // Colored arconium hoes
+            // Hoes are colored differently based on ItemStack NBT data
+            // 'color' corresponds to the layer in the model (layer0 -> color 0, etc)
+            // layer 0 is not dynamically colored, only layer1 is
+            items.register((stack, layer) -> {
+                // only the overlay is colored - each layer is a tint index
+                if (layer == 0) {
+                    return 0xffffff;
+                }
+                return tier.getColorValue();
+            }, ModItems.getArconiumSickle(tier));
         }
     }
 }

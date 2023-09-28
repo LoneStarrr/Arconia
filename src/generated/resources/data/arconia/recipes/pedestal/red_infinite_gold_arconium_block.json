@@ -6,28 +6,25 @@
   "durationTicks": 200,
   "ingredients": [
     {
-      "item": "arconia:red_gold_arconium_block"
+      "item": "minecraft:gold_block"
     },
     {
-      "item": "arconia:red_arconium_block"
+      "item": "arconia:red_arconium_essence"
     },
     {
-      "item": "arconia:red_arconium_block"
+      "item": "arconia:red_arconium_essence"
     },
     {
-      "item": "arconia:red_arconium_block"
+      "item": "arconia:red_arconium_essence"
     },
     {
-      "item": "arconia:red_arconium_block"
+      "item": "arconia:red_arconium_essence"
     },
     {
-      "item": "arconia:red_arconium_block"
+      "item": "arconia:red_arconium_essence"
     },
     {
-      "item": "arconia:red_arconium_block"
-    },
-    {
-      "item": "arconia:red_arconium_block"
+      "item": "arconia:red_arconium_tree_sapling"
     }
   ]
 }

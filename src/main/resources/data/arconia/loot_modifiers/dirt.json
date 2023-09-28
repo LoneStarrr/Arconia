@@ -7,5 +7,6 @@
     {
       "condition": "arconia:player_needs_guidebook"
     }
-  ]
+  ],
+  "type": "arconia:dirt"
 }

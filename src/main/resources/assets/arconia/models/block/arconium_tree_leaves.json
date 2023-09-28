@@ -1,7 +1,7 @@
 {
   "parent": "block/block",
   "textures": {
-    "all": "arconia:block/leaf_white",
+    "all": "arconia:block/leaves_white",
     "overlay": "arconia:block/leaf_speckles_animation",
     "particle": "#all"
   },

@@ -2,8 +2,10 @@
 
 # Lazy man's data generators - bite me
 
-for clr in red orange yellow green blue light_blue purple magenta pink
+for clrcombo in red:orange orange:yellow yellow:green green:blue blue:light_blue light_blue:purple purple:purple
 do
+    clr=$(echo $clrcombo | cut -d ':' -f1)
+    nextclr=$(echo $clrcombo | cut -d ':' -f2)
     cat << EOF > ${clr}_arconium_tree_leaves.json
 {
   "type": "minecraft:block",
@@ -16,6 +18,7 @@ do
           "children": [
             {
               "type": "minecraft:item",
+              "name": "arconia:${clr}_arconium_tree_leaves",
               "conditions": [
                 {
                   "condition": "minecraft:alternative",
@@ -23,7 +26,7 @@ do
                     {
                       "condition": "minecraft:match_tool",
                       "predicate": {
-                        "item": "minecraft:shears"
+                        "items": [ "minecraft:shears" ]
                       }
                     },
                     {
@@ -41,11 +44,33 @@ do
                     }
                   ]
                 }
-              ],
-              "name": "arconia:${clr}_arconium_tree_leaves"
+              ]
             },
             {
               "type": "minecraft:item",
+              "name": "arconia:${nextclr}_arconium_tree_sapling",
+              "conditions": [
+                {
+                  "condition": "minecraft:match_tool",
+                  "predicate": {
+                    "items": [ "arconia:${clr}_arconium_sickle" ]
+                  }
+                },
+                {
+                  "condition": "minecraft:table_bonus",
+                  "enchantment": "minecraft:fortune",
+                  "chances": [
+                    0.05,
+                    0.0625,
+                    0.083333336,
+                    0.1
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "arconia:${clr}_arconium_tree_sapling",
               "conditions": [
                 {
                   "condition": "minecraft:survives_explosion"
@@ -60,11 +85,11 @@ do
                     0.1
                   ]
                 }
-              ],
-              "name": "arconia:${clr}_arconium_tree_sapling"
+              ]
             },
             {
               "type": "minecraft:item",
+              "name": "arconia:${clr}_colored_tree_root",
               "conditions": [
                 {
                   "condition": "minecraft:survives_explosion"
@@ -79,8 +104,7 @@ do
                     0.1
                   ]
                 }
-              ],
-              "name": "arconia:${clr}_colored_tree_root"
+              ]
             }
           ]
         }
@@ -129,7 +153,7 @@ do
               {
                 "condition": "minecraft:match_tool",
                 "predicate": {
-                  "item": "minecraft:shears"
+                  "items": [ "minecraft:shears" ]
                 }
               },
               {

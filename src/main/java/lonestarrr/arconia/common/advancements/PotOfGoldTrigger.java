@@ -2,20 +2,18 @@ package lonestarrr.arconia.common.advancements;
 
 import com.google.gson.JsonObject;
 import lonestarrr.arconia.common.Arconia;
-import net.minecraft.advancements.criterion.*;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.ConditionArrayParser;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.advancements.critereon.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nonnull;
 
 /**
  * Advancement trigger for creating a pot of gold
  */
-public class PotOfGoldTrigger extends AbstractCriterionTrigger<PotOfGoldTrigger.Instance> {
+public class PotOfGoldTrigger extends SimpleCriterionTrigger<PotOfGoldTrigger.Instance> {
     public static final ResourceLocation ID = new ResourceLocation(Arconia.MOD_ID, "create_pot_of_gold");
     public static final PotOfGoldTrigger INSTANCE = new PotOfGoldTrigger();
 
@@ -29,19 +27,19 @@ public class PotOfGoldTrigger extends AbstractCriterionTrigger<PotOfGoldTrigger.
 
     @Nonnull
     @Override
-    public Instance createInstance(@Nonnull JsonObject json, EntityPredicate.AndPredicate playerPred, ConditionArrayParser conditions) {
+    public Instance createInstance(@Nonnull JsonObject json, EntityPredicate.Composite playerPred, DeserializationContext conditions) {
         // This allows mod pack authors to limit where the pot can be constructed through a datapack
         return new Instance(playerPred, LocationPredicate.fromJson(json.get("location")));
     }
 
-    public void trigger(ServerPlayerEntity player, ServerWorld world, BlockPos pos) {
+    public void trigger(ServerPlayer player, ServerLevel world, BlockPos pos) {
         trigger(player, instance -> instance.test(world, pos));
     }
 
-    static class Instance extends CriterionInstance {
+    static class Instance extends AbstractCriterionTriggerInstance {
         private final LocationPredicate pos;
 
-        Instance(EntityPredicate.AndPredicate playerPred, LocationPredicate pos) {
+        Instance(EntityPredicate.Composite playerPred, LocationPredicate pos) {
             super(ID, playerPred);
             this.pos = pos;
         }
@@ -52,7 +50,7 @@ public class PotOfGoldTrigger extends AbstractCriterionTrigger<PotOfGoldTrigger.
             return ID;
         }
 
-        boolean test(ServerWorld world, BlockPos pos) {
+        boolean test(ServerLevel world, BlockPos pos) {
             return this.pos.matches(world, pos.getX(), pos.getY(), pos.getZ());
         }
     }

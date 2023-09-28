@@ -5,9 +5,7 @@
       "item": {
         "id": "minecraft:soul_sand",
         "Count": 1
-      },
-      "interval": 5,
-      "coin_cost": 32
+      }
     },
     "item": "arconia:blue_colored_tree_root"
   },

@@ -6,28 +6,25 @@
   "durationTicks": 700,
   "ingredients": [
     {
-      "item": "arconia:blue_gold_arconium_block"
+      "item": "arconia:light_blue_infinite_gold_arconium_block"
     },
     {
-      "item": "arconia:blue_arconium_block"
+      "item": "arconia:light_blue_arconium_ingot"
     },
     {
-      "item": "arconia:blue_arconium_block"
+      "item": "arconia:light_blue_arconium_ingot"
     },
     {
-      "item": "arconia:blue_arconium_block"
+      "item": "arconia:light_blue_arconium_ingot"
     },
     {
-      "item": "arconia:blue_arconium_block"
+      "item": "arconia:light_blue_arconium_ingot"
     },
     {
-      "item": "arconia:blue_arconium_block"
+      "item": "arconia:light_blue_arconium_ingot"
     },
     {
-      "item": "arconia:blue_arconium_block"
-    },
-    {
-      "item": "arconia:blue_arconium_block"
+      "item": "arconia:blue_arconium_tree_sapling"
     }
   ]
 }

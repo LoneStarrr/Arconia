@@ -1,0 +1,33 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "item": "arconia:green_arconium_ingot"
+  },
+  "durationTicks": 100,
+  "ingredients": [
+    {
+      "item": "minecraft:emerald"
+    },
+    {
+      "item": "minecraft:emerald"
+    },
+    {
+      "item": "minecraft:waxed_weathered_copper"
+    },
+    {
+      "item": "minecraft:melon"
+    },
+    {
+      "item": "arconia:green_arconium_essence"
+    },
+    {
+      "item": "arconia:green_arconium_essence"
+    },
+    {
+      "item": "arconia:green_arconium_essence"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    }
+  ]
+}

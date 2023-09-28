@@ -2,15 +2,8 @@
     "name": "Arconium",
     "icon": "arconia:red_arconium_ingot",
     "category": "arconia:pot_of_gold",
-    "sortnum": 7,
+    "advancement": "arconia:main/red_arconium_essence",
     "pages": [
-        {
-            "type": "patchouli:text",
-            "text": "Once you have acquired arconium essence, it can be infused with a block of gold using an altar ritual (see JEI). The resulting arconium gold block gives it a special ability. If placed under a leprechaun hat that is linked to a pot of gold, the pot will slowly drain its gold contents, which it uses to automatically top itself up."
-        },
-        {
-            "type": "patchouli:text",
-            "text": "This is a far cheaper method to fill the pot than right-clicking it with gold ingots. Once the arconium gold block is drained, it will transform into a block of pure arconium which can then be mined. In pure form, it is used in altar rituals to enchant roots that will make the pot produce various items."
-        }
+	"Using various items found throughout the world, the leprechauns came up with a pedestal ritual to fabricate arconium ingots. These colorful metals see to possess interesting qualities. I witnessed them craft different colored versions too, but each new color required some rituals and items involving the previously made ingots."
     ]
 }

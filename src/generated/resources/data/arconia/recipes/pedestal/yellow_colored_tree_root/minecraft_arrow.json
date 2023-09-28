@@ -5,9 +5,7 @@
       "item": {
         "id": "minecraft:arrow",
         "Count": 1
-      },
-      "interval": 8,
-      "coin_cost": 4
+      }
     },
     "item": "arconia:yellow_colored_tree_root"
   },

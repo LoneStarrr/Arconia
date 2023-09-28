@@ -13,14 +13,14 @@
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "arconia:main/pot_of_gold",
+  "parent": "arconia:main/clover_staff",
   "criteria": {
     "hat": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "arconia:hat"
+            "items": [ "arconia:hat" ]
           }
         ]
       }

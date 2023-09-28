@@ -2,16 +2,12 @@ package lonestarrr.arconia.common.loot;
 
 import com.google.gson.JsonObject;
 import lonestarrr.arconia.common.core.helper.PatchouliHelper;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -21,7 +17,7 @@ import java.util.List;
  * before. To be used in conjunction with this mod's loot condition that checks whether this player has already received/mined the book.
  */
 public class DirtLootModifier extends LootModifier {
-    protected DirtLootModifier(ILootCondition[] conditionsIn) {
+    protected DirtLootModifier(LootItemCondition[] conditionsIn) {
         super(conditionsIn);
     }
 
@@ -37,7 +33,7 @@ public class DirtLootModifier extends LootModifier {
     // add Serializer to support data packs
     public static class Serializer extends GlobalLootModifierSerializer<DirtLootModifier> {
         @Override
-        public DirtLootModifier read(ResourceLocation name, JsonObject json, ILootCondition[] conditions) {
+        public DirtLootModifier read(ResourceLocation name, JsonObject json, LootItemCondition[] conditions) {
             return new DirtLootModifier(conditions);
         }
 

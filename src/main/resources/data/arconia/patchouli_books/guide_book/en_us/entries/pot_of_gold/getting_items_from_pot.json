@@ -1,24 +1,24 @@
 {
-    "name": "Obtaining items",
+    "name": "Obtaining treasure",
     "icon": "arconia:hat",
     "category": "arconia:pot_of_gold",
-    "sortnum": 6,
+    "advancement": "arconia:main/red_root_of_essence",
     "pages": [
         {
             "type": "patchouli:text",
-            "text": "I observed the leprechauns exchanging coins for items they desired by placing down their hats on a chest near the pot of gold. A tree root they had enchanted on the ritual altar before, appeared to instruct which item to pull out of the pot. What follows is a recap of the actions I had to perform to reproduce this."
+            "text": "I observed the leprechauns exchanging gold for items they desired by placing down their hats on a chest near the pot of gold. A tree root they had enchanted on the ritual altar before, appeared to instruct which item to pull out of the pot. What follows is a list of steps I wrote down to achieve this."
         },
         {
             "type": "patchouli:text",
-            "text": "Place a chest near the pot. Craft a leprechaun hat, and place it on the chest. Right click the pot with a clover staff, then right click the hat to link the two. The enchanted tree roots are used to select the item to be extracted from the pot. Simply take one and right-click the linked hat with it. You should now see the item visualized above the hat."
+            "text": "Place a chest near the pot. Craft a leprechaun hat, and place it on the chest. Right click the pot with the clover staff, then right click the hat to link the two. The enchanted tree roots are then used to select the item to be extracted from the pot. Simply take one and right-click the linked hat with it. You should now see the item visualized above the hat."
         },
         {
             "type": "patchouli:text",
-            "text": "Items generate only if the pot contains gold. The simplest, yet expensive way, is to right-click the pot of gold with a gold ingot. Based on the item being requested, more than one ingot may be required. Once there is enough gold in the pot, and once enough time has passed, the pot will start flinging items into nearby linked hats."
+            "text": "Items have a gold coin cost, and the pot will only produce items if it contains enough gold. The simplest, yet expensive way, is to right-click the pot of gold with a coin, which you can make using the pedestal ritual. You can inspect how much gold the pot contains by right-clicking it with an empty hand. If multiple hats are linked, the pot will select one at random."
         },
         {
             "type": "patchouli:text",
-            "text": "The first item to collect is arconium essence, as it is vital in producing arconium. This is needed for enchanting other roots. It is also used to infuse blocks of gold with arconium, which is the other, much cheaper and easier method to fill the pot with gold."
+            "text": "The first item to collect is arconium essence, which is a powerful ingredient for various other items that unlock more treasures that can be obtained from the pot of gold."
         }
     ]
 }

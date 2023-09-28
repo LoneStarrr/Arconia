@@ -2,8 +2,6 @@ package lonestarrr.arconia.common.core.helper;
 
 import lonestarrr.arconia.common.Arconia;
 
-import javax.accessibility.AccessibleRole;
-
 /**
  * Helper functions for language / translation
  */

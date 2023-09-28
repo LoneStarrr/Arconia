@@ -1,0 +1,27 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "nbt": {
+      "item": {
+        "id": "minecraft:shulker_shell",
+        "Count": 1
+      }
+    },
+    "item": "arconia:purple_colored_tree_root"
+  },
+  "durationTicks": 800,
+  "ingredients": [
+    {
+      "item": "arconia:purple_arconium_ingot"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "minecraft:shulker_shell"
+    },
+    {
+      "item": "arconia:purple_colored_tree_root"
+    }
+  ]
+}

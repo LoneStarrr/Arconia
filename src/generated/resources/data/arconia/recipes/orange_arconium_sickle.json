@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "II ",
+    " S ",
+    " S "
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "I": {
+      "item": "arconia:orange_arconium_ingot"
+    }
+  },
+  "result": {
+    "item": "arconia:orange_arconium_sickle"
+  }
+}

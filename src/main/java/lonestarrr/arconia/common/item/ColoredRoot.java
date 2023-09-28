@@ -1,21 +1,21 @@
 package lonestarrr.arconia.common.item;
 
 import lonestarrr.arconia.common.block.Hat;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,7 +44,7 @@ public class ColoredRoot extends Item {
 
     @Nonnull
     public static ItemStack getResourceItem(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
+        CompoundTag tag = stack.getTag();
         if (tag == null || !tag.contains(TAG_ITEM)) {
             return ItemStack.EMPTY;
         }
@@ -54,25 +54,11 @@ public class ColoredRoot extends Item {
 
     /**
      * @param stack
-     * @return Resource generation interval for enchanted root item
-     */
-    @Nonnull
-    public static int getResourceInterval(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
-        if (tag == null || !tag.contains(TAG_INTERVAL)) {
-            return 1;
-        }
-
-        return tag.getInt(TAG_INTERVAL);
-    }
-
-    /**
-     * @param stack
      * @return Resource generation count for enchanted root item
      */
     @Nonnull
     public static int getResourceCount(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
+        CompoundTag tag = stack.getTag();
         if (tag == null || !tag.contains(TAG_COUNT)) {
             return 1;
         }
@@ -81,91 +67,28 @@ public class ColoredRoot extends Item {
     }
 
     /**
-     * @param stack
-     * @return Resource generation count for enchanted root item
-     */
-    @Nonnull
-    public static int getResourceCoinCost(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
-        if (tag == null || !tag.contains(TAG_COIN_COST)) {
-            return 1;
-        }
-
-        return tag.getInt(TAG_COIN_COST);
-    }
-
-    /**
      * Colored roots can be enchanted through a ritual with a specific item. Once enchanted, right-clicking the root near an activated resource tree will
      * have that tree produce this resource.
      *
      * @param coloredRootStack colored root to set resource on
      * @param resourceItem     resource to set
-     * @param interval         Frequency with which resource is generated. An interval of 1 is fastest. Interval length is determined by the pot of gold and is typically
-     *                         no less than 5 ticks.
      * @param count            Number of items generated per event. Must not exceed item's max stack count
-     * @param coinCost         Number of coins it takes to generate the resource
-     *                         <p>
      *                         Data is stored in NBT so that it can be used for any item from any mod by only adding a pedestal ritual recipe.
      */
     public static void setResourceItem(
-            @Nonnull ItemStack coloredRootStack, @Nonnull IItemProvider resourceItem, @Nonnull int interval, @Nonnull int count, int coinCost) {
-        CompoundNBT tag = coloredRootStack.getOrCreateTag();
+            @Nonnull ItemStack coloredRootStack, @Nonnull ItemLike resourceItem, @Nonnull int count) {
+        CompoundTag tag = coloredRootStack.getOrCreateTag();
         ItemStack stack = new ItemStack(resourceItem);
         int maxCount = stack.getMaxStackSize();
         int stackCount = count > maxCount ? maxCount : count;
         stack.setCount(stackCount);
         tag.put(TAG_ITEM, stack.serializeNBT());
-        tag.putInt(TAG_INTERVAL, interval < 1 ? 1 : interval);
-        tag.putInt(TAG_COIN_COST, coinCost < 1 ? 1 : coinCost);
-    }
-
-    /**
-     * Tiered tree roots enchanted through a pedestal crafting ritual with a specific resource are able to assign this resource to a placed down
-     * hat. The hat can then 'draw' this resource from a nearby active and linked pot of gold.
-     *
-     * @param context
-     * @return
-     */
-    @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        World world = context.getLevel();
-        PlayerEntity player = context.getPlayer();
-        BlockPos pos = context.getClickedPos();
-        ItemStack heldItem = player.getItemInHand(context.getHand());
-
-        if (heldItem.getItem() != this || world.getBlockState(pos).getBlock() != ModBlocks.hat) {
-            return ActionResultType.PASS;
-        }
-
-        ItemStack resource = getResourceItem(heldItem); // Item to be produced
-
-        if (resource.isEmpty()) {
-            return ActionResultType.PASS;
-        }
-
-        int count = getResourceCount(heldItem);
-        resource.setCount(count);
-        int interval = getResourceInterval(heldItem);
-        int coinCost = getResourceCoinCost(heldItem);
-
-        boolean resourceSet = Hat.setResourceGenerated(world, pos, tier, resource, interval, coinCost);
-
-        if (resourceSet) {
-            if (heldItem.getCount() > 1) {
-                heldItem.shrink(1);
-                player.setItemInHand(context.getHand(), heldItem);
-            } else {
-                player.setItemInHand(context.getHand(), ItemStack.EMPTY);
-            }
-        }
-
-        return ActionResultType.SUCCESS;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(
-            ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+            ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
         ItemStack resource = getResourceItem(stack);
         if (!resource.isEmpty()) {

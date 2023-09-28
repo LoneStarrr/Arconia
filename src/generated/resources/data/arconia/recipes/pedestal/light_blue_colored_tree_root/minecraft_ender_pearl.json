@@ -5,9 +5,7 @@
       "item": {
         "id": "minecraft:ender_pearl",
         "Count": 1
-      },
-      "interval": 6,
-      "coin_cost": 16
+      }
     },
     "item": "arconia:light_blue_colored_tree_root"
   },

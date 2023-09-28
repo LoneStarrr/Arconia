@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "arconia:item/sickle_handle",
+    "layer1": "arconia:item/sickle_head"
+  }
+}

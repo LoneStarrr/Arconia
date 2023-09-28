@@ -1,10 +1,10 @@
 package lonestarrr.arconia.common.core.helper;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -23,16 +23,16 @@ public class InventoryHelper {
      * @return
      */
     @Nullable
-    public static IItemHandler getInventory(World world, BlockPos pos, Direction side) {
-        TileEntity te = world.getBlockEntity(pos);
+    public static IItemHandler getInventory(Level world, BlockPos pos, Direction side) {
+        BlockEntity be = world.getBlockEntity(pos);
 
-        if (te == null) {
+        if (be == null) {
             return null;
         }
 
-        LazyOptional<IItemHandler> ret = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+        LazyOptional<IItemHandler> ret = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
         if (!ret.isPresent()) {
-            ret = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+            ret = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
         }
         return ret.orElse(null);
     }

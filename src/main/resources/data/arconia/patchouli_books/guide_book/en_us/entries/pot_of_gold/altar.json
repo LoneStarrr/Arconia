@@ -1,12 +1,12 @@
 {
-    "name": "Altar",
+    "name": "Pedestal Ritual",
     "icon": "arconia:center_pedestal",
     "category": "arconia:pot_of_gold",
-    "sortnum": 2,
+    "advancement": "arconia:main/clover_staff",
     "pages": [
         {
             "type": "patchouli:text",
-            "text": "Over the years, I have witnessed that all strange, magical things in life somehow seem to involve some kind of ritual performed on a set of pedestals. I imagine magicians and wizards have to attend some kind of magic college where they are being told in no misunderstood terms that if they want to perform magic tricks, it had better involve a circle of pedestals."
+            "text": "All strange, magical things in life somehow seem to involve some kind of ritual performed on a set of pedestals. I imagine magicians and wizards have to attend some kind of magic college where they are being told in no misunderstood terms that if they want to perform magic tricks, it had better involve a circle of pedestals."
         },
         {
             "type": "patchouli:text",
@@ -14,7 +14,7 @@
         },
         {
             "type": "patchouli:text",
-            "text": "There are many rituals available. I have not documented them in this notebook, however some other clever individual has told me they can be find through something called $(italic)JEI$() by looking at how the center pedestal can be $(italic)$(bold)u$()$(italic)sed$()." 
+            "text": "There are many rituals available. They can be discovered by looking at how the center pedestal can be $(italic)used$()." 
         },
         {
             "type": "patchouli:crafting",

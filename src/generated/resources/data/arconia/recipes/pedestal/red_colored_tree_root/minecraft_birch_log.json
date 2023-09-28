@@ -5,9 +5,7 @@
       "item": {
         "id": "minecraft:birch_log",
         "Count": 1
-      },
-      "interval": 10,
-      "coin_cost": 1
+      }
     },
     "item": "arconia:red_colored_tree_root"
   },

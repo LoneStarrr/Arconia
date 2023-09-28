@@ -1,121 +1,136 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.tile.CenterPedestalTileEntity;
-import lonestarrr.arconia.common.block.tile.PotMultiBlockPrimaryTileEntity;
-import lonestarrr.arconia.common.block.tile.PotMultiBlockSecondaryTileEntity;
+import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
+import lonestarrr.arconia.common.block.entities.PotMultiBlockSecondaryBlockEntity;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
+import lonestarrr.arconia.common.item.ModItems;
 import lonestarrr.arconia.compat.theoneprobe.TOPDriver;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayer;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Block that is part of a large multiblock pot - this is the secondary, passive block. It is invisible in the world, as the primary block
  * will render the large model
  */
-public class PotMultiBlockSecondary extends Block implements TOPDriver {
-    private static final VoxelShape[] shapes;
-    private static final VoxelShape defaultShape = box(0, 0,0, 16, 16, 16);
-    private static final int MAX_SHAPE_IDX = 2 << 2 | 2; // see calcShapeIndex()
-
+public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver {
+    private static final Map<PotPosition, VoxelShape> posShapes = new HashMap<>();
     static {
-        shapes = calculateShapes();
+        posShapes.put(PotPosition.CENTER, box(0, 0, 0, 16, 16, 16));
+        posShapes.put(PotPosition.N, box(0, 0, 0, 16, 16, 11));
+        posShapes.put(PotPosition.NW, box(7, 0, 0, 16, 16, 9));
+        posShapes.put(PotPosition.W, box(5, 0, 0, 16, 16, 16));
+        posShapes.put(PotPosition.SW, box(7, 0, 7, 16, 16, 16));
+        posShapes.put(PotPosition.S, box(0, 0, 5, 16, 16, 16));
+        posShapes.put(PotPosition.SE, box(0, 0, 7, 9, 16, 16));
+        posShapes.put(PotPosition.E, box(0, 0, 0, 11, 16, 16));
+        posShapes.put(PotPosition.NE, box(0, 0, 0, 9, 16, 9));
     }
+
+    public static EnumProperty<PotPosition> POT_POSITION = EnumProperty.create("pot_position", PotPosition.class);
 
     public PotMultiBlockSecondary() {
-
         super(Block.Properties.of(Material.METAL).strength(4.0F).noOcclusion());
+        registerDefaultState(this.getStateDefinition().any().setValue(POT_POSITION, PotPosition.CENTER));
     }
 
     @Override
-    public ActionResultType use(
-            BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if (world.isClientSide || hand != Hand.MAIN_HAND) {
-            return ActionResultType.PASS;
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(POT_POSITION);
+    }
+
+    @Override
+    public InteractionResult use(
+            BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (world.isClientSide || hand != InteractionHand.MAIN_HAND) {
+            return InteractionResult.PASS;
         }
 
-        if (!(player instanceof ServerPlayerEntity) || player instanceof FakePlayer) {
-            return ActionResultType.PASS;
+        if (!(player instanceof ServerPlayer) || player instanceof FakePlayer) {
+            return InteractionResult.PASS;
         }
 
-        ItemStack itemUsed = player.inventory.getSelected();
-        // We buy gold
-        if (itemUsed.isEmpty() || itemUsed.getItem() != Items.GOLD_INGOT) {
-            return ActionResultType.PASS;
+        ItemStack itemUsed = player.getInventory().getSelected();
+
+        PotMultiBlockPrimaryBlockEntity primaryBE = getPrimaryBlockEntity(world, pos);
+        if (primaryBE == null) {
+            return InteractionResult.PASS;
         }
 
-        PotMultiBlockPrimaryTileEntity primTile = getPrimaryTileEntity(world, pos);
-        if (primTile == null) {
-            return ActionResultType.PASS;
+        if (itemUsed.isEmpty()) {
+            String coinCountStr = String.format("%,d", primaryBE.getCoinCount());
+            player.sendMessage(new TranslatableComponent("arconia.block.pot_multiblock.coin_count.absolute", coinCountStr), Util.NIL_UUID);
+            return InteractionResult.SUCCESS;
         }
 
-        int coinsAdded = primTile.addCoins(1);
+        if (itemUsed.getItem() != ModItems.goldCoin) {
+            return InteractionResult.PASS;
+        }
+
+        int coinsAdded = primaryBE.addCoins(1);
         if (coinsAdded > 0) {
             itemUsed.setCount(itemUsed.getCount() - coinsAdded);
-            world.playSound(null, pos, SoundEvents.CHAIN_PLACE, SoundCategory.BLOCKS, 1, 1.3f);
-            return ActionResultType.SUCCESS;
+            world.playSound(null, pos, SoundEvents.CHAIN_PLACE, SoundSource.BLOCKS, 1, 1.3f);
+            return InteractionResult.SUCCESS;
         }
-        return ActionResultType.FAIL;
+        return InteractionResult.FAIL;
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new PotMultiBlockSecondaryBlockEntity(pos, state); }
 
-    @Nullable
+        // inspired by Barrier block
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new PotMultiBlockSecondaryTileEntity();
-    }
-
-    // inspired by Barrier block
-    @Override
-    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
     }
 
     // inspired by Barrier block
     @Override
-    public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.INVISIBLE;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.INVISIBLE;
     }
 
     // inspired by Barrier block
     @OnlyIn(Dist.CLIENT)
-    public float getShadeBrightness(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public float getShadeBrightness(BlockState state, BlockGetter worldIn, BlockPos pos) {
         return 1.0F;
     }
 
     @Override
-    public void playerWillDestroy(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+    public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
         super.playerWillDestroy(world, pos, state, player);
 
         BlockPos primaryPos = getPrimaryBlockPos(world, pos);
@@ -124,96 +139,43 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
         }
     }
 
-    private BlockPos getPrimaryBlockPos(World world, BlockPos pos) {
-        TileEntity te = world.getBlockEntity(pos);
-        if (te == null || !(te instanceof PotMultiBlockSecondaryTileEntity)) {
+    private BlockPos getPrimaryBlockPos(Level world, BlockPos pos) {
+        BlockEntity be = world.getBlockEntity(pos);
+        if (be == null || !(be instanceof PotMultiBlockSecondaryBlockEntity)) {
             return null;
         }
-        PotMultiBlockSecondaryTileEntity secondaryTE = (PotMultiBlockSecondaryTileEntity) te;
-        return secondaryTE.getPrimaryPos();
+        PotMultiBlockSecondaryBlockEntity secondaryBE = (PotMultiBlockSecondaryBlockEntity) be;
+        return secondaryBE.getPrimaryPos();
     }
 
-    private PotMultiBlockPrimaryTileEntity getPrimaryTileEntity(World world, BlockPos pos) {
+    private PotMultiBlockPrimaryBlockEntity getPrimaryBlockEntity(Level world, BlockPos pos) {
         BlockPos primaryPos = getPrimaryBlockPos(world, pos);
         if (primaryPos == null) {
             return null;
         }
 
-        TileEntity te = world.getBlockEntity(primaryPos);
-        return te != null && te instanceof PotMultiBlockPrimaryTileEntity ? (PotMultiBlockPrimaryTileEntity) te : null;
+        BlockEntity be = world.getBlockEntity(primaryPos);
+        return be != null && be instanceof PotMultiBlockPrimaryBlockEntity ? (PotMultiBlockPrimaryBlockEntity) be : null;
     }
 
     /**
-     * The shape is determined on the position of this multiblock block relative to the center primary block, since this multiblock isn't a simple cuboid.
+     * The shape is determined by the position of this multiblock block relative to the center primary block, since this multiblock isn't a simple cuboid.
      * @param state
-     * @param worldIn
+     * @param level
      * @param pos
      * @param context
      * @return
      */
     @Override
     public VoxelShape getShape(
-            BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        TileEntity te = worldIn.getBlockEntity(pos);
-        if (te == null || !(te instanceof PotMultiBlockSecondaryTileEntity)) {
-            return defaultShape;
-        }
-        PotMultiBlockSecondaryTileEntity secondaryTE = (PotMultiBlockSecondaryTileEntity)te;
-        BlockPos primaryPos = ((PotMultiBlockSecondaryTileEntity) te).getPrimaryPos();
-        if (primaryPos == null) {
-            return defaultShape;
-        }
-
-        int deltaX = primaryPos.getX() - pos.getX();
-        int deltaZ = primaryPos.getZ() - pos.getZ();
-        return shapes[calcShapeIndex(deltaX, deltaZ)];
-    }
-
-    private static int calcShapeIndex(final int deltaX, final int deltaZ) {
-        int dx = (deltaX > 0 ? 2 : deltaX < 0 ? 0 : 1);
-        int dz = (deltaZ > 0 ? 2 : deltaZ < 0 ? 0 : 1);
-        return dx << 2 | dz;
-    }
-
-    // Precalculates all possible shapes for the multiblock blocks as the getShape() method gets called frequently
-    private static VoxelShape[] calculateShapes() {
-        VoxelShape[] shapes = new VoxelShape[MAX_SHAPE_IDX + 1];
-        for (int deltaX = -1; deltaX <2; deltaX++) {
-            for (int deltaZ = -1; deltaZ < 2; deltaZ++) {
-                int idx = calcShapeIndex(deltaX, deltaZ);
-                shapes[idx] = calculateShape(deltaX, deltaZ);
-            }
-        }
-        return shapes;
-    }
-
-    private static VoxelShape calculateShape(int deltaX, int deltaZ) {
-        final int PADDING = 5;
-        int x1 = 0, x2 = 16, y1 = 0, y2 = 16, z1 = 0, z2 = 16;
-
-        if (deltaX > 0) {
-            x1 = PADDING;
-            x2 = 16;
-        } else if (deltaX < 0) {
-            x1 = 0;
-            x2 = 16 - PADDING;
-        }
-
-        if (deltaZ > 0) {
-            z1 = PADDING;
-            z2 = 16;
-        } else if (deltaZ < 0) {
-            z1 = 0;
-            z2 = 16 - PADDING;
-        }
-
-        return box(x1, y1, z1, x2, y2, z2);
+            BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return posShapes.get(state.getValue(POT_POSITION));
     }
 
     @Override
     public void addProbeInfo(
-            ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
-        PotMultiBlockPrimaryTileEntity entity = getPrimaryTileEntity(world, data.getPos());
+            ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
+        PotMultiBlockPrimaryBlockEntity entity = getPrimaryBlockEntity(world, data.getPos());
         if (entity == null) {
             return;
         }
@@ -235,6 +197,51 @@ public class PotMultiBlockSecondary extends Block implements TOPDriver {
         }
 
         // TODO use icons instead..?
-        probeInfo.text(new TranslationTextComponent(LanguageHelper.block("pot_multiblock") + ".coin_count." + lang));
+        probeInfo.text(new TranslatableComponent(LanguageHelper.block("pot_multiblock") + ".coin_count." + lang));
+    }
+
+    public enum PotPosition implements StringRepresentable {
+        N("n"),
+        NW("nw"),
+        W("w"),
+        SW("sw"),
+        S("s"),
+        SE("se"),
+        E("e"),
+        NE("ne"),
+        CENTER("center");
+
+        private final String name;
+
+        PotPosition(String name) {
+            this.name = name;
+        }
+
+        /**
+         *
+         * @param x 0 <= x <= 2
+         * @param z 0 <= z <= 2
+         * @return
+         */
+        public static PotPosition getPositionFromOffset(int x, int z) {
+            // TODO do this less horrible, move it elsewhere, coding with sleep deprivation = bad, mkay
+            int idx = x << 2 | z;
+            switch (idx) {
+                case ((1 << 2) | 2): return N;
+                case ((0 << 2) | 2): return NW;
+                case ((0 << 2) | 1): return W;
+                case ((0 << 2) | 0): return SW;
+                case ((1 << 2) | 0): return S;
+                case ((2 << 2) | 0): return SE;
+                case ((2 << 2) | 1): return E;
+                case ((2 << 2) | 2): return NE;
+                default: return CENTER;
+            }
+        }
+        @NotNull
+        @Override
+        public String getSerializedName() {
+            return name;
+        }
     }
 }

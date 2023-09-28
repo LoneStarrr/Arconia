@@ -2,15 +2,15 @@
     "name": "Arconium trees",
     "icon": "arconia:red_arconium_tree_sapling",
     "category": "arconia:pot_of_gold",
-    "sortnum": 8,
+    "advancement": "arconia:main/red_arconium_sickle",
     "pages": [
         {
             "type": "patchouli:text",
-            "text": "Items pulled from the pot of gold using red tree roots are rather plain. Your keen eye may have noticed that more advanced items require roots with a different color. However, only red trees naturally grow in the wild. Upon observing the leprechauns, I have learned that they were able to shift the color of a tree using a specially crafted item."
+            "text": "Items pulled from the pot of gold using red tree roots are rather plain. Your keen eye may have noticed that more advanced items require roots with a different color. However, only red trees naturally grow in the wild. Upon observing the leprechauns, I have learned that they were able to obtain tree saplings with a different color."
         },
         {
             "type": "patchouli:text",
-            "text": "By combining some tree roots and a block of arconium of the same tier, a tree root block can be crafted. If placed directly under the trunk of an arconium tree of the same color, it will start to glow. Over time, some of its leaves will change in color. Harvesting those leaves may reward a lucky individual with a tree sapling of that color."
+            "text": "By harvesting tree leaves with a sickle made from arconium ingots of the same color as the leaves, sometimes the leaves will drop saplings of a different color."
         }
     ]
 }

@@ -1,20 +1,14 @@
 package lonestarrr.arconia.data.client;
 
-import com.google.gson.JsonElement;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ModItems;
-import net.minecraft.client.renderer.model.Model;
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
-import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
-
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 import static lonestarrr.arconia.common.core.helper.ResourceLocationHelper.prefix;
 
@@ -29,6 +23,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         registerArconiumIngots();
         registerArconiumEssence();
+        registerArconiumSickles();
         registerTreeRoots();
     }
 
@@ -53,6 +48,20 @@ public class ModItemModelProvider extends ItemModelProvider {
 
         for (RainbowColor color: RainbowColor.values()) {
             Item item = ModItems.getArconiumEssence(color);
+            String name = Registry.ITEM.getKey(item).getPath();
+            withExistingParent(name, prefix(modelName));
+        }
+    }
+
+    private void registerArconiumSickles() {
+        // All hoes share a single model. Layer1 is dynamically colored based on tier.
+        final String modelName = "item/arconium_sickle";
+        withExistingParent(modelName, GENERATED)
+                .texture("layer0", prefix("item/sickle_handle"))
+                .texture("layer1", prefix("item/sickle_head"));
+
+        for (RainbowColor color: RainbowColor.values()) {
+            Item item = ModItems.getArconiumSickle(color);
             String name = Registry.ITEM.getKey(item).getPath();
             withExistingParent(name, prefix(modelName));
         }

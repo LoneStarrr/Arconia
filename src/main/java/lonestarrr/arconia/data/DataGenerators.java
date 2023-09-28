@@ -7,7 +7,7 @@ import lonestarrr.arconia.data.client.ModLanguageProvider;
 import lonestarrr.arconia.data.recipes.PedestalProvider;
 import lonestarrr.arconia.data.recipes.VanillaRecipeProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 /**
  * Executed as part of runData gradle task - need to run this once on a fresh checkout to generate data files which are used automatically when executing
@@ -19,6 +19,7 @@ public class DataGenerators {
         if (evt.includeServer()) {
             evt.getGenerator().addProvider(new PedestalProvider(evt.getGenerator()));
             evt.getGenerator().addProvider(new VanillaRecipeProvider(evt.getGenerator()));
+            evt.getGenerator().addProvider(new ModBlockTagsProvider(evt.getGenerator(), helper));
         }
         if (evt.includeClient()) {
             evt.getGenerator().addProvider(new ModBlockStateProvider(evt.getGenerator(), helper));

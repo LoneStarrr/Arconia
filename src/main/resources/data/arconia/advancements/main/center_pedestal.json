@@ -20,7 +20,7 @@
       "conditions": {
         "items": [
           {
-            "item": "arconia:center_pedestal"
+            "items": [ "arconia:center_pedestal" ]
           }
         ]
       }

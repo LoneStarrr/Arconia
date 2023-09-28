@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "arconia:pot"
+      "item": "arconia:gold_coin"
     },
     "title": {
       "translate": "advancement.arconia.main.pot_of_gold.title"

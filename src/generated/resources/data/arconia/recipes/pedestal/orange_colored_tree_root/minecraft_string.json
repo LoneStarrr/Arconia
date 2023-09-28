@@ -5,9 +5,7 @@
       "item": {
         "id": "minecraft:string",
         "Count": 1
-      },
-      "interval": 9,
-      "coin_cost": 2
+      }
     },
     "item": "arconia:orange_colored_tree_root"
   },

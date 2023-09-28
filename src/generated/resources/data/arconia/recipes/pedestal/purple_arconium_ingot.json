@@ -1,0 +1,33 @@
+{
+  "type": "arconia:pedestal",
+  "output": {
+    "item": "arconia:purple_arconium_ingot"
+  },
+  "durationTicks": 100,
+  "ingredients": [
+    {
+      "item": "minecraft:shulker_shell"
+    },
+    {
+      "item": "minecraft:dragon_breath"
+    },
+    {
+      "item": "minecraft:purpur_block"
+    },
+    {
+      "item": "minecraft:end_rod"
+    },
+    {
+      "item": "arconia:purple_arconium_essence"
+    },
+    {
+      "item": "arconia:purple_arconium_essence"
+    },
+    {
+      "item": "arconia:purple_arconium_essence"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    }
+  ]
+}

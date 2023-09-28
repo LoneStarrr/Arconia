@@ -2,8 +2,8 @@ package lonestarrr.arconia.common;
 
 import lonestarrr.arconia.common.advancements.ModCriterialTriggers;
 import lonestarrr.arconia.common.block.ModBlocks;
-import lonestarrr.arconia.common.block.RainbowCrateBlock;
-import lonestarrr.arconia.common.block.tile.ModTiles;
+import lonestarrr.arconia.common.block.entities.ModBlockEntities;
+import lonestarrr.arconia.common.block.entities.WorldBuilderEntity;
 import lonestarrr.arconia.common.core.command.ArconiaCommand;
 import lonestarrr.arconia.common.core.command.FractalTreeCommand;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
@@ -19,12 +19,11 @@ import lonestarrr.arconia.common.network.ModPackets;
 import lonestarrr.arconia.common.world.ModFeatures;
 import lonestarrr.arconia.compat.theoneprobe.TheOneProbe;
 import lonestarrr.arconia.data.DataGenerators;
-import net.minecraft.block.Block;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
@@ -35,6 +34,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,26 +67,27 @@ public class Arconia {
         modBus.addGenericListener(Block.class, ModBlocks::registerBlocks);
         modBus.addGenericListener(Item.class, ModBlocks::registerItemBlocks);
         modBus.addGenericListener(Item.class, ModItems::registerItems);
-        modBus.addGenericListener(TileEntityType.class, ModTiles::registerTileEntities);
-        modBus.addGenericListener(ContainerType.class, RainbowCrateBlock::registerContainers);
-        modBus.addGenericListener(IRecipeSerializer.class, ModRecipeTypes::registerRecipeTypes);
-        modBus.addGenericListener(Feature.class, ModFeatures::registerFeatures);
+        modBus.addGenericListener(BlockEntityType.class, ModBlockEntities::registerBlockEntities);
+        modBus.addGenericListener(RecipeSerializer.class, ModRecipeTypes::registerRecipeTypes);
+//        modBus.addGenericListener(Feature.class, ModFeatures::registerFeatures);
+        ModFeatures.register(modBus);
+        ModLootModifiers.register(modBus);
 
-        modBus.addListener((ModConfig.Loading e) -> ConfigHandler.onConfigLoad());
-        modBus.addListener((ModConfig.Reloading e) -> ConfigHandler.onConfigLoad());
-
-        ModLootModifiers.LOOT_MODIFIERS.register(modBus);
+        modBus.addListener(ConfigHandler::onConfigLoad);
+        modBus.addListener(ConfigHandler::onConfigReload);
 
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
         forgeBus.addListener(EventPriority.HIGH, this::biomeSetup);
         forgeBus.addListener(EventPriority.HIGH, this::registerCommands);
 
-        ModLootModifiers.init();
         ModCriterialTriggers.init();
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
         Arconia.logger.info("Running commonSetup");
+
+        // !! This mod life cycle event is called in parallel with any other mods - use event.enqueueWork() for things that are not thread-safe.
+
         // Register network packets to synchronize server/client data
         ModPackets.init();
         // The One Probe - optional, checks for mod presence
@@ -98,6 +99,12 @@ public class Arconia {
             throw new RuntimeException("Error loading build patterns", e);
         } catch (BlockPatternException e) {
             throw new RuntimeException("Error parsing build patterns", e);
+        }
+
+        try {
+            WorldBuilderEntity.loadDistributionTables();
+        } catch (IOException e) {
+            throw new RuntimeException("Error loading world builder distribution tables", e);
         }
     }
 

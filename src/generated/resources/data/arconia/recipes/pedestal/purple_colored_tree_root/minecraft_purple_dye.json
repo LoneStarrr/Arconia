@@ -5,9 +5,7 @@
       "item": {
         "id": "minecraft:purple_dye",
         "Count": 1
-      },
-      "interval": 4,
-      "coin_cost": 64
+      }
     },
     "item": "arconia:purple_colored_tree_root"
   },

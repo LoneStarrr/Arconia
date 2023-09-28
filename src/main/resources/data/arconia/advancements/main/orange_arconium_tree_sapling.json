@@ -13,14 +13,14 @@
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "arconia:main/red_tree_root_block",
+  "parent": "arconia:main/red_arconium_sickle",
   "criteria": {
     "orange_arconium_sapling": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "arconia:orange_arconium_tree_sapling"
+            "items": [ "arconia:orange_arconium_tree_sapling" ]
           }
         ]
       }

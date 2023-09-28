@@ -1,0 +1,22 @@
+{
+  "distributions": {
+    "overworld": [
+        { "block": "minecraft:stone", "weight": 1000, "y_min": -64, "y_max": 319, "distribution": "even", "deepslate": "minecraft:deepslate", "boostable": false },  
+        { "block": "minecraft:water", "weight": 20, "y_min": 60, "y_max": 64, "distribution": "even", "deepslate": "minecraft:water", "boostable": false },  
+        { "block": "minecraft:lava", "weight": 20, "y_min": -63, "y_max": -55, "distribution": "even", "deepslate": "minecraft:lava", "boostable": false },  
+        { "block": "minecraft:emerald_ore", "weight": 20, "y_min": 192, "y_max": 319, "distribution": "center", "deepslate": "minecraft:deepslate_emerald_ore"},  
+        { "block": "minecraft:iron_ore", "weight": 40, "y_min": -24, "y_max": 55, "distribution": "center", "deepslate": "minecraft:deepslate_iron_ore" },  
+        { "block": "minecraft:iron_ore", "weight": 60, "y_min": 80, "y_max": 311, "distribution": "center", "deepslate": "minecraft:deepslate_iron_ore" },  
+        { "block": "minecraft:iron_ore", "weight": 5, "y_min": -64, "y_max": 71, "distribution": "even", "deepslate": "minecraft:deepslate_iron_ore" },  
+        { "block": "minecraft:coal_ore", "weight": 60, "y_min": 0, "y_max": 191, "distribution": "center", "deepslate": "minecraft:deepslate_coal_ore" },  
+        { "block": "minecraft:coal_ore", "weight": 40, "y_min": 136, "y_max": 255, "distribution": "even", "deepslate": "minecraft:deepslate_coal_ore" },  
+        { "block": "minecraft:copper_ore", "weight": 60, "y_min": -16, "y_max": 111, "distribution": "center", "deepslate": "minecraft:deepslate_copper_ore"},  
+        { "block": "minecraft:gold_ore", "weight": 25, "y_min": -64, "y_max": 31, "distribution": "center", "deepslate": "minecraft:deepslate_gold_ore"},  
+        { "block": "minecraft:diamond_ore", "weight": 10, "y_min": -144, "y_max": 15, "distribution": "center", "deepslate": "minecraft:deepslate_diamond_ore"},  
+        { "block": "minecraft:lapis_ore", "weight": 6, "y_min": -64, "y_max": 63, "distribution": "even", "deepslate": "minecraft:deepslate_lapis_ore"},  
+        { "block": "minecraft:lapis_ore", "weight": 12, "y_min": -32, "y_max": 31, "distribution": "center", "deepslate": "minecraft:deepslate_lapis_ore"},  
+        { "block": "minecraft:redstone_ore", "weight": 10, "y_min": -64, "y_max": -15, "distribution": "even", "deepslate": "minecraft:deepslate_redstone_ore"},
+        { "block": "minecraft:redstone_ore", "weight": 35, "y_min": -96, "y_max": -31, "distribution": "center", "deepslate": "minecraft:deepslate_redstone_ore"}  
+    ]
+  }
+}

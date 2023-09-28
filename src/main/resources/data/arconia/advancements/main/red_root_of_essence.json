@@ -21,8 +21,8 @@
       "conditions": {
         "items": [
           {
-            "item": "arconia:red_colored_tree_root",
-            "nbt": "{'item':'arconia:red_arconium_essence'}"
+            "items": [ "arconia:red_colored_tree_root" ],
+            "nbt": "{\"item\":{\"id\":\"arconia:red_arconium_essence\"}}"
           }
         ]
       }
