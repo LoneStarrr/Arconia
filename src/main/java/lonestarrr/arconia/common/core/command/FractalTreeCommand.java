@@ -12,7 +12,8 @@ import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -56,7 +57,7 @@ public class FractalTreeCommand {
         } catch (Exception e) {
                 Arconia.logger.warn("Error rendering tree");
         }
-        //ctx.getSource().asPlayer().sendMessage(new StringTextComponent("Rules: " + rules));
+        //ctx.getSource().asPlayer().sendSystemMessage(new StringTextComponent("Rules: " + rules));
         return Command.SINGLE_SUCCESS;
     }
 
@@ -73,12 +74,12 @@ public class FractalTreeCommand {
         for (String singleRule: serialized.split(",")) {
             String[] ruleParts = singleRule.split(":");
             if (ruleParts.length != 2) {
-                throw new SimpleCommandExceptionType(new TextComponent("Rule colon parse error")).create();
+                throw new SimpleCommandExceptionType(Component.literal("Rule colon parse error")).create();
             }
             String ruleChar = ruleParts[0];
             String ruleSubst = ruleParts[1];
             if (ruleChar.length() != 1 || ruleSubst.length() < 1) {
-                throw new SimpleCommandExceptionType(new TextComponent("Invalid rule lengths")).create();
+                throw new SimpleCommandExceptionType(Component.literal("Invalid rule lengths")).create();
             }
             result.put(ruleChar.charAt(0), ruleSubst);
         }
@@ -138,8 +139,8 @@ public class FractalTreeCommand {
             count = count + 1;
             if (stopAt >= 0 && count >= stopAt) {
                 String treeRendered = ltree.substring(0, count);
-                player.sendMessage(new TextComponent("Position = " + s.pos + ", rotation = " + s.rotationX + "," + s.rotationZ + ", " +
-                        " String drawn = " + treeRendered), Util.NIL_UUID);
+                player.sendSystemMessage(Component.literal("Position = " + s.pos + ", rotation = " + s.rotationX + "," + s.rotationZ + ", " +
+                        " String drawn = " + treeRendered));
                 break;
             }
         }

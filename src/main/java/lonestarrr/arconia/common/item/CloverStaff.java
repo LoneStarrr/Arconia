@@ -9,7 +9,7 @@ import lonestarrr.arconia.common.core.helper.LanguageHelper;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -49,12 +49,12 @@ public class CloverStaff extends Item {
             BlockPos potPos = storePotCoordinate(world, pos, staff);
             if (potPos != null) {
                 if (!world.isClientSide) {
-                    context.getPlayer().sendMessage(new TranslatableComponent(LANG_PREFIX + ".selectpot.success", potPos.toShortString()), Util.NIL_UUID);
+                    context.getPlayer().sendSystemMessage(Component.translatable(LANG_PREFIX + ".selectpot.success", potPos.toShortString()));
                 }
                 return InteractionResult.SUCCESS;
             } else {
                 if (!world.isClientSide) {
-                    context.getPlayer().sendMessage(new TranslatableComponent(LANG_PREFIX + ".selectpot.failed"), Util.NIL_UUID);
+                    context.getPlayer().sendSystemMessage(Component.translatable(LANG_PREFIX + ".selectpot.failed"));
                 }
             }
             return InteractionResult.PASS;
@@ -113,7 +113,7 @@ public class CloverStaff extends Item {
                 }
             }
         }
-        context.getPlayer().sendMessage(new TranslatableComponent(lang), Util.NIL_UUID);
+        context.getPlayer().sendSystemMessage(Component.translatable(lang));
     }
 
     private static BlockPos getPotPosition(ItemStack staff) {

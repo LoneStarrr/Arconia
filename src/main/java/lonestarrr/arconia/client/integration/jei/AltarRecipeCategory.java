@@ -14,7 +14,6 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -50,7 +49,7 @@ public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent("jei.arconia.recipe_category.altar");
+        return Component.translatable("jei.arconia.recipe_category.altar");
     }
 
     @Override

@@ -6,12 +6,11 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import lonestarrr.arconia.common.item.ColoredRoot;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.arguments.item.ItemInput;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -48,12 +47,12 @@ public class ArconiaCommand {
         // Enchant resourceItem in player's hand
         ItemStack rootItem = player.getInventory().getSelected();
         if (rootItem.isEmpty() || !(rootItem.getItem() instanceof ColoredRoot)) {
-            player.sendMessage(new TextComponent("A colored root is expected in your active hotbar slot for this to work"), Util.NIL_UUID);
+            player.sendSystemMessage(Component.literal("A colored root is expected in your active hotbar slot for this to work"));
             return Command.SINGLE_SUCCESS;
         }
 
         ColoredRoot.setResourceItem(rootItem, resourceItem, itemCount);
-        player.sendMessage(new TextComponent("Enchanted the colored root with resourceItem " + resourceItem.getRegistryName()), Util.NIL_UUID);
+        player.sendSystemMessage(Component.literal("Enchanted the colored root with resourceItem " + resourceItem.getRegistryName()));
         return Command.SINGLE_SUCCESS;
     }
 }

@@ -6,7 +6,7 @@ import lonestarrr.arconia.common.core.helper.LanguageHelper;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -108,7 +108,7 @@ public class CenterPedestal extends BaseEntityBlock {
                 if (cbe.startRitual()) {
                     world.playSound(null, pos, SoundEvents.NOTE_BLOCK_HARP, SoundSource.AMBIENT, 1, 10);
                 } else {
-                    player.sendMessage(new TranslatableComponent(LANG_PREFIX + ".ritual_start_failed"), Util.NIL_UUID);
+                    player.sendSystemMessage(Component.translatable(LANG_PREFIX + ".ritual_start_failed"));
                 }
             }
         }

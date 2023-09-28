@@ -7,8 +7,8 @@ import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -88,19 +88,19 @@ public class Hat extends BaseEntityBlock {
             ColoredRoot root = (ColoredRoot)itemUsed.getItem();
 
             if (potbe == null) {
-                player.sendMessage(new TranslatableComponent("arconia.block.hat.not_linked_to_pot"), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("arconia.block.hat.not_linked_to_pot"));
                 return InteractionResult.FAIL;
             } else if (!hbe.getResourceGenerated().isEmpty()) {
-                player.sendMessage(new TranslatableComponent("arconia.block.hat.resource_already_set"), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("arconia.block.hat.resource_already_set"));
                 return InteractionResult.FAIL;
             } else if (root.getTier().getTier() > potbe.getTier().getTier()) {
-                player.sendMessage(new TranslatableComponent("arconia.block.hat.resource_tier_too_high"), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("arconia.block.hat.resource_tier_too_high"));
                 return InteractionResult.FAIL;
             } else {
                 // Ok ok ok, let's attempt set the resource already.
                 ItemStack resource = ColoredRoot.getResourceItem(itemUsed);
                 if (resource.isEmpty()) {
-                    player.sendMessage(new TranslatableComponent("arconia.block.hat.resource_empty"), Util.NIL_UUID);
+                    player.sendSystemMessage(Component.translatable("arconia.block.hat.resource_empty"));
                     return InteractionResult.FAIL;
                 }
 
@@ -114,7 +114,7 @@ public class Hat extends BaseEntityBlock {
                 } else {
                     player.setItemInHand(hand, ItemStack.EMPTY);
                 }
-                player.sendMessage(new TranslatableComponent("arconia.block.hat.resource_set", resource.getItem().getName(resource)), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("arconia.block.hat.resource_set", resource.getItem().getName(resource)));
                 return InteractionResult.SUCCESS;
             }
         } else if (itemUsed.isEmpty()) {
@@ -126,7 +126,7 @@ public class Hat extends BaseEntityBlock {
                     ItemStack root = new ItemStack(ModItems.getColoredRoot(tier));
                     ColoredRoot.setResourceItem(root, resource.getItem(), resource.getCount());
                     player.setItemInHand(hand, root);
-                    player.sendMessage(new TranslatableComponent("arconia.block.hat.resource_unset"), Util.NIL_UUID);
+                    player.sendSystemMessage(Component.translatable("arconia.block.hat.resource_unset"));
                     return InteractionResult.SUCCESS;
                 } else {
                     return InteractionResult.PASS;
@@ -135,17 +135,17 @@ public class Hat extends BaseEntityBlock {
                 // Show information about the resource being set, link status as such
                 ItemStack resource = hbe.getResourceGenerated();
                 if (resource.isEmpty()) {
-                    player.sendMessage(new TranslatableComponent("arconia.block.hat.info_resource_empty"), Util.NIL_UUID);
+                    player.sendSystemMessage(Component.translatable("arconia.block.hat.info_resource_empty"));
                 } else {
-                    MutableComponent mc = new TranslatableComponent("arconia.block.hat.info_resource", resource.getItem().getName(resource));
-                    mc.append(new TranslatableComponent("color.minecraft." + hbe.getTier().toString()));
-                    player.sendMessage(mc, Util.NIL_UUID);
+                    MutableComponent mc = Component.translatable("arconia.block.hat.info_resource", resource.getItem().getName(resource));
+                    mc.append(Component.translatable("color.minecraft." + hbe.getTier().toString()));
+                    player.sendSystemMessage(mc);
                 }
 
                 if (potbe != null) {
-                    player.sendMessage(new TranslatableComponent("arconia.block.hat.info_linked", potPos.toShortString()), Util.NIL_UUID);
+                    player.sendSystemMessage(Component.translatable("arconia.block.hat.info_linked", potPos.toShortString()));
                 } else {
-                    player.sendMessage(new TranslatableComponent("arconia.block.hat.info_unlinked"), Util.NIL_UUID);
+                    player.sendSystemMessage(Component.translatable("arconia.block.hat.info_unlinked"));
                 }
 
                 return InteractionResult.SUCCESS;

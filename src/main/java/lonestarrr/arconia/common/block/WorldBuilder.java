@@ -5,7 +5,7 @@ import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
 import lonestarrr.arconia.common.block.entities.WorldBuilderEntity;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -58,7 +58,7 @@ public class WorldBuilder extends BaseEntityBlock {
 
         WorldBuilderEntity wbe = (WorldBuilderEntity) be;
         if (wbe.isConverting()) {
-            player.sendMessage(new TranslatableComponent("arconia.block.world_builder.in_progress"), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("arconia.block.world_builder.in_progress"));
             return InteractionResult.FAIL;
         }
 
@@ -69,9 +69,9 @@ public class WorldBuilder extends BaseEntityBlock {
         }
         boolean willConvertBlocks = wbe.startBuild(toMatch, boostFactor);
         if (willConvertBlocks) {
-            player.sendMessage(new TranslatableComponent("arconia.block.world_builder.start_build"), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("arconia.block.world_builder.start_build"));
         } else {
-            player.sendMessage(new TranslatableComponent("arconia.block.world_builder.no_blocks_found"), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("arconia.block.world_builder.no_blocks_found"));
         }
         return InteractionResult.SUCCESS;
     }
