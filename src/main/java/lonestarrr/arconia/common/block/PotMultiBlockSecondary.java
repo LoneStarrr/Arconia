@@ -10,7 +10,7 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -91,11 +91,11 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
 
         if (itemUsed.isEmpty()) {
             String coinCountStr = String.format("%,d", primaryBE.getCoinCount());
-            player.sendMessage(new TranslatableComponent("arconia.block.pot_multiblock.coin_count.absolute", coinCountStr), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.coin_count.absolute", coinCountStr));
             return InteractionResult.SUCCESS;
         }
 
-        if (itemUsed.getItem() != ModItems.goldCoin) {
+        if (itemUsed.getItem() != ModItems.goldCoin.get()) {
             return InteractionResult.PASS;
         }
 
@@ -197,7 +197,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
         }
 
         // TODO use icons instead..?
-        probeInfo.text(new TranslatableComponent(LanguageHelper.block("pot_multiblock") + ".coin_count." + lang));
+        probeInfo.text(Component.translatable(LanguageHelper.block("pot_multiblock") + ".coin_count." + lang));
     }
 
     public enum PotPosition implements StringRepresentable {

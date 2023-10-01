@@ -1,14 +1,5 @@
 {
   "type": "arconia:pedestal",
-  "output": {
-    "nbt": {
-      "item": {
-        "id": "minecraft:nether_wart",
-        "Count": 1
-      }
-    },
-    "item": "arconia:blue_colored_tree_root"
-  },
   "durationTicks": 400,
   "ingredients": [
     {
@@ -23,5 +14,14 @@
     {
       "item": "arconia:blue_colored_tree_root"
     }
-  ]
+  ],
+  "output": {
+    "item": "arconia:blue_colored_tree_root",
+    "nbt": {
+      "item": {
+        "Count": 1,
+        "id": "minecraft:nether_wart"
+      }
+    }
+  }
 }

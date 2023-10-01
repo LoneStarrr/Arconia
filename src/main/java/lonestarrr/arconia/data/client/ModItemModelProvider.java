@@ -2,6 +2,7 @@ package lonestarrr.arconia.data.client;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
@@ -9,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.RegistryObject;
 
 import static lonestarrr.arconia.common.core.helper.ResourceLocationHelper.prefix;
 
@@ -34,8 +36,8 @@ public class ModItemModelProvider extends ItemModelProvider {
                 .texture("layer0", prefix("item/arconium_ingot_white"));
 
         for (RainbowColor color: RainbowColor.values()) {
-            Item item = ModItems.getArconiumIngot(color);
-            String name = Registry.ITEM.getKey(item).getPath();
+            RegistryObject<Item> item = ModItems.getArconiumIngot(color);
+            String name = item.getId().getPath();
             withExistingParent(name, prefix(modelName));
         }
     }
@@ -47,8 +49,8 @@ public class ModItemModelProvider extends ItemModelProvider {
                 .texture("layer0", prefix("item/arconium_essence"));
 
         for (RainbowColor color: RainbowColor.values()) {
-            Item item = ModItems.getArconiumEssence(color);
-            String name = Registry.ITEM.getKey(item).getPath();
+            RegistryObject<Item> item = ModItems.getArconiumEssence(color);
+            String name = item.getId().getPath();
             withExistingParent(name, prefix(modelName));
         }
     }
@@ -61,8 +63,8 @@ public class ModItemModelProvider extends ItemModelProvider {
                 .texture("layer1", prefix("item/sickle_head"));
 
         for (RainbowColor color: RainbowColor.values()) {
-            Item item = ModItems.getArconiumSickle(color);
-            String name = Registry.ITEM.getKey(item).getPath();
+            RegistryObject<Item> item = ModItems.getArconiumSickle(color);
+            String name = item.getId().getPath();
             withExistingParent(name, prefix(modelName));
         }
     }
@@ -74,8 +76,9 @@ public class ModItemModelProvider extends ItemModelProvider {
                 .texture("layer0", prefix("item/colored_tree_root"));
 
         for (RainbowColor color: RainbowColor.values()) {
-            Item item = ModItems.getColoredRoot(color);
-            String name = Registry.ITEM.getKey(item).getPath();
+            RegistryObject<ColoredRoot> item = ModItems.getColoredRoot(color);
+            String name = item.getId().getPath();
+
             withExistingParent(name, prefix(modelName));
         }
     }

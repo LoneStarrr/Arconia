@@ -1,0 +1,11 @@
+{
+  "type": "forge:add_features",
+  "biomes": {
+    "type": "forge:or",
+    "values": [
+      "#forge:is_plains", "#minecraft:is_hill", "#minecraft:is_forest"
+    ]
+  },
+  "features": "arconia:clover_patch",
+  "step": "vegetal_decoration"
+}

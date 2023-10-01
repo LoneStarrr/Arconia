@@ -3,6 +3,7 @@ package lonestarrr.arconia.client.integration.jei;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.crafting.IPedestalRecipe;
 import lonestarrr.arconia.common.crafting.ModRecipeTypes;
 import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.ModItems;
@@ -16,6 +17,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @JeiPlugin
 public class JEIArconiaPlugin implements IModPlugin {
@@ -36,15 +40,14 @@ public class JEIArconiaPlugin implements IModPlugin {
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
         // The (main) blocks that process the recipes
-        registry.addRecipeCatalyst(new ItemStack(ModBlocks.centerPedestal.asItem()), AltarRecipeCategory.UID);
+        registry.addRecipeCatalyst(new ItemStack(ModBlocks.centerPedestal.get().asItem()), AltarRecipeCategory.TYPE);
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         ClientLevel world = Minecraft.getInstance().level;
         if (world != null) {
-//            registration.addRecipes(ModRecipeTypes.getRecipes(world, ModRecipeTypes.PEDESTAL_TYPE).values(), AltarRecipeCategory.UID);
-            registration.addRecipes(ModRecipeTypes.getRecipes(world, ModRecipeTypes.PEDESTAL_TYPE).values(), AltarRecipeCategory.UID);
+            registration.addRecipes(AltarRecipeCategory.TYPE, new ArrayList<IPedestalRecipe>(ModRecipeTypes.getRecipes(world, ModRecipeTypes.PEDESTAL_TYPE.get()).values()));
         }
     }
 
@@ -55,7 +58,7 @@ public class JEIArconiaPlugin implements IModPlugin {
 
         // Colored roots produced by the altar are differentiated on the resource they are associated with. Can be empty, but that should also serialize.
         for (RainbowColor tier: RainbowColor.values()) {
-            ColoredRoot root = ModItems.getColoredRoot(tier);
+            ColoredRoot root = ModItems.getColoredRoot(tier).get();
             registration.registerSubtypeInterpreter(root, (stack, ctx) -> ColoredRoot.getResourceItem(stack).toString());
         }
     }

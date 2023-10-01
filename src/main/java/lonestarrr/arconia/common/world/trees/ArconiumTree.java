@@ -5,6 +5,7 @@ import lonestarrr.arconia.common.world.ModFeatures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.grower.AbstractTreeGrower;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,13 +24,13 @@ public class ArconiumTree extends AbstractTreeGrower {
     }
 
     @Nullable
-    protected Holder<ConfiguredFeature<?, ?>> getConfiguredFeature(Random randomIn, boolean largeHive) {
+    protected Holder<ConfiguredFeature<?, ?>> getConfiguredFeature(RandomSource randomIn, boolean largeHive) {
         return ModFeatures.getArconiumTreeConfigured(this.tier);
     }
 
     @Override
     public boolean growTree(
-            ServerLevel world, ChunkGenerator chunkGenerator, BlockPos pos, BlockState state, Random rand) {
+            ServerLevel world, ChunkGenerator chunkGenerator, BlockPos pos, BlockState state, RandomSource rand) {
         boolean didGrow = super.growTree(world, chunkGenerator, pos, state, rand);
 
         if (didGrow) {

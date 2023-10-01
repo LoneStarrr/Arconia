@@ -17,6 +17,8 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.util.Random;
 
+import net.minecraft.client.renderer.RenderStateShard.TransparencyStateShard;
+
 public class RainbowLightningProjector {
 
     /**

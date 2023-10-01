@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -30,6 +30,8 @@ public class ClientProxy implements IProxy {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addListener(this::clientSetup);
         modBus.addListener(this::loadComplete);
+        modBus.addListener(this::registerBlockColors);
+        modBus.addListener(this::registerItemColors);
         modBus.addListener(BlockEntityRendererHandler::registerBlockEntityRenderers);
 
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
@@ -45,13 +47,15 @@ public class ClientProxy implements IProxy {
             // TODO Can these blocks themselves provide this hint?
             RenderType cutout = RenderType.cutout();
 
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.clover, cutout);
+            // TODO See McJTY porting guide on how to set render_type in the models
+            // https://www.mcjty.eu/docs/1.19/porting
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.clover.get(), cutout);
 
             for (RainbowColor tier : RainbowColor.values()) {
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.getArconiumTreeLeaves(tier), cutout);
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.getArconiumTreeSapling(tier), cutout);
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.getArconiumTreeLeaves(tier).get(), cutout);
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.getArconiumTreeSapling(tier).get(), cutout);
                 // gleaned from Blocks.GRASS_BLOCK - this is for overlaying the top with a rainbow tint
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.getInfiniteGoldArconiumBlock(tier), RenderType.cutoutMipped());
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.getInfiniteGoldArconiumBlock(tier).get(), RenderType.cutoutMipped());
             }
 
             registerItemProperties();
@@ -59,11 +63,19 @@ public class ClientProxy implements IProxy {
     }
 
     private void loadComplete(FMLLoadCompleteEvent event) {
+    }
+
+    private void registerItemColors(RegisterColorHandlersEvent.Item event) {
         // Register dynamically colored blocks
-        ColorHandler.registerColorBlocks();
+        ColorHandler.registerItemColors(event);
+    }
+
+    private void registerBlockColors(RegisterColorHandlersEvent.Block event) {
+        // Register dynamically colored blocks
+        ColorHandler.registerBlockColors(event);
     }
 
     private static void registerItemProperties() {
-        ItemProperties.register(ModItems.magicInABottle, new ResourceLocation(Arconia.MOD_ID, "filled"), MagicInABottle::getFilledPercentage);
+        ItemProperties.register(ModItems.magicInABottle.get(), new ResourceLocation(Arconia.MOD_ID, "filled"), MagicInABottle::getFilledPercentage);
     }
 }

@@ -6,7 +6,7 @@ import lonestarrr.arconia.common.core.helper.LanguageHelper;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -31,6 +31,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 /**
  * Center Pedestal block. Used for crafting rituals. This one outputs the result of the crafting recipe.
@@ -72,7 +74,7 @@ public class CenterPedestal extends BaseEntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> type) {
         if (!level.isClientSide) {
-            return createTickerHelper(type, ModBlockEntities.CENTER_PEDESTAL, CenterPedestalBlockEntity::tick);
+            return createTickerHelper(type, ModBlockEntities.CENTER_PEDESTAL.get(), CenterPedestalBlockEntity::tick);
         }
         return null;
     }
@@ -97,7 +99,7 @@ public class CenterPedestal extends BaseEntityBlock {
             return InteractionResult.SUCCESS;
         }
 
-        if (playerStack.isEmpty() || playerStack.getItem() != ModItems.cloverStaff) {
+        if (playerStack.isEmpty() || playerStack.getItem() != ModItems.cloverStaff.get()) {
             return InteractionResult.PASS;
         }
 
@@ -106,7 +108,7 @@ public class CenterPedestal extends BaseEntityBlock {
                 if (cbe.startRitual()) {
                     world.playSound(null, pos, SoundEvents.NOTE_BLOCK_HARP, SoundSource.AMBIENT, 1, 10);
                 } else {
-                    player.sendMessage(new TranslatableComponent(LANG_PREFIX + ".ritual_start_failed"), Util.NIL_UUID);
+                    player.sendSystemMessage(Component.translatable(LANG_PREFIX + ".ritual_start_failed"));
                 }
             }
         }

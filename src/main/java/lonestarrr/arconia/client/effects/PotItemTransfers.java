@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderLevelLastEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -39,7 +40,10 @@ public class PotItemTransfers {
         transfers.add(transfer);
     }
 
-    public static void render(RenderLevelLastEvent event) {
+    public static void render(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
+            return;
+        }
         Level world = Minecraft.getInstance().level;
 
         long now = world.getGameTime();

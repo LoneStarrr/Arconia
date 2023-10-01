@@ -22,7 +22,8 @@ public class PatchouliHelper {
     }
 
     public static boolean isGuideBook(ItemStack itemStack) {
-        if (!itemStack.getItem().getRegistryName().equals(PATCHOULI_GUIDE_BOOK)) {
+        ResourceLocation itemResLoc = ForgeRegistries.ITEMS.getKey(itemStack.getItem());
+        if (!itemResLoc.equals(PATCHOULI_GUIDE_BOOK)) {
             return false;
         }
         CompoundTag tag = itemStack.getTag();

@@ -1,14 +1,5 @@
 {
   "type": "arconia:pedestal",
-  "output": {
-    "nbt": {
-      "item": {
-        "id": "minecraft:andesite",
-        "Count": 1
-      }
-    },
-    "item": "arconia:orange_colored_tree_root"
-  },
   "durationTicks": 200,
   "ingredients": [
     {
@@ -23,5 +14,14 @@
     {
       "item": "arconia:orange_colored_tree_root"
     }
-  ]
+  ],
+  "output": {
+    "item": "arconia:orange_colored_tree_root",
+    "nbt": {
+      "item": {
+        "Count": 1,
+        "id": "minecraft:andesite"
+      }
+    }
+  }
 }

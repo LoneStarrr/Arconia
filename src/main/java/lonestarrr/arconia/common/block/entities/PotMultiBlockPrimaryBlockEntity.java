@@ -36,7 +36,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     private final List<HatData> hats = new ArrayList<>();
 
     public PotMultiBlockPrimaryBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.POT_MULTIBLOCK_PRIMARY, pos, state);
+        super(ModBlockEntities.POT_MULTIBLOCK_PRIMARY.get(), pos, state);
         // TODO check for valid structure at an interval, if not, destroy ourselves
         coinCount = 0;
     }
@@ -177,7 +177,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         int coinCount = goldArconiumTE.collectCoins();
         if (coinCount > 0) {
             addCoins(coinCount);
-            ItemStack sent = new ItemStack(ModItems.goldCoin, Math.min(coinCount, 64));
+            ItemStack sent = new ItemStack(ModItems.goldCoin.get(), Math.min(coinCount, 64));
             ModPackets.sendToNearby(level, goldArconiumPos, new PotItemTransferPacket(worldPosition.above(2), goldArconiumPos.above(), sent));
         }
 

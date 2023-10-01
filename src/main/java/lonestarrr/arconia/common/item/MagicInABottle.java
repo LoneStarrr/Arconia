@@ -7,8 +7,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -73,7 +71,7 @@ public class MagicInABottle extends Item {
                 itemStack.setTag(tag);
             }
             tag.putString("tier", newTier.name());
-            player.displayClientMessage(new TextComponent("Taste the " + newTier.getTierName() + " rainbow!"), true);
+            player.displayClientMessage(Component.literal("Taste the " + newTier.getTierName() + " rainbow!"), true);
         }
         return InteractionResult.SUCCESS;
     }
@@ -86,11 +84,11 @@ public class MagicInABottle extends Item {
         int ticksElapsed = getTicksElapsed(stack);
         int ticksBetweenLoot = getTicksBetweenLoot(stack);
         int pct = (int)Math.min(100, (int)(ticksElapsed * 100d / ticksBetweenLoot));
-        toolTips.add(new TranslatableComponent(stack.getDescriptionId() + ".tooltip", pct).withStyle(ChatFormatting.AQUA, ChatFormatting.ITALIC));
+        toolTips.add(Component.translatable(stack.getDescriptionId() + ".tooltip", pct).withStyle(ChatFormatting.AQUA, ChatFormatting.ITALIC));
     }
 
     public static int getTicksElapsed(ItemStack stack) {
-        if (stack.isEmpty() || stack.getItem() != ModItems.magicInABottle) {
+        if (stack.isEmpty() || stack.getItem() != ModItems.magicInABottle.get()) {
             return 0;
         }
         CompoundTag tag = stack.getOrCreateTag();
@@ -98,7 +96,7 @@ public class MagicInABottle extends Item {
     }
 
     public static void setTicksElapsed(ItemStack stack, int ticks) {
-        if (!stack.isEmpty() && stack.getItem() == ModItems.magicInABottle) {
+        if (!stack.isEmpty() && stack.getItem() == ModItems.magicInABottle.get()) {
             CompoundTag tag = stack.getOrCreateTag();
             tag.putInt(TAG_TICKS_ELAPSED, ticks);
         }
@@ -185,7 +183,7 @@ public class MagicInABottle extends Item {
     public static RainbowColor getTier(ItemStack stack) {
         RainbowColor tier = RainbowColor.RED;
 
-        if (stack.isEmpty() || stack.getItem() != ModItems.magicInABottle) {
+        if (stack.isEmpty() || stack.getItem() != ModItems.magicInABottle.get()) {
             return tier;
         }
 

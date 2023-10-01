@@ -16,6 +16,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.renderer.RenderStateShard.TransparencyStateShard;
+
 /**
  * Render a rainbow between two points, with 1 or more colors
  */

@@ -17,15 +17,15 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
     @Override
     protected void addTags() {
         for (RainbowColor tier: RainbowColor.values()) {
-            tag(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.getArconiumBlock(tier));
-            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.getArconiumBlock(tier));
+            tag(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.getArconiumBlock(tier).get());
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.getArconiumBlock(tier).get());
 
-            tag(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.getInfiniteGoldArconiumBlock(tier));
-            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.getInfiniteGoldArconiumBlock(tier));
+            tag(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.getInfiniteGoldArconiumBlock(tier).get());
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.getInfiniteGoldArconiumBlock(tier).get());
 
-            tag(BlockTags.MINEABLE_WITH_HOE).add(ModBlocks.getArconiumTreeLeaves(tier));
+            tag(BlockTags.MINEABLE_WITH_HOE).add(ModBlocks.getArconiumTreeLeaves(tier).get());
 
-            tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.worldBuilder);
+            tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.worldBuilder.get());
         }
 
     }

@@ -1,14 +1,5 @@
 {
   "type": "arconia:pedestal",
-  "output": {
-    "nbt": {
-      "item": {
-        "id": "minecraft:purple_dye",
-        "Count": 1
-      }
-    },
-    "item": "arconia:purple_colored_tree_root"
-  },
   "durationTicks": 800,
   "ingredients": [
     {
@@ -23,5 +14,14 @@
     {
       "item": "arconia:purple_colored_tree_root"
     }
-  ]
+  ],
+  "output": {
+    "item": "arconia:purple_colored_tree_root",
+    "nbt": {
+      "item": {
+        "Count": 1,
+        "id": "minecraft:purple_dye"
+      }
+    }
+  }
 }
