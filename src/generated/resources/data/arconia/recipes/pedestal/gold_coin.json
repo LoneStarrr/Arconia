@@ -1,12 +1,12 @@
 {
   "type": "arconia:pedestal",
-  "output": {
-    "item": "arconia:gold_coin"
-  },
   "durationTicks": 20,
   "ingredients": [
     {
       "item": "minecraft:gold_nugget"
     }
-  ]
+  ],
+  "output": {
+    "item": "arconia:gold_coin"
+  }
 }

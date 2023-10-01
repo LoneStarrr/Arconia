@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "PPP",
-    "PDP",
-    "PPP"
-  ],
   "key": {
     "D": {
       "item": "minecraft:dirt"
@@ -13,6 +8,11 @@
       "item": "minecraft:oak_planks"
     }
   },
+  "pattern": [
+    "PPP",
+    "PDP",
+    "PPP"
+  ],
   "result": {
     "item": "arconia:world_builder"
   }

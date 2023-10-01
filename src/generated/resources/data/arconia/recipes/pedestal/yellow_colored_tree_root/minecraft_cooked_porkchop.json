@@ -1,14 +1,5 @@
 {
   "type": "arconia:pedestal",
-  "output": {
-    "nbt": {
-      "item": {
-        "id": "minecraft:cooked_porkchop",
-        "Count": 1
-      }
-    },
-    "item": "arconia:yellow_colored_tree_root"
-  },
   "durationTicks": 400,
   "ingredients": [
     {
@@ -23,5 +14,14 @@
     {
       "item": "arconia:yellow_colored_tree_root"
     }
-  ]
+  ],
+  "output": {
+    "item": "arconia:yellow_colored_tree_root",
+    "nbt": {
+      "item": {
+        "Count": 1,
+        "id": "minecraft:cooked_porkchop"
+      }
+    }
+  }
 }

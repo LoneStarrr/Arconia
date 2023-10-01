@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "item": "arconia:light_blue_arconium_ingot"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
   "pattern": [
     "II ",
     " S ",
     " S "
   ],
-  "key": {
-    "S": {
-      "item": "minecraft:stick"
-    },
-    "I": {
-      "item": "arconia:light_blue_arconium_ingot"
-    }
-  },
   "result": {
     "item": "arconia:light_blue_arconium_sickle"
   }
