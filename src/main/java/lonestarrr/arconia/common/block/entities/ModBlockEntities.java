@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModBlockEntities {
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Arconia.MOD_ID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Arconia.MOD_ID);
 
     public static final RegistryObject<BlockEntityType<HatBlockEntity>> HAT = BLOCK_ENTITIES.register(BlockNames.HAT,
             () -> BlockEntityType.Builder.of(HatBlockEntity::new, ModBlocks.hat.get()).build(null));

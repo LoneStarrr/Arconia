@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModBlocks {
-    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Arconia.MOD_ID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Arconia.MOD_ID);
 //    private static final Map<RainbowColor, RainbowCropBlock> rainbowCrops = new HashMap<>();
     private static final Map<RainbowColor, RegistryObject<ArconiumTreeLeaves>> arconiumTreeLeaves = new HashMap<>();
     private static final Map<RainbowColor, RegistryObject<ArconiumTreeSapling>> arconiumTreeSaplings = new HashMap<>();

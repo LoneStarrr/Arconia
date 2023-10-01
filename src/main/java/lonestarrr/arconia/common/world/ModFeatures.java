@@ -30,7 +30,7 @@ import java.util.Map;
 public class ModFeatures {
     public static final String CLOVER_PATCH_NAME = "clover_patch";
 
-    private static final DeferredRegister<ConfiguredFeature<?,?>> CONFIGURED_FEATURES =
+    public static final DeferredRegister<ConfiguredFeature<?,?>> CONFIGURED_FEATURES =
             DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, Arconia.MOD_ID);
     public static final DeferredRegister<PlacedFeature> PLACED_FEATURES =
             DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, Arconia.MOD_ID);

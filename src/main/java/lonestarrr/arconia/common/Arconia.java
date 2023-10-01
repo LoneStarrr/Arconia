@@ -58,9 +58,17 @@ public class Arconia {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_SPEC);
 
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+
         modBus.addListener(this::commonSetup);
         modBus.addListener(DataGenerators::gatherData);
 
+        ModBlocks.BLOCKS.register(modBus);
+        ModItems.ITEMS.register(modBus);
+        ModBlockEntities.BLOCK_ENTITIES.register(modBus);
+        ModRecipeTypes.RECIPE_TYPES.register(modBus);
+        ModRecipeTypes.RECIPE_SERIALIZERS.register(modBus);
+        ModLootModifiers.CODECS.register(modBus);
+        ModLootModifiers.LOOT_CONDITION_TYPES.register(modBus);
         ModFeatures.register(modBus);
 
         modBus.addListener(ConfigHandler::onConfigLoad);
