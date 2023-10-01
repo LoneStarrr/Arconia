@@ -23,7 +23,7 @@ public class ColorHandler {
 
     // Looks like blocks are registered before items
     public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-        BlockColors colorBlocks = Minecraft.getInstance().getBlockColors();
+        BlockColors colorBlocks = event.getBlockColors();
 
         // Gleaned from minecraft's ItemColors
         for (RainbowColor tier : RainbowColor.values()) {

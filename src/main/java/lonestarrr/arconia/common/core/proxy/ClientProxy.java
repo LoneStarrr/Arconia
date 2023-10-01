@@ -30,8 +30,8 @@ public class ClientProxy implements IProxy {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addListener(this::clientSetup);
         modBus.addListener(this::loadComplete);
-        modBus.addListener(this::registerItemColors);
         modBus.addListener(this::registerBlockColors);
+        modBus.addListener(this::registerItemColors);
         modBus.addListener(BlockEntityRendererHandler::registerBlockEntityRenderers);
 
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
