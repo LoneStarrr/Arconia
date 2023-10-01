@@ -10,7 +10,7 @@ public class PotMultiBlockSecondaryBlockEntity extends BaseBlockEntity {
     BlockPos primaryPos;
 
     public PotMultiBlockSecondaryBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.POT_MULTIBLOCK_SECONDARY, pos, state);
+        super(ModBlockEntities.POT_MULTIBLOCK_SECONDARY.get(), pos, state);
     }
 
     public void setPrimaryPos(@Nonnull final BlockPos primaryPos) {

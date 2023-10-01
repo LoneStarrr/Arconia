@@ -33,7 +33,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     private static final long TICK_UPDATE_INTERVAL = 20; // How often to do work in tick()
 
     public CenterPedestalBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.CENTER_PEDESTAL, pos, state);
+        super(ModBlockEntities.CENTER_PEDESTAL.get(), pos, state);
     }
 
     private IPedestalRecipe getCurrentRecipe() {
@@ -195,7 +195,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     }
 
     private IPedestalRecipe findRecipe(SimpleContainer inv) {
-        Optional<IPedestalRecipe> hasRecipe = level.getRecipeManager().getRecipeFor(ModRecipeTypes.PEDESTAL_TYPE, inv, level);
+        Optional<IPedestalRecipe> hasRecipe = level.getRecipeManager().getRecipeFor(ModRecipeTypes.PEDESTAL_TYPE.get(), inv, level);
         if (hasRecipe.isPresent()) {
             return hasRecipe.get();
         }

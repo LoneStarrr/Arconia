@@ -88,7 +88,7 @@ public class MagicInABottle extends Item {
     }
 
     public static int getTicksElapsed(ItemStack stack) {
-        if (stack.isEmpty() || stack.getItem() != ModItems.magicInABottle) {
+        if (stack.isEmpty() || stack.getItem() != ModItems.magicInABottle.get()) {
             return 0;
         }
         CompoundTag tag = stack.getOrCreateTag();
@@ -96,7 +96,7 @@ public class MagicInABottle extends Item {
     }
 
     public static void setTicksElapsed(ItemStack stack, int ticks) {
-        if (!stack.isEmpty() && stack.getItem() == ModItems.magicInABottle) {
+        if (!stack.isEmpty() && stack.getItem() == ModItems.magicInABottle.get()) {
             CompoundTag tag = stack.getOrCreateTag();
             tag.putInt(TAG_TICKS_ELAPSED, ticks);
         }
@@ -183,7 +183,7 @@ public class MagicInABottle extends Item {
     public static RainbowColor getTier(ItemStack stack) {
         RainbowColor tier = RainbowColor.RED;
 
-        if (stack.isEmpty() || stack.getItem() != ModItems.magicInABottle) {
+        if (stack.isEmpty() || stack.getItem() != ModItems.magicInABottle.get()) {
             return tier;
         }
 

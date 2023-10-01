@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -46,7 +47,7 @@ public class WorldBuilderEntity extends BaseBlockEntity {
     private long lastBuilderTick = 0; // Last time the builder ticked
 
     public WorldBuilderEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.WORLD_BUILDER, pos, state);
+        super(ModBlockEntities.WORLD_BUILDER.get(), pos, state);
 
     }
 
@@ -180,7 +181,7 @@ public class WorldBuilderEntity extends BaseBlockEntity {
     public static void loadDistributionTables() throws IOException {
         Arconia.logger.info("***** Loading distribution tables for world builder");
         ResourceLocation tableResource = prefix("world_builder/world_builder.json");
-        InputStream in = Minecraft.getInstance().getResourceManager().getResource(tableResource).getInputStream();
+        InputStream in = Minecraft.getInstance().getResourceManager().getResource(tableResource).get().open();
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         // Apparently you can't tell gson to throw an exception if it encounters an unknown field. wtf.
         Gson gson = new Gson();
@@ -197,7 +198,7 @@ class ComputedDistribution {
     public int[] weights;
     public int yLevel;
     public BlockState[] blocks;
-    final Random random;
+    final RandomSource random;
 
     @NotNull
     public BlockState selectRandomBlock() {
@@ -219,7 +220,7 @@ class ComputedDistribution {
      * @param yLevel
      * @param random
      */
-    public ComputedDistribution(final List<DistributionEntry> entries, int yLevel, float boostFactor, final Random random) {
+    public ComputedDistribution(final List<DistributionEntry> entries, int yLevel, float boostFactor, final RandomSource random) {
         this.random = random;
         List<Integer> tmpWeights = new ArrayList<>(entries.size());
         List<BlockState> tmpBlocks = new ArrayList<>(entries.size());

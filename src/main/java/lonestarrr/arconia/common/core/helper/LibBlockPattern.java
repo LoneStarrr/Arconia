@@ -62,7 +62,7 @@ public abstract class LibBlockPattern {
          *     "2": {"ID": "mincraft:green_wool"}
          *   }
          */
-        InputStream in = Minecraft.getInstance().getResourceManager().getResource(location).getInputStream();
+        InputStream in = Minecraft.getInstance().getResourceManager().getResource(location).get().open();
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         Gson gson = new Gson();
         JsonElement je = gson.fromJson(reader, JsonElement.class);
@@ -155,11 +155,13 @@ public abstract class LibBlockPattern {
         String[] blockNameParts = blockByName.split(":");
         String namespace = blockNameParts[0];
         String blockId = blockNameParts[1];
-        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(namespace, blockId));
+        ResourceLocation resourceLocation = new ResourceLocation(namespace, blockId);
 
-        if (block == null || !block.getRegistryName().getNamespace().equals(namespace) || !block.getRegistryName().getPath().equals(blockId)) {
+        if (!ForgeRegistries.BLOCKS.containsKey(resourceLocation)) {
             throw new BlockPatternException("Unknown block: " + blockByName);
         }
+
+        Block block = ForgeRegistries.BLOCKS.getValue(resourceLocation);
 
         BlockState blockState = block.defaultBlockState();
         return blockState;

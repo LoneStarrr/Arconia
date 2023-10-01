@@ -33,38 +33,38 @@ public class ModLanguageProvider extends LanguageProvider {
         // Also register items for anything that has both a block and item representation
         for (RainbowColor color : RainbowColor.values()) {
             String colorName = color.getUnlocalizedName();
-            add(ModBlocks.getArconiumBlock(color), colorName + " Arconium Block");
-            add(ModBlocks.getInfiniteGoldArconiumBlock(color), colorName + " Infinite Gold Arconium Block");
-            add(ModBlocks.getArconiumTreeLeaves(color), colorName + " Arconium Tree Leaves");
-            add(ModBlocks.getArconiumTreeSapling(color), colorName + " Arconium Tree Sapling");
+            add(ModBlocks.getArconiumBlock(color).get(), colorName + " Arconium Block");
+            add(ModBlocks.getInfiniteGoldArconiumBlock(color).get(), colorName + " Infinite Gold Arconium Block");
+            add(ModBlocks.getArconiumTreeLeaves(color).get(), colorName + " Arconium Tree Leaves");
+            add(ModBlocks.getArconiumTreeSapling(color).get(), colorName + " Arconium Tree Sapling");
         }
     }
 
     private void registerRainbowItems() {
         for (RainbowColor color : RainbowColor.values()) {
             String colorName = color.getUnlocalizedName();
-            add(ModItems.getArconiumEssence(color), colorName + " Arconium Essence");
-            add(ModItems.getArconiumIngot(color), colorName + " Arconium Ingot");
-            add(ModItems.getColoredRoot(color), colorName + " Tree Root");
-            add(ModItems.getArconiumSickle(color), colorName + " Arconium Sickle");
+            add(ModItems.getArconiumEssence(color).get(), colorName + " Arconium Essence");
+            add(ModItems.getArconiumIngot(color).get(), colorName + " Arconium Ingot");
+            add(ModItems.getColoredRoot(color).get(), colorName + " Tree Root");
+            add(ModItems.getArconiumSickle(color).get(), colorName + " Arconium Sickle");
         }
     }
 
     private void registerModBlocks() {
-        add(ModBlocks.clover, "Clover Plant");
-        add(ModBlocks.hat, "Leprechaun Hat");
-        add(ModBlocks.worldBuilder, "World Builder");
-        add(ModBlocks.pedestal, "Pedestal");
-        add(ModBlocks.centerPedestal, "Center Pedestal");
+        add(ModBlocks.clover.get(), "Clover Plant");
+        add(ModBlocks.hat.get(), "Leprechaun Hat");
+        add(ModBlocks.worldBuilder.get(), "World Builder");
+        add(ModBlocks.pedestal.get(), "Pedestal");
+        add(ModBlocks.centerPedestal.get(), "Center Pedestal");
     }
 
     private void registerModItems() {
-        add(ModItems.threeLeafClover, "Three Leaf Clover");
-        add(ModItems.fourLeafClover, "Four Leaf Clover");
-        add(ModItems.goldCoin, "Gold Coin");
-        add(ModItems.cloverStaff, "Clover Staff");
-        add(ModItems.magicInABottle, "Magic In A Bottle");
-        add(ModItems.magicInABottle.getDescriptionId() + ".tooltip", "The Magic Luck-o-Meter indicates it's at %d%%");
+        add(ModItems.threeLeafClover.get(), "Three Leaf Clover");
+        add(ModItems.fourLeafClover.get(), "Four Leaf Clover");
+        add(ModItems.goldCoin.get(), "Gold Coin");
+        add(ModItems.cloverStaff.get(), "Clover Staff");
+        add(ModItems.magicInABottle.get(), "Magic In A Bottle");
+        add(ModItems.magicInABottle.get().getDescriptionId() + ".tooltip", "The Magic Luck-o-Meter indicates it's at %d%%");
     }
 
     private void registerAdvancements() {

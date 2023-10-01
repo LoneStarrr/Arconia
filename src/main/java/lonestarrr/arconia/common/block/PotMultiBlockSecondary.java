@@ -95,7 +95,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
             return InteractionResult.SUCCESS;
         }
 
-        if (itemUsed.getItem() != ModItems.goldCoin) {
+        if (itemUsed.getItem() != ModItems.goldCoin.get()) {
             return InteractionResult.PASS;
         }
 

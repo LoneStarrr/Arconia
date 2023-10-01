@@ -19,14 +19,12 @@ import lonestarrr.arconia.common.network.ModPackets;
 import lonestarrr.arconia.common.world.ModFeatures;
 import lonestarrr.arconia.compat.theoneprobe.TheOneProbe;
 import lonestarrr.arconia.data.DataGenerators;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -34,7 +32,6 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,20 +61,12 @@ public class Arconia {
         modBus.addListener(this::commonSetup);
         modBus.addListener(DataGenerators::gatherData);
 
-        modBus.addGenericListener(Block.class, ModBlocks::registerBlocks);
-        modBus.addGenericListener(Item.class, ModBlocks::registerItemBlocks);
-        modBus.addGenericListener(Item.class, ModItems::registerItems);
-        modBus.addGenericListener(BlockEntityType.class, ModBlockEntities::registerBlockEntities);
-        modBus.addGenericListener(RecipeSerializer.class, ModRecipeTypes::registerRecipeTypes);
-//        modBus.addGenericListener(Feature.class, ModFeatures::registerFeatures);
         ModFeatures.register(modBus);
-        ModLootModifiers.register(modBus);
 
         modBus.addListener(ConfigHandler::onConfigLoad);
         modBus.addListener(ConfigHandler::onConfigReload);
 
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
-        forgeBus.addListener(EventPriority.HIGH, this::biomeSetup);
         forgeBus.addListener(EventPriority.HIGH, this::registerCommands);
 
         ModCriterialTriggers.init();
@@ -108,13 +97,9 @@ public class Arconia {
         }
     }
 
-    private void biomeSetup(BiomeLoadingEvent event) {
-        ModFeatures.onBiomeLoad(event);
-    }
-
     private void registerCommands(RegisterCommandsEvent event) {
         FractalTreeCommand.register(event.getDispatcher());
-        ArconiaCommand.register(event.getDispatcher());
+        ArconiaCommand.register(event.getDispatcher(), event.getBuildContext());
         logger.info("Registered commands");
     }
 }

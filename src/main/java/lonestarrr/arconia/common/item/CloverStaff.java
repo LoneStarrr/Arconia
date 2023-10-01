@@ -45,7 +45,7 @@ public class CloverStaff extends Item {
         BlockState bs = world.getBlockState(pos);
         if (bs.getBlock() == PotMultiBlockPrimary.INSIDE_BLOCK) {
             return attemptFormMultiblock(player, world, pos) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
-        } else if (bs.getBlock() == ModBlocks.potMultiBlockSecondary) {
+        } else if (bs.getBlock() == ModBlocks.potMultiBlockSecondary.get()) {
             BlockPos potPos = storePotCoordinate(world, pos, staff);
             if (potPos != null) {
                 if (!world.isClientSide) {
@@ -58,7 +58,7 @@ public class CloverStaff extends Item {
                 }
             }
             return InteractionResult.PASS;
-        } else if (bs.getBlock() == ModBlocks.hat) {
+        } else if (bs.getBlock() == ModBlocks.hat.get()) {
             if (!world.isClientSide) {
                 BlockPos potPos = getPotPosition(staff);
                 if (potPos == null) {

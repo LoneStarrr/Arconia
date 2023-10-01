@@ -2,7 +2,6 @@ package lonestarrr.arconia.client.core.handler;
 
 import lonestarrr.arconia.client.effects.*;
 import lonestarrr.arconia.common.block.entities.ModBlockEntities;
-import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 
 /**
@@ -10,8 +9,8 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
  */
 public class BlockEntityRendererHandler {
     public static void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers evt) {
-        evt.registerBlockEntityRenderer(ModBlockEntities.PEDESTAL, PedestalRenderer::new);
-        evt.registerBlockEntityRenderer(ModBlockEntities.CENTER_PEDESTAL, CenterPedestalRenderer::new);
-        evt.registerBlockEntityRenderer(ModBlockEntities.HAT, HatRenderer::new);
+        evt.registerBlockEntityRenderer(ModBlockEntities.PEDESTAL.get(), PedestalRenderer::new);
+        evt.registerBlockEntityRenderer(ModBlockEntities.CENTER_PEDESTAL.get(), CenterPedestalRenderer::new);
+        evt.registerBlockEntityRenderer(ModBlockEntities.HAT.get(), HatRenderer::new);
     }
 }

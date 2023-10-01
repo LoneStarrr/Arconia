@@ -13,7 +13,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -93,7 +92,7 @@ public class PedestalRecipe implements IPedestalRecipe {
         return inputs;
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<PedestalRecipe> {
+    public static class Serializer implements RecipeSerializer<PedestalRecipe> {
 
         @Override
         public PedestalRecipe fromJson(ResourceLocation id, JsonObject json) {

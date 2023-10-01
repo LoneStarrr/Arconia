@@ -15,5 +15,5 @@ import java.util.Map;
 @Mixin(RecipeManager.class)
 public interface AccessorRecipeManager {
     @Invoker("byType")
-    <C extends Container, T extends Recipe<C>> Map<ResourceLocation, Recipe<C>> arconia_getRecipes(RecipeType<T> type);
+    <C extends Container, T extends Recipe<C>> Map<ResourceLocation, T> arconia_getRecipes(RecipeType<T> type);
 }

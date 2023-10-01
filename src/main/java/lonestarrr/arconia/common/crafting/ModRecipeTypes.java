@@ -5,11 +5,14 @@ import lonestarrr.arconia.mixin.AccessorRecipeManager;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Map;
 
@@ -17,20 +20,14 @@ import java.util.Map;
  * Register new recipe types for custom crafting methods
  */
 public class ModRecipeTypes {
-    public static final RecipeType<IPedestalRecipe> PEDESTAL_TYPE = new ModRecipeType<>(); // Crafting with pedestals
-    public static final RecipeSerializer<PedestalRecipe> PEDESTAL_SERIALIZER = new PedestalRecipe.Serializer();
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, Arconia.MOD_ID);
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Arconia.MOD_ID);
+    public static final RegistryObject<RecipeType<IPedestalRecipe>> PEDESTAL_TYPE = RECIPE_TYPES.register("pedestal", () -> new ModRecipeType<>()); // Crafting with pedestals
+    public static final RegistryObject<RecipeSerializer<PedestalRecipe>> PEDESTAL_SERIALIZER = RECIPE_SERIALIZERS.register("pedestal", () -> new PedestalRecipe.Serializer());
 
-    public static void registerRecipeTypes(RegistryEvent.Register<RecipeSerializer<?>> event) {
-        ResourceLocation id = new ResourceLocation(Arconia.MOD_ID, "pedestal");
-        Registry.register(Registry.RECIPE_TYPE, id, PEDESTAL_TYPE);
-        event.getRegistry().register(PEDESTAL_SERIALIZER.setRegistryName(id));
-
-
-    }
-
-    public static <C extends Container, T extends Recipe<C>> Map<ResourceLocation, Recipe<C>> getRecipes(Level world, RecipeType<T> type) {
+    public static <C extends Container, T extends Recipe<C>> Map<ResourceLocation, T> getRecipes(Level level, RecipeType<T> type) {
         // RecipeManger.byType() is private, custom mixin makes it available
-        return ((AccessorRecipeManager) world.getRecipeManager()).arconia_getRecipes(type);
+        return ((AccessorRecipeManager) level.getRecipeManager()).arconia_getRecipes(type);
     }
 
     private static class ModRecipeType<T extends Recipe<?>> implements RecipeType<T> {

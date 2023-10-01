@@ -123,7 +123,7 @@ public class Hat extends BaseEntityBlock {
                 if (!resource.isEmpty()) {
                     RainbowColor tier = hbe.getTier();
                     hbe.unsetResourceGenerated();
-                    ItemStack root = new ItemStack(ModItems.getColoredRoot(tier));
+                    ItemStack root = new ItemStack(ModItems.getColoredRoot(tier).get());
                     ColoredRoot.setResourceItem(root, resource.getItem(), resource.getCount());
                     player.setItemInHand(hand, root);
                     player.sendSystemMessage(Component.translatable("arconia.block.hat.resource_unset"));

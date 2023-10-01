@@ -5,6 +5,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class PedestalBlockEntity extends BasePedestalBlockEntity {
     public PedestalBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.PEDESTAL, pos, state);
+        super(ModBlockEntities.PEDESTAL.get(), pos, state);
     }
 }

@@ -24,7 +24,7 @@ public class HatBlockEntity extends BaseBlockEntity {
     public long nextTickParticleRender = 0; // used by TE renderer to track particle rendering - not persisted
 
     public HatBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.HAT, pos, state);
+        super(ModBlockEntities.HAT.get(), pos, state);
         this.tier = RainbowColor.RED;
         this.itemStack = ItemStack.EMPTY;
     }

@@ -49,7 +49,7 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> type) {
         if (!level.isClientSide) {
-            return createTickerHelper(type, ModBlockEntities.POT_MULTIBLOCK_PRIMARY, PotMultiBlockPrimaryBlockEntity::tick);
+            return createTickerHelper(type, ModBlockEntities.POT_MULTIBLOCK_PRIMARY.get(), PotMultiBlockPrimaryBlockEntity::tick);
         }
         return null;
     }
@@ -79,7 +79,7 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
         }
 
         BlockPos primaryPos = goldPos.below();
-        world.setBlock(primaryPos, ModBlocks.potMultiBlockPrimary.defaultBlockState(), 3);
+        world.setBlock(primaryPos, ModBlocks.potMultiBlockPrimary.get().defaultBlockState(), 3);
 
         BlockPos corner = goldPos.offset(-1, -1, -1);
         for (int x = 0; x < 3; x++) {
@@ -90,7 +90,7 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
                         continue;
                     }
                     PotMultiBlockSecondary.PotPosition potPos = PotMultiBlockSecondary.PotPosition.getPositionFromOffset(x, z);
-                    world.setBlock(toReplace, ModBlocks.potMultiBlockSecondary.defaultBlockState().setValue(PotMultiBlockSecondary.POT_POSITION, potPos), 3);
+                    world.setBlock(toReplace, ModBlocks.potMultiBlockSecondary.get().defaultBlockState().setValue(PotMultiBlockSecondary.POT_POSITION, potPos), 3);
                     BlockEntity be = world.getBlockEntity(toReplace);
                     if (be == null || !(be instanceof PotMultiBlockSecondaryBlockEntity)) {
                         Arconia.logger.error("Error setting up pot multiblock - expected to find a secondary multiblock block entity at " + toReplace);

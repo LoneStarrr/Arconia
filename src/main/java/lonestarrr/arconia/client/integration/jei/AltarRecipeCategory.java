@@ -6,16 +6,18 @@ import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.crafting.IPedestalRecipe;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -25,26 +27,23 @@ import java.util.List;
  */
 public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
     public static final ResourceLocation UID = new ResourceLocation(Arconia.MOD_ID, "altar");
-
+    public static final RecipeType<IPedestalRecipe> TYPE =
+            RecipeType.create(Arconia.MOD_ID, "pedestal", IPedestalRecipe.class);
     private final IDrawable background;
     private final IDrawable overlay;
     private final IDrawable icon;
+    private final ItemStack renderStack = new ItemStack(ModBlocks.centerPedestal.get().asItem());
 
     public AltarRecipeCategory(@Nonnull IGuiHelper guiHelper) {
         this.background = guiHelper.createBlankDrawable(144, 81);
         this.overlay = guiHelper.createDrawable(new ResourceLocation(Arconia.MOD_ID, "textures/gui/jei/altar_overlay.png"),
                 0, 0, 144, 81);
-        this.icon = guiHelper.createDrawableIngredient(new ItemStack(ModBlocks.centerPedestal.asItem()));
+        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, renderStack.copy());
     }
 
     @Override
-    public ResourceLocation getUid() {
-        return UID;
-    }
-
-    @Override
-    public Class<? extends IPedestalRecipe> getRecipeClass() {
-        return IPedestalRecipe.class;
+    public RecipeType<IPedestalRecipe> getRecipeType() {
+        return TYPE;
     }
 
     @Override
@@ -63,41 +62,32 @@ public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
     }
 
     @Override
-    public void draw(IPedestalRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(IPedestalRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
         RenderSystem.enableBlend();
-        overlay.draw(matrixStack, 0, 0);
+        overlay.draw(stack, 0, 0);
         RenderSystem.disableBlend();
     }
 
     @Override
-    public void setIngredients(IPedestalRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputIngredients(recipe.getIngredients());
-        ingredients.setOutput(VanillaTypes.ITEM, recipe.getResultItem());
-    }
+    public void setRecipe(IRecipeLayoutBuilder builder, IPedestalRecipe recipe, IFocusGroup focuses) {
+        List<Ingredient> inputs = recipe.getIngredients();
 
-    @Override
-    public void setRecipe(@Nonnull IRecipeLayout layout, @Nonnull IPedestalRecipe recipe, @Nonnull IIngredients ingredients) {
-        IGuiItemStackGroup stacks = layout.getItemStacks();
-        List<List<ItemStack>> inputs = ingredients.getInputs(VanillaTypes.ITEM);
-        List<List<ItemStack>> outputs = ingredients.getOutputs(VanillaTypes.ITEM);
-
-        // Input slots, representing the surrounding pedestals
-        stacks.init(0, true, 6, 6);
-        stacks.init(1, true, 32, 2);
-        stacks.init(2, true, 58, 6);
-        stacks.init(3, true, 62, 32);
-        stacks.init(4, true, 58, 58);
-        stacks.init(5, true, 32, 61);
-        stacks.init(6, true, 6, 58);
-        stacks.init(7, true, 2, 32);
-
-        // Output slot, representing the center pedestal
-        stacks.init(8, false, 120, 32);
-
-        for (int i = 0; i < inputs.size(); i++) {
-            stacks.set(i, inputs.get(i));
-        }
-
-        stacks.set(8, outputs.get(0));
+        builder.addSlot(RecipeIngredientRole.INPUT, 6, 6)
+                .addIngredients(inputs.get(0));
+        builder.addSlot(RecipeIngredientRole.INPUT, 32, 2)
+                .addIngredients(inputs.get(1));
+        builder.addSlot(RecipeIngredientRole.INPUT, 58, 6)
+                .addIngredients(inputs.get(2));
+        builder.addSlot(RecipeIngredientRole.INPUT, 62, 32)
+                .addIngredients(inputs.get(3));
+        builder.addSlot(RecipeIngredientRole.INPUT, 58, 58)
+                .addIngredients(inputs.get(4));
+        builder.addSlot(RecipeIngredientRole.INPUT, 32, 61)
+                .addIngredients(inputs.get(5));
+        builder.addSlot(RecipeIngredientRole.INPUT, 6, 58)
+                .addIngredients(inputs.get(6));
+        builder.addSlot(RecipeIngredientRole.INPUT, 2, 32)
+                .addIngredients(inputs.get(7));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 120, 32).addItemStack(recipe.getResultItem());
     }
 }

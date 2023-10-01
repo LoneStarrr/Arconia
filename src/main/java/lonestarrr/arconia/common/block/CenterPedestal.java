@@ -74,7 +74,7 @@ public class CenterPedestal extends BaseEntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> type) {
         if (!level.isClientSide) {
-            return createTickerHelper(type, ModBlockEntities.CENTER_PEDESTAL, CenterPedestalBlockEntity::tick);
+            return createTickerHelper(type, ModBlockEntities.CENTER_PEDESTAL.get(), CenterPedestalBlockEntity::tick);
         }
         return null;
     }
@@ -99,7 +99,7 @@ public class CenterPedestal extends BaseEntityBlock {
             return InteractionResult.SUCCESS;
         }
 
-        if (playerStack.isEmpty() || playerStack.getItem() != ModItems.cloverStaff) {
+        if (playerStack.isEmpty() || playerStack.getItem() != ModItems.cloverStaff.get()) {
             return InteractionResult.PASS;
         }
 
