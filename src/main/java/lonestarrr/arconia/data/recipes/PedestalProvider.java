@@ -105,6 +105,7 @@ public class PedestalProvider extends RecipeProvider {
         for (Item item: new Item[] { Items.LIGHT_BLUE_DYE, Items.DIAMOND, Items.OBSIDIAN, Items.ENDER_PEARL }) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover, Ingredient.of(item)));
         }
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.EXPERIENCE_BOTTLE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover, Ingredient.of(Items.ENCHANTING_TABLE)));
 
         previousTier = tier;
         tier = RainbowColor.BLUE;

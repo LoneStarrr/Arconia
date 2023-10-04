@@ -1,3 +1,7 @@
+# 0.0.3
+
+ - Add recipe for bottle o' Enchanting
+
 # 0.0.2
 
  - Fix pedestal recipes not working if they don't have 8 input items
