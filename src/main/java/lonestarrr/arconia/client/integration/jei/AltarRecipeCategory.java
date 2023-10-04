@@ -7,6 +7,7 @@ import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.crafting.IPedestalRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -20,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -71,23 +73,19 @@ public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, IPedestalRecipe recipe, IFocusGroup focuses) {
         List<Ingredient> inputs = recipe.getIngredients();
-
-        builder.addSlot(RecipeIngredientRole.INPUT, 6, 6)
-                .addIngredients(inputs.get(0));
-        builder.addSlot(RecipeIngredientRole.INPUT, 32, 2)
-                .addIngredients(inputs.get(1));
-        builder.addSlot(RecipeIngredientRole.INPUT, 58, 6)
-                .addIngredients(inputs.get(2));
-        builder.addSlot(RecipeIngredientRole.INPUT, 62, 32)
-                .addIngredients(inputs.get(3));
-        builder.addSlot(RecipeIngredientRole.INPUT, 58, 58)
-                .addIngredients(inputs.get(4));
-        builder.addSlot(RecipeIngredientRole.INPUT, 32, 61)
-                .addIngredients(inputs.get(5));
-        builder.addSlot(RecipeIngredientRole.INPUT, 6, 58)
-                .addIngredients(inputs.get(6));
-        builder.addSlot(RecipeIngredientRole.INPUT, 2, 32)
-                .addIngredients(inputs.get(7));
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 120, 32).addItemStack(recipe.getResultItem());
+        List<IRecipeSlotBuilder> inputSlots = new ArrayList<>(8);
+        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 6, 6));
+        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 32, 2));
+        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 58, 6));
+        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 62, 32));
+        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 58, 58));
+        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 32, 61));
+        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 6, 58));
+        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 2, 32));
+        for (int i= 0; i < inputs.size(); i++) {
+            inputSlots.get(i).addIngredients(inputs.get(i));
+        }
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 120, 32)
+                .addItemStack(recipe.getResultItem());
     }
 }

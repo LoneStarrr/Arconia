@@ -3,7 +3,7 @@
   "biomes": {
     "type": "forge:or",
     "values": [
-      "#forge:is_plains", "#minecraft:is_hill", "#minecraft:is_forest"
+      "#forge:is_plains", "#minecraft:is_hill", "#minecraft:is_forest", "#minecraft:is_savanna", "#minecraft:is_taiga"
     ]
   },
   "features": "arconia:clover_patch",
