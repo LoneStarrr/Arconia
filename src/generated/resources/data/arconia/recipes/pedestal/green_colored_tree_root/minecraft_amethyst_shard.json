@@ -1,0 +1,27 @@
+{
+  "type": "arconia:pedestal",
+  "durationTicks": 400,
+  "ingredients": [
+    {
+      "item": "arconia:green_arconium_ingot"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "item": "arconia:green_colored_tree_root"
+    }
+  ],
+  "output": {
+    "item": "arconia:green_colored_tree_root",
+    "nbt": {
+      "item": {
+        "Count": 1,
+        "id": "minecraft:amethyst_shard"
+      }
+    }
+  }
+}

@@ -3,24 +3,24 @@
   "durationTicks": 400,
   "ingredients": [
     {
-      "item": "arconia:green_arconium_ingot"
+      "item": "arconia:yellow_arconium_ingot"
     },
     {
       "item": "arconia:four_leaf_clover"
     },
     {
-      "item": "minecraft:gold_ingot"
+      "item": "minecraft:rotten_flesh"
     },
     {
-      "item": "arconia:green_colored_tree_root"
+      "item": "arconia:yellow_colored_tree_root"
     }
   ],
   "output": {
-    "item": "arconia:green_colored_tree_root",
+    "item": "arconia:yellow_colored_tree_root",
     "nbt": {
       "item": {
         "Count": 1,
-        "id": "minecraft:gold_ingot"
+        "id": "minecraft:rotten_flesh"
       }
     }
   }

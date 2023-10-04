@@ -28,7 +28,6 @@ import java.util.List;
  * Custom altar recipe integration for JEI
  */
 public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
-    public static final ResourceLocation UID = new ResourceLocation(Arconia.MOD_ID, "altar");
     public static final RecipeType<IPedestalRecipe> TYPE =
             RecipeType.create(Arconia.MOD_ID, "pedestal", IPedestalRecipe.class);
     private final IDrawable background;
@@ -74,18 +73,18 @@ public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
     public void setRecipe(IRecipeLayoutBuilder builder, IPedestalRecipe recipe, IFocusGroup focuses) {
         List<Ingredient> inputs = recipe.getIngredients();
         List<IRecipeSlotBuilder> inputSlots = new ArrayList<>(8);
-        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 6, 6));
-        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 32, 2));
-        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 58, 6));
-        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 62, 32));
-        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 58, 58));
-        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 32, 61));
-        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 6, 58));
-        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 2, 32));
+        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 7, 7));
+        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 33, 3));
+        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 59, 7));
+        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 63, 33));
+        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 59, 59));
+        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 33, 62));
+        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 7, 59));
+        inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 3, 33));
         for (int i= 0; i < inputs.size(); i++) {
             inputSlots.get(i).addIngredients(inputs.get(i));
         }
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 120, 32)
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 121, 33)
                 .addItemStack(recipe.getResultItem());
     }
 }

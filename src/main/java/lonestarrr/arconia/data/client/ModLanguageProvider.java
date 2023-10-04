@@ -114,6 +114,7 @@ public class ModLanguageProvider extends LanguageProvider {
 
     private void registerMisc() {
         add("jei.arconia.recipe_category.altar", "Pedestal Ritual");
+        add("jei.arconia.recipe_category.enchanted_root", "Pot of Gold");
         // clover staff messages
         add("arconia.item.cloverstaff.linkhat.invalidpot", "The selected pot of gold appears to be invalid or missing");
         add("arconia.item.cloverstaff.linkhat.linked", "Linked hat");
