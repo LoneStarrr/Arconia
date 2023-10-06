@@ -1,22 +1,18 @@
 package lonestarrr.arconia.common.block;
 
-import lonestarrr.arconia.common.block.entities.GoldArconiumBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
-public class InfiniteGoldArconiumBlock extends BaseEntityBlock implements BlockColor {
+public class InfiniteGoldArconiumBlock extends Block implements BlockColor {
     private final RainbowColor tier;
 
     public InfiniteGoldArconiumBlock(RainbowColor tier) {
@@ -27,12 +23,6 @@ public class InfiniteGoldArconiumBlock extends BaseEntityBlock implements BlockC
 
     public RainbowColor getTier() {
         return tier;
-    }
-
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new GoldArconiumBlockEntity(tier, pos, state);
     }
 
     @Override

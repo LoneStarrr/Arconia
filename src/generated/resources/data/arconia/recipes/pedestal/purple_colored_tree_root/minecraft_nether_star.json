@@ -3,24 +3,24 @@
   "durationTicks": 60,
   "ingredients": [
     {
-      "item": "arconia:green_arconium_ingot"
+      "item": "arconia:purple_arconium_ingot"
     },
     {
       "item": "arconia:four_leaf_clover"
     },
     {
-      "item": "minecraft:gunpowder"
+      "item": "minecraft:nether_star"
     },
     {
-      "item": "arconia:green_colored_tree_root"
+      "item": "arconia:purple_colored_tree_root"
     }
   ],
   "output": {
-    "item": "arconia:green_colored_tree_root",
+    "item": "arconia:purple_colored_tree_root",
     "nbt": {
       "item": {
         "Count": 1,
-        "id": "minecraft:gunpowder"
+        "id": "minecraft:nether_star"
       }
     }
   }

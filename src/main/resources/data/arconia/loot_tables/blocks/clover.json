@@ -15,12 +15,12 @@
         {
           "type": "minecraft:item",
           "name": "arconia:three_leaf_clover",
-          "weight": 75
+          "weight": 50
         },
         {
           "type": "minecraft:item",
           "name": "arconia:four_leaf_clover",
-          "weight": 25
+          "weight": 50
         }
       ]
     },
@@ -41,12 +41,12 @@
         {
           "type": "minecraft:item",
           "name": "arconia:three_leaf_clover",
-          "weight": 95
+          "weight": 85
         },
         {
           "type": "minecraft:item",
           "name": "arconia:four_leaf_clover",
-          "weight": 5
+          "weight": 15
         }
       ]
     }

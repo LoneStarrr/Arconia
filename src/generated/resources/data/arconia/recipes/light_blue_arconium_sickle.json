@@ -9,9 +9,9 @@
     }
   },
   "pattern": [
-    "II ",
-    " S ",
-    " S "
+    "III",
+    "I I",
+    "  S"
   ],
   "result": {
     "item": "arconia:light_blue_arconium_sickle"

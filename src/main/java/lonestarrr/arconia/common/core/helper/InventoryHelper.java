@@ -38,7 +38,7 @@ public class InventoryHelper {
     }
 
     /**
-     * Attempt to insert items in an inventory - taken verbatim from Botania src -thanks Vazkii!
+     * Attempt to insert items in an inventory
      * @param dest
      * @param stack
      * @param simulate If set, no items will actually be transferred, but the return value represents of what would happen

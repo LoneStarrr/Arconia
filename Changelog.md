@@ -1,3 +1,20 @@
+# 0.0.5
+
+ - Add nether star and wither skeleton skull recipes to generator
+ - Hats generating resources will drop the enchanted root when the hat is broken
+ - Hats, when broken, now drop a hat item.
+ - Added instructions to guide book on how to retrieve an enchanted root without breaking the hat
+ - Higher chance of dropping four leaf clovers from clovers
+ - Tune coin generation / cost
+ - Fix bug where gold arconium blocks did not honor config changes for production rates or intervals
+ - Changed recipe for arconium essence generators to not rely on the arconium ingots of the same tier
+ - Significantly simplified item generation logic
+ - Bug fix: Item count for resource generated was ignored
+ - Speed up pedestal rituals - time-based waiting is lame, may change if making this something that can be automated
+ - Sickles require more ingots
+ - More challenging items to make next tier infinite arconium gold blocks
+ - Typo fixes
+
 # 0.0.4
 
  - Add recipe for auto-generating arconium ingots using a colored root recipe

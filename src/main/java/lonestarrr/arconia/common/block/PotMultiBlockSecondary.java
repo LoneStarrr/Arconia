@@ -2,6 +2,7 @@ package lonestarrr.arconia.common.block;
 
 import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockSecondaryBlockEntity;
+import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
 import lonestarrr.arconia.common.item.ModItems;
 import lonestarrr.arconia.compat.theoneprobe.TOPDriver;
@@ -45,7 +46,7 @@ import java.util.Map;
  * Block that is part of a large multiblock pot - this is the secondary, passive block. It is invisible in the world, as the primary block
  * will render the large model
  */
-public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver {
+public class PotMultiBlockSecondary extends BaseEntityBlock {
     private static final Map<PotPosition, VoxelShape> posShapes = new HashMap<>();
     static {
         posShapes.put(PotPosition.CENTER, box(0, 0, 0, 16, 16, 16));
@@ -90,22 +91,16 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
         }
 
         if (itemUsed.isEmpty()) {
-            String coinCountStr = String.format("%,d", primaryBE.getCoinCount());
-            player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.coin_count.absolute", coinCountStr));
+            RainbowColor potTier = primaryBE.getTier();
+            if (potTier == null) {
+                player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.no_tier"));
+            } else {
+                player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.show_tier", potTier.getTierName()));
+            }
             return InteractionResult.SUCCESS;
         }
 
-        if (itemUsed.getItem() != ModItems.goldCoin.get()) {
-            return InteractionResult.PASS;
-        }
-
-        int coinsAdded = primaryBE.addCoins(1);
-        if (coinsAdded > 0) {
-            itemUsed.setCount(itemUsed.getCount() - coinsAdded);
-            world.playSound(null, pos, SoundEvents.CHAIN_PLACE, SoundSource.BLOCKS, 1, 1.3f);
-            return InteractionResult.SUCCESS;
-        }
-        return InteractionResult.FAIL;
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -170,34 +165,6 @@ public class PotMultiBlockSecondary extends BaseEntityBlock implements TOPDriver
     public VoxelShape getShape(
             BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return posShapes.get(state.getValue(POT_POSITION));
-    }
-
-    @Override
-    public void addProbeInfo(
-            ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
-        PotMultiBlockPrimaryBlockEntity entity = getPrimaryBlockEntity(world, data.getPos());
-        if (entity == null) {
-            return;
-        }
-
-        long coinCount = entity.getCoinCount();
-        String lang;
-        if (coinCount == 0) {
-            lang = "none";
-        } else if (coinCount < 10) {
-            lang = "few";
-        } else if (coinCount < 100) {
-            lang = "tens";
-        } else if (coinCount < 1000) {
-            lang = "hundreds";
-        } else if (coinCount < 10000) {
-            lang = "thousands";
-        } else {
-            lang = "ludicrous";
-        }
-
-        // TODO use icons instead..?
-        probeInfo.text(Component.translatable(LanguageHelper.block("pot_multiblock") + ".coin_count." + lang));
     }
 
     public enum PotPosition implements StringRepresentable {

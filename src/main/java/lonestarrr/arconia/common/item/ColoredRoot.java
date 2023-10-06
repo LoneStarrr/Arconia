@@ -26,9 +26,7 @@ import net.minecraft.world.item.Item.Properties;
 public class ColoredRoot extends Item {
     private RainbowColor tier;
     private static final String TAG_ITEM = "item";
-    private static final String TAG_INTERVAL = "interval";
     private static final String TAG_COUNT = "count";
-    private static final String TAG_COIN_COST = "coin_cost";
 
     public ColoredRoot(Properties builder, RainbowColor tier) {
         super(builder);
@@ -52,20 +50,6 @@ public class ColoredRoot extends Item {
         }
 
         return ItemStack.of(tag.getCompound(TAG_ITEM));
-    }
-
-    /**
-     * @param stack
-     * @return Resource generation count for enchanted root item
-     */
-    @Nonnull
-    public static int getResourceCount(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        if (tag == null || !tag.contains(TAG_COUNT)) {
-            return 1;
-        }
-
-        return tag.getInt(TAG_COUNT);
     }
 
     /**

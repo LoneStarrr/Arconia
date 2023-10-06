@@ -72,9 +72,9 @@ public class VanillaRecipeProvider extends RecipeProvider {
             ShapedRecipeBuilder.shaped(sickle)
                     .define('S', Items.STICK)
                     .define('I', ingot)
-                    .pattern("II ")
-                    .pattern(" S ")
-                    .pattern(" S ")
+                    .pattern("III")
+                    .pattern("I I")
+                    .pattern("  S")
                     .unlockedBy("has_item", has(ingot))
                     .save(consumer);
         }

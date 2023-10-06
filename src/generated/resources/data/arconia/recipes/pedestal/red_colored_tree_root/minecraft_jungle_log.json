@@ -1,6 +1,6 @@
 {
   "type": "arconia:pedestal",
-  "durationTicks": 200,
+  "durationTicks": 60,
   "ingredients": [
     {
       "item": "arconia:red_arconium_ingot"

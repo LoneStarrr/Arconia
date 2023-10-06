@@ -1,6 +1,6 @@
 {
   "type": "arconia:pedestal",
-  "durationTicks": 100,
+  "durationTicks": 60,
   "ingredients": [
     {
       "item": "minecraft:red_dye"

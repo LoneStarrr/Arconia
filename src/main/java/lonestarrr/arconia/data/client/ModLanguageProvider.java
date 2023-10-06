@@ -144,13 +144,8 @@ public class ModLanguageProvider extends LanguageProvider {
         // Pot multiblock
         add("block.arconia.pot_multiblock_secondary", "Pot of Gold");
         add("block.arconia.pot_multiblock_primary", "Pot of Gold");
-        add("arconia.block.pot_multiblock.coin_count.none", "There are no coins");
-        add("arconia.block.pot_multiblock.coin_count.few", "There are a few coins");
-        add("arconia.block.pot_multiblock.coin_count.tens", "There are tens of coins");
-        add("arconia.block.pot_multiblock.coin_count.hundreds", "There are hundreds of coins");
-        add("arconia.block.pot_multiblock.coin_count.thousands", "There are thousands of coins");
-        add("arconia.block.pot_multiblock.coin_count.ludicrous", "There is an insane amount of coins");
-        add("arconia.block.pot_multiblock.coin_count.absolute", "The pot contains %s gold coins");
+        add("arconia.block.pot_multiblock.no_tier", "The pot is not linked to a hat that sits on a gold arconium block");
+        add("arconia.block.pot_multiblock.show_tier", "The pot's tier is %s");
         // world builder
         add("arconia.block.world_builder.in_progress", "The world builder is a little busy right now, please try again later");
         add("arconia.block.world_builder.start_build", "Starting the builder");

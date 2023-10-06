@@ -1,7 +1,7 @@
 package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.ModBlocks;
+import lonestarrr.arconia.common.block.InfiniteGoldArconiumBlock;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
 import lonestarrr.arconia.common.item.ModItems;
@@ -10,8 +10,6 @@ import lonestarrr.arconia.common.network.PotItemTransferPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -24,39 +22,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
-    private static final int MAX_COIN_SUPPLIERS = 1; // How many hats may supply coins per coin collection tick?
     private static final String TAG_HAT_POSITIONS = "hat_positions";
-    private static final String TAG_COIN_COUNT = "coin_count";
+    public static final int MIN_TICK_INTERVAL = 5;
 
-    private int coinCount;
-    private int intervalsElapsed = 0;
-    private int lastCoinCollectInterval = 0; // not persisted
     private long lastIntervalGameTime = 0;
-
     private final List<HatData> hats = new ArrayList<>();
 
     public PotMultiBlockPrimaryBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.POT_MULTIBLOCK_PRIMARY.get(), pos, state);
         // TODO check for valid structure at an interval, if not, destroy ourselves
-        coinCount = 0;
-    }
-
-    public int addCoins(int count) {
-        coinCount += count;
-        setChanged();
-        return count;
-    }
-
-    public final long getCoinCount() {
-        return coinCount;
     }
 
     public int maxHats() {
         return ConfigHandler.COMMON.potOfGoldMaxHats.get();
-    }
-
-    public int ticksPerInterval() {
-        return ConfigHandler.COMMON.potOfGoldTicksPerInterval.get();
     }
 
     public int maxHatDistance() {
@@ -134,14 +112,14 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
      * @param goldArconiumPos Position of hat in world
      * @return If the hat has a gold arconium block entity under it, return that, otherwise return null
      */
-    private GoldArconiumBlockEntity getGoldArconiumInWorld(BlockPos goldArconiumPos) {
-        BlockEntity be = level.getBlockEntity(goldArconiumPos);
+    private InfiniteGoldArconiumBlock getGoldArconiumInWorld(BlockPos goldArconiumPos) {
+        BlockState state = level.getBlockState(goldArconiumPos);
 
-        if (be == null || !(be instanceof GoldArconiumBlockEntity)) {
+        if (state == null || !(state.getBlock() instanceof InfiniteGoldArconiumBlock)) {
             return null;
         }
 
-        return (GoldArconiumBlockEntity)be;
+        return (InfiniteGoldArconiumBlock)state.getBlock();
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, PotMultiBlockPrimaryBlockEntity blockEntity) {
@@ -155,33 +133,33 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         }
 
         long now = level.getGameTime();
-        if (now - lastIntervalGameTime < ticksPerInterval()) {
+        if (now - lastIntervalGameTime < MIN_TICK_INTERVAL) {
+            return;
+        }
+
+        RainbowColor tier = detectTier(); //TODO cache?
+        if (tier == null) {
+            return;
+        }
+
+        int tickInterval = ConfigHandler.COMMON.potGenerationInterval.get(tier).get();
+
+        if (now - lastIntervalGameTime < tickInterval) {
             return;
         }
 
         lastIntervalGameTime = now;
-        intervalsElapsed++;
         tickHats();
     }
 
     /**
-     * Collect coins from a gold arconium block under a hat. If this depletes the block, it will be turned into a regular arconium block.
+     * Visualize sending coins to the pot of gold
      *
-     * @param goldArconiumTE
-     * @param goldArconiumPos
-     *
-     * @return Number of coins collected
      */
-    private int collectCoins(GoldArconiumBlockEntity goldArconiumTE, BlockPos goldArconiumPos) {
-        // TODO interval for this should probably be independent of the item sending logic
-        int coinCount = goldArconiumTE.collectCoins();
-        if (coinCount > 0) {
-            addCoins(coinCount);
-            ItemStack sent = new ItemStack(ModItems.goldCoin.get(), Math.min(coinCount, 64));
-            ModPackets.sendToNearby(level, goldArconiumPos, new PotItemTransferPacket(worldPosition.above(2), goldArconiumPos.above(), sent));
-        }
-
-        return coinCount;
+    private void collectCoins(RainbowColor tier, BlockPos goldArconiumPos) {
+        int itemGenerationCount = ConfigHandler.COMMON.potGenerationCount.get(tier).get();
+        ItemStack coins = new ItemStack(ModItems.goldCoin.get(), Math.max(itemGenerationCount, 64));
+        ModPackets.sendToNearby(level, goldArconiumPos, new PotItemTransferPacket(worldPosition.above(2), goldArconiumPos.above(), coins));
     }
 
     /*
@@ -190,7 +168,8 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
      */
     private RainbowColor detectTier() {
         // Without a gold arconium block, the minimum tier is always red.
-        RainbowColor detectedTier = RainbowColor.RED;
+        RainbowColor detectedTier = null;
+
         for (HatData hat : hats) {
             BlockPos hatPos = hat.hatPos;
             // TODO consider chunk loading if the hat is in a chunk that is not loaded?
@@ -202,9 +181,9 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
                 continue;
             }
             BlockPos goldArconiumPos = hatPos.below();
-            GoldArconiumBlockEntity te = getGoldArconiumInWorld(goldArconiumPos);
-            if (te != null && te.getTier().getTier() > detectedTier.getTier()) {
-                detectedTier = te.getTier();
+            InfiniteGoldArconiumBlock goldArconiumBlock = getGoldArconiumInWorld(goldArconiumPos);
+            if (goldArconiumBlock != null && (detectedTier == null || goldArconiumBlock.getTier().getTier() > detectedTier.getTier())) {
+                detectedTier = goldArconiumBlock.getTier();
             }
         }
 
@@ -215,7 +194,6 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
      * Loop over all hats in random order and collect coins and/or send (generate) resources to them
      */
     private void tickHats() {
-        // For now, assume 1 coin = 1 resource, regardless of other parameters
         BlockPos particlePos = worldPosition.above(2);
         Vec3 particleVec = new Vec3(particlePos.getX(), particlePos.getY(), particlePos.getZ());
         particleVec.add(0.5, 1.5, 0.5);
@@ -229,9 +207,22 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         List<HatData> hatsToRemove = new ArrayList<>(hats.size());
         RainbowColor potTier = detectTier();
 
+        if (potTier == null) {
+            // Nothing will be generated without a gold arconium block 'generating' gold
+            return;
+        }
+
+        int maxHatsToSendto = ConfigHandler.COMMON.potGenerationCount.get(potTier).get().intValue();
+
         Collections.shuffle(hats);
 
+        boolean coinsCollected = false;
+
         for (HatData hat : hats) {
+            if (hatsSentTo >= maxHatsToSendto) {
+                break;
+            }
+
             BlockPos hatPos = hat.hatPos;
             // TODO consider chunk loading if the hat is in a chunk that is not loaded?
             HatBlockEntity hatEntity = getHatEntity(hatPos);
@@ -249,25 +240,23 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             }
 
             if (!hatEntity.getResourceGenerated().isEmpty()) {
-                if (coinCount > 0 && hatEntity.getTier().getTier() <= potTier.getTier() && sendResourceToHat(hatEntity, hatPos)) {
+                if (hatEntity.getTier().getTier() <= potTier.getTier() && sendResourceToHat(hatEntity, hatPos)) {
                     hatsSentTo++;
                 }
-            } else {
-                // If the hat sits on top of a coin producer, and the coin generation interval has passed, let's get some gold.
-                // If there are more coin producers, the first one that meets the criteria and has coins available will be used.
+            } else if (!coinsCollected) {
+                // If the hat sits on top of a coin producer, and the coin generation interval has passed, let's pretend to get some gold.
+                // If there are more coin producers, the first one that meets the criteria will be used.
                 BlockPos goldArconiumPos = hatPos.below();
-                GoldArconiumBlockEntity te = getGoldArconiumInWorld(goldArconiumPos);
-                if (te != null && this.intervalsElapsed - this.lastCoinCollectInterval >= te.getCoinGenerationInterval()) {
-                    if (collectCoins(te, goldArconiumPos) > 0) {
-                        this.lastCoinCollectInterval = this.intervalsElapsed;
-                    }
+                InfiniteGoldArconiumBlock goldArconiumBlock = getGoldArconiumInWorld(goldArconiumPos);
+                if (goldArconiumBlock != null) {
+                    collectCoins(potTier, goldArconiumPos);
+                    coinsCollected = true;
                 }
             }
         }
 
         if (hatsSentTo == 0) {
             level.addParticle(ParticleTypes.SMOKE, particleVec.x, particleVec.y, particleVec.z, 0, 0, 0);
-
         }
 
         for (HatData hat: hatsToRemove) {
@@ -281,14 +270,9 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
      */
     private boolean sendResourceToHat(HatBlockEntity hatEntity, BlockPos hatPos) {
         RainbowColor tier = hatEntity.getTier();
-        int coinCost = ConfigHandler.COMMON.itemCost.get(tier).get();
 
-        if (coinCount < coinCost) {
-            return false;
-        }
         ItemStack sent = hatEntity.generateResource(level);
         if (!sent.isEmpty()) {
-            coinCount -= coinCost;
             setChanged();
             PotItemTransferPacket packet = new PotItemTransferPacket(hatPos.above(), worldPosition.above(), sent);
             ModPackets.sendToNearby(level, worldPosition, packet);
@@ -308,7 +292,6 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
     public void writePacketNBT(CompoundTag tag) {
         tag.putLongArray(TAG_HAT_POSITIONS, hats.stream().map(hat -> hat.hatPos.asLong()).collect(Collectors.toList()));
-        tag.putInt(TAG_COIN_COUNT, coinCount);
     }
 
     public void readPacketNBT(CompoundTag tag) {
@@ -317,7 +300,6 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         for (long longPos: longPositions) {
             hats.add(new HatData(BlockPos.of(longPos)));
         }
-        this.coinCount = tag.getInt(TAG_COIN_COUNT);
     }
 
     public enum LinkErrorCode { ALREADY_LINKED, TOO_MANY_HATS, HAT_NOT_FOUND, HAT_TOO_FAR, LINKED_TO_OTHER_POT }

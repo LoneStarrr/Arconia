@@ -1,6 +1,8 @@
 package lonestarrr.arconia.common.core;
 
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -87,5 +89,67 @@ public enum RainbowColor implements StringRepresentable {
      */
     public String getUnlocalizedName() {
         return unlocalizedName;
+    }
+
+    public static Item woolByTier(RainbowColor tier) {
+        Item wool;
+
+        switch (tier) {
+            case RED:
+                wool = Items.RED_WOOL;
+                break;
+            case ORANGE:
+                wool = Items.ORANGE_WOOL;
+                break;
+            case YELLOW:
+                wool = Items.YELLOW_WOOL;
+                break;
+            case GREEN:
+                wool = Items.GREEN_WOOL;
+                break;
+            case LIGHT_BLUE:
+                wool = Items.LIGHT_BLUE_WOOL;
+                break;
+            case BLUE:
+                wool = Items.BLUE_WOOL;
+                break;
+            case PURPLE:
+                wool = Items.PURPLE_WOOL;
+                break;
+            default:
+                wool = Items.RED_WOOL;
+        }
+        return wool;
+    }
+
+    public static Item dyeByTier(RainbowColor tier) {
+        Item dye;
+
+        switch (tier) {
+            case RED:
+                dye = Items.RED_DYE;
+                break;
+            case ORANGE:
+                dye = Items.ORANGE_DYE;
+                break;
+            case YELLOW:
+                dye = Items.YELLOW_DYE;
+                break;
+            case GREEN:
+                dye = Items.GREEN_DYE;
+                break;
+            case LIGHT_BLUE:
+                dye = Items.LIGHT_BLUE_DYE;
+                break;
+            case BLUE:
+                dye = Items.BLUE_DYE;
+                break;
+            case PURPLE:
+                dye = Items.PURPLE_DYE;
+                break;
+            default:
+                dye = Items.RED_DYE;
+        }
+        return dye;
     }
 }

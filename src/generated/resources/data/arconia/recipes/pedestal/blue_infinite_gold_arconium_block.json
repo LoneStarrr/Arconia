@@ -1,27 +1,30 @@
 {
   "type": "arconia:pedestal",
-  "durationTicks": 700,
+  "durationTicks": 100,
   "ingredients": [
     {
       "item": "arconia:light_blue_infinite_gold_arconium_block"
     },
     {
-      "item": "arconia:light_blue_arconium_ingot"
-    },
-    {
-      "item": "arconia:light_blue_arconium_ingot"
-    },
-    {
-      "item": "arconia:light_blue_arconium_ingot"
-    },
-    {
-      "item": "arconia:light_blue_arconium_ingot"
-    },
-    {
-      "item": "arconia:light_blue_arconium_ingot"
-    },
-    {
       "item": "arconia:blue_arconium_tree_sapling"
+    },
+    {
+      "item": "minecraft:blue_dye"
+    },
+    {
+      "item": "minecraft:blue_dye"
+    },
+    {
+      "item": "minecraft:blue_dye"
+    },
+    {
+      "item": "minecraft:tube_coral_block"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
     }
   ],
   "output": {

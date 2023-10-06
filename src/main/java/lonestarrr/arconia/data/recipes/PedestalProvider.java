@@ -28,6 +28,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -61,14 +62,16 @@ public class PedestalProvider extends RecipeProvider {
     private void registerColoredRootRecipes(Consumer<FinishedRecipe> consumer) {
         final Ingredient clover = Ingredient.of(ModItems.fourLeafClover.get());
 
-        int durationTicks = 200; // Time for ritual to create the item from the recipe
+        int durationTicks = 60; // Time for ritual to create the item from the recipe
         int count = 1; // Number of items to generate per resource generation event
         RainbowColor tier = RainbowColor.RED;
 
         consumer.accept(
-                makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count, clover, clover, Ingredient.of(Items.RED_DYE)));
+                makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count, clover, clover,
+                        Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(
+                                RainbowColor.woolByTier(tier))));
         consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumIngot(tier).get(), durationTicks, count, clover, clover,
-                Ingredient.of(ModBlocks.getInfiniteGoldArconiumBlock(tier).get().asItem())));
+                Ingredient.of(ModBlocks.getArconiumBlock(tier).get().asItem())));
         for (Item item : new Item[]{Items.OAK_LOG, Items.DARK_OAK_LOG, Items.BIRCH_LOG, Items.JUNGLE_LOG, Items.ACACIA_LOG, Items.SPRUCE_LOG, Items.MANGROVE_LOG, Items.SAND, Items.GRAVEL, Items.DIRT, Items.KELP}) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                     Ingredient.of(item)));
@@ -76,25 +79,27 @@ public class PedestalProvider extends RecipeProvider {
 
         RainbowColor previousTier = tier;
         tier = RainbowColor.ORANGE;
-        durationTicks = 200;
 
-        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count,
-                Ingredient.of(ModBlocks.getInfiniteGoldArconiumBlock(tier).get().asItem()), clover, Ingredient.of(Items.ORANGE_WOOL)));
+        consumer.accept(
+                makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count, clover, clover,
+                        Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(
+                                RainbowColor.woolByTier(tier))));
         consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumIngot(tier).get(), durationTicks, count, clover, clover,
-                Ingredient.of(ModBlocks.getInfiniteGoldArconiumBlock(tier).get().asItem())));
-        for (Item item : new Item[]{Items.ORANGE_DYE, Items.COAL, Items.STONE, Items.DEEPSLATE, Items.DIORITE, Items.GRANITE, Items.ANDESITE, Items.STRING, Items.BEEF, Items.SUGAR_CANE, Items.CHICKEN, Items.RAW_COPPER, Items.WHEAT, Items. MUTTON, Items.COD, Items.SALMON}) {
+                Ingredient.of(ModBlocks.getArconiumBlock(tier).get().asItem())));
+        for (Item item : new Item[]{Items.ORANGE_DYE, Items.COAL, Items.STONE, Items.DEEPSLATE, Items.DIORITE, Items.GRANITE, Items.ANDESITE, Items.STRING, Items.BEEF, Items.SUGAR_CANE, Items.CHICKEN, Items.RAW_COPPER, Items.WHEAT, Items.MUTTON, Items.COD, Items.SALMON}) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                     Ingredient.of(item)));
         }
 
         previousTier = tier;
         tier = RainbowColor.YELLOW;
-        durationTicks = 400;
 
-        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count,
-                Ingredient.of(ModBlocks.getInfiniteGoldArconiumBlock(tier).get().asItem()), clover, Ingredient.of(Items.YELLOW_WOOL)));
+        consumer.accept(
+                makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count, clover, clover,
+                        Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(
+                                RainbowColor.woolByTier(tier))));
         consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumIngot(tier).get(), durationTicks, count, clover, clover,
-                Ingredient.of(ModBlocks.getInfiniteGoldArconiumBlock(tier).get().asItem())));
+                Ingredient.of(ModBlocks.getArconiumBlock(tier).get().asItem())));
         for (Item item : new Item[]{Items.YELLOW_DYE, Items.RAW_IRON, Items.ARROW, Items.LEATHER, Items.PORKCHOP, Items.FEATHER, Items.BONE_BLOCK, Items.CALCITE, Items.ROTTEN_FLESH, Items.WHITE_WOOL, Items.POTATO, Items.BEETROOT, Items.CARROT, Items.CACTUS, Items.PUMPKIN, Items.MELON}) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                     Ingredient.of(item)));
@@ -102,12 +107,13 @@ public class PedestalProvider extends RecipeProvider {
 
         previousTier = tier;
         tier = RainbowColor.GREEN;
-        durationTicks = 400;
 
-        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count,
-                Ingredient.of(ModBlocks.getInfiniteGoldArconiumBlock(tier).get().asItem()), clover, Ingredient.of(Items.GREEN_WOOL)));
+        consumer.accept(
+                makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count, clover, clover,
+                        Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(
+                                RainbowColor.woolByTier(tier))));
         consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumIngot(tier).get(), durationTicks, count, clover, clover,
-                Ingredient.of(ModBlocks.getInfiniteGoldArconiumBlock(tier).get().asItem())));
+                Ingredient.of(ModBlocks.getArconiumBlock(tier).get().asItem())));
         for (Item item : new Item[]{Items.GREEN_DYE, Items.RAW_GOLD, Items.LAPIS_LAZULI, Items.REDSTONE, Items.GUNPOWDER, Items.AMETHYST_SHARD}) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                     Ingredient.of(item)));
@@ -115,13 +121,14 @@ public class PedestalProvider extends RecipeProvider {
 
         previousTier = tier;
         tier = RainbowColor.LIGHT_BLUE;
-        durationTicks = 400;
 
-        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count,
-                Ingredient.of(ModBlocks.getInfiniteGoldArconiumBlock(tier).get().asItem()), clover, Ingredient.of(Items.LIGHT_BLUE_WOOL)));
+        consumer.accept(
+                makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count, clover, clover,
+                        Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(
+                                RainbowColor.woolByTier(tier))));
         consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumIngot(tier).get(), durationTicks, count, clover, clover,
-                Ingredient.of(ModBlocks.getInfiniteGoldArconiumBlock(tier).get().asItem())));
-        for (Item item : new Item[]{Items.LIGHT_BLUE_DYE, Items.DIAMOND, Items.OBSIDIAN, Items.ENDER_PEARL, Items.PRISMARINE_SHARD, Items.PRISMARINE_CRYSTALS, }) {
+                Ingredient.of(ModBlocks.getArconiumBlock(tier).get().asItem())));
+        for (Item item : new Item[]{Items.LIGHT_BLUE_DYE, Items.DIAMOND, Items.OBSIDIAN, Items.ENDER_PEARL, Items.PRISMARINE_SHARD, Items.PRISMARINE_CRYSTALS,}) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                     Ingredient.of(item)));
         }
@@ -131,26 +138,28 @@ public class PedestalProvider extends RecipeProvider {
 
         previousTier = tier;
         tier = RainbowColor.BLUE;
-        durationTicks = 400;
 
-        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count,
-                Ingredient.of(ModBlocks.getInfiniteGoldArconiumBlock(tier).get().asItem()), clover, Ingredient.of(Items.BLUE_WOOL)));
+        consumer.accept(
+                makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count, clover, clover,
+                        Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(
+                                RainbowColor.woolByTier(tier))));
         consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumIngot(tier).get(), durationTicks, count, clover, clover,
-                Ingredient.of(ModBlocks.getInfiniteGoldArconiumBlock(tier).get().asItem())));
-        for (Item item : new Item[]{Items.BLUE_DYE, Items.NETHERRACK, Items.SOUL_SAND, Items.SOUL_SOIL, Items.BLAZE_ROD, Items.CRIMSON_STEM, Items.WARPED_STEM, Items.EMERALD, Items.NETHER_WART, Items.BLACKSTONE, Items.BASALT}) {
+                Ingredient.of(ModBlocks.getArconiumBlock(tier).get().asItem())));
+        for (Item item : new Item[]{Items.BLUE_DYE, Items.NETHERRACK, Items.SOUL_SAND, Items.SOUL_SOIL, Items.BLAZE_ROD, Items.CRIMSON_STEM, Items.WARPED_STEM, Items.EMERALD, Items.NETHER_WART, Items.BLACKSTONE, Items.BASALT, Items.WITHER_SKELETON_SKULL}) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                     Ingredient.of(item)));
         }
 
         previousTier = tier;
         tier = RainbowColor.PURPLE;
-        durationTicks = 800;
 
-        consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count,
-                Ingredient.of(ModBlocks.getInfiniteGoldArconiumBlock(tier).get().asItem()), clover, Ingredient.of(Items.PURPLE_WOOL)));
+        consumer.accept(
+                makeEnchantedColoredRoot(tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count, clover, clover,
+                        Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(
+                                RainbowColor.woolByTier(tier))));
         consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumIngot(tier).get(), durationTicks, count, clover, clover,
-                Ingredient.of(ModBlocks.getInfiniteGoldArconiumBlock(tier).get().asItem())));
-        for (Item item : new Item[]{Items.PURPLE_DYE, Items.END_STONE, Items.CHORUS_FRUIT, Items.GHAST_TEAR, Items.SHULKER_SHELL, Items.ECHO_SHARD}) {
+                Ingredient.of(ModBlocks.getArconiumBlock(tier).get().asItem())));
+        for (Item item : new Item[]{Items.PURPLE_DYE, Items.END_STONE, Items.CHORUS_FRUIT, Items.GHAST_TEAR, Items.SHULKER_SHELL, Items.ECHO_SHARD, Items.NETHER_STAR}) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                     Ingredient.of(item)));
         }
@@ -165,7 +174,7 @@ public class PedestalProvider extends RecipeProvider {
                 new PedestalFinishedRecipe(
                         id(color.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX),
                         new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
-                        100,
+                        60,
                         Ingredient.of(Items.RED_DYE),
                         Ingredient.of(Items.RED_DYE),
                         Ingredient.of(Items.RED_DYE),
@@ -183,7 +192,7 @@ public class PedestalProvider extends RecipeProvider {
                 new PedestalFinishedRecipe(
                         id(color.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX),
                         new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
-                        100,
+                        60,
                         Ingredient.of(Items.RAW_COPPER),
                         Ingredient.of(Items.RAW_COPPER),
                         Ingredient.of(Items.STRIPPED_ACACIA_LOG),
@@ -201,7 +210,7 @@ public class PedestalProvider extends RecipeProvider {
                 new PedestalFinishedRecipe(
                         id(color.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX),
                         new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
-                        100,
+                        60,
                         Ingredient.of(Items.RAW_GOLD),
                         Ingredient.of(Items.DANDELION),
                         Ingredient.of(Items.YELLOW_CONCRETE),
@@ -219,7 +228,7 @@ public class PedestalProvider extends RecipeProvider {
                 new PedestalFinishedRecipe(
                         id(color.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX),
                         new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
-                        100,
+                        60,
                         Ingredient.of(Items.EMERALD),
                         Ingredient.of(Items.EMERALD),
                         Ingredient.of(Items.WAXED_WEATHERED_COPPER),
@@ -237,7 +246,7 @@ public class PedestalProvider extends RecipeProvider {
                 new PedestalFinishedRecipe(
                         id(color.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX),
                         new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
-                        100,
+                        60,
                         Ingredient.of(Items.DIAMOND),
                         Ingredient.of(Items.DIAMOND),
                         Ingredient.of(Items.OBSIDIAN),
@@ -255,7 +264,7 @@ public class PedestalProvider extends RecipeProvider {
                 new PedestalFinishedRecipe(
                         id(color.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX),
                         new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
-                        100,
+                        60,
                         Ingredient.of(Items.WARPED_NYLIUM),
                         Ingredient.of(Items.PRISMARINE),
                         Ingredient.of(Items.NETHERITE_SCRAP),
@@ -273,7 +282,7 @@ public class PedestalProvider extends RecipeProvider {
                 new PedestalFinishedRecipe(
                         id(color.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX),
                         new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
-                        100,
+                        60,
                         Ingredient.of(Items.SHULKER_SHELL),
                         Ingredient.of(Items.DRAGON_BREATH),
                         Ingredient.of(Items.PURPUR_BLOCK),
@@ -308,12 +317,20 @@ public class PedestalProvider extends RecipeProvider {
         if (color != RainbowColor.RED) {
             goldBlock = Ingredient.of(ModBlocks.getInfiniteGoldArconiumBlock(color.getPreviousTier()).get().asItem());
         }
-        Ingredient ingot = Ingredient.of(
-                color == RainbowColor.RED ? ModItems.getArconiumEssence(color).get() : ModItems.getArconiumIngot(color.getPreviousTier()).get());
         Ingredient sapling = Ingredient.of(ModBlocks.getArconiumTreeSapling(color).get().asItem());
+        Ingredient clover = Ingredient.of(ModItems.fourLeafClover.get());
+        Ingredient dye = Ingredient.of(RainbowColor.dyeByTier(color));
+        Item extraItem = RainbowColor.dyeByTier(color);
+        switch(color) {
+            case YELLOW: extraItem = Items.YELLOW_CANDLE; break;
+            case GREEN: extraItem = Items.EMERALD_BLOCK; break;
+            case LIGHT_BLUE: extraItem = Items.BLUE_ICE; break;
+            case BLUE: extraItem = Items.TUBE_CORAL_BLOCK; break;
+            case PURPLE: extraItem = Items.PURPLE_SHULKER_BOX; break;
+        }
         ResourceLocation recipeId = id(color.getTierName() + BlockNames.INFINITE_GOLD_ARCONIUM_BLOCK_SUFFIX);
-        final int durationTicks = 100 + (color.getTier() * 100);
-        return new PedestalFinishedRecipe(recipeId, output, durationTicks, goldBlock, ingot, ingot, ingot, ingot, ingot, sapling);
+        final int durationTicks = 100;
+        return new PedestalFinishedRecipe(recipeId, output, durationTicks, goldBlock, sapling, dye, dye, dye, Ingredient.of(extraItem), clover, clover);
     }
 
 
@@ -390,6 +407,7 @@ public class PedestalProvider extends RecipeProvider {
                 nbt.put(newName, tag);
             }
         }
+
 
         @Override
         public ResourceLocation getId() {

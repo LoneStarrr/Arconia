@@ -28,6 +28,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.util.FakePlayer;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A leprechaun's hat. Used in combination with a pot of gold to collect resources.
@@ -79,13 +80,13 @@ public class Hat extends BaseEntityBlock {
         PotMultiBlockPrimaryBlockEntity potbe = null;
 
         if (potPos != null && level.getBlockEntity(potPos) instanceof PotMultiBlockPrimaryBlockEntity) {
-            potbe = (PotMultiBlockPrimaryBlockEntity)level.getBlockEntity(potPos);
+            potbe = (PotMultiBlockPrimaryBlockEntity) level.getBlockEntity(potPos);
         }
 
         // Empty hand -> display info. Colored root -> set resource. Crouching + empty hand -> unset resource. Staff: link or unlink to pot (the latter is
         // implemented in the staff item)
         if (itemUsed.getItem() instanceof ColoredRoot) {
-            ColoredRoot root = (ColoredRoot)itemUsed.getItem();
+            ColoredRoot root = (ColoredRoot) itemUsed.getItem();
 
             if (potbe == null) {
                 player.sendSystemMessage(Component.translatable("arconia.block.hat.not_linked_to_pot"));
@@ -96,6 +97,7 @@ public class Hat extends BaseEntityBlock {
             } else if (root.getTier().getTier() > potbe.getTier().getTier()) {
                 player.sendSystemMessage(Component.translatable("arconia.block.hat.resource_tier_too_high"));
                 return InteractionResult.FAIL;
+
             } else {
                 // Ok ok ok, let's attempt set the resource already.
                 ItemStack resource = ColoredRoot.getResourceItem(itemUsed);
@@ -103,9 +105,6 @@ public class Hat extends BaseEntityBlock {
                     player.sendSystemMessage(Component.translatable("arconia.block.hat.resource_empty"));
                     return InteractionResult.FAIL;
                 }
-
-                int count = ColoredRoot.getResourceCount(itemUsed);
-                resource.setCount(count);
 
                 hbe.setResourceGenerated(root.getTier(), resource);
                 if (itemUsed.getCount() > 1) {
@@ -152,5 +151,26 @@ public class Hat extends BaseEntityBlock {
             }
         }
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
+        super.playerDestroy(level, player, pos, state, blockEntity, itemStack);
+
+        // Drop an enchanted root if the hat was used as a generator
+        if (level.isClientSide || !(blockEntity instanceof HatBlockEntity)) {
+            return;
+        }
+
+        HatBlockEntity hbe = (HatBlockEntity) blockEntity;
+        ItemStack resourceGenerated = hbe.getResourceGenerated();
+        if (resourceGenerated.isEmpty()) {
+            return;
+        }
+
+        hbe.unsetResourceGenerated(); // Probably not necessary since it's going to be destroyed as well
+        ItemStack root = new ItemStack(ModItems.getColoredRoot(hbe.getTier()).get());
+        ColoredRoot.setResourceItem(root, resourceGenerated.getItem(), resourceGenerated.getCount());
+        Block.popResource(level, pos, root);
     }
 }
