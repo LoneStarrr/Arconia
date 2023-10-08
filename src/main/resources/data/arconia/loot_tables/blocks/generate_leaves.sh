@@ -2,7 +2,7 @@
 
 # Lazy man's data generators - bite me
 
-for clrcombo in red:orange orange:yellow yellow:green green:blue blue:light_blue light_blue:purple purple:purple
+for clrcombo in red:orange orange:yellow yellow:green green:light_blue light_blue:blue blue:purple purple:purple
 do
     clr=$(echo $clrcombo | cut -d ':' -f1)
     nextclr=$(echo $clrcombo | cut -d ':' -f2)

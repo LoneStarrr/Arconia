@@ -73,14 +73,14 @@ public class CloverStaff extends Item {
         return InteractionResult.PASS;
     }
 
-    private static void linkOrUnlinkHat(Level world, BlockPos hatPos, BlockPos potPos, UseOnContext context) {
+    private static void linkOrUnlinkHat(Level level, BlockPos hatPos, BlockPos potPos, UseOnContext context) {
         String lang = LANG_PREFIX + ".linkhat";
 
-        BlockEntity be = world.getBlockEntity(potPos);
+        BlockEntity be = level.getBlockEntity(potPos);
         if (be == null || !(be instanceof PotMultiBlockPrimaryBlockEntity)) {
             lang += ".invalidpot";
         } else {
-            // TODO the hat must track which pot it is linked to as well - to prevent double linking/unlinkin the wrong one
+            // TODO the hat must track which pot it is linked to as well - to prevent double linking/unlinking the wrong one
             PotMultiBlockPrimaryBlockEntity potBE = (PotMultiBlockPrimaryBlockEntity) be;
             if (potBE.isHatLinked(hatPos)) {
                 if (potBE.unlinkHat(hatPos)) {

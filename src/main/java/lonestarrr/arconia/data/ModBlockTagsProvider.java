@@ -7,6 +7,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.common.data.ForgeBlockTagsProvider;
 
 public class ModBlockTagsProvider extends BlockTagsProvider {
 
@@ -26,7 +27,10 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
             tag(BlockTags.MINEABLE_WITH_HOE).add(ModBlocks.getArconiumTreeLeaves(tier).get());
 
             tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.worldBuilder.get());
+            tag(BlockTags.LEAVES).add(ModBlocks.getArconiumTreeLeaves(tier).get());
+            tag(BlockTags.SAPLINGS).add(ModBlocks.getArconiumTreeSapling(tier).get());
         }
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.hat.get());
 
     }
 

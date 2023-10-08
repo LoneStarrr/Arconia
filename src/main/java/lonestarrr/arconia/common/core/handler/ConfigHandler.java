@@ -39,7 +39,7 @@ public final class ConfigHandler {
             builder.push("potOfGold");
             potOfGoldMaxHats = builder
                     .comment("Maximum number of hats that can be linked to a single pot of gold")
-                    .defineInRange("maxHats", 32, 2, 64);
+                    .defineInRange("maxHats", 64, 2, 128);
             potOfGoldMaxHatDistance = builder
                     .comment("Maximum distance at which hats can be linked to a pot of gold")
                     .defineInRange("maxHatDistance", 16, 4, 64);

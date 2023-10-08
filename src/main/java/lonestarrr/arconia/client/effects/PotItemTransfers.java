@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderLevelLastEvent;
@@ -60,7 +61,10 @@ public class PotItemTransfers {
         // I attempted to use my own buffer to no avail, it might be a bug in the mojang code?
 //        BufferBuilder bufferBuilder = new BufferBuilder(2097152); // taken from Tesselator
 //        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(bufferBuilder);
-        MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+//        MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        // 2023-10-08 Traced buffer used in block entity renderer's buffer, which had a large fixedBuffers list, while mine had none. Traced to where those
+        // were set and found this. This should prevent crashes on special render types
+        MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
 
         // Probably also add a random delay and don't fire them all at the same tick
         for (ItemTransfer transfer: transfers) {
@@ -87,17 +91,16 @@ public class PotItemTransfers {
         matrix.popPose();
     }
 
-    private static void renderItemTransfer(ItemTransfer transfer, PoseStack matrixStack, MultiBufferSource buffer, float partialTicks) {
+    private static void renderItemTransfer(ItemTransfer transfer, PoseStack poseStack, MultiBufferSource buffer, float partialTicks) {
         double elapsedTicks = transfer.getTicksElapsed() + partialTicks;
         Vec3 itemPos = transfer.getPosition(elapsedTicks);
         int light = LevelRenderer.getLightColor(Minecraft.getInstance().level, new BlockPos(itemPos.x, itemPos.y, itemPos.z));
-        matrixStack.pushPose();
-        matrixStack.translate(itemPos.x, itemPos.y, itemPos.z);
+        poseStack.pushPose();
+        poseStack.translate(itemPos.x, itemPos.y, itemPos.z);
+        ItemStack toRender = transfer.itemStack;
         Minecraft.getInstance().getItemRenderer()
-                .renderStatic(transfer.itemStack, ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer, 0);
-        matrixStack.popPose();
-        // TODO temporarily rendering a rainbow just to see what it looks like
-
+                .renderStatic(toRender, ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, 0);
+        poseStack.popPose();
     }
 }
 

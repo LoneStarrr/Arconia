@@ -12,6 +12,15 @@
       "item": "minecraft:gravel"
     },
     {
+      "item": "minecraft:flint"
+    },
+    {
+      "item": "minecraft:flint"
+    },
+    {
+      "item": "minecraft:stone_shovel"
+    },
+    {
       "item": "arconia:red_colored_tree_root"
     }
   ],

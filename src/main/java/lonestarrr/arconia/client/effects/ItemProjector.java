@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -21,33 +22,33 @@ public class ItemProjector {
      *
      * @param stack
      * @param itemPos
-     * @param matrixStack
+     * @param poseStack
      * @param buffer
      * @param combinedLight
      * @param combinedOverlay
      * @param forceShow attempt to show item, even in case of collissions
      */
-    public static void projectItem(ItemStack stack, BlockPos itemPos, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
+    public static void projectItem(ItemStack stack, BlockPos itemPos, PoseStack poseStack, MultiBufferSource buffer, int combinedLight,
                                     int combinedOverlay, boolean forceShow) {
         // Don't draw the item if something's in the way
-        Level world = Minecraft.getInstance().level;
+        Level level = Minecraft.getInstance().level;
         if (!forceShow) {
-            VoxelShape shape = world.getBlockState(itemPos).getCollisionShape(world, itemPos);
+            VoxelShape shape = level.getBlockState(itemPos).getCollisionShape(level, itemPos);
             if (!shape.isEmpty() && shape.bounds().move(itemPos).contains(itemPos.getX(), itemPos.getY(), itemPos.getZ())) {
                 return;
             }
         }
 
-        matrixStack.pushPose();
-        matrixStack.translate(itemPos.getX(), itemPos.getY(), itemPos.getZ());
-        matrixStack.translate(0.5, 0.1, 0.5);
+        poseStack.pushPose();
+        poseStack.translate(itemPos.getX(), itemPos.getY(), itemPos.getZ());
+        poseStack.translate(0.5, 0.1, 0.5);
         Vector3f rotationVector = new Vector3f(0, 1, 0);
         int light = LevelRenderer.getLightColor(Minecraft.getInstance().level, itemPos);
         long ticks = Minecraft.getInstance().level.getGameTime();
 
         // rotation animation
         float angleDegrees = (ticks % 128f) / 128f * 360;
-        matrixStack.mulPose(rotationVector.rotationDegrees(angleDegrees));
+        poseStack.mulPose(rotationVector.rotationDegrees(angleDegrees));
 
         // scaling animation
         final float SCALE_INTERVAL = 128f;
@@ -55,10 +56,10 @@ public class ItemProjector {
         float scale = (ticks % HALF_INTERVAL) / HALF_INTERVAL;
         scale = (ticks % SCALE_INTERVAL < HALF_INTERVAL ? scale: 1 - scale);
         scale = 0.5f + 0.1f * scale;
-        matrixStack.scale(scale, scale, scale);
+        poseStack.scale(scale, scale, scale);
 
         Minecraft.getInstance().getItemRenderer()
-                .renderStatic(stack, ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer, 0);
-        matrixStack.popPose();
+                .renderStatic(stack, ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, 0);
+        poseStack.popPose();
     }
 }

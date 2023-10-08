@@ -41,7 +41,7 @@ public class ModFeatures {
     private static final Map<RainbowColor, RegistryObject<PlacedFeature>> placedTrees = new HashMap<>(RainbowColor.values().length);
     // from minecraft's VegetationFeatures
     public static final RegistryObject<ConfiguredFeature<?,?>> CONFIGURED_CLOVER_PATCH = CONFIGURED_FEATURES.register(CLOVER_PATCH_NAME,
-            () -> new ConfiguredFeature<>(Feature.RANDOM_PATCH, new RandomPatchConfiguration(1, 3, 2,
+            () -> new ConfiguredFeature<>(Feature.RANDOM_PATCH, new RandomPatchConfiguration(3, 6, 3,
                     PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(ModBlocks.clover.get()))))));
 
     public static final RegistryObject<PlacedFeature> PLACED_CLOVER_PATCH = PLACED_FEATURES.register(CLOVER_PATCH_NAME,
