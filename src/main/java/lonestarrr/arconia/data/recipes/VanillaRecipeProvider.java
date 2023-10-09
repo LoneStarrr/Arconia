@@ -42,14 +42,15 @@ public class VanillaRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(Items.GOLDEN_HELMET))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(ModBlocks.worldBuilder.get())
-                .define('D', Items.DIRT)
-                .define('P', Items.OAK_PLANKS)
-                .pattern("PPP")
-                .pattern("PDP")
-                .pattern("PPP")
-                .unlockedBy("has_item", has(Items.DIRT))
-                .save(consumer);
+        // Disabled for now, still available in creative for toying around with
+//        ShapedRecipeBuilder.shaped(ModBlocks.worldBuilder.get())
+//                .define('D', Items.DIRT)
+//                .define('P', Items.OAK_PLANKS)
+//                .pattern("PPP")
+//                .pattern("PDP")
+//                .pattern("PPP")
+//                .unlockedBy("has_item", has(Items.DIRT))
+//                .save(consumer);
     }
 
     private void registerArconiumIngots(Consumer<FinishedRecipe> consumer) {

@@ -9,7 +9,16 @@
       "item": "arconia:four_leaf_clover"
     },
     {
-      "item": "minecraft:pumpkin"
+      "item": "minecraft:bone_block"
+    },
+    {
+      "item": "minecraft:bone_block"
+    },
+    {
+      "item": "minecraft:bone_block"
+    },
+    {
+      "item": "minecraft:iron_sword"
     },
     {
       "item": "arconia:yellow_colored_tree_root"
@@ -20,7 +29,7 @@
     "nbt": {
       "item": {
         "Count": 1,
-        "id": "minecraft:pumpkin"
+        "id": "minecraft:bone"
       }
     }
   }

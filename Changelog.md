@@ -1,3 +1,11 @@
+# 0.0.7
+
+## Fixes
+ - Pedestals didn't drop themselves when breaking, nor were they mineable with specific tools
+ - Fixed several pedestal ritual recipe bugs introduced in 0.0.6
+ - Changed pedestal ritual start sound
+ - Prettied up the ritual client-side animation to how it was once intended
+
 # 0.0.6
 
 ## Fixes

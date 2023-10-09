@@ -12,6 +12,15 @@
       "item": "minecraft:prismarine_shard"
     },
     {
+      "item": "minecraft:sea_lantern"
+    },
+    {
+      "item": "minecraft:dark_prismarine"
+    },
+    {
+      "item": "minecraft:diamond_sword"
+    },
+    {
       "item": "arconia:light_blue_colored_tree_root"
     }
   ],

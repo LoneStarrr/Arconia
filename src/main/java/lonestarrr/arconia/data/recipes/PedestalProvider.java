@@ -72,14 +72,15 @@ public class PedestalProvider extends RecipeProvider {
                                 RainbowColor.woolByTier(tier))));
         consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumIngot(tier).get(), durationTicks, count, clover, clover,
                 Ingredient.of(ModBlocks.getArconiumBlock(tier).get().asItem())));
-        for (Item item : new Item[]{Items.KELP, Items.APPLE}) {
-            consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
-                    Ingredient.of(item)));
-        }
-        for (Item item : new Item[]{Items.OAK_LOG, Items.DARK_OAK_LOG, Items.BIRCH_LOG, Items.JUNGLE_LOG, Items.ACACIA_LOG, Items.SPRUCE_LOG, Items.MANGROVE_LOG}) {
-            consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
-                    Ingredient.of(item), Ingredient.of(item), Ingredient.of(item), Ingredient.of(Items.STONE_AXE)));
-        }
+
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.RED_DYE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+                Ingredient.of(Items.BEETROOT), Ingredient.of(Items.RED_WOOL), Ingredient.of(Items.RED_CONCRETE), Ingredient.of(Items.RED_TERRACOTTA)));
+
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.KELP, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+                Ingredient.of(Items.KELP), Ingredient.of(Items.DRIED_KELP_BLOCK), Ingredient.of(Items.DRIED_KELP_BLOCK)));
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.APPLE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+                Ingredient.of(Items.APPLE), Ingredient.of(Items.OAK_SAPLING), Ingredient.of(Items.STONE_HOE)));
+
         consumer.accept(makeEnchantedColoredRoot(tier, Items.SAND, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.SAND), Ingredient.of(Items.SANDSTONE), Ingredient.of(Items.SANDSTONE), Ingredient.of(Items.STONE_SHOVEL)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.GRAVEL, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
@@ -97,12 +98,11 @@ public class PedestalProvider extends RecipeProvider {
                 Ingredient.of(Items.JUNGLE_LOG), Ingredient.of(Items.JUNGLE_LOG), Ingredient.of(Items.JUNGLE_LOG), Ingredient.of(Items.JUNGLE_SAPLING), Ingredient.of(Items.STONE_AXE)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.SPRUCE_LOG, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.SPRUCE_LOG), Ingredient.of(Items.SPRUCE_LOG), Ingredient.of(Items.SPRUCE_LOG), Ingredient.of(Items.SPRUCE_SAPLING), Ingredient.of(Items.STONE_AXE)));
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.ACACIA_LOG, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+                Ingredient.of(Items.ACACIA_LOG), Ingredient.of(Items.ACACIA_LOG), Ingredient.of(Items.ACACIA_LOG), Ingredient.of(Items.ACACIA_SAPLING), Ingredient.of(Items.STONE_AXE)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.MANGROVE_LOG, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.MANGROVE_LOG), Ingredient.of(Items.MANGROVE_LOG), Ingredient.of(Items.MANGROVE_LOG), Ingredient.of(Items.MANGROVE_PROPAGULE), Ingredient.of(Items.STONE_AXE)));
         
-        consumer.accept(makeEnchantedColoredRoot(tier, Items.RED_DYE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
-                Ingredient.of(Items.BEETROOT), Ingredient.of(Items.RED_WOOL), Ingredient.of(Items.RED_CONCRETE), Ingredient.of(Items.RED_TERRACOTTA)));
-
         RainbowColor previousTier = tier;
         tier = RainbowColor.ORANGE;
 
@@ -112,10 +112,10 @@ public class PedestalProvider extends RecipeProvider {
                                 RainbowColor.woolByTier(tier))));
         consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumIngot(tier).get(), durationTicks, count, clover, clover,
                 Ingredient.of(ModBlocks.getArconiumBlock(tier).get().asItem())));
-        for (Item item : new Item[]{Items.STRING}) {
-            consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
-                    Ingredient.of(item), Ingredient.of(item), Ingredient.of(item)));
-        }
+
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.ORANGE_DYE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+                Ingredient.of(Items.RED_DYE), Ingredient.of(Items.YELLOW_DYE), Ingredient.of(Items.ORANGE_WOOL), Ingredient.of(Items.ORANGE_CONCRETE), Ingredient.of(Items.ORANGE_TERRACOTTA)));
+
         for (Item item : new Item[]{Items.SUGAR_CANE, Items.WHEAT, Items.PUMPKIN, Items.MELON}) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                     Ingredient.of(item), Ingredient.of(item), Ingredient.of(item), Ingredient.of(Items.STONE_HOE)));
@@ -125,16 +125,16 @@ public class PedestalProvider extends RecipeProvider {
                     Ingredient.of(item), Ingredient.of(item), Ingredient.of(item), Ingredient.of(Items.STONE_SWORD)));
         }
         
-        for (Item item : new Item[]{Items.COAL, Items.COBBLESTONE, Items.STONE, Items.DEEPSLATE, Items.DIORITE, Items.GRANITE, Items.CALCITE, Items.ANDESITE, Items.RAW_COPPER}) {
+        for (Item item : new Item[]{Items.COBBLESTONE, Items.STONE, Items.DEEPSLATE, Items.DIORITE, Items.GRANITE, Items.CALCITE, Items.ANDESITE}) {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                     Ingredient.of(item), Ingredient.of(item), Ingredient.of(item), Ingredient.of(Items.STONE_PICKAXE)));
         }
-        consumer.accept(makeEnchantedColoredRoot(tier, Items.ORANGE_DYE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
-                Ingredient.of(Items.RED_DYE), Ingredient.of(Items.YELLOW_DYE), Ingredient.of(Items.ORANGE_WOOL), Ingredient.of(Items.ORANGE_CONCRETE), Ingredient.of(Items.ORANGE_TERRACOTTA)));
-
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.RAW_COPPER, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+                Ingredient.of(Items.RAW_COPPER_BLOCK), Ingredient.of(Items.RAW_COPPER_BLOCK), Ingredient.of(Items.RAW_COPPER_BLOCK), Ingredient.of(Items.IRON_PICKAXE)));
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.COAL, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+                Ingredient.of(Items.COAL_BLOCK), Ingredient.of(Items.COAL_BLOCK), Ingredient.of(Items.COAL_BLOCK), Ingredient.of(Items.IRON_PICKAXE)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.STRING, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.STRING), Ingredient.of(Items.WHITE_WOOL), Ingredient.of(Items.LOOM)));
-
         consumer.accept(makeEnchantedColoredRoot(tier, Items.MUD, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.MUD), Ingredient.of(Items.DIRT), Ingredient.of(Items.GLASS_BOTTLE), Ingredient.of(Items.WATER_BUCKET)));
 
@@ -151,18 +151,20 @@ public class PedestalProvider extends RecipeProvider {
             consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                     Ingredient.of(item), Ingredient.of(item), Ingredient.of(item)));
         }
-        consumer.accept(makeEnchantedColoredRoot(tier, Items.SPIDER_EYE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
-                Ingredient.of(Items.SPIDER_EYE), Ingredient.of(Items.STRING), Ingredient.of(Items.STRING), Ingredient.of(Items.IRON_SWORD)));
+
         consumer.accept(makeEnchantedColoredRoot(tier, Items.YELLOW_DYE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.DANDELION), Ingredient.of(Items.YELLOW_WOOL), Ingredient.of(Items.YELLOW_CONCRETE), Ingredient.of(Items.YELLOW_TERRACOTTA)));
+
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.SPIDER_EYE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+                Ingredient.of(Items.SPIDER_EYE), Ingredient.of(Items.STRING), Ingredient.of(Items.STRING), Ingredient.of(Items.IRON_SWORD)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.FEATHER, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.CHICKEN), Ingredient.of(Items.EGG), Ingredient.of(Items.FEATHER), Ingredient.of(Items.IRON_SWORD)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.RAW_IRON, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
-                Ingredient.of(Items.RAW_IRON_BLOCK), Ingredient.of(Items.RAW_IRON_BLOCK), Ingredient.of(Items.RAW_IRON_BLOCK)));
+                Ingredient.of(Items.RAW_IRON_BLOCK), Ingredient.of(Items.RAW_IRON_BLOCK), Ingredient.of(Items.RAW_IRON_BLOCK), Ingredient.of(Items.IRON_PICKAXE)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.LEATHER, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
-                Ingredient.of(Items.LEATHER_HELMET), Ingredient.of(Items.LEATHER_CHESTPLATE), Ingredient.of(Items.LEATHER_LEGGINGS), Ingredient.of(Items.LEATHER_BOOTS)));
+                Ingredient.of(Items.LEATHER_HELMET), Ingredient.of(Items.LEATHER_CHESTPLATE), Ingredient.of(Items.LEATHER_LEGGINGS), Ingredient.of(Items.LEATHER_BOOTS), Ingredient.of(Items.ITEM_FRAME)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.BONE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
-                Ingredient.of(Items.BONE_BLOCK), Ingredient.of(Items.BONE_BLOCK), Ingredient.of(Items.BONE_BLOCK)));
+                Ingredient.of(Items.BONE_BLOCK), Ingredient.of(Items.BONE_BLOCK), Ingredient.of(Items.BONE_BLOCK), Ingredient.of(Items.IRON_SWORD)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.PORKCHOP, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.PORKCHOP), Ingredient.of(Items.PORKCHOP), Ingredient.of(Items.PORKCHOP), Ingredient.of(Items.IRON_SWORD)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.ROTTEN_FLESH, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
@@ -207,14 +209,12 @@ public class PedestalProvider extends RecipeProvider {
                                 RainbowColor.woolByTier(tier))));
         consumer.accept(makeEnchantedColoredRoot(tier, ModItems.getArconiumIngot(tier).get(), durationTicks, count, clover, clover,
                 Ingredient.of(ModBlocks.getArconiumBlock(tier).get().asItem())));
-        for (Item item : new Item[]{Items.AMETHYST_SHARD}) {
-            consumer.accept(makeEnchantedColoredRoot(tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
-                    Ingredient.of(item)));
-        }
-        consumer.accept(makeEnchantedColoredRoot(tier, Items.AMETHYST_SHARD, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
-                Ingredient.of(Items.AMETHYST_BLOCK), Ingredient.of(Items.AMETHYST_BLOCK), Ingredient.of(Items.AMETHYST_BLOCK), Ingredient.of(Items.IRON_PICKAXE)));
+
         consumer.accept(makeEnchantedColoredRoot(tier, Items.GREEN_DYE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.CACTUS), Ingredient.of(Items.GREEN_WOOL), Ingredient.of(Items.GREEN_CONCRETE), Ingredient.of(Items.GREEN_TERRACOTTA)));
+
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.AMETHYST_SHARD, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+                Ingredient.of(Items.AMETHYST_BLOCK), Ingredient.of(Items.AMETHYST_BLOCK), Ingredient.of(Items.AMETHYST_BLOCK), Ingredient.of(Items.IRON_PICKAXE)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.RAW_GOLD, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.RAW_GOLD_BLOCK), Ingredient.of(Items.RAW_GOLD_BLOCK), Ingredient.of(Items.RAW_GOLD_BLOCK), Ingredient.of(Items.IRON_PICKAXE)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.LAPIS_LAZULI, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
@@ -222,7 +222,7 @@ public class PedestalProvider extends RecipeProvider {
         consumer.accept(makeEnchantedColoredRoot(tier, Items.REDSTONE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.REDSTONE_BLOCK), Ingredient.of(Items.REDSTONE_BLOCK), Ingredient.of(Items.REDSTONE_BLOCK), Ingredient.of(Items.IRON_PICKAXE)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.GUNPOWDER, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
-                Ingredient.of(Items.TNT), Ingredient.of(Items.TNT), Ingredient.of(Items.TNT), Ingredient.of(Items.IRON_SWORD)));
+                Ingredient.of(Items.TNT), Ingredient.of(Items.TNT), Ingredient.of(Items.TNT), Ingredient.of(Items.FLINT_AND_STEEL), Ingredient.of(Items.IRON_SWORD)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.INK_SAC, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.INK_SAC), Ingredient.of(Items.INK_SAC), Ingredient.of(Items.INK_SAC), Ingredient.of(Items.IRON_SWORD)));
 
@@ -254,10 +254,8 @@ public class PedestalProvider extends RecipeProvider {
                 Ingredient.of(Items.CHORUS_FRUIT), Ingredient.of(Items.CHORUS_FLOWER), Ingredient.of(Items.END_STONE)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.ENDER_PEARL, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.ENDER_PEARL), Ingredient.of(Items.ENDER_PEARL), Ingredient.of(Items.ENDER_PEARL), Ingredient.of(Items.DIAMOND_SWORD)));
-
-        consumer.accept(
-                makeEnchantedColoredRoot(tier, Items.EXPERIENCE_BOTTLE, durationTicks, 4, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
-                        Ingredient.of(Items.ENCHANTING_TABLE), Ingredient.of(Items.BOOKSHELF), Ingredient.of(Items.ANVIL), Ingredient.of(Items.GRINDSTONE), Ingredient.of(Items.LAPIS_BLOCK)));
+        consumer.accept(makeEnchantedColoredRoot(tier, Items.EXPERIENCE_BOTTLE, durationTicks, 4, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+                Ingredient.of(Items.ENCHANTING_TABLE), Ingredient.of(Items.BOOKSHELF), Ingredient.of(Items.ANVIL), Ingredient.of(Items.GRINDSTONE), Ingredient.of(Items.LAPIS_BLOCK)));
 
 
         previousTier = tier;
@@ -443,7 +441,7 @@ public class PedestalProvider extends RecipeProvider {
                 new PedestalFinishedRecipe(
                         id(ItemNames.GOLD_COIN),
                         new ItemStack(ModItems.goldCoin.get().asItem()),
-                        20,
+                        200, // TODO set back to 20, or remove recipe
                         Ingredient.of(Items.GOLD_NUGGET)
                 )
         );

@@ -12,6 +12,15 @@
       "item": "minecraft:prismarine_crystals"
     },
     {
+      "item": "minecraft:sea_lantern"
+    },
+    {
+      "item": "minecraft:sponge"
+    },
+    {
+      "item": "minecraft:diamond_sword"
+    },
+    {
       "item": "arconia:light_blue_colored_tree_root"
     }
   ],

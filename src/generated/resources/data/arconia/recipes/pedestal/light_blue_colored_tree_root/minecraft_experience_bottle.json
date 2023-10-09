@@ -12,6 +12,18 @@
       "item": "minecraft:enchanting_table"
     },
     {
+      "item": "minecraft:bookshelf"
+    },
+    {
+      "item": "minecraft:anvil"
+    },
+    {
+      "item": "minecraft:grindstone"
+    },
+    {
+      "item": "minecraft:lapis_block"
+    },
+    {
       "item": "arconia:light_blue_colored_tree_root"
     }
   ],
@@ -19,7 +31,7 @@
     "item": "arconia:light_blue_colored_tree_root",
     "nbt": {
       "item": {
-        "Count": 1,
+        "Count": 4,
         "id": "minecraft:experience_bottle"
       }
     }

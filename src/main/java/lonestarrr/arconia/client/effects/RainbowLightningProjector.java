@@ -1,6 +1,9 @@
 package lonestarrr.arconia.client.effects;
 
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
@@ -12,12 +15,11 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
-
-import net.minecraft.client.renderer.RenderStateShard.TransparencyStateShard;
 
 public class RainbowLightningProjector {
 
@@ -40,14 +42,14 @@ public class RainbowLightningProjector {
      * @param pos
      * @param beamLength
      * @param beamCount
-     * @param matrixStack
+     * @param poseStack
      * @param buffer
      * @param color The color to use, or null if it should cycle through all rainbow colors
      */
-    public static void renderRainbowLighting(BlockPos pos, float beamLength, int beamCount, PoseStack matrixStack, MultiBufferSource buffer, Color color) {
-        matrixStack.pushPose();
-        matrixStack.translate(pos.getX(), pos.getY(), pos.getZ());
-        matrixStack.translate(0.5f, 0.5f, 0.5f);
+    public static void renderRainbowLighting(BlockPos pos, float beamLength, int beamCount, PoseStack poseStack, MultiBufferSource buffer, Color fixedColor) {
+        poseStack.pushPose();
+        poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
+        poseStack.translate(0.5f, 0.5f, 0.5f);
 
         final Vector3f[] rotationVectors = new Vector3f[] {
                 new Vector3f(1, 0, 0),
@@ -59,65 +61,64 @@ public class RainbowLightningProjector {
         Random rand = new Random(pos.asLong());
 
         // Vertices for a single  beam - w is used for alpha
-        Vector4f[] vertices = new Vector4f[6];
-
-        for (int i = 0; i < 6; i++) {
-            vertices[i] = new Vector4f();
-        }
+        List<Vector4f> vertices = new ArrayList<>(10);
 
         VertexConsumer builder = buffer.getBuffer(LightningRenderType.BEAM_TRIANGLE);
         long ticks = Minecraft.getInstance().level.getGameTime();
+        Color color = fixedColor;
 
         for (int i = 0; i < beamCount; i++) {
+            poseStack.pushPose();
             for (Vector3f vec : rotationVectors) {
                 // Rotate every beam along every cardinal axis - note the use of a random generated with a fixed seed makes sure these initial angles are
                 // consistent across render calls, so we don't need to store the angles between calls.
-                float speedFactor = 3f; // higher == slower
+                float speedFactor = 0.5f; // higher == slower
+                // ticks increases always, quaternion wraps it by applying sin() to it
                 float angle = (float) ticks / speedFactor * rand.nextFloat();
-                matrixStack.mulPose(new Quaternion(vec, angle, true));
+                poseStack.mulPose(new Quaternion(vec, angle, true));
             }
 
             // Draw a sword-like shape. w = alpha
-            float beamLengthRnd = beamLength + 2 * rand.nextFloat();
-            vertices[0].set(0, 0, 0, 0.9f);
-            vertices[1].set(0f, 0.10f * beamLengthRnd, 0.4f * beamLengthRnd, 0.4f);
-            vertices[2].set(0f, 0.15f * beamLengthRnd, beamLengthRnd, 0.1f);
-            vertices[3].set(0f, 0, 1.01f * beamLengthRnd, 0.02f);
-            vertices[4].set(0f, -0.15f * beamLengthRnd, beamLengthRnd, 0.1f);
-            vertices[5].set(0f, -0.10f * beamLengthRnd, 0.4f * beamLengthRnd, 0.4f);
+            float bl = beamLength + rand.nextFloat() * beamLength;
+            float a = 0.5f; // alpha
 
-            // Every beam cycles through the colors of the rainbow, with some random offset
-            if (color == null) {
-                float hue = rand.nextFloat() + (ticks % 256) / 256f;
-                color = Color.getHSBColor(hue, 1f, 1f);
+            // Draw three triangles, together forming 1 'sword blade' like shape
+            // We start with the 'tip' of the blade, this leads to the widest section, then back to near the center of the
+            // blade but not quite. The blade is cut, length wise, in 3 segments (triangles) because this render type makes
+            // us (there's probably something smarter out there, but I wanted to get something working!)
+            float bl1 = 0.2f * bl; //length of first segment of the blade
+            float bl2 = 1.0f * bl; //length of second segment of the blade
+            float bw1 = 0.05f * bl; //width of first segment of the blade at its widest point
+            float bw2 = 0.15f * bl; // width of second segment of the blade
+            vertices.add(new Vector4f(0, 0, 0, a));
+            vertices.add(new Vector4f(0f,  bw1, bl1, a));
+            vertices.add(new Vector4f(0f,  bw2, bl2, a));
+            vertices.add(new Vector4f(0, 0, 0, a));
+            vertices.add(new Vector4f(0f,  bw2, bl2, a));
+            vertices.add(new Vector4f(0f, -bw2, bl2, a));
+            vertices.add(new Vector4f(0, 0, 0, a));
+            vertices.add(new Vector4f(0f, -bw1, bl1, a));
+            vertices.add(new Vector4f(0f, -bw2, bl2, a));
+            vertices.add(new Vector4f(0, 0, 0, a));
+
+                        // Every beam cycles through the colors of the rainbow, with some random offset
+            if (fixedColor == null) {
+                float hue = rand.nextFloat() + (ticks % 100) / 100f;
+                color = Color.getHSBColor(hue % 1f, 1f, 1f);
             }
             float colorR = color.getRed() / 255f;
             float colorG = color.getGreen() / 255f;
             float colorB = color.getBlue() / 255f;
 
-//            if (builder instanceof BufferBuilder) {
-//                BufferBuilder bBuilder = (BufferBuilder)builder;
-//                bBuilder.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_COLOR);
-//            }
-
-            Matrix4f positionMatrix = matrixStack.last().pose();
-            for (int vix = 0; vix < vertices.length; vix++) {
-                Vector4f vertex = vertices[vix];
+            Matrix4f positionMatrix = poseStack.last().pose();
+            for (Vector4f vertex: vertices) {
                 float alpha = vertex.w();
-//                alpha = 1;
                 builder.vertex(positionMatrix, vertex.x(), vertex.y(), vertex.z()).color(colorR, colorG, colorB, alpha).endVertex();
             }
-            // Close the polygon
-            Vector4f vertex = vertices[0];
-            builder.vertex(positionMatrix, vertex.x(), vertex.y(), vertex.z()).color(colorR, colorG, colorB, vertex.w()).endVertex();
-
-            // FIXME How am I supposed to indicate with mode GL_POLYGON that I'm done drawing? Closing the polygon? Nope. This here works, but something
-            // tells me I am not supposed to be doing this this way..should I just forego the builder and directly call methods on buffer!?
-            LightningRenderType.BEAM_TRIANGLE.end((BufferBuilder)builder, 0, 0, 0);
-            ((BufferBuilder)builder).begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR);
+            poseStack.popPose();
         }
 
-        matrixStack.popPose();
+        poseStack.popPose();
 
     }
 }

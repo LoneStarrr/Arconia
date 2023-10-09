@@ -1,0 +1,36 @@
+{
+  "type": "arconia:pedestal",
+  "durationTicks": 60,
+  "ingredients": [
+    {
+      "item": "arconia:orange_arconium_ingot"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "minecraft:mud"
+    },
+    {
+      "item": "minecraft:dirt"
+    },
+    {
+      "item": "minecraft:glass_bottle"
+    },
+    {
+      "item": "minecraft:water_bucket"
+    },
+    {
+      "item": "arconia:orange_colored_tree_root"
+    }
+  ],
+  "output": {
+    "item": "arconia:orange_colored_tree_root",
+    "nbt": {
+      "item": {
+        "Count": 1,
+        "id": "minecraft:mud"
+      }
+    }
+  }
+}

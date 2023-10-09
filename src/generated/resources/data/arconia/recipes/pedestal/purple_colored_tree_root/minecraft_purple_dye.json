@@ -9,7 +9,19 @@
       "item": "arconia:four_leaf_clover"
     },
     {
-      "item": "minecraft:purple_dye"
+      "item": "minecraft:red_dye"
+    },
+    {
+      "item": "minecraft:blue_dye"
+    },
+    {
+      "item": "minecraft:purple_wool"
+    },
+    {
+      "item": "minecraft:purple_concrete"
+    },
+    {
+      "item": "minecraft:purple_terracotta"
     },
     {
       "item": "arconia:purple_colored_tree_root"

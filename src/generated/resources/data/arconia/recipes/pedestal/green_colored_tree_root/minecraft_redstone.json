@@ -9,7 +9,16 @@
       "item": "arconia:four_leaf_clover"
     },
     {
-      "item": "minecraft:redstone"
+      "item": "minecraft:redstone_block"
+    },
+    {
+      "item": "minecraft:redstone_block"
+    },
+    {
+      "item": "minecraft:redstone_block"
+    },
+    {
+      "item": "minecraft:iron_pickaxe"
     },
     {
       "item": "arconia:green_colored_tree_root"

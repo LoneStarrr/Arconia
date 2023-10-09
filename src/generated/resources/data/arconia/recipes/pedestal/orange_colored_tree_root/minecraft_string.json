@@ -12,6 +12,12 @@
       "item": "minecraft:string"
     },
     {
+      "item": "minecraft:white_wool"
+    },
+    {
+      "item": "minecraft:loom"
+    },
+    {
       "item": "arconia:orange_colored_tree_root"
     }
   ],

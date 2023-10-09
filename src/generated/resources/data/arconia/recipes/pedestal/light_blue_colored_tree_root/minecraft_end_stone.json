@@ -1,0 +1,36 @@
+{
+  "type": "arconia:pedestal",
+  "durationTicks": 60,
+  "ingredients": [
+    {
+      "item": "arconia:light_blue_arconium_ingot"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "minecraft:end_stone"
+    },
+    {
+      "item": "minecraft:end_stone_bricks"
+    },
+    {
+      "item": "minecraft:end_stone_brick_wall"
+    },
+    {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    {
+      "item": "arconia:light_blue_colored_tree_root"
+    }
+  ],
+  "output": {
+    "item": "arconia:light_blue_colored_tree_root",
+    "nbt": {
+      "item": {
+        "Count": 1,
+        "id": "minecraft:end_stone"
+      }
+    }
+  }
+}

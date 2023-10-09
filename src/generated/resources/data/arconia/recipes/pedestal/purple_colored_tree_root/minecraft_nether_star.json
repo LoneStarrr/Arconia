@@ -12,6 +12,18 @@
       "item": "minecraft:nether_star"
     },
     {
+      "item": "minecraft:sculk_sensor"
+    },
+    {
+      "item": "minecraft:sculk_catalyst"
+    },
+    {
+      "item": "minecraft:purple_wool"
+    },
+    {
+      "item": "minecraft:netherite_sword"
+    },
+    {
       "item": "arconia:purple_colored_tree_root"
     }
   ],

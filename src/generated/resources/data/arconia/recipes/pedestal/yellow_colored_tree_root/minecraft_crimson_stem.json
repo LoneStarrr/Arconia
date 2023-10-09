@@ -9,7 +9,16 @@
       "item": "arconia:four_leaf_clover"
     },
     {
-      "item": "minecraft:calcite"
+      "item": "minecraft:crimson_stem"
+    },
+    {
+      "item": "minecraft:nether_wart_block"
+    },
+    {
+      "item": "minecraft:crimson_fungus"
+    },
+    {
+      "item": "minecraft:iron_axe"
     },
     {
       "item": "arconia:yellow_colored_tree_root"
@@ -20,7 +29,7 @@
     "nbt": {
       "item": {
         "Count": 1,
-        "id": "minecraft:calcite"
+        "id": "minecraft:crimson_stem"
       }
     }
   }

@@ -1,0 +1,36 @@
+{
+  "type": "arconia:pedestal",
+  "durationTicks": 60,
+  "ingredients": [
+    {
+      "item": "arconia:yellow_arconium_ingot"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "minecraft:spider_eye"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "item": "minecraft:iron_sword"
+    },
+    {
+      "item": "arconia:yellow_colored_tree_root"
+    }
+  ],
+  "output": {
+    "item": "arconia:yellow_colored_tree_root",
+    "nbt": {
+      "item": {
+        "Count": 1,
+        "id": "minecraft:spider_eye"
+      }
+    }
+  }
+}

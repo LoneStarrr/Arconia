@@ -12,6 +12,12 @@
       "item": "minecraft:nether_wart"
     },
     {
+      "item": "minecraft:red_nether_bricks"
+    },
+    {
+      "item": "minecraft:nether_wart_block"
+    },
+    {
       "item": "arconia:blue_colored_tree_root"
     }
   ],

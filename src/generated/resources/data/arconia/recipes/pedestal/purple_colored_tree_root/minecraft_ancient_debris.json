@@ -9,7 +9,13 @@
       "item": "arconia:four_leaf_clover"
     },
     {
-      "item": "minecraft:end_stone"
+      "item": "minecraft:ancient_debris"
+    },
+    {
+      "item": "minecraft:netherite_ingot"
+    },
+    {
+      "item": "minecraft:netherite_hoe"
     },
     {
       "item": "arconia:purple_colored_tree_root"
@@ -20,7 +26,7 @@
     "nbt": {
       "item": {
         "Count": 1,
-        "id": "minecraft:end_stone"
+        "id": "minecraft:ancient_debris"
       }
     }
   }

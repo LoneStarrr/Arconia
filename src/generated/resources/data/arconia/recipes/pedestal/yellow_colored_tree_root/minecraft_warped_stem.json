@@ -3,7 +3,7 @@
   "durationTicks": 60,
   "ingredients": [
     {
-      "item": "arconia:blue_arconium_ingot"
+      "item": "arconia:yellow_arconium_ingot"
     },
     {
       "item": "arconia:four_leaf_clover"
@@ -12,11 +12,20 @@
       "item": "minecraft:warped_stem"
     },
     {
-      "item": "arconia:blue_colored_tree_root"
+      "item": "minecraft:warped_wart_block"
+    },
+    {
+      "item": "minecraft:warped_fungus"
+    },
+    {
+      "item": "minecraft:iron_axe"
+    },
+    {
+      "item": "arconia:yellow_colored_tree_root"
     }
   ],
   "output": {
-    "item": "arconia:blue_colored_tree_root",
+    "item": "arconia:yellow_colored_tree_root",
     "nbt": {
       "item": {
         "Count": 1,

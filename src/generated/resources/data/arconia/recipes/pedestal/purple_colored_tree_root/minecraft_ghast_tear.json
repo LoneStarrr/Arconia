@@ -12,6 +12,12 @@
       "item": "minecraft:ghast_tear"
     },
     {
+      "item": "minecraft:end_crystal"
+    },
+    {
+      "item": "minecraft:netherite_sword"
+    },
+    {
       "item": "arconia:purple_colored_tree_root"
     }
   ],

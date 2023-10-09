@@ -1,6 +1,6 @@
 {
   "type": "arconia:pedestal",
-  "durationTicks": 20,
+  "durationTicks": 200,
   "ingredients": [
     {
       "item": "minecraft:gold_nugget"

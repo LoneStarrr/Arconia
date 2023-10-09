@@ -9,7 +9,16 @@
       "item": "arconia:four_leaf_clover"
     },
     {
+      "item": "minecraft:mutton"
+    },
+    {
       "item": "minecraft:white_wool"
+    },
+    {
+      "item": "minecraft:black_wool"
+    },
+    {
+      "item": "minecraft:shears"
     },
     {
       "item": "arconia:yellow_colored_tree_root"

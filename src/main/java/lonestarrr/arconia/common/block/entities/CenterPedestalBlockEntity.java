@@ -30,7 +30,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     private final static String TAG_RECIPE = "currentRecipe";
     private static final String TAG_ONGOING = "ritualOngoing";
     private static final String TAG_ELAPSED = "ritualTicksElapsed";
-    private static final long TICK_UPDATE_INTERVAL = 20; // How often to do work in tick()
+    private static final long TICK_UPDATE_INTERVAL = 4; // How often to do work in tick()
 
     public CenterPedestalBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.CENTER_PEDESTAL.get(), pos, state);
@@ -103,12 +103,16 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         return true;
     }
 
-    public int getRitualProgressPercentage() {
+    /**
+     * @return A non-precise elapsed % of the ongoing ritual
+     */
+    public float getRitualProgressPercentage() {
         IPedestalRecipe recipe = getCurrentRecipe();
         if (!isRitualOngoing() || recipe == null) {
             return 0;
         }
-        return Math.min(100, Math.round(this.ritualTicksElapsed * 100 / recipe.getDurationTicks()));
+
+        return Math.min(100f, this.ritualTicksElapsed / (float)recipe.getDurationTicks() * 100f);
     }
 
     public void completeRitual() {

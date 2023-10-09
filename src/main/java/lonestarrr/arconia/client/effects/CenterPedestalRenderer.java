@@ -42,9 +42,10 @@ public class CenterPedestalRenderer implements BlockEntityRenderer<CenterPedesta
 
         // BERs have the block entity at (0, 0, 0), compensate
         matrixStack.translate(-bePos.getX(), -bePos.getY(), -bePos.getZ());
-        int progressPct = tileEntity.getRitualProgressPercentage();
-        float beamLength = 1 + progressPct / 50f;
-        int beamCount = 4 + (progressPct / 10);
+        // TODO Animation is choppy because % is updated every few ticks only, should track start time on client side probably
+        float progressPct = tileEntity.getRitualProgressPercentage();
+        float beamLength = 0.1f + (((float)progressPct / 100f) * 1.2f);
+        int beamCount = Math.round(10 + (progressPct / 5));
         RainbowLightningProjector.renderRainbowLighting(bePos.above(), beamLength, beamCount, matrixStack, buffer);
         matrixStack.popPose();
 

@@ -9,7 +9,13 @@
       "item": "arconia:four_leaf_clover"
     },
     {
-      "item": "minecraft:diamond"
+      "item": "minecraft:chorus_fruit"
+    },
+    {
+      "item": "minecraft:chorus_flower"
+    },
+    {
+      "item": "minecraft:end_stone"
     },
     {
       "item": "arconia:light_blue_colored_tree_root"
@@ -20,7 +26,7 @@
     "nbt": {
       "item": {
         "Count": 1,
-        "id": "minecraft:diamond"
+        "id": "minecraft:chorus_fruit"
       }
     }
   }

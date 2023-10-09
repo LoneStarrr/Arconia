@@ -9,7 +9,16 @@
       "item": "arconia:four_leaf_clover"
     },
     {
-      "item": "minecraft:raw_gold"
+      "item": "minecraft:raw_gold_block"
+    },
+    {
+      "item": "minecraft:raw_gold_block"
+    },
+    {
+      "item": "minecraft:raw_gold_block"
+    },
+    {
+      "item": "minecraft:iron_pickaxe"
     },
     {
       "item": "arconia:green_colored_tree_root"

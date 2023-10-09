@@ -106,7 +106,7 @@ public class CenterPedestal extends BaseEntityBlock {
         if (!world.isClientSide()) {
             if (!cbe.isRitualOngoing()) {
                 if (cbe.startRitual()) {
-                    world.playSound(null, pos, SoundEvents.NOTE_BLOCK_HARP, SoundSource.AMBIENT, 1, 10);
+                    world.playSound(null, pos, SoundEvents.BEACON_POWER_SELECT, SoundSource.AMBIENT, 1, 10);
                 } else {
                     player.sendSystemMessage(Component.translatable(LANG_PREFIX + ".ritual_start_failed"));
                 }
