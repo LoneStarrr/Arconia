@@ -37,7 +37,7 @@ public class RainbowLightningProjector {
     }
 
     /**
-     * Render a lightning effect using a single color
+     * Render a lightning effect
      *
      * @param pos
      * @param beamLength
