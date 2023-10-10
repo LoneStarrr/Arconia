@@ -25,11 +25,13 @@ import java.util.Optional;
 public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     private boolean ritualOngoing = false; // persisted
     private float ritualTicksElapsed = 0; // persisted
+    private long ritualStartTime = 0; // persisted
     private ResourceLocation currentRecipeID; // persisted
     private long lastTickTime = 0; // Time since last invocation of tick - not persisted
     private final static String TAG_RECIPE = "currentRecipe";
     private static final String TAG_ONGOING = "ritualOngoing";
     private static final String TAG_ELAPSED = "ritualTicksElapsed";
+    private static final String TAG_RITUAL_START_TIME = "ritualStartTime";
     private static final long TICK_UPDATE_INTERVAL = 4; // How often to do work in tick()
 
     public CenterPedestalBlockEntity(BlockPos pos, BlockState state) {
@@ -55,6 +57,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         }
         tag.putBoolean(TAG_ONGOING, ritualOngoing);
         tag.putFloat(TAG_ELAPSED, ritualTicksElapsed);
+        tag.putLong(TAG_RITUAL_START_TIME, ritualStartTime);
     }
 
     @Override
@@ -68,6 +71,10 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         }
         if (tag.contains(TAG_ELAPSED)) {
             ritualTicksElapsed = tag.getFloat(TAG_ELAPSED);
+        }
+        if (tag.contains(TAG_RITUAL_START_TIME)) {
+            ritualStartTime = tag.getLong(TAG_RITUAL_START_TIME);
+            // TODO This can't work really, probably figure out a better way to sync start time from server to client
         }
     }
 
@@ -99,7 +106,9 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         currentRecipeID = recipe.getId();
         ritualOngoing = true;
         ritualTicksElapsed = 0;
+        ritualStartTime = this.level.getGameTime();
         setChanged();
+        updateClient();
         return true;
     }
 
@@ -112,7 +121,9 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
             return 0;
         }
 
-        return Math.min(100f, this.ritualTicksElapsed / (float)recipe.getDurationTicks() * 100f);
+        // TODO this also won't work across game restarts
+        return (this.level.getGameTime() - this.ritualStartTime) / (float)recipe.getDurationTicks() * 100f;
+        //return Math.min(100f, this.ritualTicksElapsed / (float)recipe.getDurationTicks() * 100f);
     }
 
     public void completeRitual() {
@@ -156,6 +167,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         currentRecipeID = null;
         ritualOngoing = false;
         ritualTicksElapsed = 0;
+        ritualStartTime = 0;
         lastTickTime = 0;
         setChanged();
         updateClient();
