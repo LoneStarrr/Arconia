@@ -25,7 +25,7 @@ import java.util.Optional;
 public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     private boolean ritualOngoing = false; // persisted
     private float ritualTicksElapsed = 0; // persisted
-    private long ritualStartTime = 0; // persisted
+    private long ritualStartTime = 0; // not persisted, used only client side to track animation
     private ResourceLocation currentRecipeID; // persisted
     private long lastTickTime = 0; // Time since last invocation of tick - not persisted
     private final static String TAG_RECIPE = "currentRecipe";
@@ -57,7 +57,6 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         }
         tag.putBoolean(TAG_ONGOING, ritualOngoing);
         tag.putFloat(TAG_ELAPSED, ritualTicksElapsed);
-        tag.putLong(TAG_RITUAL_START_TIME, ritualStartTime);
     }
 
     @Override
@@ -71,10 +70,10 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         }
         if (tag.contains(TAG_ELAPSED)) {
             ritualTicksElapsed = tag.getFloat(TAG_ELAPSED);
-        }
-        if (tag.contains(TAG_RITUAL_START_TIME)) {
-            ritualStartTime = tag.getLong(TAG_RITUAL_START_TIME);
-            // TODO This can't work really, probably figure out a better way to sync start time from server to client
+            if (this.level != null && this.level.isClientSide) {
+                // Track this for animating the ritual client side
+                ritualStartTime = this.level.getGameTime() - (long) ritualTicksElapsed;
+            }
         }
     }
 
@@ -106,13 +105,13 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         currentRecipeID = recipe.getId();
         ritualOngoing = true;
         ritualTicksElapsed = 0;
-        ritualStartTime = this.level.getGameTime();
         setChanged();
         updateClient();
         return true;
     }
 
     /**
+     * Cient-side only method (TODO should mark it as such?)
      * @return A non-precise elapsed % of the ongoing ritual
      */
     public float getRitualProgressPercentage() {
