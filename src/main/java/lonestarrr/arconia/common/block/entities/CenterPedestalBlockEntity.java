@@ -25,7 +25,8 @@ import java.util.Optional;
 public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     private boolean ritualOngoing = false; // persisted
     private float ritualTicksElapsed = 0; // persisted
-    private long ritualStartTime = 0; // not persisted, used only client side to track animation
+    public long ritualStartTime = 0; // not persisted, used only client side to track animation
+    public long lastParticleDisplayTime = 0; // not persisted, purely client side
     private ResourceLocation currentRecipeID; // persisted
     private long lastTickTime = 0; // Time since last invocation of tick - not persisted
     private final static String TAG_RECIPE = "currentRecipe";

@@ -5,16 +5,20 @@ import lonestarrr.arconia.client.core.handler.BlockEntityRendererHandler;
 import lonestarrr.arconia.client.effects.BuildPatternPreview;
 import lonestarrr.arconia.client.effects.PotItemTransfers;
 import lonestarrr.arconia.client.gui.render.HighlightPatternStructure;
+import lonestarrr.arconia.client.particle.ModParticles;
+import lonestarrr.arconia.client.particle.custom.RainbowParticles;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.MagicInABottle;
 import lonestarrr.arconia.common.item.ModItems;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -33,6 +37,7 @@ public class ClientProxy implements IProxy {
         modBus.addListener(this::registerBlockColors);
         modBus.addListener(this::registerItemColors);
         modBus.addListener(BlockEntityRendererHandler::registerBlockEntityRenderers);
+        modBus.addListener(this::registerParticleFactories);
 
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
         forgeBus.addListener(BuildPatternPreview::render);
@@ -77,5 +82,9 @@ public class ClientProxy implements IProxy {
 
     private static void registerItemProperties() {
         ItemProperties.register(ModItems.magicInABottle.get(), new ResourceLocation(Arconia.MOD_ID, "filled"), MagicInABottle::getFilledPercentage);
+    }
+
+    private void registerParticleFactories(RegisterParticleProvidersEvent event) {
+        Minecraft.getInstance().particleEngine.register(ModParticles.RAINBOW_PARTICLES.get(), RainbowParticles.Provider::new);
     }
 }

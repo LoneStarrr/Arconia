@@ -29,36 +29,31 @@ public class RainbowLightningProjector {
      * @param pos
      * @param beamLength
      * @param beamCount
-     * @param matrixStack
+     * @param poseStack
      * @param buffer
      */
-    public static void renderRainbowLighting(BlockPos pos, float beamLength, int beamCount, PoseStack matrixStack, MultiBufferSource buffer) {
-        renderRainbowLighting(pos, beamLength, beamCount, matrixStack, buffer, null);
+    public static void renderRainbowLighting(Random random, float beamLength, int beamCount, PoseStack poseStack, MultiBufferSource buffer) {
+        renderRainbowLighting(random, beamLength, beamCount, poseStack, buffer, null);
     }
 
     /**
      * Render a lightning effect
      *
-     * @param pos
+     * @param rand Random number generator. Successive calls for the same animation should pass in a new Random with identical seed
      * @param beamLength
      * @param beamCount
      * @param poseStack
      * @param buffer
      * @param color The color to use, or null if it should cycle through all rainbow colors
      */
-    public static void renderRainbowLighting(BlockPos pos, float beamLength, int beamCount, PoseStack poseStack, MultiBufferSource buffer, Color fixedColor) {
+    public static void renderRainbowLighting(Random rand, float beamLength, int beamCount, PoseStack poseStack, MultiBufferSource buffer, Color fixedColor) {
         poseStack.pushPose();
-        poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-        poseStack.translate(0.5f, 0.5f, 0.5f);
 
         final Vector3f[] rotationVectors = new Vector3f[] {
                 new Vector3f(1, 0, 0),
                 new Vector3f(0, 1, 0),
                 new Vector3f(0, 0, 1),
         };
-
-        // Seed rng with a fixed seed to procedurally generate consistent angles etc without having to keep state
-        Random rand = new Random(pos.asLong());
 
         // Vertices for a single  beam - w is used for alpha
         List<Vector4f> vertices = new ArrayList<>(10);
