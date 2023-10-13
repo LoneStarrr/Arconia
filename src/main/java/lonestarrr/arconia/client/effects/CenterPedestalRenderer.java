@@ -86,7 +86,7 @@ public class CenterPedestalRenderer implements BlockEntityRenderer<CenterPedesta
         }
 
     }
-    
+
     /* renders a rainbow in segments - just playing around. Probably won't use this for anything, ever */
     private void renderRainbow(BlockPos pos, float progressPct, PoseStack poseStack, MultiBufferSource buffer) {
         final float diameter = 2 + (progressPct / 100 * 2.5f);

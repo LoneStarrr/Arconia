@@ -44,7 +44,7 @@ public class RainbowLightningProjector {
      * @param beamCount
      * @param poseStack
      * @param buffer
-     * @param color The color to use, or null if it should cycle through all rainbow colors
+     * @param fixedColor The color to use, or null if it should cycle through all rainbow colors
      */
     public static void renderRainbowLighting(Random rand, float beamLength, int beamCount, PoseStack poseStack, MultiBufferSource buffer, Color fixedColor) {
         poseStack.pushPose();

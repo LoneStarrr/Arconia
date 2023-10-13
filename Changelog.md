@@ -1,3 +1,8 @@
+# 0.0.8
+
+ - Added rainbow particle, added it to pedestal ritual.
+ - Also added particles to indicate hats are linked
+
 # 0.0.7
 
 ## Fixes
