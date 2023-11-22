@@ -14,6 +14,8 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +37,31 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     private static final String TAG_RITUAL_START_TIME = "ritualStartTime";
     private static final long TICK_UPDATE_INTERVAL = 4; // How often to do work in tick()
 
+    private final ItemStackHandler inventory = new ItemStackHandler(1) {
+        @Override
+        protected void onContentsChanged(int slot) {
+            setChanged();
+            updateClient();
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return 1;
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            return false; // Output only - this blocks insertion
+        }
+    };
+
     public CenterPedestalBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.CENTER_PEDESTAL.get(), pos, state);
+    }
+
+    @Override
+    public ItemStackHandler getInventory() {
+        return inventory;
     }
 
     private IPedestalRecipe getCurrentRecipe() {

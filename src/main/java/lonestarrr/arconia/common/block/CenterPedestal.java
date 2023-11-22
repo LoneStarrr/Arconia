@@ -15,7 +15,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -82,14 +84,13 @@ public class CenterPedestal extends BaseEntityBlock {
 
     @Override
     public InteractionResult use(
-            BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult traceResult) {
+            BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult traceResult) {
         ItemStack playerStack = player.getItemInHand(hand);
 
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity == null || !(blockEntity instanceof CenterPedestalBlockEntity)) {
+        CenterPedestalBlockEntity cbe = getBlockEntity(level, pos);
+        if (cbe == null) {
             return InteractionResult.PASS;
         }
-        CenterPedestalBlockEntity cbe = (CenterPedestalBlockEntity) blockEntity;
 
         if (!cbe.getItemOnDisplay().isEmpty()) {
             ItemStack displayedItem = cbe.getItemOnDisplay();
@@ -103,15 +104,43 @@ public class CenterPedestal extends BaseEntityBlock {
             return InteractionResult.PASS;
         }
 
-        if (!world.isClientSide()) {
+        if (!level.isClientSide()) {
             if (!cbe.isRitualOngoing()) {
                 if (cbe.startRitual()) {
-                    world.playSound(null, pos, SoundEvents.BEACON_POWER_SELECT, SoundSource.AMBIENT, 1, 10);
+                    startRitualEffect(level, pos);
                 } else {
                     player.sendSystemMessage(Component.translatable(LANG_PREFIX + ".ritual_start_failed"));
                 }
             }
         }
         return InteractionResult.SUCCESS;
+    }
+
+    private static void startRitualEffect(Level level, BlockPos pos) {
+        level.playSound(null, pos, SoundEvents.BEACON_POWER_SELECT, SoundSource.AMBIENT, 1, 10);
+    }
+
+    private CenterPedestalBlockEntity getBlockEntity(Level level, BlockPos pos) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity == null || !(blockEntity instanceof CenterPedestalBlockEntity)) {
+            return null;
+        }
+        return (CenterPedestalBlockEntity) blockEntity;
+    }
+
+    @Override
+    public void neighborChanged(BlockState blockState, Level level, BlockPos pos, Block block, BlockPos neighbor, boolean p_60514_) {
+        if (!level.isClientSide) {
+            // Redstone signal? Let's gooo
+            if (level.hasNeighborSignal(pos)) {
+                CenterPedestalBlockEntity entity = getBlockEntity(level, pos);
+                if (entity != null && !entity.isRitualOngoing()) {
+                    if (entity.startRitual()) {
+                        startRitualEffect(level, pos);
+                    }
+                }
+            }
+        }
+        super.neighborChanged(blockState, level, pos, block, neighbor, p_60514_);
     }
 }
