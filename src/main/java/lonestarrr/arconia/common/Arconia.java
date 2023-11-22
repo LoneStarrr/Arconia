@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common;
 
+import lonestarrr.arconia.client.particle.ModParticles;
 import lonestarrr.arconia.common.advancements.ModCriterialTriggers;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.entities.ModBlockEntities;
@@ -69,6 +70,7 @@ public class Arconia {
         ModRecipeTypes.RECIPE_SERIALIZERS.register(modBus);
         ModLootModifiers.CODECS.register(modBus);
         ModLootModifiers.LOOT_CONDITION_TYPES.register(modBus);
+        ModParticles.PARTICLE_TYPES.register(modBus);
         ModFeatures.register(modBus);
 
         modBus.addListener(ConfigHandler::onConfigLoad);

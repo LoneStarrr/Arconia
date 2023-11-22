@@ -13,6 +13,9 @@ public class VectorHelper {
      * I got this working somehow by sketching stuff out, but it nearly broke my brain. My 3D Matrix fu is seriously lacking, and
      * I should do some generic OpenGL tutorials in a playground.
      *
+     * 2023-10-10 - I think this can simply be replaced by Quaternion(vector, angle, true) where vector is e.g. (0,1,0) to rotate around Y axis
+     *              ...and I probably actually did
+     *
      * @param startPos Start position for vector to rotate along
      * @param endPos End position for vector to rotate along
      * @return

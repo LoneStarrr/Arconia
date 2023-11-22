@@ -1,3 +1,14 @@
+# 0.0.9
+ - Remove arconium ingot generator recipe
+ - Pedestals can have items pushed into them properly
+ - Added clay generator recipe
+ - Pedestal rituals can be triggered with redstone pulse.
+
+# 0.0.8
+
+ - Added rainbow particle, added it to pedestal ritual.
+ - Also added particles to indicate hats are linked
+
 # 0.0.7
 
 ## Fixes
