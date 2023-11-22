@@ -276,7 +276,7 @@ public class PedestalProvider extends RecipeProvider {
         consumer.accept(makeEnchantedColoredRoot(tier, Items.WITHER_SKELETON_SKULL, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.WITHER_SKELETON_SKULL), Ingredient.of(Items.SOUL_SAND), Ingredient.of(Items.WITHER_ROSE)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.BLAZE_ROD, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
-                Ingredient.of(Items.BLAZE_ROD), Ingredient.of(Items.BLAZE_ROD), Ingredient.of(Items.BLAZE_ROD), Ingredient.of(Items.BLAZE_ROD), Ingredient.of(Items.BLAZE_ROD), Ingredient.of(Items.BLAZE_ROD)));
+                Ingredient.of(Items.BLAZE_ROD), Ingredient.of(Items.BLAZE_ROD), Ingredient.of(Items.BLAZE_ROD), Ingredient.of(Items.BLAZE_ROD), Ingredient.of(Items.BLAZE_ROD)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.DIAMOND, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.DIAMOND_HELMET), Ingredient.of(Items.DIAMOND_CHESTPLATE), Ingredient.of(Items.DIAMOND_LEGGINGS), Ingredient.of(Items.DIAMOND_BOOTS)));
         consumer.accept(makeEnchantedColoredRoot(tier, Items.ECHO_SHARD, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,

@@ -1,3 +1,13 @@
+# 0.0.10
+
+## Fixes
+
+ - Fix pedestal recipe for blaze rods
+
+## Changes
+
+ - Add rainbow grass blocks (not used yet)
+
 # 0.0.7
 
 ## Fixes

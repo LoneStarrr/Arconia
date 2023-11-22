@@ -5,7 +5,6 @@ import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.MagicInABottle;
 import lonestarrr.arconia.common.item.ModItems;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.core.BlockPos;
@@ -21,7 +20,6 @@ import net.minecraftforge.client.event.RegisterColorHandlersEvent;
  */
 public class ColorHandler {
 
-    // Looks like blocks are registered before items
     public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
         BlockColors colorBlocks = event.getBlockColors();
 
@@ -42,6 +40,9 @@ public class ColorHandler {
             // Infinite Gold Arconium Blocks
             InfiniteGoldArconiumBlock infiniteGoldArconiumBlock = ModBlocks.getInfiniteGoldArconiumBlock(tier).get();
             colorBlocks.register(infiniteGoldArconiumBlock, infiniteGoldArconiumBlock);
+
+            RainbowGrassBlock grassBlock = ModBlocks.getRainbowGrassBlock(tier).get();
+            colorBlocks.register(grassBlock, grassBlock);
         }
     }
 
@@ -81,6 +82,13 @@ public class ColorHandler {
                 BlockState blockstate = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
                 return blockColors.getColor(blockstate, (BlockAndTintGetter) null, (BlockPos) null, tint);
             }, Item.byBlock(treeSapling));
+
+
+            RainbowGrassBlock grassBlock = ModBlocks.getRainbowGrassBlock(tier).get();
+            itemColors.register((stack, tint) -> {
+                BlockState blockstate = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
+                return blockColors.getColor(blockstate, (BlockAndTintGetter) null, (BlockPos) null, tint);
+            }, Item.byBlock(grassBlock));
 
             // Arconium blocks
             ArconiumBlock arconiumBlock = ModBlocks.getArconiumBlock(tier).get();

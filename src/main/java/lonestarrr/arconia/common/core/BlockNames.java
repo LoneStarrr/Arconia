@@ -15,4 +15,5 @@ public final class BlockNames {
     public static final String POT_MULTIBLOCK_SECONDARY = "pot_multiblock_secondary";
     public static final String ARCONIUM_BLOCK_SUFFIX = "_arconium_block";
     public static final String INFINITE_GOLD_ARCONIUM_BLOCK_SUFFIX = "_infinite_gold_arconium_block";
+    public static final String RAINBOW_GRASS_BLOCK_SUFFIX = "_rainbow_grass_block";
 }

@@ -21,6 +21,7 @@ public class ModBlocks {
     private static final Map<RainbowColor, RegistryObject<ArconiumTreeSapling>> arconiumTreeSaplings = new HashMap<>();
     private static final Map<RainbowColor, RegistryObject<ArconiumBlock>> arconiumBlocks = new HashMap<>();
     private static final Map<RainbowColor, RegistryObject<InfiniteGoldArconiumBlock>> infiniteGoldArconiumBlocks = new HashMap<>();
+    private static final Map<RainbowColor, RegistryObject<RainbowGrassBlock>> rainbowGrassBlocks = new HashMap<>();
 
     public static RegistryObject<CloverBlock> clover = BLOCKS.register(BlockNames.CLOVER, () -> new CloverBlock());
     public static RegistryObject<Pedestal> pedestal = BLOCKS.register(BlockNames.PEDESTAL, () -> new Pedestal());
@@ -37,6 +38,7 @@ public class ModBlocks {
             arconiumTreeSaplings.put(color, BLOCKS.register(color.getTierName() + BlockNames.SAPLING_SUFFIX, () -> new ArconiumTreeSapling(color)));
             arconiumBlocks.put(color, BLOCKS.register(color.getTierName() + BlockNames.ARCONIUM_BLOCK_SUFFIX, () -> new ArconiumBlock(color)));
             infiniteGoldArconiumBlocks.put(color, BLOCKS.register(color.getTierName() + BlockNames.INFINITE_GOLD_ARCONIUM_BLOCK_SUFFIX, () -> new InfiniteGoldArconiumBlock(color)));
+            rainbowGrassBlocks.put(color, BLOCKS.register(color.getTierName() + BlockNames.RAINBOW_GRASS_BLOCK_SUFFIX, () -> new RainbowGrassBlock(color)));
         }
 
         registerItemBlocks();
@@ -56,6 +58,7 @@ public class ModBlocks {
         arconiumTreeLeaves.values().stream().forEach(b -> registerBlockItem(b, builder));
         arconiumBlocks.values().stream().forEach(b -> registerBlockItem(b, builder));
         infiniteGoldArconiumBlocks.values().stream().forEach(b -> registerBlockItem(b, builder));
+        rainbowGrassBlocks.values().stream().forEach(b -> registerBlockItem(b, builder));
     }
 
     public static RegistryObject<ArconiumBlock> getArconiumBlock(RainbowColor tier) { return arconiumBlocks.get(tier); }
@@ -69,6 +72,8 @@ public class ModBlocks {
     public static RegistryObject<ArconiumTreeLeaves> getArconiumTreeLeaves(RainbowColor tier) {
         return arconiumTreeLeaves.get(tier);
     }
+
+    public static RegistryObject<RainbowGrassBlock> getRainbowGrassBlock(RainbowColor tier) { return rainbowGrassBlocks.get(tier); }
 
     public static void registerBlockItem(RegistryObject<? extends Block> block, Item.Properties builder) {
         ModItems.ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), builder));

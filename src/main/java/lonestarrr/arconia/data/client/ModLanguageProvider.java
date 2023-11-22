@@ -30,13 +30,14 @@ public class ModLanguageProvider extends LanguageProvider {
     }
 
     private void registerRainbowBlocks() {
-        // Also register items for anything that has both a block and item representation
+        // Also registers items for anything that has both a block and item representation
         for (RainbowColor color : RainbowColor.values()) {
             String colorName = color.getUnlocalizedName();
             add(ModBlocks.getArconiumBlock(color).get(), colorName + " Arconium Block");
             add(ModBlocks.getInfiniteGoldArconiumBlock(color).get(), colorName + " Infinite Gold Arconium Block");
             add(ModBlocks.getArconiumTreeLeaves(color).get(), colorName + " Arconium Tree Leaves");
             add(ModBlocks.getArconiumTreeSapling(color).get(), colorName + " Arconium Tree Sapling");
+            add(ModBlocks.getRainbowGrassBlock(color).get(), colorName + " Rainbow Grass Block");
         }
     }
 

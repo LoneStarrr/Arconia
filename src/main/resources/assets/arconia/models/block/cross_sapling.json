@@ -1,5 +1,6 @@
 {
     "ambientocclusion": false,
+    "render_type": "cutout",
     "textures": {
         "cross": "arconia:block/sapling_white",
         "overlay": "arconia:block/sapling_speckles",

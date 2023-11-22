@@ -34,6 +34,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         registerLeaves();
+        registerRainbowGrassBlocks();
         registerSaplings();
         registerArconiumBlocks();
         registerInfiniteGoldArconiumBlocks();
@@ -57,14 +58,22 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private void registerLeaves() {
-        //Arconium tree leaves
-        //TODO: single texture for all, use tints to dynamically color - like TreeRoots (probably use a manual model file)
         for (RainbowColor color: RainbowColor.values()) {
             RegistryObject<ArconiumTreeLeaves> leafBlock = ModBlocks.getArconiumTreeLeaves(color);
             String leafName = leafBlock.getId().getPath();
             ModelFile leafModel = models().getExistingFile(prefix("block/arconium_tree_leaves"));
             simpleBlock(leafBlock.get(), leafModel);
             itemModels().withExistingParent(leafName, prefix("block/arconium_tree_leaves"));
+        }
+    }
+
+    private void registerRainbowGrassBlocks() {
+        for (RainbowColor color: RainbowColor.values()) {
+            RegistryObject<RainbowGrassBlock> grassBlock = ModBlocks.getRainbowGrassBlock(color);
+            String grassName = grassBlock.getId().getPath();
+            ModelFile grasssModel = models().getExistingFile(prefix("block/rainbow_grass_block"));
+            simpleBlock(grassBlock.get(), grasssModel);
+            itemModels().withExistingParent(grassName, prefix("block/rainbow_grass_block"));
         }
     }
 
