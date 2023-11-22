@@ -14,6 +14,10 @@
         },
         {
             "type": "patchouli:text",
+            "text": "The lazier amongst us will be pleased to know that the ritual can also be performed by giving the stone pedestal a redstone signal. Pedestals can be hooked up the usual way to transfer items in and out."
+        },
+        {
+            "type": "patchouli:text",
             "text": "There are many rituals available. They can be discovered by looking at how the center pedestal can be $(italic)used$()." 
         },
         {

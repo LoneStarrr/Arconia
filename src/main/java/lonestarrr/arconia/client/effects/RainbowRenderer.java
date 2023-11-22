@@ -8,6 +8,7 @@ import lonestarrr.arconia.common.core.helper.VectorHelper;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -22,32 +23,27 @@ import net.minecraft.client.renderer.RenderStateShard.TransparencyStateShard;
  * Render a rainbow between two points, with 1 or more colors
  */
 public class RainbowRenderer {
-    public static void renderRainbow(Vec3 origin, Vec3 destination, PoseStack matrixStack, MultiBufferSource buffer) {
-        // for the test-integration from pot item transfer: matrix has already been translated to compensate for player pov
-        float radiusOuter = (float)origin.distanceTo(destination) / 2f;
+    public static void renderRainbow(float diameter, PoseStack poseStack, MultiBufferSource buffer) {
+        float radiusOuter = diameter / 2;
         float radiusInner = radiusOuter * 0.8f;
-        Quaternion rotation = VectorHelper.getRotation(origin, destination);
-        // TODO This is a concave (complex, non-simple) polygon - that needs special rendering
         float alpha = 0.5f;
         Color color = Color.RED;
         float colorR = color.getRed() / 255f;
         float colorG = color.getGreen() / 255f;
         float colorB = color.getBlue() / 255f;
 
-        matrixStack.pushPose();
-        matrixStack.translate(origin.x, origin.y, origin.z);
-        matrixStack.mulPose(rotation);
+        poseStack.pushPose();
 
         VertexConsumer builder = buffer.getBuffer(RainbowSegmentRenderType.RAINBOW_SEGMENT);
-        Matrix4f positionMatrix = matrixStack.last().pose();
+        Matrix4f positionMatrix = poseStack.last().pose();
 
 
         // TODO this should obviously be calculated only once per rendered rainbow
         int numEdges = 50;
         float z = 0;
         float innerXOffset = radiusOuter - radiusInner;
-        List<Vector3f> outerArch = getRainbowArchVertices(radiusOuter, numEdges, z, 0);
-        List<Vector3f> innerArch = getRainbowArchVertices(radiusInner, numEdges, z, innerXOffset);
+        List<Vector3f> outerArch = getRainbowArchVertices(radiusOuter, numEdges, z, -radiusOuter);
+        List<Vector3f> innerArch = getRainbowArchVertices(radiusInner, numEdges, z, -radiusOuter + innerXOffset);
         // Draw the rainbow in quad segments, as making a single large polygon would make it a concave (complex) polygon that cannot be rendered as-is
 
         for (int i = 0; i < numEdges - 1; i++) {
@@ -62,7 +58,7 @@ public class RainbowRenderer {
         RainbowSegmentRenderType.RAINBOW_SEGMENT.end((BufferBuilder)builder, 0, 0, 0);
         ((BufferBuilder)builder).begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
-        matrixStack.popPose();
+        poseStack.popPose();
     }
 
     /**
@@ -76,7 +72,7 @@ public class RainbowRenderer {
         // Formula for a circle: x^2 + y^2 = r^2 =>  y^2  = r^2 - x^2  =>  y = sqrt(r^2-x^2)
         // Circle starts with highest point at y=0, so compensate by offsetting with r: y = sqrt(r^2 - (x - r)^2)
         final int numVertices = numEdges + 1;
-        List<Vector3f> result = new ArrayList<Vector3f>(numVertices);
+        List<Vector3f> result = new ArrayList<>(numVertices);
 
         final float diameter = 2 * radius;
         final float xIncrement = diameter / numEdges;
@@ -109,7 +105,7 @@ class RainbowSegmentRenderType extends RenderType {
     public static final RenderType RAINBOW_SEGMENT = create("rainbow_segment",
            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 32768, false, false,
            RenderType.CompositeState.builder()
-                    .setShaderState(RenderStateShard.NO_SHADER)
+                    .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
                     .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
                     .setTransparencyState(TransparencyStateShard.LIGHTNING_TRANSPARENCY)
                     .setLightmapState(RenderStateShard.NO_LIGHTMAP)

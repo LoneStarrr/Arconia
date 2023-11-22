@@ -5,18 +5,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
-public class BasePedestalBlockEntity extends BaseInventoryBlockEntity {
-    private final ItemStackHandler inventory = new ItemStackHandler(1);
+public abstract class BasePedestalBlockEntity extends BaseInventoryBlockEntity {
 
     public BasePedestalBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
     @Override
-    public ItemStackHandler getInventory() {
-        return inventory;
-    }
+    public abstract ItemStackHandler getInventory();
 
     /**
      * Sets an item on display. At most 1 item from the stack will be added.

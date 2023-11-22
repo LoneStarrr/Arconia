@@ -14,6 +14,8 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,15 +27,41 @@ import java.util.Optional;
 public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     private boolean ritualOngoing = false; // persisted
     private float ritualTicksElapsed = 0; // persisted
+    public long ritualStartTime = 0; // not persisted, used only client side to track animation
+    public long lastParticleDisplayTime = 0; // not persisted, purely client side
     private ResourceLocation currentRecipeID; // persisted
     private long lastTickTime = 0; // Time since last invocation of tick - not persisted
     private final static String TAG_RECIPE = "currentRecipe";
     private static final String TAG_ONGOING = "ritualOngoing";
     private static final String TAG_ELAPSED = "ritualTicksElapsed";
+    private static final String TAG_RITUAL_START_TIME = "ritualStartTime";
     private static final long TICK_UPDATE_INTERVAL = 4; // How often to do work in tick()
+
+    private final ItemStackHandler inventory = new ItemStackHandler(1) {
+        @Override
+        protected void onContentsChanged(int slot) {
+            setChanged();
+            updateClient();
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return 1;
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            return false; // Output only - this blocks insertion
+        }
+    };
 
     public CenterPedestalBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.CENTER_PEDESTAL.get(), pos, state);
+    }
+
+    @Override
+    public ItemStackHandler getInventory() {
+        return inventory;
     }
 
     private IPedestalRecipe getCurrentRecipe() {
@@ -68,6 +96,10 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         }
         if (tag.contains(TAG_ELAPSED)) {
             ritualTicksElapsed = tag.getFloat(TAG_ELAPSED);
+            if (this.level != null && this.level.isClientSide) {
+                // Track this for animating the ritual client side
+                ritualStartTime = this.level.getGameTime() - (long) ritualTicksElapsed;
+            }
         }
     }
 
@@ -100,10 +132,12 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         ritualOngoing = true;
         ritualTicksElapsed = 0;
         setChanged();
+        updateClient();
         return true;
     }
 
     /**
+     * Cient-side only method (TODO should mark it as such?)
      * @return A non-precise elapsed % of the ongoing ritual
      */
     public float getRitualProgressPercentage() {
@@ -112,7 +146,9 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
             return 0;
         }
 
-        return Math.min(100f, this.ritualTicksElapsed / (float)recipe.getDurationTicks() * 100f);
+        // TODO this also won't work across game restarts
+        return (this.level.getGameTime() - this.ritualStartTime) / (float)recipe.getDurationTicks() * 100f;
+        //return Math.min(100f, this.ritualTicksElapsed / (float)recipe.getDurationTicks() * 100f);
     }
 
     public void completeRitual() {
@@ -156,6 +192,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         currentRecipeID = null;
         ritualOngoing = false;
         ritualTicksElapsed = 0;
+        ritualStartTime = 0;
         lastTickTime = 0;
         setChanged();
         updateClient();

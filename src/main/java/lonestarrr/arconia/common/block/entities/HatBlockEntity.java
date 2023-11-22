@@ -21,7 +21,7 @@ public class HatBlockEntity extends BaseBlockEntity {
     private RainbowColor tier;
     private BlockPos linkedPotPos;
     private ItemStack itemStack; // item to generate (should this be an ItemStack?)
-    public long nextTickParticleRender = 0; // used by TE renderer to track particle rendering - not persisted
+    public long lastParticleRenderTime = 0; // client-side variable only to track particle spawning
 
     public HatBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.HAT.get(), pos, state);
@@ -43,6 +43,7 @@ public class HatBlockEntity extends BaseBlockEntity {
     public void linkToPot(BlockPos potPos) {
         this.linkedPotPos = potPos;
         setChanged();
+        updateClient();
     }
 
     /**
@@ -51,6 +52,7 @@ public class HatBlockEntity extends BaseBlockEntity {
     public void unlink() {
         this.linkedPotPos = null;
         setChanged();
+        updateClient();
     }
 
     public void setResourceGenerated(RainbowColor tier, ItemStack itemStack) {
