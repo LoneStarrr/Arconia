@@ -4,10 +4,10 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -70,7 +70,7 @@ public class RainbowLightningProjector {
                 float speedFactor = 0.5f; // higher == slower
                 // ticks increases always, quaternion wraps it by applying sin() to it
                 float angle = (float) ticks / speedFactor * rand.nextFloat();
-                poseStack.mulPose(new Quaternion(vec, angle, true));
+                poseStack.mulPose(new Quaternionf(vec, angle, true));
             }
 
             // Draw a sword-like shape. w = alpha
