@@ -70,7 +70,7 @@ public class RainbowLightningProjector {
                 float speedFactor = 0.5f; // higher == slower
                 // ticks increases always, quaternion wraps it by applying sin() to it
                 float angle = (float) ticks / speedFactor * rand.nextFloat();
-                poseStack.mulPose(new Quaternionf(vec, angle, true));
+                poseStack.mulPose(new Quaternionf().fromAxisAngleDeg(vec, angle));
             }
 
             // Draw a sword-like shape. w = alpha

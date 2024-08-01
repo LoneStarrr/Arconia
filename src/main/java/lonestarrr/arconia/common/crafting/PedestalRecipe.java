@@ -9,19 +9,18 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PedestalRecipe implements IPedestalRecipe {
+public class PedestalRecipe implements Recipe<Container> {
     private final ResourceLocation id;
     private final ItemStack output;
-    private int durationTicks; // How long the ritual runs for
+    private final int durationTicks; // How long the ritual runs for
     private final NonNullList<Ingredient> inputs;
 
     public PedestalRecipe(ResourceLocation id, ItemStack output, int durationTicks, Ingredient... inputs) {
@@ -29,6 +28,22 @@ public class PedestalRecipe implements IPedestalRecipe {
         this.output = output;
         this.durationTicks = durationTicks;
         this.inputs = NonNullList.of(Ingredient.EMPTY, inputs);
+    }
+
+    @Nonnull
+    @Override
+    public RecipeType<?> getType() {
+        return PedestalRecipe.Type.INSTANCE;
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int width, int height) {
+        return false;
+    }
+
+    @Override
+    public boolean isSpecial() {
+        return true;
     }
 
 
@@ -90,6 +105,11 @@ public class PedestalRecipe implements IPedestalRecipe {
     @Override
     public NonNullList<Ingredient> getIngredients() {
         return inputs;
+    }
+
+    public static class Type implements RecipeType<PedestalRecipe> {
+        public static final Type INSTANCE = new Type();
+        public static final String ID = "pedestal";
     }
 
     public static class Serializer implements RecipeSerializer<PedestalRecipe> {

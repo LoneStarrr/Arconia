@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
-import lonestarrr.arconia.common.crafting.IPedestalRecipe;
+import lonestarrr.arconia.common.crafting.PedestalRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -27,9 +27,9 @@ import java.util.List;
 /**
  * Custom altar recipe integration for JEI
  */
-public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
-    public static final RecipeType<IPedestalRecipe> TYPE =
-            RecipeType.create(Arconia.MOD_ID, "pedestal", IPedestalRecipe.class);
+public class AltarRecipeCategory implements IRecipeCategory<PedestalRecipe> {
+    public static final RecipeType<PedestalRecipe> TYPE =
+            RecipeType.create(Arconia.MOD_ID, "pedestal", PedestalRecipe.class);
     private final IDrawable background;
     private final IDrawable overlay;
     private final IDrawable icon;
@@ -43,7 +43,7 @@ public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
     }
 
     @Override
-    public RecipeType<IPedestalRecipe> getRecipeType() {
+    public RecipeType<PedestalRecipe> getRecipeType() {
         return TYPE;
     }
 
@@ -63,14 +63,14 @@ public class AltarRecipeCategory implements IRecipeCategory<IPedestalRecipe> {
     }
 
     @Override
-    public void draw(IPedestalRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
+    public void draw(PedestalRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
         RenderSystem.enableBlend();
         overlay.draw(stack, 0, 0);
         RenderSystem.disableBlend();
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, IPedestalRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, PedestalRecipe recipe, IFocusGroup focuses) {
         List<Ingredient> inputs = recipe.getIngredients();
         List<IRecipeSlotBuilder> inputSlots = new ArrayList<>(8);
         inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 7, 7));

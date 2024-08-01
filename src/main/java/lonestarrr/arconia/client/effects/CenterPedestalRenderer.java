@@ -94,7 +94,7 @@ public class CenterPedestalRenderer implements BlockEntityRenderer<CenterPedesta
         poseStack.translate(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
         // Rotate along Y axis
         float angle = progressPct / 100 * 720;
-        poseStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), angle, true));
+        poseStack.mulPose(new Quaternionf().fromAxisAngleDeg(0, 1, 0, angle));
 
         RainbowRenderer.renderRainbow(diameter, poseStack, buffer);
         poseStack.popPose();
