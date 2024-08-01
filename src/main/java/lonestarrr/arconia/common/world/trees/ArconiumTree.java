@@ -4,6 +4,7 @@ import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.world.ModFeatures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -24,7 +25,7 @@ public class ArconiumTree extends AbstractTreeGrower {
     }
 
     @Nullable
-    protected Holder<ConfiguredFeature<?, ?>> getConfiguredFeature(RandomSource randomIn, boolean largeHive) {
+    protected ResourceKey<ConfiguredFeature<?, ?>> getConfiguredFeature(RandomSource randomIn, boolean largeHive) {
         return ModFeatures.getArconiumTreeConfigured(this.tier);
     }
 

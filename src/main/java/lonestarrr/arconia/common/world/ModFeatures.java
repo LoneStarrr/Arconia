@@ -3,10 +3,11 @@ package lonestarrr.arconia.common.world;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Blocks;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,9 +33,9 @@ public class ModFeatures {
     public static final String CLOVER_PATCH_NAME = "clover_patch";
 
     public static final DeferredRegister<ConfiguredFeature<?,?>> CONFIGURED_FEATURES =
-            DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, Arconia.MOD_ID);
+            DeferredRegister.create(Registries.CONFIGURED_FEATURE, Arconia.MOD_ID);
     public static final DeferredRegister<PlacedFeature> PLACED_FEATURES =
-            DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, Arconia.MOD_ID);
+            DeferredRegister.create(Registries.PLACED_FEATURE, Arconia.MOD_ID);
 
     /// Configured features
     private static final Map<RainbowColor, RegistryObject<ConfiguredFeature<?, ?>>> configuredTrees =
@@ -68,25 +70,7 @@ public class ModFeatures {
         PLACED_FEATURES.register(modBus);
     }
 
-//    public static void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
-//        // This is not even using the event's registry. There is no separate forge registry for configured/placed features so we're piggybacking on this one
-////        IForgeRegistry<Feature<?>> r = event.getRegistry();
-//        Arconia.logger.info("********* Registering biome features");
-//
-//        // Registered configured features and their placements
-//        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "clovers"), CLOVER_CONFIGURED);
-//        Registry.register(BuiltinRegistries.PLACED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "clovers"), PLACED_CLOVER);
-//
-//        // Using minecraft's built in tree feature for the arconium trees. Each tier has a unique config due to using tiered leaves
-//        for (RainbowColor tier : RainbowColor.values()) {
-//            Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "arconium_tree_" + tier.getTierName()),
-//                    configuredTrees.get(tier));
-//            Registry.register(BuiltinRegistries.PLACED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "arconium_tree_" + tier.getTierName()),
-//                    placedTrees.get(tier));
-//        }
-//    }
-
-    public static Holder<ConfiguredFeature<?, ?>> getArconiumTreeConfigured(RainbowColor tier) {
-        return configuredTrees.get(tier).getHolder().get();
+    public static @Nullable ResourceKey<ConfiguredFeature<?, ?>> getArconiumTreeConfigured(RainbowColor tier) {
+        return configuredTrees.get(tier).getKey();
     }
 }

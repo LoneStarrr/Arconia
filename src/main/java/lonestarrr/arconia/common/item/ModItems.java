@@ -30,8 +30,7 @@ public final class ModItems {
     private static final Map<RainbowColor, RegistryObject<Item>> arconiumSickles = new HashMap<>();
 
     public static Item.Properties defaultBuilder() {
-        // TODO make my own creative tab. With blackjack, and hookers.
-        return new Item.Properties().tab(CreativeModeTab.TAB_MISC);
+        return new Item.Properties();
     }
 
     static {
@@ -53,13 +52,13 @@ public final class ModItems {
         }
 
         // Arconium sickles. Numerical values: base attack modifier, attack speed modifier.
-        registerSickle(RainbowColor.RED, () -> new HoeItem(Tiers.WOOD, 4, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
-        registerSickle(RainbowColor.ORANGE, () -> new HoeItem(Tiers.STONE, 4, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
-        registerSickle(RainbowColor.YELLOW, () -> new HoeItem(Tiers.IRON, 4, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
-        registerSickle(RainbowColor.GREEN, () -> new HoeItem(Tiers.GOLD, 7, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
-        registerSickle(RainbowColor.LIGHT_BLUE, () -> new HoeItem(Tiers.DIAMOND, 5, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
-        registerSickle(RainbowColor.BLUE, () -> new HoeItem(Tiers.NETHERITE, 5, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS).fireResistant()));
-        registerSickle(RainbowColor.PURPLE, () -> new HoeItem(Tiers.NETHERITE, 6, -2.1F, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS).fireResistant()));
+        registerSickle(RainbowColor.RED, () -> new HoeItem(Tiers.WOOD, 4, -2.1F, (new Item.Properties())));
+        registerSickle(RainbowColor.ORANGE, () -> new HoeItem(Tiers.STONE, 4, -2.1F, (new Item.Properties())));
+        registerSickle(RainbowColor.YELLOW, () -> new HoeItem(Tiers.IRON, 4, -2.1F, (new Item.Properties())));
+        registerSickle(RainbowColor.GREEN, () -> new HoeItem(Tiers.GOLD, 7, -2.1F, (new Item.Properties())));
+        registerSickle(RainbowColor.LIGHT_BLUE, () -> new HoeItem(Tiers.DIAMOND, 5, -2.1F, (new Item.Properties())));
+        registerSickle(RainbowColor.BLUE, () -> new HoeItem(Tiers.NETHERITE, 5, -2.1F, (new Item.Properties()).fireResistant()));
+        registerSickle(RainbowColor.PURPLE, () -> new HoeItem(Tiers.NETHERITE, 6, -2.1F, (new Item.Properties()).fireResistant()));
     }
 
     private static void registerSickle(RainbowColor tier, Supplier<HoeItem> hoe) {
