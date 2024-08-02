@@ -6,6 +6,7 @@ import lonestarrr.arconia.data.client.ModItemModelProvider;
 import lonestarrr.arconia.data.client.ModLanguageProvider;
 import lonestarrr.arconia.data.recipes.PedestalProvider;
 import lonestarrr.arconia.data.recipes.VanillaRecipeProvider;
+import lonestarrr.arconia.data.world.BiomeModifiers;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -25,10 +26,12 @@ public class DataGenerators {
         PackOutput output = gen.getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
+
         if (event.includeServer()) {
             gen.addProvider(event.includeServer(), new PedestalProvider(output));
             gen.addProvider(event.includeServer(), new VanillaRecipeProvider(output));
             gen.addProvider(event.includeServer(), new ModBlockTagsProvider(output, lookupProvider, helper));
+            gen.addProvider(event.includeServer(), new BiomeModifiers(output, lookupProvider));
         }
         if (event.includeClient()) {
             gen.addProvider(event.includeServer(), new ModBlockStateProvider(output, helper));
