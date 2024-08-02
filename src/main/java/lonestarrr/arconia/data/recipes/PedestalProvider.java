@@ -14,7 +14,10 @@ import lonestarrr.arconia.common.crafting.ModRecipeTypes;
 import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.nbt.CompoundTag;
@@ -39,17 +42,12 @@ import java.util.function.Consumer;
  */
 public class PedestalProvider extends RecipeProvider {
 
-    public PedestalProvider(DataGenerator gen) {
-        super(gen);
+    public PedestalProvider(PackOutput output) {
+        super(output);
     }
 
     @Override
-    public String getName() {
-        return "Arconia pedestal recipes";
-    }
-
-    @Override
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> consumer) {
         registerColoredRootRecipes(consumer);
         registerArconiumIngotRecipes(consumer);
         registerInfiniteGoldArconiumBlocks(consumer);
@@ -472,8 +470,8 @@ public class PedestalProvider extends RecipeProvider {
         Item root = ModItems.getColoredRoot(tier).get();
         ItemStack coloredRoot = new ItemStack(root);
         ColoredRoot.setResourceItem(coloredRoot, resourceItem, resourceGenCount);
-        ResourceLocation rootId = Registry.ITEM.getKey(root);
-        ResourceLocation itemId = Registry.ITEM.getKey(resourceItem.asItem());
+        ResourceLocation rootId = BuiltInRegistries.ITEM.getKey(root);
+        ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(resourceItem.asItem());
         ResourceLocation recipeId = id(rootId.getPath() + "/" + itemId.getNamespace() + "_" + itemId.getPath());
         Arconia.logger.info("***** Recipe ID: " + recipeId);
         Ingredient[] newIngredients = Arrays.copyOf(ingredients, ingredients.length + 1);

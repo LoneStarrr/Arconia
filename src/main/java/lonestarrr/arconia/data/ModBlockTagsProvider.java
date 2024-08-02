@@ -3,20 +3,30 @@ package lonestarrr.arconia.data;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ForgeBlockTagsProvider;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.CompletableFuture;
 
 public class ModBlockTagsProvider extends BlockTagsProvider {
 
-    public ModBlockTagsProvider(DataGenerator gen, ExistingFileHelper helper) {
-        super(gen, Arconia.MOD_ID, helper);
+    public ModBlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider,  ExistingFileHelper helper) {
+        super(output, provider, Arconia.MOD_ID, helper);
     }
 
     @Override
-    protected void addTags() {
+    public @NotNull String getName() {
+        return "Arconia Block Tags";
+    }
+
+    @Override
+    protected void addTags(HolderLookup.Provider provider) {
         for (RainbowColor tier: RainbowColor.values()) {
             tag(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.getArconiumBlock(tier).get());
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.getArconiumBlock(tier).get());
@@ -35,11 +45,5 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
             tag(BlockTags.SAPLINGS).add(ModBlocks.getArconiumTreeSapling(tier).get());
         }
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.hat.get());
-
-    }
-
-    @Override
-    public String getName() {
-        return "Arconia Block Tags";
     }
 }

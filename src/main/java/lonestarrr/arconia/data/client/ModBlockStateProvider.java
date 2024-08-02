@@ -6,6 +6,7 @@ import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
@@ -21,8 +22,8 @@ import static lonestarrr.arconia.common.core.helper.ResourceLocationHelper.prefi
  * Dynamically generate blockstates, block models, and item models by invoking the runData gradle target.
  */
 public class ModBlockStateProvider extends BlockStateProvider {
-    public ModBlockStateProvider(DataGenerator gen, ExistingFileHelper exFileHelper) {
-        super(gen, Arconia.MOD_ID, exFileHelper);
+    public ModBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
+        super(output, Arconia.MOD_ID, exFileHelper);
     }
 
     @Nonnull

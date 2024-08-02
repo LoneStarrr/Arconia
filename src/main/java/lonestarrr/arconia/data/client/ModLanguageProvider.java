@@ -4,9 +4,8 @@ import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ModItems;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.stream.Stream;
 
@@ -15,8 +14,8 @@ import java.util.stream.Stream;
  */
 public class ModLanguageProvider extends LanguageProvider {
 
-    public ModLanguageProvider(DataGenerator gen, String locale) {
-        super(gen, Arconia.MOD_ID, locale);
+    public ModLanguageProvider(PackOutput output, String locale) {
+        super(output, Arconia.MOD_ID, locale);
     }
 
     @Override

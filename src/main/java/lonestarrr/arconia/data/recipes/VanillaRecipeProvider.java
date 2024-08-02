@@ -4,10 +4,8 @@ import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.*;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -19,12 +17,12 @@ import java.util.function.Consumer;
 
 public class VanillaRecipeProvider extends RecipeProvider {
 
-    public VanillaRecipeProvider(DataGenerator generator) {
-        super(generator);
+    public VanillaRecipeProvider(PackOutput output) {
+        super(output);
     }
 
     @Override
-    protected void buildCraftingRecipes(@Nonnull Consumer<FinishedRecipe> consumer) {
+    protected void buildRecipes(@Nonnull Consumer<FinishedRecipe> consumer) {
         //addCriterion - makes recipe visible only after you have attained a specific (set of)item(s)
         registerArconiumBlocks(consumer);
         registerArconiumIngots(consumer);
@@ -33,7 +31,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
     }
 
     private void registerMisc(Consumer<FinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shaped(ModBlocks.hat.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.hat.get())
                 .define('W', Items.GREEN_WOOL)
                 .define('H', Items.GOLDEN_HELMET)
                 .pattern("WWW")
@@ -43,7 +41,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
                 .save(consumer);
 
         // Disabled for now, still available in creative for toying around with
-//        ShapedRecipeBuilder.shaped(ModBlocks.worldBuilder.get())
+//        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.worldBuilder.get())
 //                .define('D', Items.DIRT)
 //                .define('P', Items.OAK_PLANKS)
 //                .pattern("PPP")
@@ -58,7 +56,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
             Item ingot = ModItems.getArconiumIngot(tier).get();
             Item arconiumBlock = ModBlocks.getArconiumBlock(tier).get().asItem();
 
-            ShapelessRecipeBuilder.shapeless(ingot, 9)
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ingot, 9)
                     .requires(arconiumBlock)
                     .unlockedBy("has_item", has(arconiumBlock))
                     .save(consumer);
@@ -70,7 +68,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
             Item ingot = ModItems.getArconiumIngot(tier).get();
             Item sickle = ModItems.getArconiumSickle(tier).get();
 
-            ShapedRecipeBuilder.shaped(sickle)
+            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, sickle)
                     .define('S', Items.STICK)
                     .define('I', ingot)
                     .pattern("III")
@@ -86,7 +84,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
         for (RainbowColor tier : RainbowColor.values()) {
             Block block = ModBlocks.getArconiumBlock(tier).get();
             Item ingot = ModItems.getArconiumIngot(tier).get();
-            ShapedRecipeBuilder.shaped(block)
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, block)
                     .define('I', ingot)
                     .pattern("III")
                     .pattern("III")
