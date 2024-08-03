@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "I": {
       "item": "arconia:orange_arconium_ingot"

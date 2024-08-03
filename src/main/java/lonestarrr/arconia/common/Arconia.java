@@ -71,7 +71,6 @@ public class Arconia {
         ModLootModifiers.CODECS.register(modBus);
         ModLootModifiers.LOOT_CONDITION_TYPES.register(modBus);
         ModParticles.PARTICLE_TYPES.register(modBus);
-        ModFeatures.register(modBus);
 
         modBus.addListener(ConfigHandler::onConfigLoad);
         modBus.addListener(ConfigHandler::onConfigReload);

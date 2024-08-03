@@ -6,6 +6,7 @@ import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
@@ -17,8 +18,8 @@ import static lonestarrr.arconia.common.core.helper.ResourceLocationHelper.prefi
 public class ModItemModelProvider extends ItemModelProvider {
     private static final ResourceLocation GENERATED = new ResourceLocation("item/generated");
 
-    public ModItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, Arconia.MOD_ID, existingFileHelper);
+    public ModItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, Arconia.MOD_ID, existingFileHelper);
     }
 
     @Override

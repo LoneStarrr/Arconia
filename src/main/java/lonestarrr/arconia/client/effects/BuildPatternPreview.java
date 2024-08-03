@@ -13,6 +13,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.event.RenderLevelLastEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 
 import java.util.List;
 import java.util.Map;
@@ -84,12 +85,19 @@ public class BuildPatternPreview {
         lastLightLevel = 0;
     }
 
-    public static void render(RenderLevelLastEvent event) {
+    public static void render(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS) {
+            return;
+        }
         renderPreview(event);
         showBadBlockPositions();
     }
 
-    private static void renderPreview(RenderLevelLastEvent event) {
+    private static void renderPreview(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS) {
+            return;
+        }
+
         // "Animate" preview by cycling the light value based on game time
         if (!renderPreview) {
             return;

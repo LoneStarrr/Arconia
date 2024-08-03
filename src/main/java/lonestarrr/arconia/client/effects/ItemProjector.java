@@ -1,7 +1,8 @@
 package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -48,7 +49,7 @@ public class ItemProjector {
 
         // rotation animation
         float angleDegrees = (ticks % 128f) / 128f * 360;
-        poseStack.mulPose(rotationVector.rotationDegrees(angleDegrees));
+        poseStack.mulPose((new Quaternionf()).fromAxisAngleDeg(rotationVector, angleDegrees));
 
         // scaling animation
         final float SCALE_INTERVAL = 128f;

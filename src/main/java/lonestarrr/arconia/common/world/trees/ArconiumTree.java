@@ -2,8 +2,10 @@ package lonestarrr.arconia.common.world.trees;
 
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.world.ModFeatures;
+import lonestarrr.arconia.data.world.BiomeModifiers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -24,18 +26,18 @@ public class ArconiumTree extends AbstractTreeGrower {
     }
 
     @Nullable
-    protected Holder<ConfiguredFeature<?, ?>> getConfiguredFeature(RandomSource randomIn, boolean largeHive) {
+    protected ResourceKey<ConfiguredFeature<?, ?>> getConfiguredFeature(RandomSource randomIn, boolean largeHive) {
         return ModFeatures.getArconiumTreeConfigured(this.tier);
     }
 
     @Override
     public boolean growTree(
-            ServerLevel world, ChunkGenerator chunkGenerator, BlockPos pos, BlockState state, RandomSource rand) {
-        boolean didGrow = super.growTree(world, chunkGenerator, pos, state, rand);
+            ServerLevel level, ChunkGenerator chunkGenerator, BlockPos pos, BlockState state, RandomSource rand) {
+        boolean didGrow = super.growTree(level, chunkGenerator, pos, state, rand);
 
         if (didGrow) {
             // Is this arconium tree placed on a pattern? Then attempt to complete it.
-            attemptPatternCompletion(world, pos, this.tier);
+            attemptPatternCompletion(level, pos, this.tier);
         }
 
         return didGrow;

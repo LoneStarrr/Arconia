@@ -1,8 +1,7 @@
 package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.crafting.IPedestalRecipe;
-import lonestarrr.arconia.common.crafting.ModRecipeTypes;
+import lonestarrr.arconia.common.crafting.PedestalRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -64,13 +63,13 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         return inventory;
     }
 
-    private IPedestalRecipe getCurrentRecipe() {
+    private PedestalRecipe getCurrentRecipe() {
         if (currentRecipeID == null) {
             return null;
         }
         Optional<? extends Recipe> recipe = level.getRecipeManager().byKey(currentRecipeID);
-        if (recipe.isPresent() && recipe.get() instanceof IPedestalRecipe) {
-            return (IPedestalRecipe)recipe.get();
+        if (recipe.isPresent() && recipe.get() instanceof PedestalRecipe) {
+            return (PedestalRecipe)recipe.get();
         }
         return null;
     }
@@ -122,7 +121,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
             return false;
         }
 
-        IPedestalRecipe recipe = findRecipe(inv);
+        PedestalRecipe recipe = findRecipe(inv);
 
         if (recipe == null) {
             return false;
@@ -141,7 +140,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
      * @return A non-precise elapsed % of the ongoing ritual
      */
     public float getRitualProgressPercentage() {
-        IPedestalRecipe recipe = getCurrentRecipe();
+        PedestalRecipe recipe = getCurrentRecipe();
         if (!isRitualOngoing() || recipe == null) {
             return 0;
         }
@@ -156,7 +155,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
             return;
         }
 
-        IPedestalRecipe currentRecipe = getCurrentRecipe();
+        PedestalRecipe currentRecipe = getCurrentRecipe();
         if (!isRitualOngoing() || !getItemOnDisplay().isEmpty() || currentRecipe == null) {
             Arconia.logger.warn("Ritual completion attempted but conditions were not met - resetting ritual");
             resetRitual();
@@ -179,7 +178,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     }
 
     private void produceRecipeOutput() {
-        IPedestalRecipe currentRecipe = getCurrentRecipe();
+        PedestalRecipe currentRecipe = getCurrentRecipe();
         if (currentRecipe == null || !getItemOnDisplay().isEmpty()) {
             return;
         }
@@ -235,8 +234,8 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         return inv;
     }
 
-    private IPedestalRecipe findRecipe(SimpleContainer inv) {
-        Optional<IPedestalRecipe> hasRecipe = level.getRecipeManager().getRecipeFor(ModRecipeTypes.PEDESTAL_TYPE.get(), inv, level);
+    private PedestalRecipe findRecipe(SimpleContainer inv) {
+        Optional<PedestalRecipe> hasRecipe = level.getRecipeManager().getRecipeFor(PedestalRecipe.Type.INSTANCE, inv, level);
         if (hasRecipe.isPresent()) {
             return hasRecipe.get();
         }
@@ -253,7 +252,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
             return;
         }
 
-        IPedestalRecipe currentRecipe = getCurrentRecipe();
+        PedestalRecipe currentRecipe = getCurrentRecipe();
         if (currentRecipe == null) {
             Arconia.logger.warn("Ongoing pedestal without a recipe, this should not happen!");
             resetRitual();

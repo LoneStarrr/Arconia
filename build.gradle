@@ -1,31 +1,10 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            name "Forge"
-            url "https://files.minecraftforge.net/maven"
-        }
-        // Sponge - required for mixins
-        maven {
-            name "Sponge"
-            url "https://repo.spongepowered.org/repository/maven-public"
-        }
-
-        // Tests
-        jcenter()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1+', changing: true
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: "${mixingradle_version}"
-    }
+// settings.gradle now contains maven repos for the plugins
+plugins {
+    id 'eclipse'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version"${forgegradle_version}"
+    id 'org.spongepowered.mixin' version "${mixingradle_version}"
 }
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
-
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-
 
 mixin {
     add sourceSets.main, "arconia.refmap.json"
@@ -183,8 +162,8 @@ dependencies {
 
     // JEI
     // compile against the JEI API but do not include it at runtime
-    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
-    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
+    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
     // at runtime, use the full JEI jar
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}") { transitive = false }
 

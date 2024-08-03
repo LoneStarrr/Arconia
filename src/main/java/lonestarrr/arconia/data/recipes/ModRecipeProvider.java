@@ -13,10 +13,9 @@ import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.crafting.ModRecipeTypes;
 import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.ModItems;
-import net.minecraft.core.Registry;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -27,6 +26,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,25 +35,28 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
- * Registers recipes specific for the pedestal crafting ritual
+ * Registers recipes
  */
-public class PedestalProvider extends RecipeProvider {
+public class ModRecipeProvider extends RecipeProvider {
 
-    public PedestalProvider(DataGenerator gen) {
-        super(gen);
+    public ModRecipeProvider(PackOutput output) {
+        super(output);
     }
 
     @Override
-    public String getName() {
-        return "Arconia pedestal recipes";
-    }
-
-    @Override
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> consumer) {
+        // Recipes for the pedestal crafting ritual
         registerColoredRootRecipes(consumer);
         registerArconiumIngotRecipes(consumer);
         registerInfiniteGoldArconiumBlocks(consumer);
-        registerMisc(consumer);
+        registerPedestalMisc(consumer);
+
+        // Vanilla recipes
+        registerArconiumBlocks(consumer);
+        registerArconiumIngots(consumer);
+        registerArconiumSickles(consumer);
+        registerVanillaMisc(consumer);
+
     }
 
     /*
@@ -419,7 +422,7 @@ public class PedestalProvider extends RecipeProvider {
 
     }
 
-    private void registerMisc(Consumer<FinishedRecipe> consumer) {
+    private void registerPedestalMisc(Consumer<FinishedRecipe> consumer) {
         consumer.accept(
                 new PedestalFinishedRecipe(
                         id(ItemNames.GOLD_COIN),
@@ -429,6 +432,71 @@ public class PedestalProvider extends RecipeProvider {
                 )
         );
     }
+
+    private void registerVanillaMisc(Consumer<FinishedRecipe> consumer) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.hat.get())
+                .define('W', Items.GREEN_WOOL)
+                .define('H', Items.GOLDEN_HELMET)
+                .pattern("WWW")
+                .pattern("WHW")
+                .pattern("   ")
+                .unlockedBy("has_item", has(Items.GOLDEN_HELMET))
+                .save(consumer);
+
+        // Disabled for now, still available in creative for toying around with
+//        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.worldBuilder.get())
+//                .define('D', Items.DIRT)
+//                .define('P', Items.OAK_PLANKS)
+//                .pattern("PPP")
+//                .pattern("PDP")
+//                .pattern("PPP")
+//                .unlockedBy("has_item", has(Items.DIRT))
+//                .save(consumer);
+    }
+
+    private void registerArconiumIngots(Consumer<FinishedRecipe> consumer) {
+        for (RainbowColor tier : RainbowColor.values()) {
+            Item ingot = ModItems.getArconiumIngot(tier).get();
+            Item arconiumBlock = ModBlocks.getArconiumBlock(tier).get().asItem();
+
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ingot, 9)
+                    .requires(arconiumBlock)
+                    .unlockedBy("has_item", has(arconiumBlock))
+                    .save(consumer);
+        }
+    }
+
+    private void registerArconiumSickles(Consumer<FinishedRecipe> consumer) {
+        for (RainbowColor tier : RainbowColor.values()) {
+            Item ingot = ModItems.getArconiumIngot(tier).get();
+            Item sickle = ModItems.getArconiumSickle(tier).get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, sickle)
+                    .define('S', Items.STICK)
+                    .define('I', ingot)
+                    .pattern("III")
+                    .pattern("I I")
+                    .pattern("  S")
+                    .unlockedBy("has_item", has(ingot))
+                    .save(consumer);
+        }
+    }
+
+
+    private void registerArconiumBlocks(Consumer<FinishedRecipe> consumer) {
+        for (RainbowColor tier : RainbowColor.values()) {
+            Block block = ModBlocks.getArconiumBlock(tier).get();
+            Item ingot = ModItems.getArconiumIngot(tier).get();
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, block)
+                    .define('I', ingot)
+                    .pattern("III")
+                    .pattern("III")
+                    .pattern("III")
+                    .unlockedBy("has_item", has(ingot))
+                    .save(consumer);
+        }
+    }
+
 
     private void registerInfiniteGoldArconiumBlocks(Consumer<FinishedRecipe> consumer) {
         RainbowColor.stream().forEach(color -> consumer.accept(makeInfiniteGoldArconiumBlock(color)));
@@ -472,8 +540,8 @@ public class PedestalProvider extends RecipeProvider {
         Item root = ModItems.getColoredRoot(tier).get();
         ItemStack coloredRoot = new ItemStack(root);
         ColoredRoot.setResourceItem(coloredRoot, resourceItem, resourceGenCount);
-        ResourceLocation rootId = Registry.ITEM.getKey(root);
-        ResourceLocation itemId = Registry.ITEM.getKey(resourceItem.asItem());
+        ResourceLocation rootId = BuiltInRegistries.ITEM.getKey(root);
+        ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(resourceItem.asItem());
         ResourceLocation recipeId = id(rootId.getPath() + "/" + itemId.getNamespace() + "_" + itemId.getPath());
         Arconia.logger.info("***** Recipe ID: " + recipeId);
         Ingredient[] newIngredients = Arrays.copyOf(ingredients, ingredients.length + 1);
@@ -530,7 +598,6 @@ public class PedestalProvider extends RecipeProvider {
                 nbt.put(newName, tag);
             }
         }
-
 
         @Override
         public ResourceLocation getId() {

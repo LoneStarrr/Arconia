@@ -1,8 +1,8 @@
 package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import lonestarrr.arconia.client.particle.ModParticles;
 import lonestarrr.arconia.common.block.entities.CenterPedestalBlockEntity;
 import lonestarrr.arconia.common.item.MagicInABottle;
@@ -94,7 +94,7 @@ public class CenterPedestalRenderer implements BlockEntityRenderer<CenterPedesta
         poseStack.translate(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
         // Rotate along Y axis
         float angle = progressPct / 100 * 720;
-        poseStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), angle, true));
+        poseStack.mulPose(new Quaternionf().fromAxisAngleDeg(0, 1, 0, angle));
 
         RainbowRenderer.renderRainbow(diameter, poseStack, buffer);
         poseStack.popPose();
