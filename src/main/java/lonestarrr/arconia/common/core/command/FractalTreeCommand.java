@@ -195,7 +195,7 @@ public class FractalTreeCommand {
 
         double yCombined = vX.y + vZ.y;
         yCombined = (yCombined > 1 ? 1 : yCombined < -1? -1 : yCombined);
-        return s.pos.offset(vX.x + vZ.x, yCombined, vX.z + vZ.z);
+        return s.pos.offset((int)(vX.x + vZ.x), (int)yCombined, (int)(vX.z + vZ.z));
     }
 
     private static String generateLTreeString(Map<Character, String> rules, int recursions) {

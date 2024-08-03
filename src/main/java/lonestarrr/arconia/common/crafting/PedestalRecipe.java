@@ -3,7 +3,9 @@ package lonestarrr.arconia.common.crafting;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -39,6 +41,11 @@ public class PedestalRecipe implements Recipe<Container> {
     @Override
     public boolean canCraftInDimensions(int width, int height) {
         return false;
+    }
+
+    @Override
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
+        return output;
     }
 
     @Override
@@ -78,13 +85,8 @@ public class PedestalRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack assemble(Container iInventory) {
-        return getResultItem().copy();
-    }
-
-    @Override
-    public ItemStack getResultItem() {
-        return output;
+    public ItemStack assemble(Container container, RegistryAccess registryAccess) {
+        return getResultItem(registryAccess).copy();
     }
 
     @Override
@@ -146,7 +148,7 @@ public class PedestalRecipe implements Recipe<Container> {
             for (Ingredient input : recipe.getIngredients()) {
                 input.toNetwork(buf);
             }
-            buf.writeItemStack(recipe.getResultItem(), false);
+            buf.writeItemStack(recipe.getResultItem(Minecraft.getInstance().level.registryAccess()), false);
             buf.writeInt(recipe.durationTicks);
         }
     }

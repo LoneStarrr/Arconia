@@ -8,11 +8,11 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 
 import java.util.ArrayList;
@@ -94,12 +94,12 @@ public class PotItemTransfers {
     private static void renderItemTransfer(ItemTransfer transfer, PoseStack poseStack, MultiBufferSource buffer, float partialTicks) {
         double elapsedTicks = transfer.getTicksElapsed() + partialTicks;
         Vec3 itemPos = transfer.getPosition(elapsedTicks);
-        int light = LevelRenderer.getLightColor(Minecraft.getInstance().level, new BlockPos(itemPos.x, itemPos.y, itemPos.z));
+        int light = LevelRenderer.getLightColor(Minecraft.getInstance().level, new BlockPos((int)itemPos.x, (int)itemPos.y, (int)itemPos.z));
         poseStack.pushPose();
         poseStack.translate(itemPos.x, itemPos.y, itemPos.z);
         ItemStack toRender = transfer.itemStack;
         Minecraft.getInstance().getItemRenderer()
-                .renderStatic(toRender, ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, 0);
+                .renderStatic(toRender, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, Minecraft.getInstance().level, 0);
         poseStack.popPose();
     }
 }

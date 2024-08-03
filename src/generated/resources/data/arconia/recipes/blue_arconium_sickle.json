@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "arconia:blue_arconium_sickle"
-  }
+  },
+  "show_notification": true
 }
