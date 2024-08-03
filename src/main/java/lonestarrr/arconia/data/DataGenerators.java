@@ -5,8 +5,6 @@ import lonestarrr.arconia.data.client.ModBlockStateProvider;
 import lonestarrr.arconia.data.client.ModItemModelProvider;
 import lonestarrr.arconia.data.client.ModLanguageProvider;
 import lonestarrr.arconia.data.recipes.ModRecipeProvider;
-import lonestarrr.arconia.data.recipes.PedestalProvider;
-import lonestarrr.arconia.data.recipes.VanillaRecipeProvider;
 import lonestarrr.arconia.data.world.BiomeModifiers;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;

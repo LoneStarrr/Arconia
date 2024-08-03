@@ -43,38 +43,43 @@ public class BiomeModifiers extends DatapackBuiltinEntriesProvider {
     static {
         // Configured features
         BUILDER.add(Registries.CONFIGURED_FEATURE, context -> {
-                    for (RainbowColor tier : RainbowColor.values()) {
-                        context.register(ModFeatures.getArconiumTreeConfigured(tier),
-                                new ConfiguredFeature<>(
-                                        Feature.TREE,
-                                        (new TreeConfiguration.TreeConfigurationBuilder(BlockStateProvider.simple(Blocks.OAK_LOG), new StraightTrunkPlacer(5, 2, 0),
-                                                BlockStateProvider.simple(ModBlocks.getArconiumTreeLeaves(tier).get()), new BlobFoliagePlacer(
-                                                UniformInt.of(2, 3), ConstantInt.of(0), 3), new TwoLayersFeatureSize(1, 0, 1))).ignoreVines().build()));
-                    }
-                })
-                .add(Registries.CONFIGURED_FEATURE,
-                        context -> context.register(
-                                ModFeatures.CLOVER_PATCH_CONFIGURED,
-                                new ConfiguredFeature<>(
-                                        Feature.RANDOM_PATCH,
-                                        new RandomPatchConfiguration(3, 6, 3, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(ModBlocks.clover.get())))))));
+            for (RainbowColor tier : RainbowColor.values()) {
+                context.register(ModFeatures.getArconiumTreeConfigured(tier),
+                        new ConfiguredFeature<>(
+                                Feature.TREE,
+                                (new TreeConfiguration.TreeConfigurationBuilder(BlockStateProvider.simple(Blocks.OAK_LOG), new StraightTrunkPlacer(5, 2, 0),
+                                        BlockStateProvider.simple(ModBlocks.getArconiumTreeLeaves(tier).get()), new BlobFoliagePlacer(
+                                        UniformInt.of(2, 3), ConstantInt.of(0), 3), new TwoLayersFeatureSize(1, 0, 1))).ignoreVines().build()));
+            }
+
+            context.register(
+                    ModFeatures.CLOVER_PATCH_CONFIGURED,
+                    new ConfiguredFeature<>(
+                            Feature.RANDOM_PATCH,
+                            new RandomPatchConfiguration(3, 6, 3,
+                                    PlacementUtils.onlyWhenEmpty(
+                                            Feature.SIMPLE_BLOCK,
+                                            new SimpleBlockConfiguration(BlockStateProvider.simple(ModBlocks.clover.get()))))));
+
+        });
 
         // Placed features
         BUILDER.add(Registries.PLACED_FEATURE, context -> {
-                    for (RainbowColor tier : RainbowColor.values()) {
-                        context.register(
-                                ModFeatures.getPlacedTrees(tier),
-                                new PlacedFeature(
-                                        context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModFeatures.getArconiumTreeConfigured(tier)),
-                                        VegetationPlacements.treePlacement(PlacementUtils.countExtra(0, 0.05F, 1), ModBlocks.getArconiumTreeSapling(tier).get())
-                                ));
-                    }
-                })
-                .add(Registries.PLACED_FEATURE, context -> context.register(
-                        ModFeatures.CLOVER_PATCH,
+            for (RainbowColor tier : RainbowColor.values()) {
+                context.register(
+                        ModFeatures.getPlacedTrees(tier),
                         new PlacedFeature(
-                                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModFeatures.CLOVER_PATCH_CONFIGURED),
-                                VegetationPlacements.worldSurfaceSquaredWithCount(1))));
+                                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModFeatures.getArconiumTreeConfigured(tier)),
+                                VegetationPlacements.treePlacement(PlacementUtils.countExtra(0, 0.05F, 1), ModBlocks.getArconiumTreeSapling(tier).get())
+                        ));
+            }
+
+            context.register(
+                    ModFeatures.CLOVER_PATCH,
+                    new PlacedFeature(
+                            context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModFeatures.CLOVER_PATCH_CONFIGURED),
+                            VegetationPlacements.worldSurfaceSquaredWithCount(1)));
+        });
     }
 
     public BiomeModifiers(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
@@ -83,8 +88,7 @@ public class BiomeModifiers extends DatapackBuiltinEntriesProvider {
     }
 
     @Override
-    public @NotNull String getName()
-    {
+    public @NotNull String getName() {
         return "Biome Modifier Registries: " + Arconia.MOD_ID;
     }
 }
