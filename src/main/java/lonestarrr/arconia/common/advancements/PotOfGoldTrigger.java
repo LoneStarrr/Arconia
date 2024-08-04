@@ -27,7 +27,7 @@ public class PotOfGoldTrigger extends SimpleCriterionTrigger<PotOfGoldTrigger.In
 
     @Nonnull
     @Override
-    public Instance createInstance(@Nonnull JsonObject json, EntityPredicate.Composite playerPred, DeserializationContext conditions) {
+    public Instance createInstance(@Nonnull JsonObject json, ContextAwarePredicate playerPred, DeserializationContext conditions) {
         // This allows mod pack authors to limit where the pot can be constructed through a datapack
         return new Instance(playerPred, LocationPredicate.fromJson(json.get("location")));
     }
@@ -39,7 +39,7 @@ public class PotOfGoldTrigger extends SimpleCriterionTrigger<PotOfGoldTrigger.In
     static class Instance extends AbstractCriterionTriggerInstance {
         private final LocationPredicate pos;
 
-        Instance(EntityPredicate.Composite playerPred, LocationPredicate pos) {
+        Instance(ContextAwarePredicate playerPred, LocationPredicate pos) {
             super(ID, playerPred);
             this.pos = pos;
         }

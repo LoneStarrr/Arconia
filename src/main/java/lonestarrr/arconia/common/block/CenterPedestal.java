@@ -24,8 +24,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -54,7 +54,7 @@ public class CenterPedestal extends BaseEntityBlock {
     }
 
     public CenterPedestal() {
-        super(Properties.of(Material.STONE, MaterialColor.STONE).strength(1.5F).sound(SoundType.STONE));
+        super(Properties.of().mapColor(MapColor.STONE).strength(1.5F).sound(SoundType.STONE));
     }
 
     @Nonnull

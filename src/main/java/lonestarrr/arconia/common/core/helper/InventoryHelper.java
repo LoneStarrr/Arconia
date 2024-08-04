@@ -5,8 +5,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -30,9 +30,9 @@ public class InventoryHelper {
             return null;
         }
 
-        LazyOptional<IItemHandler> ret = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+        LazyOptional<IItemHandler> ret = be.getCapability(ForgeCapabilities.ITEM_HANDLER, side);
         if (!ret.isPresent()) {
-            ret = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+            ret = be.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
         }
         return ret.orElse(null);
     }

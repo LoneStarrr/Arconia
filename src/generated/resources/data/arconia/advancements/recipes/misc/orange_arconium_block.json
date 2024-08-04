@@ -30,5 +30,6 @@
     "recipes": [
       "arconia:orange_arconium_block"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

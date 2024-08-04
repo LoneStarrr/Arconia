@@ -7,10 +7,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base BlockEntity that has an inventory
@@ -35,9 +36,9 @@ public abstract class BaseInventoryBlockEntity extends BaseBlockEntity {
     }
 
     @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-        if (!isRemoved() && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(this::getInventory));
+    public <T> @NotNull LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+        if (!isRemoved() && cap == ForgeCapabilities.ITEM_HANDLER) {
+            return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(this::getInventory));
         }
 
         return super.getCapability(cap, side);

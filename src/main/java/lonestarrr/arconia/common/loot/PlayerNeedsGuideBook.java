@@ -38,7 +38,7 @@ public class PlayerNeedsGuideBook implements LootItemCondition {
         }
 
         ServerPlayer player = (ServerPlayer)looter;
-        ServerLevel world = player.getLevel();
+        ServerLevel world = player.serverLevel();
         // Only drop a book if the player does not have the advancement yet, AND there is no nearby guide book entity (you could mine a whole bunch of dirt
         // without picking up the book!). I suppose you could game this with e.g. a hopper if you really, really wanted to have a large collection of useless
         // guide books!

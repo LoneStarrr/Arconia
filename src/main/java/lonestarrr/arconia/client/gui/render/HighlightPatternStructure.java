@@ -3,7 +3,7 @@ package lonestarrr.arconia.client.gui.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraftforge.client.event.RenderLevelLastEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 
 import javax.annotation.Nonnull;
 import java.util.Set;
@@ -31,9 +31,11 @@ public class HighlightPatternStructure {
         return highlightedBlocks != null;
     }
 
-    public static void render(RenderLevelLastEvent event) {
-        if (highlightedBlocks != null) {
-            renderHighlightedBlocks(highlightedBlocks, event.getPoseStack());
+    public static void render(RenderLevelStageEvent event) {
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS) {
+            if (highlightedBlocks != null) {
+                renderHighlightedBlocks(highlightedBlocks, event.getPoseStack());
+            }
         }
     }
 

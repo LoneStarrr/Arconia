@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 
 import javax.annotation.Nullable;
 
@@ -16,7 +16,7 @@ public class InfiniteGoldArconiumBlock extends Block implements BlockColor {
     private final RainbowColor tier;
 
     public InfiniteGoldArconiumBlock(RainbowColor tier) {
-        super(Properties.of(Material.METAL).requiresCorrectToolForDrops().strength(5.0f, 6.0f).sound(SoundType.METAL));
+        super(Properties.of().mapColor(MapColor.METAL).requiresCorrectToolForDrops().strength(5.0f, 6.0f).sound(SoundType.METAL));
         this.tier = tier;
         // Harvest level & tool are set by adding the block to specific tags - see datagen
     }
