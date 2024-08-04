@@ -76,6 +76,8 @@ public class Arconia {
         modBus.addListener(ConfigHandler::onConfigReload);
 
         modBus.addListener(ModBlocks::addToCreativeTabs);
+        modBus.addListener(ModItems::addToCreativeTabs);
+
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
         forgeBus.addListener(EventPriority.HIGH, this::registerCommands);
 
