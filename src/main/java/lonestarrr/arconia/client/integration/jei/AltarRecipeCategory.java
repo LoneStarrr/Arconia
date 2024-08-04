@@ -82,7 +82,7 @@ public class AltarRecipeCategory implements IRecipeCategory<PedestalRecipe> {
         inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 33, 62));
         inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 7, 59));
         inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 3, 33));
-        for (int i= 0; i < inputs.size(); i++) {
+        for (int i = 0; i < inputs.size(); i++) {
             inputSlots.get(i).addIngredients(inputs.get(i));
         }
         builder.addSlot(RecipeIngredientRole.OUTPUT, 121, 33)

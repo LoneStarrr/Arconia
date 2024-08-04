@@ -5,8 +5,10 @@ import lonestarrr.arconia.common.core.BlockNames;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -61,6 +63,15 @@ public class ModBlocks {
         rainbowGrassBlocks.values().stream().forEach(b -> registerBlockItem(b, builder));
     }
 
+    public static void addToCreativeTabs(CreativeModeTabEvent.BuildContents event) {
+        // Not adding items to creative tabs makes them undiscoverable in creative mode, even with JEI
+        // TODO wonder if it's smarter to integrate this into a mod-specific ModItem/ModBlock that accepts a list of
+        // creative tabs the item should be listed in
+        if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+            event.accept(pedestal);
+            event.accept(centerPedestal);
+        }
+    }
     public static RegistryObject<ArconiumBlock> getArconiumBlock(RainbowColor tier) { return arconiumBlocks.get(tier); }
 
     public static RegistryObject<InfiniteGoldArconiumBlock> getInfiniteGoldArconiumBlock(RainbowColor tier) { return infiniteGoldArconiumBlocks.get(tier); }
