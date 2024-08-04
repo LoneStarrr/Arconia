@@ -15,6 +15,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -81,10 +82,10 @@ public class AltarRecipeCategory implements IRecipeCategory<PedestalRecipe> {
         inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 33, 62));
         inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 7, 59));
         inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 3, 33));
-        for (int i= 0; i < inputs.size(); i++) {
+        for (int i = 0; i < inputs.size(); i++) {
             inputSlots.get(i).addIngredients(inputs.get(i));
         }
         builder.addSlot(RecipeIngredientRole.OUTPUT, 121, 33)
-                .addItemStack(recipe.getResultItem());
+                .addItemStack(recipe.getResultItem(Minecraft.getInstance().level.registryAccess()));
     }
 }

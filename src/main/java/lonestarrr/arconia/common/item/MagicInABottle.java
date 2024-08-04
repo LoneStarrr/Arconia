@@ -159,7 +159,7 @@ public class MagicInABottle extends Item {
 
         List<ItemStack> lootCollection = getLoot(stack, world);
         BlockPos spawnPos = playerEntity.blockPosition();
-        spawnPos.offset(playerEntity.getLookAngle().x, playerEntity.getLookAngle().y, playerEntity.getLookAngle().z); // somewhat in front of player?
+        spawnPos.offset((int)playerEntity.getLookAngle().x, (int)playerEntity.getLookAngle().y, (int)playerEntity.getLookAngle().z); // somewhat in front of player?
         for (ItemStack loot: lootCollection) {
             ItemEntity entity = new ItemEntity(world, spawnPos.getX(), spawnPos.getY(),
                     spawnPos.getZ() ,

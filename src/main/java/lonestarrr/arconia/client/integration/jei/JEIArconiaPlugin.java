@@ -69,7 +69,7 @@ public class JEIArconiaPlugin implements IModPlugin {
         List<EnchantedRootRecipe> result = new ArrayList<>(recipes.size());
 
         for (PedestalRecipe recipe: recipes) {
-            ItemStack stack = recipe.getResultItem();
+            ItemStack stack = recipe.getResultItem(Minecraft.getInstance().level.registryAccess());
             if (stack.getItem() instanceof ColoredRoot) {
                 ItemStack generated = ColoredRoot.getResourceItem(stack);
                 if (!generated.isEmpty()) {

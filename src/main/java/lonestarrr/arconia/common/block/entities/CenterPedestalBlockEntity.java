@@ -2,7 +2,9 @@ package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.crafting.PedestalRecipe;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -183,7 +185,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
             return;
         }
 
-        ItemStack output = currentRecipe.getResultItem().copy();
+        ItemStack output = currentRecipe.getResultItem(Minecraft.getInstance().level.registryAccess()).copy();
         this.putItem(output);
     }
 

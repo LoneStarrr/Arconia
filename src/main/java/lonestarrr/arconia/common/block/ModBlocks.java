@@ -5,8 +5,10 @@ import lonestarrr.arconia.common.core.BlockNames;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -25,7 +27,7 @@ public class ModBlocks {
 
     public static RegistryObject<CloverBlock> clover = BLOCKS.register(BlockNames.CLOVER, () -> new CloverBlock());
     public static RegistryObject<Pedestal> pedestal = BLOCKS.register(BlockNames.PEDESTAL, () -> new Pedestal());
-    public static RegistryObject<CenterPedestal> centerPedestal = BLOCKS.register(BlockNames.CENTER_PEDESTAL, () -> new CenterPedestal());
+    public static RegistryObject<CenterPedestal> centerPedestal = BLOCKS.register(BlockNames.CENTER_PEDESTAL, CenterPedestal::new);
     public static RegistryObject<Hat> hat = BLOCKS.register(BlockNames.HAT, () -> new Hat());
     public static RegistryObject<WorldBuilder> worldBuilder = BLOCKS.register(BlockNames.WORLD_BUILDER, () -> new WorldBuilder());
     public static RegistryObject<PotMultiBlockPrimary> potMultiBlockPrimary = BLOCKS.register(BlockNames.POT_MULTIBLOCK_PRIMARY, () -> new PotMultiBlockPrimary());
@@ -61,6 +63,28 @@ public class ModBlocks {
         rainbowGrassBlocks.values().stream().forEach(b -> registerBlockItem(b, builder));
     }
 
+    public static void addToCreativeTabs(CreativeModeTabEvent.BuildContents event) {
+        // Not adding items to creative tabs makes them undiscoverable in creative mode, even with JEI
+        if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+            event.accept(pedestal);
+            event.accept(centerPedestal);
+            event.accept(worldBuilder);
+            event.accept(hat);
+        }
+        else if (event.getTab() == CreativeModeTabs.NATURAL_BLOCKS) {
+            event.accept(clover);
+            for (RainbowColor color: RainbowColor.values()) {
+                event.accept(arconiumTreeLeaves.get(color));
+                event.accept(arconiumTreeSaplings.get(color));
+                event.accept(rainbowGrassBlocks.get(color));
+            }
+        } else if (event.getTab() == CreativeModeTabs.BUILDING_BLOCKS) {
+            for (RainbowColor color: RainbowColor.values()) {
+                event.accept(arconiumBlocks.get(color));
+                event.accept(infiniteGoldArconiumBlocks.get(color));
+            }
+        }
+    }
     public static RegistryObject<ArconiumBlock> getArconiumBlock(RainbowColor tier) { return arconiumBlocks.get(tier); }
 
     public static RegistryObject<InfiniteGoldArconiumBlock> getInfiniteGoldArconiumBlock(RainbowColor tier) { return infiniteGoldArconiumBlocks.get(tier); }

@@ -13,5 +13,6 @@
   ],
   "result": {
     "item": "arconia:blue_arconium_block"
-  }
+  },
+  "show_notification": true
 }
