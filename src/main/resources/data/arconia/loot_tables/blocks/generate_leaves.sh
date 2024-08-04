@@ -21,7 +21,7 @@ do
               "name": "arconia:${clr}_arconium_tree_leaves",
               "conditions": [
                 {
-                  "condition": "minecraft:alternative",
+                  "condition": "minecraft:any_of",
                   "terms": [
                     {
                       "condition": "minecraft:match_tool",
@@ -148,7 +148,7 @@ do
         {
           "condition": "minecraft:inverted",
           "term": {
-            "condition": "minecraft:alternative",
+            "condition": "minecraft:any_of",
             "terms": [
               {
                 "condition": "minecraft:match_tool",
