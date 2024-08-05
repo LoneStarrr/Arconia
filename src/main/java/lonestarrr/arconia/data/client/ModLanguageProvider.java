@@ -5,7 +5,7 @@ import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 
 import java.util.stream.Stream;
 

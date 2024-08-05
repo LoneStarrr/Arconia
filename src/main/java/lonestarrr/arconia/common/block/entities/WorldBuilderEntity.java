@@ -11,6 +11,7 @@ import lonestarrr.arconia.common.Arconia;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -20,7 +21,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import static lonestarrr.arconia.common.core.helper.ResourceLocationHelper.prefix;
@@ -310,10 +310,10 @@ class BlockJsonAdapter extends TypeAdapter<Block> {
     public Block read(JsonReader in) throws IOException {
         String blockStr = in.nextString();
         ResourceLocation blockLoc = new ResourceLocation(blockStr);
-        if (!ForgeRegistries.BLOCKS.containsKey(blockLoc)) {
+        if (!BuiltInRegistries.BLOCK.containsKey(blockLoc)) {
             throw new RuntimeException("Unknown block " + blockStr + " in world builder configuration");
         }
-        Block block = ForgeRegistries.BLOCKS.getValue(blockLoc);
+        Block block = BuiltInRegistries.BLOCK.get(blockLoc);
         return block;
     }
 }

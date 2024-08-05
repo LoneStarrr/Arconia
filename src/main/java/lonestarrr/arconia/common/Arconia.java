@@ -17,23 +17,17 @@ import lonestarrr.arconia.common.crafting.ModRecipeTypes;
 import lonestarrr.arconia.common.item.ModItems;
 import lonestarrr.arconia.common.loot.ModLootModifiers;
 import lonestarrr.arconia.common.network.ModPackets;
-import lonestarrr.arconia.common.world.ModFeatures;
 import lonestarrr.arconia.compat.theoneprobe.TheOneProbe;
 import lonestarrr.arconia.data.DataGenerators;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,17 +42,13 @@ public class Arconia {
 
     public static final Logger logger = LogManager.getLogger(Arconia.MOD_ID);
 
-    public static IProxy proxy = DistExecutor.runForDist(
-            ()-> ClientProxy::new, ()-> ServerProxy::new
-    );
+    public static IProxy proxy;
 
-    public Arconia() {
-        proxy.registerHandlers();
+    public Arconia(IEventBus modBus, Dist dist) {
+        proxy = (dist == Dist.CLIENT ? new ClientProxy() : new ServerProxy());
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_SPEC);
-
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         modBus.addListener(this::commonSetup);
         modBus.addListener(DataGenerators::gatherData);
@@ -78,8 +68,8 @@ public class Arconia {
         modBus.addListener(ModBlocks::addToCreativeTabs);
         modBus.addListener(ModItems::addToCreativeTabs);
 
-        IEventBus forgeBus = MinecraftForge.EVENT_BUS;
-        forgeBus.addListener(EventPriority.HIGH, this::registerCommands);
+        IEventBus eventBus = NeoForge.EVENT_BUS;
+        eventBus.addListener(EventPriority.HIGH, this::registerCommands);
 
         ModCriterialTriggers.init();
     }

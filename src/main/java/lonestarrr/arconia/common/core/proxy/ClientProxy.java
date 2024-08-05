@@ -13,21 +13,19 @@ import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 /**
  * Proxy code inspired by: http://jabelarminecraft.blogspot.com/p/minecraft-modding-organizing-your-proxy.html
  */
 public class ClientProxy implements IProxy {
     @Override
-    public void registerHandlers() {
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+    public void registerHandlers(IEventBus modBus) {
         modBus.addListener(this::clientSetup);
         modBus.addListener(this::loadComplete);
         modBus.addListener(this::registerBlockColors);
@@ -35,7 +33,7 @@ public class ClientProxy implements IProxy {
         modBus.addListener(BlockEntityRendererHandler::registerBlockEntityRenderers);
         modBus.addListener(this::registerParticleFactories);
 
-        IEventBus forgeBus = MinecraftForge.EVENT_BUS;
+        IEventBus forgeBus = NeoForge.EVENT_BUS;
         forgeBus.addListener(BuildPatternPreview::render);
         forgeBus.addListener(PotItemTransfers::render);
         forgeBus.addListener(HighlightPatternStructure::render);

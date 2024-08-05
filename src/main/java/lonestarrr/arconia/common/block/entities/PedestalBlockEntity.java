@@ -3,7 +3,7 @@ package lonestarrr.arconia.common.block.entities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class PedestalBlockEntity extends BasePedestalBlockEntity {

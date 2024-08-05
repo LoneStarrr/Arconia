@@ -1,11 +1,11 @@
 package lonestarrr.arconia.common.core.helper;
 
 import lonestarrr.arconia.common.Arconia;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class PatchouliHelper {
     public static final String GUIDE_BOOK_ID = new ResourceLocation(Arconia.MOD_ID, "guide_book").toString(); //Also hardcoded in advancement icon
@@ -13,7 +13,7 @@ public class PatchouliHelper {
     public static final String TAG_PATCHOULI_BOOK = "patchouli:book";
 
     public static ItemStack createGuideBook() {
-        Item bookItem = ForgeRegistries.ITEMS.getValue(PATCHOULI_GUIDE_BOOK);
+        Item bookItem = BuiltInRegistries.ITEM.get(PATCHOULI_GUIDE_BOOK);
         ItemStack bookStack = new ItemStack(bookItem);
         CompoundTag tag = new CompoundTag();
         tag.putString(TAG_PATCHOULI_BOOK, GUIDE_BOOK_ID);
@@ -22,12 +22,12 @@ public class PatchouliHelper {
     }
 
     public static boolean isGuideBook(ItemStack itemStack) {
-        ResourceLocation itemResLoc = ForgeRegistries.ITEMS.getKey(itemStack.getItem());
+        ResourceLocation itemResLoc = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
         if (!itemResLoc.equals(PATCHOULI_GUIDE_BOOK)) {
             return false;
         }
         CompoundTag tag = itemStack.getTag();
         String bookId = tag.getString(TAG_PATCHOULI_BOOK);
-        return (bookId != null && bookId.equals(GUIDE_BOOK_ID));
+        return (bookId.equals(GUIDE_BOOK_ID));
     }
 }

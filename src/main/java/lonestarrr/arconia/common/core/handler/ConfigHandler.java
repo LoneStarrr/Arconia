@@ -3,8 +3,8 @@ package lonestarrr.arconia.common.core.handler;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
@@ -15,27 +15,27 @@ import java.util.Map;
  */
 public final class ConfigHandler {
     public static class Client {
-        public Client(ForgeConfigSpec.Builder builder) {
+        public Client(ModConfigSpec.Builder builder) {
         }
     }
 
     public static final Client CLIENT;
-    public static final ForgeConfigSpec CLIENT_SPEC;
+    public static final ModConfigSpec CLIENT_SPEC;
 
     static {
-        final Pair<Client, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Client::new);
+        final Pair<Client, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Client::new);
         CLIENT_SPEC = specPair.getRight();
         CLIENT = specPair.getLeft();
     }
 
     public static class Common {
-        public final Map<RainbowColor, ForgeConfigSpec.IntValue> potGenerationInterval = new HashMap<>(RainbowColor.values().length);
-        public final Map<RainbowColor, ForgeConfigSpec.IntValue> potGenerationCount = new HashMap<>(RainbowColor.values().length);
+        public final Map<RainbowColor, ModConfigSpec.IntValue> potGenerationInterval = new HashMap<>(RainbowColor.values().length);
+        public final Map<RainbowColor, ModConfigSpec.IntValue> potGenerationCount = new HashMap<>(RainbowColor.values().length);
 
-        public final ForgeConfigSpec.IntValue potOfGoldMaxHats;
-        public final ForgeConfigSpec.IntValue potOfGoldMaxHatDistance;
+        public final ModConfigSpec.IntValue potOfGoldMaxHats;
+        public final ModConfigSpec.IntValue potOfGoldMaxHatDistance;
 
-        public Common(ForgeConfigSpec.Builder builder) {
+        public Common(ModConfigSpec.Builder builder) {
             builder.push("potOfGold");
             potOfGoldMaxHats = builder
                     .comment("Maximum number of hats that can be linked to a single pot of gold")
@@ -48,13 +48,13 @@ public final class ConfigHandler {
             int currentGenerationCount = 2;
 
             for (RainbowColor color : RainbowColor.values()) {
-                ForgeConfigSpec.IntValue generationInterval = builder
+                ModConfigSpec.IntValue generationInterval = builder
                         .comment("Time between item generation attempts, in game ticks")
                         .defineInRange(color.getTierName() + "GenerationInterval", currentGenerationInterval, PotMultiBlockPrimaryBlockEntity.MIN_TICK_INTERVAL, 1200);
                 potGenerationInterval.put(color, generationInterval);
                 currentGenerationInterval -= 15;
 
-                ForgeConfigSpec.IntValue generationCount = builder
+                ModConfigSpec.IntValue generationCount = builder
                         .comment("Maximum number of items to generate per attempt")
                         .defineInRange(color.getTierName() + "GenerationCount", currentGenerationCount, 1, 256);
                 potGenerationCount.put(color, generationCount);
@@ -66,10 +66,10 @@ public final class ConfigHandler {
     }
 
     public static final Common COMMON;
-    public static final ForgeConfigSpec COMMON_SPEC;
+    public static final ModConfigSpec COMMON_SPEC;
 
     static {
-        final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
+        final Pair<Common, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Common::new);
         COMMON_SPEC = specPair.getRight();
         COMMON = specPair.getLeft();
     }

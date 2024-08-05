@@ -4,8 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 public abstract class BasePedestalBlockEntity extends BaseInventoryBlockEntity {
 

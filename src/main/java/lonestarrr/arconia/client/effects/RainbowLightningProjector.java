@@ -4,6 +4,8 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -12,9 +14,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.BlockPos;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public class RainbowLightningProjector {
     /**
      * Render a lightning effect with a given block position at the center. Similar to end dragon death effect, but with cycling rainbow colors.
      *
-     * @param pos
+     * @param random
      * @param beamLength
      * @param beamCount
      * @param poseStack

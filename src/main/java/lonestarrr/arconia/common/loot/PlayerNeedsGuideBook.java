@@ -7,6 +7,7 @@ import com.google.gson.JsonSerializationContext;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.helper.PatchouliHelper;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,7 +20,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
-import net.minecraftforge.common.util.FakePlayer;
+import net.neoforged.neoforge.common.util.FakePlayer;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -42,7 +43,7 @@ public class PlayerNeedsGuideBook implements LootItemCondition {
         // Only drop a book if the player does not have the advancement yet, AND there is no nearby guide book entity (you could mine a whole bunch of dirt
         // without picking up the book!). I suppose you could game this with e.g. a hopper if you really, really wanted to have a large collection of useless
         // guide books!
-        Advancement guideBookAdvancement = world.getServer().getAdvancements().getAdvancement(new ResourceLocation(Arconia.MOD_ID, "main/root"));
+        AdvancementHolder guideBookAdvancement = world.getServer().getAdvancements().get(new ResourceLocation(Arconia.MOD_ID, "main/root"));
         if (guideBookAdvancement == null) {
             // Should not happen, but if it does, better be safe than sorry!
             Arconia.logger.error("Missing guide book advancement");

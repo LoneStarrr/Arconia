@@ -3,7 +3,7 @@ package lonestarrr.arconia.client.gui.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
 import javax.annotation.Nonnull;
 import java.util.Set;

@@ -12,7 +12,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
 import java.util.List;
 import java.util.Map;

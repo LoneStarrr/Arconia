@@ -34,9 +34,9 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.FakePlayer;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

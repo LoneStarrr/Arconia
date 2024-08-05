@@ -12,7 +12,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 
 /**
  * Registers blocks that are colored dynamically, typically based on nbt/metadata or simply to share a single texture model with different

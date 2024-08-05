@@ -2,7 +2,7 @@ package lonestarrr.arconia.client.core.handler;
 
 import lonestarrr.arconia.client.effects.*;
 import lonestarrr.arconia.common.block.entities.ModBlockEntities;
-import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
 /**
  * Registers block entity renderers

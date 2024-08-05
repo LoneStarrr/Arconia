@@ -12,10 +12,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -69,9 +70,9 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         if (currentRecipeID == null) {
             return null;
         }
-        Optional<? extends Recipe> recipe = level.getRecipeManager().byKey(currentRecipeID);
-        if (recipe.isPresent() && recipe.get() instanceof PedestalRecipe) {
-            return (PedestalRecipe)recipe.get();
+        Optional<RecipeHolder<?>> recipe = level.getRecipeManager().byKey(currentRecipeID);
+        if (recipe.isPresent() && recipe.get().value() instanceof PedestalRecipe) {
+            return (PedestalRecipe)recipe.get().value();
         }
         return null;
     }

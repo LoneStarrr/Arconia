@@ -17,7 +17,6 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
@@ -26,7 +25,7 @@ import net.minecraft.world.level.levelgen.feature.foliageplacers.BlobFoliagePlac
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.StraightTrunkPlacer;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

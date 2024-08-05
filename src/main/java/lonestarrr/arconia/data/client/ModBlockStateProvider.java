@@ -3,18 +3,16 @@ package lonestarrr.arconia.data.client;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.*;
 import lonestarrr.arconia.common.core.RainbowColor;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
+
+import java.util.function.Supplier;
 
 import static lonestarrr.arconia.common.core.helper.ResourceLocationHelper.prefix;
 
@@ -48,8 +46,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile model = models().getExistingFile(prefix("block/cross_sapling"));
 
         for (RainbowColor color: RainbowColor.values()) {
-            RegistryObject<ArconiumTreeSapling> block = ModBlocks.getArconiumTreeSapling(color);
-            String name = block.getId().getPath();
+            Supplier<ArconiumTreeSapling> block = ModBlocks.getArconiumTreeSapling(color);
+            String name = BuiltInRegistries.BLOCK.getKey(block.get()).getPath();
             simpleBlock(block.get(), model);
             // Item model here does not use the block model, but instead the flat texture(s)
             itemModels().withExistingParent(name, "item/generated")
@@ -60,8 +58,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     private void registerLeaves() {
         for (RainbowColor color: RainbowColor.values()) {
-            RegistryObject<ArconiumTreeLeaves> leafBlock = ModBlocks.getArconiumTreeLeaves(color);
-            String leafName = leafBlock.getId().getPath();
+            Supplier<ArconiumTreeLeaves> leafBlock = ModBlocks.getArconiumTreeLeaves(color);
+            String leafName = BuiltInRegistries.BLOCK.getKey(leafBlock.get()).getPath();
             ModelFile leafModel = models().getExistingFile(prefix("block/arconium_tree_leaves"));
             simpleBlock(leafBlock.get(), leafModel);
             itemModels().withExistingParent(leafName, prefix("block/arconium_tree_leaves"));
@@ -70,8 +68,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     private void registerRainbowGrassBlocks() {
         for (RainbowColor color: RainbowColor.values()) {
-            RegistryObject<RainbowGrassBlock> grassBlock = ModBlocks.getRainbowGrassBlock(color);
-            String grassName = grassBlock.getId().getPath();
+            Supplier<RainbowGrassBlock> grassBlock = ModBlocks.getRainbowGrassBlock(color);
+            String grassName = BuiltInRegistries.BLOCK.getKey(grassBlock.get()).getPath();
             ModelFile grasssModel = models().getExistingFile(prefix("block/rainbow_grass_block"));
             simpleBlock(grassBlock.get(), grasssModel);
             itemModels().withExistingParent(grassName, prefix("block/rainbow_grass_block"));
@@ -80,8 +78,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     private void registerArconiumBlocks() {
         for (RainbowColor color: RainbowColor.values()) {
-            RegistryObject<ArconiumBlock> block = ModBlocks.getArconiumBlock(color);
-            String name = block.getId().getPath();
+            Supplier<ArconiumBlock> block = ModBlocks.getArconiumBlock(color);
+            String name = BuiltInRegistries.BLOCK.getKey(block.get()).getPath();
+
             //ModelFile model = models().cubeAll(name, prefix("block/arconium_block"));
             ModelFile model = models().getExistingFile(prefix("block/arconium_block"));
             simpleBlock(block.get(), model);
@@ -91,8 +90,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     private void registerInfiniteGoldArconiumBlocks() {
         for (RainbowColor color: RainbowColor.values()) {
-            RegistryObject<InfiniteGoldArconiumBlock> block = ModBlocks.getInfiniteGoldArconiumBlock(color);
-            String name = block.getId().getPath();
+            Supplier<InfiniteGoldArconiumBlock> block = ModBlocks.getInfiniteGoldArconiumBlock(color);
+            String name = BuiltInRegistries.BLOCK.getKey(block.get()).getPath();
             ModelFile model = models().getExistingFile(prefix("block/infinite_gold_arconium_block"));
             simpleBlock(block.get(), model);
             itemModels().withExistingParent(name, prefix("block/infinite_gold_arconium_block"));
@@ -100,9 +99,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private void registerMisc() {
-        //World Builder
-        RegistryObject<WorldBuilder> block = ModBlocks.worldBuilder;
-        String name = block.getId().getPath();
+        Supplier<WorldBuilder> block = ModBlocks.worldBuilder;
+        String name = BuiltInRegistries.BLOCK.getKey(block.get()).getPath();
         ModelFile model = models().cubeTop(name, new ResourceLocation("block/oak_planks"), prefix("block/world_builder"));
         simpleBlock(block.get(), model);
         itemModels().withExistingParent(name, prefix("block/world_builder"));

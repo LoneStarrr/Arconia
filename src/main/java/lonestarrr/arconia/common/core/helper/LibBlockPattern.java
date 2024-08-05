@@ -7,10 +7,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -157,11 +157,11 @@ public abstract class LibBlockPattern {
         String blockId = blockNameParts[1];
         ResourceLocation resourceLocation = new ResourceLocation(namespace, blockId);
 
-        if (!ForgeRegistries.BLOCKS.containsKey(resourceLocation)) {
+        if (!BuiltInRegistries.BLOCK.containsKey(resourceLocation)) {
             throw new BlockPatternException("Unknown block: " + blockByName);
         }
 
-        Block block = ForgeRegistries.BLOCKS.getValue(resourceLocation);
+        Block block = BuiltInRegistries.BLOCK.get(resourceLocation);
 
         BlockState blockState = block.defaultBlockState();
         return blockState;

@@ -11,11 +11,11 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.arguments.item.ItemInput;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Commands for arconia
@@ -54,7 +54,7 @@ public class ArconiaCommand {
         }
 
         ColoredRoot.setResourceItem(rootItem, resourceItem, itemCount);
-        player.sendSystemMessage(Component.literal("Enchanted the colored root with resourceItem " + ForgeRegistries.ITEMS.getKey(resourceItem).toString()));
+        player.sendSystemMessage(Component.literal("Enchanted the colored root with resourceItem " + BuiltInRegistries.ITEM.getKey(resourceItem).toString()));
         return Command.SINGLE_SUCCESS;
     }
 }

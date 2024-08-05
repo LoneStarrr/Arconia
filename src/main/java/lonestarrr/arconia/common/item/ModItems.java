@@ -3,29 +3,31 @@ package lonestarrr.arconia.common.item;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.ItemNames;
 import lonestarrr.arconia.common.core.RainbowColor;
-import net.minecraft.world.item.*;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Tiers;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
 public final class ModItems {
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Arconia.MOD_ID);
-    public static RegistryObject<Item> goldCoin;
-    public static RegistryObject<Item> cloverStaff;
-    public static RegistryObject<Item> fourLeafClover;
-    public static RegistryObject<Item> threeLeafClover;
-    public static RegistryObject<Item> magicInABottle;
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM, Arconia.MOD_ID);
+    public static Supplier<Item> goldCoin;
+    public static Supplier<Item> cloverStaff;
+    public static Supplier<Item> fourLeafClover;
+    public static Supplier<Item> threeLeafClover;
+    public static Supplier<Item> magicInABottle;
 
-    private static final Map<RainbowColor, RegistryObject<Item>> arconiumEssences = new HashMap<>();
-    private static final Map<RainbowColor, RegistryObject<ColoredRoot>> coloredRoots = new HashMap<>();
-    private static final Map<RainbowColor, RegistryObject<Item>> arconiumIngots = new HashMap<>();
+    private static final Map<RainbowColor, Supplier<Item>> arconiumEssences = new HashMap<>();
+    private static final Map<RainbowColor, Supplier<ColoredRoot>> coloredRoots = new HashMap<>();
+    private static final Map<RainbowColor, Supplier<Item>> arconiumIngots = new HashMap<>();
 
-    private static final Map<RainbowColor, RegistryObject<Item>> arconiumSickles = new HashMap<>();
+    private static final Map<RainbowColor, Supplier<Item>> arconiumSickles = new HashMap<>();
 
     public static Item.Properties defaultBuilder() {
         return new Item.Properties();
@@ -61,20 +63,20 @@ public final class ModItems {
 
     public static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.accept(cloverStaff);
-            event.accept(magicInABottle);
+            event.accept(cloverStaff.get());
+            event.accept(magicInABottle.get());
             for (RainbowColor color: RainbowColor.values()) {
                 // TODO acceptAll values()?
-                event.accept(arconiumSickles.get(color));
+                event.accept(arconiumSickles.get(color).get());
             }
         } else if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
-            event.accept(goldCoin);
-            event.accept(fourLeafClover);
-            event.accept(threeLeafClover);
+            event.accept(goldCoin.get());
+            event.accept(fourLeafClover.get());
+            event.accept(threeLeafClover.get());
             for (RainbowColor color : RainbowColor.values()) {
-                event.accept(arconiumEssences.get(color));
-                event.accept(coloredRoots.get(color));
-                event.accept(arconiumIngots.get(color));
+                event.accept(arconiumEssences.get(color).get());
+                event.accept(coloredRoots.get(color).get());
+                event.accept(arconiumIngots.get(color).get());
             }
         }
     }
@@ -82,17 +84,17 @@ public final class ModItems {
         arconiumSickles.put(tier, ITEMS.register(tier.getTierName() + ItemNames.SICKLE_SUFFIX, hoe));
     }
 
-    public static final RegistryObject<Item> getArconiumEssence(RainbowColor tier) {
+    public static Supplier<Item> getArconiumEssence(RainbowColor tier) {
         return arconiumEssences.get(tier);
     }
 
-    public static final RegistryObject<Item> getArconiumIngot(RainbowColor tier) {
+    public static Supplier<Item> getArconiumIngot(RainbowColor tier) {
         return arconiumIngots.get(tier);
     }
 
-    public static final RegistryObject<Item> getArconiumSickle(RainbowColor tier) { return arconiumSickles.get(tier); }
+    public static Supplier<Item> getArconiumSickle(RainbowColor tier) { return arconiumSickles.get(tier); }
 
-    public static final RegistryObject<ColoredRoot> getColoredRoot(RainbowColor tier) {
+    public static Supplier<ColoredRoot> getColoredRoot(RainbowColor tier) {
         return coloredRoots.get(tier);
     }
 }

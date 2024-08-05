@@ -4,34 +4,34 @@ import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.BlockNames;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ModItems;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class ModBlocks {
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Arconia.MOD_ID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK, Arconia.MOD_ID);
 //    private static final Map<RainbowColor, RainbowCropBlock> rainbowCrops = new HashMap<>();
-    private static final Map<RainbowColor, RegistryObject<ArconiumTreeLeaves>> arconiumTreeLeaves = new HashMap<>();
-    private static final Map<RainbowColor, RegistryObject<ArconiumTreeSapling>> arconiumTreeSaplings = new HashMap<>();
-    private static final Map<RainbowColor, RegistryObject<ArconiumBlock>> arconiumBlocks = new HashMap<>();
-    private static final Map<RainbowColor, RegistryObject<InfiniteGoldArconiumBlock>> infiniteGoldArconiumBlocks = new HashMap<>();
-    private static final Map<RainbowColor, RegistryObject<RainbowGrassBlock>> rainbowGrassBlocks = new HashMap<>();
+    private static final Map<RainbowColor, Supplier<ArconiumTreeLeaves>> arconiumTreeLeaves = new HashMap<>();
+    private static final Map<RainbowColor, Supplier<ArconiumTreeSapling>> arconiumTreeSaplings = new HashMap<>();
+    private static final Map<RainbowColor, Supplier<ArconiumBlock>> arconiumBlocks = new HashMap<>();
+    private static final Map<RainbowColor, Supplier<InfiniteGoldArconiumBlock>> infiniteGoldArconiumBlocks = new HashMap<>();
+    private static final Map<RainbowColor, Supplier<RainbowGrassBlock>> rainbowGrassBlocks = new HashMap<>();
 
-    public static RegistryObject<CloverBlock> clover = BLOCKS.register(BlockNames.CLOVER, () -> new CloverBlock());
-    public static RegistryObject<Pedestal> pedestal = BLOCKS.register(BlockNames.PEDESTAL, () -> new Pedestal());
-    public static RegistryObject<CenterPedestal> centerPedestal = BLOCKS.register(BlockNames.CENTER_PEDESTAL, CenterPedestal::new);
-    public static RegistryObject<Hat> hat = BLOCKS.register(BlockNames.HAT, () -> new Hat());
-    public static RegistryObject<WorldBuilder> worldBuilder = BLOCKS.register(BlockNames.WORLD_BUILDER, () -> new WorldBuilder());
-    public static RegistryObject<PotMultiBlockPrimary> potMultiBlockPrimary = BLOCKS.register(BlockNames.POT_MULTIBLOCK_PRIMARY, () -> new PotMultiBlockPrimary());
-    public static RegistryObject<PotMultiBlockSecondary> potMultiBlockSecondary = BLOCKS.register(BlockNames.POT_MULTIBLOCK_SECONDARY, () -> new PotMultiBlockSecondary()); //no associated item
+    public static Supplier<CloverBlock> clover = BLOCKS.register(BlockNames.CLOVER, CloverBlock::new);
+    public static Supplier<Pedestal> pedestal = BLOCKS.register(BlockNames.PEDESTAL, () -> new Pedestal());
+    public static Supplier<CenterPedestal> centerPedestal = BLOCKS.register(BlockNames.CENTER_PEDESTAL, CenterPedestal::new);
+    public static Supplier<Hat> hat = BLOCKS.register(BlockNames.HAT, () -> new Hat());
+    public static Supplier<WorldBuilder> worldBuilder = BLOCKS.register(BlockNames.WORLD_BUILDER, () -> new WorldBuilder());
+    public static Supplier<PotMultiBlockPrimary> potMultiBlockPrimary = BLOCKS.register(BlockNames.POT_MULTIBLOCK_PRIMARY, () -> new PotMultiBlockPrimary());
+    public static Supplier<PotMultiBlockSecondary> potMultiBlockSecondary = BLOCKS.register(BlockNames.POT_MULTIBLOCK_SECONDARY, () -> new PotMultiBlockSecondary()); //no associated item
 
     static {
         // RainbowColor tiered colorBlocks
@@ -66,40 +66,40 @@ public class ModBlocks {
     public static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
         // Not adding items to creative tabs makes them undiscoverable in creative mode, even with JEI
         if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            event.accept(pedestal);
-            event.accept(centerPedestal);
-            event.accept(worldBuilder);
-            event.accept(hat);
+            event.accept(pedestal.get());
+            event.accept(centerPedestal.get());
+            event.accept(worldBuilder.get());
+            event.accept(hat.get());
         }
         else if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) {
-            event.accept(clover);
+            event.accept(clover.get());
             for (RainbowColor color: RainbowColor.values()) {
-                event.accept(arconiumTreeLeaves.get(color));
-                event.accept(arconiumTreeSaplings.get(color));
-                event.accept(rainbowGrassBlocks.get(color));
+                event.accept(arconiumTreeLeaves.get(color).get());
+                event.accept(arconiumTreeSaplings.get(color).get());
+                event.accept(rainbowGrassBlocks.get(color).get());
             }
         } else if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
             for (RainbowColor color: RainbowColor.values()) {
-                event.accept(arconiumBlocks.get(color));
-                event.accept(infiniteGoldArconiumBlocks.get(color));
+                event.accept(arconiumBlocks.get(color).get());
+                event.accept(infiniteGoldArconiumBlocks.get(color).get());
             }
         }
     }
-    public static RegistryObject<ArconiumBlock> getArconiumBlock(RainbowColor tier) { return arconiumBlocks.get(tier); }
+    public static Supplier<ArconiumBlock> getArconiumBlock(RainbowColor tier) { return arconiumBlocks.get(tier); }
 
-    public static RegistryObject<InfiniteGoldArconiumBlock> getInfiniteGoldArconiumBlock(RainbowColor tier) { return infiniteGoldArconiumBlocks.get(tier); }
+    public static Supplier<InfiniteGoldArconiumBlock> getInfiniteGoldArconiumBlock(RainbowColor tier) { return infiniteGoldArconiumBlocks.get(tier); }
 
-    public static RegistryObject<ArconiumTreeSapling> getArconiumTreeSapling(RainbowColor tier) {
+    public static Supplier<ArconiumTreeSapling> getArconiumTreeSapling(RainbowColor tier) {
         return arconiumTreeSaplings.get(tier);
     }
 
-    public static RegistryObject<ArconiumTreeLeaves> getArconiumTreeLeaves(RainbowColor tier) {
+    public static Supplier<ArconiumTreeLeaves> getArconiumTreeLeaves(RainbowColor tier) {
         return arconiumTreeLeaves.get(tier);
     }
 
-    public static RegistryObject<RainbowGrassBlock> getRainbowGrassBlock(RainbowColor tier) { return rainbowGrassBlocks.get(tier); }
+    public static Supplier<RainbowGrassBlock> getRainbowGrassBlock(RainbowColor tier) { return rainbowGrassBlocks.get(tier); }
 
-    public static void registerBlockItem(RegistryObject<? extends Block> block, Item.Properties builder) {
-        ModItems.ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), builder));
+    public static void registerBlockItem(Supplier<? extends Block> block, Item.Properties builder) {
+        ModItems.ITEMS.register(BLOCKS.getRegistry().get().getKey(block.get()).getPath(), () -> new BlockItem(block.get(), builder));
     }
 }
