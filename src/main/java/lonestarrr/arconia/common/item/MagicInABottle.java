@@ -25,6 +25,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.api.distmarker.Dist;
@@ -202,10 +203,9 @@ public class MagicInABottle extends Item {
         RainbowColor tier = getTier(stack);
 
         final ResourceLocation lootResource = new ResourceLocation(Arconia.MOD_ID, "magic_in_a_bottle_" + tier.getTierName());
-        LootTable lootTable = ((ServerLevel) world).getServer().getLootTables().get(lootResource);
-        LootContext ctx = new LootContext.Builder((ServerLevel) world).create(LootContextParamSets.EMPTY);
-        List<ItemStack> stacks = lootTable.getRandomItems(ctx);
-        return stacks;
+        LootTable lootTable = ((ServerLevel) world).getServer().getLootData().getLootTable(lootResource);
+        LootParams params = (new LootParams.Builder((ServerLevel)world)).create(LootContextParamSets.EMPTY);
+        return lootTable.getRandomItems(params);
     }
 
     @OnlyIn(Dist.CLIENT)

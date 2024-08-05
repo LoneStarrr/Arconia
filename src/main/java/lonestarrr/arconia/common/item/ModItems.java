@@ -4,7 +4,7 @@ import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.ItemNames;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.world.item.*;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -59,15 +59,15 @@ public final class ModItems {
         registerSickle(RainbowColor.PURPLE, () -> new HoeItem(Tiers.NETHERITE, 6, -2.1F, (new Item.Properties()).fireResistant()));
     }
 
-    public static void addToCreativeTabs(CreativeModeTabEvent.BuildContents event) {
-        if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+    public static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(cloverStaff);
             event.accept(magicInABottle);
             for (RainbowColor color: RainbowColor.values()) {
                 // TODO acceptAll values()?
                 event.accept(arconiumSickles.get(color));
             }
-        } else if (event.getTab() == CreativeModeTabs.INGREDIENTS) {
+        } else if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(goldCoin);
             event.accept(fourLeafClover);
             event.accept(threeLeafClover);

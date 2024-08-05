@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -63,7 +63,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
     public static EnumProperty<PotPosition> POT_POSITION = EnumProperty.create("pot_position", PotPosition.class);
 
     public PotMultiBlockSecondary() {
-        super(Block.Properties.of(Material.METAL).strength(4.0F).noOcclusion());
+        super(Block.Properties.of().mapColor(MapColor.METAL).strength(4.0F).noOcclusion());
         registerDefaultState(this.getStateDefinition().any().setValue(POT_POSITION, PotPosition.CENTER));
     }
 

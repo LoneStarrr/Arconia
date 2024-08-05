@@ -8,7 +8,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -63,22 +63,22 @@ public class ModBlocks {
         rainbowGrassBlocks.values().stream().forEach(b -> registerBlockItem(b, builder));
     }
 
-    public static void addToCreativeTabs(CreativeModeTabEvent.BuildContents event) {
+    public static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
         // Not adding items to creative tabs makes them undiscoverable in creative mode, even with JEI
-        if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             event.accept(pedestal);
             event.accept(centerPedestal);
             event.accept(worldBuilder);
             event.accept(hat);
         }
-        else if (event.getTab() == CreativeModeTabs.NATURAL_BLOCKS) {
+        else if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) {
             event.accept(clover);
             for (RainbowColor color: RainbowColor.values()) {
                 event.accept(arconiumTreeLeaves.get(color));
                 event.accept(arconiumTreeSaplings.get(color));
                 event.accept(rainbowGrassBlocks.get(color));
             }
-        } else if (event.getTab() == CreativeModeTabs.BUILDING_BLOCKS) {
+        } else if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
             for (RainbowColor color: RainbowColor.values()) {
                 event.accept(arconiumBlocks.get(color));
                 event.accept(infiniteGoldArconiumBlocks.get(color));

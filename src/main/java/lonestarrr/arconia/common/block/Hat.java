@@ -5,7 +5,6 @@ import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.ModItems;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -21,12 +20,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.util.FakePlayer;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +34,7 @@ public class Hat extends BaseEntityBlock {
     private static final VoxelShape shape = box(0, 0, 0, 16, 10, 16);
 
     public Hat() {
-        super(Block.Properties.of(Material.WOOL, MaterialColor.COLOR_GREEN).strength(1.0F).noOcclusion());
+        super(Block.Properties.of().mapColor(MapColor.COLOR_GREEN).ignitedByLava().strength(1.0F).noOcclusion());
     }
 
     @Override

@@ -30,5 +30,6 @@
     "recipes": [
       "arconia:yellow_arconium_block"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

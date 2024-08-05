@@ -30,5 +30,6 @@
     "recipes": [
       "arconia:green_arconium_sickle"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

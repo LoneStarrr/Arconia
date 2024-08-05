@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 
 import javax.annotation.Nullable;
 
@@ -16,7 +16,7 @@ public class RainbowGrassBlock extends GrassBlock implements BlockColor {
     private RainbowColor tier;
 
     public RainbowGrassBlock(RainbowColor color) {
-        super(BlockBehaviour.Properties.of(Material.GRASS).randomTicks().strength(0.6F).sound(SoundType.GRASS));
+        super(BlockBehaviour.Properties.of().mapColor(MapColor.GRASS).randomTicks().strength(0.6F).sound(SoundType.GRASS));
         this.tier = color;
     }
 

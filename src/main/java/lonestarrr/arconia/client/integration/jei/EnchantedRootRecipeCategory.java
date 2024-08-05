@@ -13,6 +13,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -57,9 +58,9 @@ public class EnchantedRootRecipeCategory implements IRecipeCategory<EnchantedRoo
     }
 
     @Override
-    public void draw(EnchantedRootRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
+    public void draw(EnchantedRootRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics gui, double mouseX, double mouseY) {
         RenderSystem.enableBlend();
-        overlay.draw(stack, 0, 0);
+        overlay.draw(gui, 0, 0);
         RenderSystem.disableBlend();
 
     }

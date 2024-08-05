@@ -30,5 +30,6 @@
     "recipes": [
       "arconia:hat"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

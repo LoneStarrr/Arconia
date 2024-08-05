@@ -19,8 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 
 import javax.annotation.Nullable;
 
@@ -33,7 +32,7 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
     public static final Block OUTSIDE_BLOCK = Blocks.BLACK_TERRACOTTA;
 
     public PotMultiBlockPrimary() {
-        super(Block.Properties.of(Material.METAL, MaterialColor.COLOR_BLACK).strength(4.0F));
+        super(Block.Properties.of().mapColor(MapColor.METAL).strength(4.0F));
     }
 
     @Override

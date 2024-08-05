@@ -30,5 +30,6 @@
     "recipes": [
       "arconia:light_blue_arconium_ingot"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }
