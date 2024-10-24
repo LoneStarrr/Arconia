@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -14,13 +15,15 @@ import org.jetbrains.annotations.NotNull;
  * Base BlockEntity that has an inventory
  */
 public abstract class BaseInventoryBlockEntity extends BaseBlockEntity {
-    private final LazyOptional<IItemHandler> capability = LazyOptional.of(this::getInventory);
+    private final Lazy<IItemHandler> itemHandler = Lazy.of(this::getInventory);
 
     public BaseInventoryBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
-    public abstract ItemStackHandler getInventory();
+    public IItemHandler getItemHandler() { return itemHandler.get(); }
+
+    protected abstract ItemStackHandler getInventory();
 
     @Override
     public void writePacketNBT(CompoundTag tag) {
@@ -31,14 +34,4 @@ public abstract class BaseInventoryBlockEntity extends BaseBlockEntity {
     public void readPacketNBT(CompoundTag tag) {
         getInventory().deserializeNBT(tag);
     }
-
-    @Override
-    public <T> @NotNull LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-        if (!isRemoved() && cap == ForgeCapabilities.ITEM_HANDLER) {
-            return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(this::getInventory));
-        }
-
-        return super.getCapability(cap, side);
-    }
-
 }

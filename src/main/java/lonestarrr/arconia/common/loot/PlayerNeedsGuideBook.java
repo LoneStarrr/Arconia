@@ -4,6 +4,13 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
+import com.mojang.datafixers.kinds.App;
+import com.mojang.datafixers.util.Unit;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.Decoder;
+import com.mojang.serialization.Encoder;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.helper.PatchouliHelper;
 import net.minecraft.advancements.Advancement;
@@ -20,7 +27,10 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import net.neoforged.neoforge.common.ToolAction;
+import net.neoforged.neoforge.common.loot.CanToolPerformAction;
 import net.neoforged.neoforge.common.util.FakePlayer;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -31,6 +41,12 @@ import java.util.Set;
  * Should really break this up into 2 conditions, is a real player, and has found guidebook
  */
 public class PlayerNeedsGuideBook implements LootItemCondition {
+    public static final PlayerNeedsGuideBook INSTANCE = new PlayerNeedsGuideBook();
+    public static Codec<PlayerNeedsGuideBook> CODEC = MapCodec.of(Encoder.empty(), Decoder.unit(PlayerNeedsGuideBook.INSTANCE)).codec();
+    public static final LootItemConditionType NEEDS_GUIDEBOOK = new LootItemConditionType(CODEC);
+
+    private PlayerNeedsGuideBook() {}
+
     @Override
     public boolean test(LootContext lootContext) {
         Entity looter = lootContext.getParamOrNull(LootContextParams.THIS_ENTITY);
@@ -68,22 +84,12 @@ public class PlayerNeedsGuideBook implements LootItemCondition {
     }
 
     @Override
-    public Set<LootContextParam<?>> getReferencedContextParams() {
+    public @NotNull Set<LootContextParam<?>> getReferencedContextParams() {
         return ImmutableSet.of(LootContextParams.THIS_ENTITY);
     }
 
     @Override
-    public LootItemConditionType getType() {
-        return ModLootModifiers.NEEDS_GUIDEBOOK.get();
-    }
-
-    public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<PlayerNeedsGuideBook> {
-        @Override
-        public void serialize(@Nonnull JsonObject json, @Nonnull PlayerNeedsGuideBook value, @Nonnull JsonSerializationContext context) {}
-
-        @Override
-        public PlayerNeedsGuideBook deserialize(@Nonnull JsonObject json, @Nonnull JsonDeserializationContext context) {
-            return new PlayerNeedsGuideBook();
-        }
+    public @NotNull LootItemConditionType getType() {
+        return NEEDS_GUIDEBOOK;
     }
 }

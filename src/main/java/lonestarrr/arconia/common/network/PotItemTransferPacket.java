@@ -1,56 +1,52 @@
 package lonestarrr.arconia.common.network;
 
 import lonestarrr.arconia.client.effects.PotItemTransfers;
-import net.minecraft.client.Minecraft;
+import lonestarrr.arconia.common.Arconia;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
 
 /**
  * Packet containing data for visualisation of item transfer between pot of gold and hats
  */
-public class PotItemTransferPacket {
-    private final BlockPos startPos;
-    private final BlockPos endPos;
-    private final ItemStack itemStack;
+public record PotItemTransferPacket(BlockPos startPos, BlockPos endPos, ItemStack itemStack) implements CustomPacketPayload {
+    public static final ResourceLocation ID = new ResourceLocation(Arconia.MOD_ID, "pot_item_transfer");
 
-    public PotItemTransferPacket(BlockPos startPos, BlockPos endPos, ItemStack itemStack) {
-        this.startPos = startPos;
-        this.endPos = endPos;
-        this.itemStack = itemStack.copy();
+    public PotItemTransferPacket(final FriendlyByteBuf buffer) {
+        this(buffer.readBlockPos(), buffer.readBlockPos(), buffer.readItem());
     }
 
-    public static PotItemTransferPacket decode(FriendlyByteBuf buf) {
-        return new PotItemTransferPacket(buf.readBlockPos(), buf.readBlockPos(), buf.readItem());
+    @Override
+    public void write(final FriendlyByteBuf buffer) {
+        buffer.writeBlockPos(startPos());
+        buffer.writeBlockPos(endPos());
+        buffer.writeItem(itemStack());
     }
 
-    public static void encode(PotItemTransferPacket msg, FriendlyByteBuf buf) {
-        buf.writeBlockPos(msg.startPos);
-        buf.writeBlockPos(msg.endPos);
-        buf.writeItem(msg.itemStack);
+    @Override
+    public @NotNull ResourceLocation id() {
+        return ID;
     }
 
+    // NeoForge example code has a global ClientHandler class that seems like it's intended to handle all client
+    // packets, but I prefer to have that logic live with the actual packet code.
     public static class Handler {
-        public static void handle(final PotItemTransferPacket msg, final Supplier<NetworkEvent.Context> ctx) {
-            if (ctx.get().getDirection().getReceptionSide().isServer()) {
-                ctx.get().setPacketHandled(true);
-                return;
-            }
-
-            ctx.get().enqueueWork(new Runnable() {
-                // Use anon - lambda causes classloading issues
-                @Override
-                public void run() {
-                    Minecraft mc = Minecraft.getInstance();
-                    Level world = mc.level;
-                    PotItemTransfers.addItemTransfer(msg.startPos, msg.endPos, msg.itemStack);
-                }
+        public static void handleClient(final PotItemTransferPacket packet, final PlayPayloadContext ctx) {
+            // Run on main thread
+            ctx.workHandler().submitAsync(() -> {
+                PotItemTransfers.addItemTransfer(packet.startPos(), packet.endPos(), packet.itemStack());
+            }).exceptionally(e -> {
+                // Unhandled exceptions are silently swallowed
+                // TODO actually add this language key
+                ctx.packetHandler().disconnect(Component.translatable("arconia.networking.failed", e.getMessage()));
+                return null;
             });
-            ctx.get().setPacketHandled(true);
         }
     }
 }

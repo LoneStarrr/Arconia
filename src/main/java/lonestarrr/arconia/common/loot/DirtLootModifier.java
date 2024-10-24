@@ -28,27 +28,11 @@ public class DirtLootModifier extends LootModifier {
     }
 
     @Override
-    public Codec<? extends IGlobalLootModifier> codec() {
+    public @NotNull Codec<? extends IGlobalLootModifier> codec() {
         return ModLootModifiers.DIRT_MODIFIER.get();
     }
 
     public static Codec<DirtLootModifier> createCodec() {
         return RecordCodecBuilder.create(instance -> codecStart(instance).apply(instance, DirtLootModifier::new));
     }
-
-    // add Serializer to support data packs
-    // TODO this whole thing can go, superseded by CODEC ?
-//    public static class Serializer extends GlobalLootModifierSerializer<DirtLootModifier> {
-//        @Override
-//        public DirtLootModifier read(ResourceLocation name, JsonObject json, LootItemCondition[] conditions) {
-//            return new DirtLootModifier(conditions);
-//        }
-//
-//        @Override
-//        public JsonObject write(DirtLootModifier modifier) {
-//            JsonObject json = makeConditions(modifier.conditions);
-//            return json;
-//        }
-//
-//    }
 }

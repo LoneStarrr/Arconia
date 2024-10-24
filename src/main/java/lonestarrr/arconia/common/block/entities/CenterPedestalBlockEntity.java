@@ -62,7 +62,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     }
 
     @Override
-    public ItemStackHandler getInventory() {
+    protected ItemStackHandler getInventory() {
         return inventory;
     }
 
@@ -238,12 +238,9 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     }
 
     private PedestalRecipe findRecipe(SimpleContainer inv) {
-        Optional<PedestalRecipe> hasRecipe = level.getRecipeManager().getRecipeFor(PedestalRecipe.Type.INSTANCE, inv, level);
-        if (hasRecipe.isPresent()) {
-            return hasRecipe.get();
-        }
+        Optional<RecipeHolder<PedestalRecipe>> hasRecipe = level.getRecipeManager().getRecipeFor(PedestalRecipe.Type.INSTANCE, inv, level);
+        return hasRecipe.map(RecipeHolder::value).orElse(null);
 
-        return null;
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, CenterPedestalBlockEntity blockEntity) {

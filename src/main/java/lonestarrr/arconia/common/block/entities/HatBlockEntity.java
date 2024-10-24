@@ -10,6 +10,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
@@ -109,7 +111,7 @@ public class HatBlockEntity extends BaseBlockEntity {
     public void writePacketNBT(CompoundTag tag) {
         if (!level.isClientSide()) {
             tag.putInt("tier", tier.getTier());
-            tag.put("item", this.itemStack.serializeNBT());
+            tag.put("item", this.itemStack.save(new CompoundTag()));
             if (this.linkedPotPos != null) {
                 tag.putLong("pot_pos", this.linkedPotPos.asLong());
             }

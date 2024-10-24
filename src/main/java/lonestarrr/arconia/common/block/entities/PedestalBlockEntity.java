@@ -26,7 +26,7 @@ public class PedestalBlockEntity extends BasePedestalBlockEntity {
     }
 
     @Override
-    public ItemStackHandler getInventory() {
+    protected ItemStackHandler getInventory() {
         return inventory;
     }
 }

@@ -5,6 +5,7 @@ import lonestarrr.arconia.common.advancements.ModCriterialTriggers;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.entities.ModBlockEntities;
 import lonestarrr.arconia.common.block.entities.WorldBuilderEntity;
+import lonestarrr.arconia.common.capabilities.ModCapabilities;
 import lonestarrr.arconia.common.core.command.ArconiaCommand;
 import lonestarrr.arconia.common.core.command.FractalTreeCommand;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
@@ -67,6 +68,8 @@ public class Arconia {
 
         modBus.addListener(ModBlocks::addToCreativeTabs);
         modBus.addListener(ModItems::addToCreativeTabs);
+        modBus.addListener(ModCapabilities::registerCapabilities);
+        modBus.addListener(ModPackets::registerPackets);
 
         IEventBus eventBus = NeoForge.EVENT_BUS;
         eventBus.addListener(EventPriority.HIGH, this::registerCommands);
@@ -79,8 +82,6 @@ public class Arconia {
 
         // !! This mod life cycle event is called in parallel with any other mods - use event.enqueueWork() for things that are not thread-safe.
 
-        // Register network packets to synchronize server/client data
-        ModPackets.init();
         // The One Probe - optional, checks for mod presence
         TheOneProbe.init();
 

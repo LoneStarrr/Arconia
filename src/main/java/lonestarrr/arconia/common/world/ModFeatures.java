@@ -21,7 +21,7 @@ public class ModFeatures {
     private static final Map<RainbowColor, ResourceKey<PlacedFeature>> placedTrees = new HashMap<>(RainbowColor.values().length);
 
     static {
-        // Actual configuration happens in data generation as dynamic features are no longer supported sinced 1.19.3
+        // Actual configuration happens in data generation as dynamic features are no longer supported since 1.19.3
         for (RainbowColor tier : RainbowColor.values()) {
             configuredTrees.put(tier, ResourceKey.create(Registries.CONFIGURED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "tree_" + tier.getTierName())));
             placedTrees.put(tier, ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "tree_" + tier.getTierName())));

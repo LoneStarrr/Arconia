@@ -13,7 +13,7 @@ public abstract class BasePedestalBlockEntity extends BaseInventoryBlockEntity {
     }
 
     @Override
-    public abstract ItemStackHandler getInventory();
+    protected abstract ItemStackHandler getInventory();
 
     /**
      * Sets an item on display. At most 1 item from the stack will be added.
