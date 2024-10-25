@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common.item;
 
+import lonestarrr.arconia.common.advancements.ModCriteriaTriggers;
 import lonestarrr.arconia.common.advancements.PotOfGoldTrigger;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.PotMultiBlockPrimary;
@@ -150,7 +151,7 @@ public class CloverStaff extends Item {
         } else {
             boolean formed = PotMultiBlockPrimary.formMultiBlock(world, pos);
             if (formed) {
-                PotOfGoldTrigger.INSTANCE.trigger((ServerPlayer) player, (ServerLevel) world, pos);
+                ModCriteriaTriggers.CREATE_POT_OF_GOLD_TRIGGER.get().trigger((ServerPlayer) player, (ServerLevel) world, pos);
             }
             return formed;
         }

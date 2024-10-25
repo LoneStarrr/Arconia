@@ -60,7 +60,7 @@ public class ColoredRoot extends Item {
         int maxCount = stack.getMaxStackSize();
         int stackCount = count > maxCount ? maxCount : count;
         stack.setCount(stackCount);
-        tag.put(TAG_ITEM, stack.serializeNBT());
+        tag.put(TAG_ITEM, stack.getOrCreateTag());
     }
 
     @OnlyIn(Dist.CLIENT)

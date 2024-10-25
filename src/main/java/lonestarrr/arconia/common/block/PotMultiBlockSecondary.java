@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common.block;
 
+import com.mojang.serialization.MapCodec;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockSecondaryBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
@@ -112,6 +113,11 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
         return true;
     }
 
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
+    }
+
     // inspired by Barrier block
     @Override
     public RenderShape getRenderShape(BlockState state) {
@@ -125,13 +131,14 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
     }
 
     @Override
-    public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-        super.playerWillDestroy(world, pos, state, player);
+    public @NotNull BlockState playerWillDestroy(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
+        BlockState result = super.playerWillDestroy(world, pos, state, player);
 
         BlockPos primaryPos = getPrimaryBlockPos(world, pos);
         if (primaryPos != null) {
             PotMultiBlockPrimary.breakMultiBlock(world, primaryPos);
         }
+        return result;
     }
 
     private BlockPos getPrimaryBlockPos(Level world, BlockPos pos) {

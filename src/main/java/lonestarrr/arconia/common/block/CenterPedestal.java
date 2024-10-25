@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common.block;
 
+import com.mojang.serialization.MapCodec;
 import lonestarrr.arconia.common.block.entities.CenterPedestalBlockEntity;
 import lonestarrr.arconia.common.block.entities.ModBlockEntities;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
@@ -65,6 +66,11 @@ public class CenterPedestal extends BaseEntityBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new CenterPedestalBlockEntity(pos, state); }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
+    }
 
     @Override
     public RenderShape getRenderShape(BlockState state) {

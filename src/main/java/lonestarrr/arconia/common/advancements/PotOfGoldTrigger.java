@@ -20,9 +20,6 @@ import java.util.Optional;
  * Advancement trigger for creating a pot of gold
  */
 public class PotOfGoldTrigger extends SimpleCriterionTrigger<PotOfGoldTrigger.TriggerInstance> {
-    public static final ResourceLocation ID = new ResourceLocation(Arconia.MOD_ID, "create_pot_of_gold");
-    public static final PotOfGoldTrigger INSTANCE = new PotOfGoldTrigger();
-
     @Override
     public @NotNull Codec<TriggerInstance> codec() {
         return PotOfGoldTrigger.TriggerInstance.CODEC;

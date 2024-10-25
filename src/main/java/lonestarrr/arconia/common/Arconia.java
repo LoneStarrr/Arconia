@@ -1,7 +1,6 @@
 package lonestarrr.arconia.common;
 
 import lonestarrr.arconia.client.particle.ModParticles;
-import lonestarrr.arconia.common.advancements.ModCriterialTriggers;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.entities.ModBlockEntities;
 import lonestarrr.arconia.common.block.entities.WorldBuilderEntity;
@@ -73,8 +72,6 @@ public class Arconia {
 
         IEventBus eventBus = NeoForge.EVENT_BUS;
         eventBus.addListener(EventPriority.HIGH, this::registerCommands);
-
-        ModCriterialTriggers.init();
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {

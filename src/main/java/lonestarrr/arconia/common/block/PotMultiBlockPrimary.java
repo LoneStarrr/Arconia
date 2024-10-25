@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common.block;
 
+import com.mojang.serialization.MapCodec;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.entities.ModBlockEntities;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
@@ -39,6 +40,11 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new PotMultiBlockPrimaryBlockEntity(pos, state); }
 
     @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
+    }
+
+    @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
@@ -54,9 +60,10 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
     }
 
     @Override
-    public void playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
-        super.playerWillDestroy(worldIn, pos, state, player);
+    public BlockState playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
+        BlockState result = super.playerWillDestroy(worldIn, pos, state, player);
         breakMultiBlock(worldIn, pos);
+        return result;
     }
 
     /**

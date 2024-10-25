@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common.block;
 
+import com.mojang.serialization.MapCodec;
 import lonestarrr.arconia.common.block.entities.PedestalBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -51,6 +52,11 @@ public class Pedestal extends BaseEntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new PedestalBlockEntity(pos, state);
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
     }
 
     @Override

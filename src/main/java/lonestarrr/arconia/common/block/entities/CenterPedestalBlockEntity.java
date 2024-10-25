@@ -124,13 +124,13 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
             return false;
         }
 
-        PedestalRecipe recipe = findRecipe(inv);
+        ResourceLocation recipeId = findRecipe(inv);
 
-        if (recipe == null) {
+        if (recipeId == null) {
             return false;
         }
 
-        currentRecipeID = recipe.getId();
+        currentRecipeID = recipeId;
         ritualOngoing = true;
         ritualTicksElapsed = 0;
         setChanged();
@@ -237,9 +237,9 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         return inv;
     }
 
-    private PedestalRecipe findRecipe(SimpleContainer inv) {
+    private ResourceLocation findRecipe(SimpleContainer inv) {
         Optional<RecipeHolder<PedestalRecipe>> hasRecipe = level.getRecipeManager().getRecipeFor(PedestalRecipe.Type.INSTANCE, inv, level);
-        return hasRecipe.map(RecipeHolder::value).orElse(null);
+        return hasRecipe.map(RecipeHolder::id).orElse(null);
 
     }
 

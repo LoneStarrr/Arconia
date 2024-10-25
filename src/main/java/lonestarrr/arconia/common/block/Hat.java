@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common.block;
 
+import com.mojang.serialization.MapCodec;
 import lonestarrr.arconia.common.block.entities.HatBlockEntity;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
@@ -41,6 +42,11 @@ public class Hat extends BaseEntityBlock {
     public VoxelShape getShape(
             BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return shape;
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
     }
 
     @Override

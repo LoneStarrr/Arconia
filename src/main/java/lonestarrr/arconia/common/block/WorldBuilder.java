@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common.block;
 
+import com.mojang.serialization.MapCodec;
 import lonestarrr.arconia.common.block.entities.ModBlockEntities;
 import lonestarrr.arconia.common.block.entities.WorldBuilderEntity;
 import net.minecraft.core.BlockPos;
@@ -21,6 +22,11 @@ public class WorldBuilder extends BaseEntityBlock {
     public WorldBuilder() {
         // tools that can mine it are defined by setting tags, in datagen
         super(Block.Properties.of().mapColor(MapColor.WOOD).ignitedByLava().requiresCorrectToolForDrops().strength(3.0F).sound(SoundType.WOOD));
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
     }
 
     @Override
