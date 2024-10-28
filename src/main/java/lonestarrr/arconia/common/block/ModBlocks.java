@@ -4,12 +4,12 @@ import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.BlockNames;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ModItems;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.HashMap;
@@ -17,21 +17,20 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class ModBlocks {
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK, Arconia.MOD_ID);
-//    private static final Map<RainbowColor, RainbowCropBlock> rainbowCrops = new HashMap<>();
-    private static final Map<RainbowColor, Supplier<ArconiumTreeLeaves>> arconiumTreeLeaves = new HashMap<>();
-    private static final Map<RainbowColor, Supplier<ArconiumTreeSapling>> arconiumTreeSaplings = new HashMap<>();
-    private static final Map<RainbowColor, Supplier<ArconiumBlock>> arconiumBlocks = new HashMap<>();
-    private static final Map<RainbowColor, Supplier<InfiniteGoldArconiumBlock>> infiniteGoldArconiumBlocks = new HashMap<>();
-    private static final Map<RainbowColor, Supplier<RainbowGrassBlock>> rainbowGrassBlocks = new HashMap<>();
+    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Arconia.MOD_ID);
+    private static final Map<RainbowColor, DeferredBlock<ArconiumTreeLeaves>> arconiumTreeLeaves = new HashMap<>();
+    private static final Map<RainbowColor, DeferredBlock<ArconiumTreeSapling>> arconiumTreeSaplings = new HashMap<>();
+    private static final Map<RainbowColor, DeferredBlock<ArconiumBlock>> arconiumBlocks = new HashMap<>();
+    private static final Map<RainbowColor, DeferredBlock<InfiniteGoldArconiumBlock>> infiniteGoldArconiumBlocks = new HashMap<>();
+    private static final Map<RainbowColor, DeferredBlock<RainbowGrassBlock>> rainbowGrassBlocks = new HashMap<>();
 
-    public static Supplier<CloverBlock> clover = BLOCKS.register(BlockNames.CLOVER, CloverBlock::new);
-    public static Supplier<Pedestal> pedestal = BLOCKS.register(BlockNames.PEDESTAL, () -> new Pedestal());
-    public static Supplier<CenterPedestal> centerPedestal = BLOCKS.register(BlockNames.CENTER_PEDESTAL, CenterPedestal::new);
-    public static Supplier<Hat> hat = BLOCKS.register(BlockNames.HAT, () -> new Hat());
-    public static Supplier<WorldBuilder> worldBuilder = BLOCKS.register(BlockNames.WORLD_BUILDER, () -> new WorldBuilder());
-    public static Supplier<PotMultiBlockPrimary> potMultiBlockPrimary = BLOCKS.register(BlockNames.POT_MULTIBLOCK_PRIMARY, () -> new PotMultiBlockPrimary());
-    public static Supplier<PotMultiBlockSecondary> potMultiBlockSecondary = BLOCKS.register(BlockNames.POT_MULTIBLOCK_SECONDARY, () -> new PotMultiBlockSecondary()); //no associated item
+    public static final DeferredBlock<CloverBlock> clover = BLOCKS.register(BlockNames.CLOVER, CloverBlock::new);
+    public static DeferredBlock<Pedestal> pedestal = BLOCKS.register(BlockNames.PEDESTAL, Pedestal::new);
+    public static DeferredBlock<CenterPedestal> centerPedestal = BLOCKS.register(BlockNames.CENTER_PEDESTAL, CenterPedestal::new);
+    public static DeferredBlock<Hat> hat = BLOCKS.register(BlockNames.HAT, Hat::new);
+    public static DeferredBlock<WorldBuilder> worldBuilder = BLOCKS.register(BlockNames.WORLD_BUILDER, WorldBuilder::new);
+    public static DeferredBlock<PotMultiBlockPrimary> potMultiBlockPrimary = BLOCKS.register(BlockNames.POT_MULTIBLOCK_PRIMARY, PotMultiBlockPrimary::new);
+    public static DeferredBlock<PotMultiBlockSecondary> potMultiBlockSecondary = BLOCKS.register(BlockNames.POT_MULTIBLOCK_SECONDARY, PotMultiBlockSecondary::new); //no associated item
 
     static {
         // RainbowColor tiered colorBlocks
@@ -43,24 +42,21 @@ public class ModBlocks {
             rainbowGrassBlocks.put(color, BLOCKS.register(color.getTierName() + BlockNames.RAINBOW_GRASS_BLOCK_SUFFIX, () -> new RainbowGrassBlock(color)));
         }
 
-        registerItemBlocks();
+        registerBlockItems();
     }
 
-    public static void registerItemBlocks() {
-        // TODO create my own creative tab, e.g. https://github.com/Vazkii/Botania/blob/1.15/src/main/java/vazkii/botania/common/core/BotaniaCreativeTab.java
-        Item.Properties builder = ModItems.defaultBuilder();
+    public static void registerBlockItems() {
+        ModItems.ITEMS.registerSimpleBlockItem(clover);
+        ModItems.ITEMS.registerSimpleBlockItem(pedestal);
+        ModItems.ITEMS.registerSimpleBlockItem(centerPedestal);
+        ModItems.ITEMS.registerSimpleBlockItem(hat);
+        ModItems.ITEMS.registerSimpleBlockItem(worldBuilder);
 
-        registerBlockItem(clover, builder);
-        registerBlockItem(pedestal, builder);
-        registerBlockItem(centerPedestal, builder);
-        registerBlockItem(hat, builder);
-        registerBlockItem(worldBuilder, builder);
-
-        arconiumTreeSaplings.values().stream().forEach(b -> registerBlockItem(b, builder));
-        arconiumTreeLeaves.values().stream().forEach(b -> registerBlockItem(b, builder));
-        arconiumBlocks.values().stream().forEach(b -> registerBlockItem(b, builder));
-        infiniteGoldArconiumBlocks.values().stream().forEach(b -> registerBlockItem(b, builder));
-        rainbowGrassBlocks.values().stream().forEach(b -> registerBlockItem(b, builder));
+        arconiumTreeSaplings.values().forEach(ModItems.ITEMS::registerSimpleBlockItem);
+        arconiumTreeLeaves.values().forEach(ModItems.ITEMS::registerSimpleBlockItem);
+        arconiumBlocks.values().forEach(ModItems.ITEMS::registerSimpleBlockItem);
+        infiniteGoldArconiumBlocks.values().forEach(ModItems.ITEMS::registerSimpleBlockItem);
+        rainbowGrassBlocks.values().forEach(ModItems.ITEMS::registerSimpleBlockItem);
     }
 
     public static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
@@ -85,21 +81,17 @@ public class ModBlocks {
             }
         }
     }
-    public static Supplier<ArconiumBlock> getArconiumBlock(RainbowColor tier) { return arconiumBlocks.get(tier); }
+    public static DeferredBlock<ArconiumBlock> getArconiumBlock(RainbowColor tier) { return arconiumBlocks.get(tier); }
 
-    public static Supplier<InfiniteGoldArconiumBlock> getInfiniteGoldArconiumBlock(RainbowColor tier) { return infiniteGoldArconiumBlocks.get(tier); }
+    public static DeferredBlock<InfiniteGoldArconiumBlock> getInfiniteGoldArconiumBlock(RainbowColor tier) { return infiniteGoldArconiumBlocks.get(tier); }
 
-    public static Supplier<ArconiumTreeSapling> getArconiumTreeSapling(RainbowColor tier) {
+    public static DeferredBlock<ArconiumTreeSapling> getArconiumTreeSapling(RainbowColor tier) {
         return arconiumTreeSaplings.get(tier);
     }
 
-    public static Supplier<ArconiumTreeLeaves> getArconiumTreeLeaves(RainbowColor tier) {
+    public static DeferredBlock<ArconiumTreeLeaves> getArconiumTreeLeaves(RainbowColor tier) {
         return arconiumTreeLeaves.get(tier);
     }
 
-    public static Supplier<RainbowGrassBlock> getRainbowGrassBlock(RainbowColor tier) { return rainbowGrassBlocks.get(tier); }
-
-    public static void registerBlockItem(Supplier<? extends Block> block, Item.Properties builder) {
-        ModItems.ITEMS.register(BLOCKS.getRegistry().get().getKey(block.get()).getPath(), () -> new BlockItem(block.get(), builder));
-    }
+    public static DeferredBlock<RainbowGrassBlock> getRainbowGrassBlock(RainbowColor tier) { return rainbowGrassBlocks.get(tier); }
 }
