@@ -28,6 +28,7 @@
     }
   ],
   "output": {
-    "item": "arconia:yellow_arconium_ingot"
+    "Count": 1,
+    "id": "arconia:yellow_arconium_ingot"
   }
 }

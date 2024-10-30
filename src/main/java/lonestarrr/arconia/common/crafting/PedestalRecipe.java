@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PedestalRecipe implements Recipe<Container> {
-    public static final RecipeSerializer<PedestalRecipe> SERIALIZER = new Serializer();
     private final ItemStack output;
     private final int durationTicks; // How long the ritual runs for
     private final List<Ingredient> ingredients;
@@ -39,7 +38,7 @@ public class PedestalRecipe implements Recipe<Container> {
     @Nonnull
     @Override
     public RecipeType<?> getType() {
-        return PedestalRecipe.Type.INSTANCE;
+        return ModRecipeTypes.PEDESTAL_TYPE.get();
     }
 
     @Override
@@ -67,8 +66,6 @@ public class PedestalRecipe implements Recipe<Container> {
     public boolean isSpecial() {
         return true;
     }
-
-
 
     @Override
     public boolean matches(Container inv, Level world) {
@@ -107,12 +104,7 @@ public class PedestalRecipe implements Recipe<Container> {
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
-        return SERIALIZER;
-    }
-
-    public static class Type implements RecipeType<PedestalRecipe> {
-        public static final Type INSTANCE = new Type();
-        public static final String ID = "pedestal";
+        return ModRecipeTypes.PEDESTAL_SERIALIZER.get();
     }
 
     public static class Serializer implements RecipeSerializer<PedestalRecipe> {

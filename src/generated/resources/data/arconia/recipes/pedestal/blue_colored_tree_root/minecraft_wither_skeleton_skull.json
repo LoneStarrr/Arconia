@@ -22,8 +22,9 @@
     }
   ],
   "output": {
-    "item": "arconia:blue_colored_tree_root",
-    "nbt": {
+    "Count": 1,
+    "id": "arconia:blue_colored_tree_root",
+    "tag": {
       "item": {
         "Count": 1,
         "id": "minecraft:wither_skeleton_skull"

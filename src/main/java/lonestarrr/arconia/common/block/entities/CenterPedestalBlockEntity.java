@@ -1,6 +1,7 @@
 package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.common.crafting.ModRecipeTypes;
 import lonestarrr.arconia.common.crafting.PedestalRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -238,7 +239,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     }
 
     private ResourceLocation findRecipe(SimpleContainer inv) {
-        Optional<RecipeHolder<PedestalRecipe>> hasRecipe = level.getRecipeManager().getRecipeFor(PedestalRecipe.Type.INSTANCE, inv, level);
+        Optional<RecipeHolder<PedestalRecipe>> hasRecipe = level.getRecipeManager().getRecipeFor(ModRecipeTypes.PEDESTAL_TYPE.get(), inv, level);
         return hasRecipe.map(RecipeHolder::id).orElse(null);
 
     }

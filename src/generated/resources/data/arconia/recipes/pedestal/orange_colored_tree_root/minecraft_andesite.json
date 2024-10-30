@@ -25,8 +25,9 @@
     }
   ],
   "output": {
-    "item": "arconia:orange_colored_tree_root",
-    "nbt": {
+    "Count": 1,
+    "id": "arconia:orange_colored_tree_root",
+    "tag": {
       "item": {
         "Count": 1,
         "id": "minecraft:andesite"

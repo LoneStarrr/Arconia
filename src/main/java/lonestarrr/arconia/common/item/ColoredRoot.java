@@ -60,7 +60,11 @@ public class ColoredRoot extends Item {
         int maxCount = stack.getMaxStackSize();
         int stackCount = count > maxCount ? maxCount : count;
         stack.setCount(stackCount);
-        tag.put(TAG_ITEM, stack.getOrCreateTag());
+        CompoundTag resourceItemTag = stack.save(new CompoundTag());
+        // Store a tag on this root item with nbt-serialized itemstack 'stack' in such a way that 'getResourceItem()'
+        // can read it again.
+        tag.put(TAG_ITEM, resourceItemTag);
+
     }
 
     @OnlyIn(Dist.CLIENT)

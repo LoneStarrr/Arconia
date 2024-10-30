@@ -28,6 +28,7 @@
     }
   ],
   "output": {
-    "item": "arconia:blue_infinite_gold_arconium_block"
+    "Count": 1,
+    "id": "arconia:blue_infinite_gold_arconium_block"
   }
 }

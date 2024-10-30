@@ -28,8 +28,9 @@
     }
   ],
   "output": {
-    "item": "arconia:yellow_colored_tree_root",
-    "nbt": {
+    "Count": 1,
+    "id": "arconia:yellow_colored_tree_root",
+    "tag": {
       "item": {
         "Count": 1,
         "id": "minecraft:leather"

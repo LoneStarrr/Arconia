@@ -28,8 +28,9 @@
     }
   ],
   "output": {
-    "item": "arconia:red_colored_tree_root",
-    "nbt": {
+    "Count": 1,
+    "id": "arconia:red_colored_tree_root",
+    "tag": {
       "item": {
         "Count": 1,
         "id": "minecraft:oak_log"

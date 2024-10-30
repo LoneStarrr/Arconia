@@ -7,6 +7,7 @@
     }
   ],
   "output": {
-    "item": "arconia:gold_coin"
+    "Count": 1,
+    "id": "arconia:gold_coin"
   }
 }
