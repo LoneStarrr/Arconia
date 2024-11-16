@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_forest",
+  "features": "arconia:clover_patch",
+  "step": "vegetal_decoration"
+}
