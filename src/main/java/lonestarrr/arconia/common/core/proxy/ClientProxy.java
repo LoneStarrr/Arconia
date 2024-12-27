@@ -42,9 +42,7 @@ public class ClientProxy implements IProxy {
     private void clientSetup(FMLClientSetupEvent event) {
         Arconia.logger.info("********************* client-side proxy init");
 
-        event.enqueueWork(() -> {
-            registerItemProperties();
-        });
+        event.enqueueWork(ClientProxy::registerItemProperties);
     }
 
     private void loadComplete(FMLLoadCompleteEvent event) {

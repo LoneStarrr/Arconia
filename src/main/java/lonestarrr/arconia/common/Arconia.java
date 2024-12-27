@@ -47,6 +47,7 @@ public class Arconia {
 
     public Arconia(IEventBus modBus, Dist dist) {
         proxy = (dist == Dist.CLIENT ? new ClientProxy() : new ServerProxy());
+        proxy.registerHandlers(modBus); // TODO get rid of the proxy pattern
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_SPEC);

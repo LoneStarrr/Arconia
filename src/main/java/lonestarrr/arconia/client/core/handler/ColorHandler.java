@@ -1,5 +1,6 @@
 package lonestarrr.arconia.client.core.handler;
 
+import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.*;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ColoredRoot;
@@ -21,6 +22,8 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 public class ColorHandler {
 
     public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
+        Arconia.logger.info("***** registerBlockColors");
+
         BlockColors colorBlocks = event.getBlockColors();
 
         // Gleaned from minecraft's ItemColors
