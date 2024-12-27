@@ -22,3 +22,5 @@ eclipse
 run/
 logs/
 **/.cache/*
+run.org
+runs/

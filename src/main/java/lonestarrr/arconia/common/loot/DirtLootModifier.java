@@ -3,6 +3,7 @@ package lonestarrr.arconia.common.loot;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.helper.PatchouliHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
