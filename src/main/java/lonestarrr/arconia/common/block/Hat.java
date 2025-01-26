@@ -9,6 +9,7 @@ import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,6 +28,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  * A leprechaun's hat. Used in combination with a pot of gold to collect resources.
@@ -97,24 +100,25 @@ public class Hat extends BaseEntityBlock {
             } else if (!hbe.getResourceGenerated().isEmpty()) {
                 player.sendSystemMessage(Component.translatable("arconia.block.hat.resource_already_set"));
                 return InteractionResult.FAIL;
-            } else {
-                // Ok ok ok, let's attempt set the resource already.
-                ItemStack resource = ColoredRoot.getResourceItem(itemUsed);
-                if (resource.isEmpty()) {
-                    player.sendSystemMessage(Component.translatable("arconia.block.hat.resource_empty"));
-                    return InteractionResult.FAIL;
-                }
-
-                hbe.setResourceGenerated(root.getTier(), resource);
-                if (itemUsed.getCount() > 1) {
-                    itemUsed.shrink(1);
-                    player.setItemInHand(hand, itemUsed);
-                } else {
-                    player.setItemInHand(hand, ItemStack.EMPTY);
-                }
-                player.sendSystemMessage(Component.translatable("arconia.block.hat.resource_set", resource.getItem().getName(resource)));
-                return InteractionResult.SUCCESS;
             }
+
+            // Attempt to set the resource
+            ItemStack resource = ColoredRoot.getResourceItem(itemUsed);
+            if (resource.isEmpty()) {
+                player.sendSystemMessage(Component.translatable("arconia.block.hat.resource_empty"));
+                return InteractionResult.FAIL;
+            }
+
+            hbe.setResourceGenerated(root.getTier(), resource);
+            if (itemUsed.getCount() > 1) {
+                itemUsed.shrink(1);
+
+                player.setItemInHand(hand, itemUsed);
+            } else {
+                player.setItemInHand(hand, ItemStack.EMPTY);
+            }
+            player.sendSystemMessage(Component.translatable("arconia.block.hat.resource_set", resource.getItem().getName(resource)));
+            return InteractionResult.SUCCESS;
         } else if (itemUsed.isEmpty()) {
             if (player.isCrouching()) {
                 ItemStack resource = hbe.getResourceGenerated();
@@ -171,5 +175,19 @@ public class Hat extends BaseEntityBlock {
         ItemStack root = new ItemStack(ModItems.getColoredRoot(hbe.getTier()).get());
         ColoredRoot.setResourceItem(root, resourceGenerated.getItem(), resourceGenerated.getCount());
         Block.popResource(level, pos, root);
+    }
+
+    private BlockPos findNearbyPot(ServerLevel level, BlockPos origin) {
+        // TODO use max distance from config
+        int maxDistance = PotMultiBlockPrimaryBlockEntity.maxHatDistance();
+
+        Optional<BlockPos> pot = BlockPos.findClosestMatch(origin, maxDistance, maxDistance, pos -> level.getBlockState(pos).getBlock().equals(ModBlocks.potMultiBlockPrimary.get()));
+        // TODO should probably iterate over pots, nearest first
+        if (pot.isEmpty()) {
+            return null;
+        }
+
+        // TODO finish
+        return null;
     }
 }

@@ -36,7 +36,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         return ConfigHandler.COMMON.potOfGoldMaxHats.get();
     }
 
-    public int maxHatDistance() {
+    public static int maxHatDistance() {
         return ConfigHandler.COMMON.potOfGoldMaxHatDistance.get();
     }
 

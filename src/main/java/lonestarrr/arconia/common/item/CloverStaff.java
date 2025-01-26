@@ -4,6 +4,7 @@ import lonestarrr.arconia.common.advancements.ModCriteriaTriggers;
 import lonestarrr.arconia.common.advancements.PotOfGoldTrigger;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.PotMultiBlockPrimary;
+import lonestarrr.arconia.common.block.entities.HatBlockEntity;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockSecondaryBlockEntity;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
@@ -78,10 +79,9 @@ public class CloverStaff extends Item {
         String lang = LANG_PREFIX + ".linkhat";
 
         BlockEntity be = level.getBlockEntity(potPos);
-        if (be == null || !(be instanceof PotMultiBlockPrimaryBlockEntity)) {
+        if (!(be instanceof PotMultiBlockPrimaryBlockEntity)) {
             lang += ".invalidpot";
         } else {
-            // TODO the hat must track which pot it is linked to as well - to prevent double linking/unlinking the wrong one
             PotMultiBlockPrimaryBlockEntity potBE = (PotMultiBlockPrimaryBlockEntity) be;
             if (potBE.isHatLinked(hatPos)) {
                 if (potBE.unlinkHat(hatPos)) {
@@ -90,6 +90,20 @@ public class CloverStaff extends Item {
                     lang += ".unlink_failed";
                 }
             } else {
+                HatBlockEntity hbe = null;
+                if (level.getBlockEntity(hatPos) instanceof HatBlockEntity) {
+                    hbe = (HatBlockEntity)level.getBlockEntity(hatPos);
+                }
+
+                if (hbe != null && hbe.getLinkedPot() != null) {
+                    // The pot thinks it's not linked to the hat, but the hat thinks it's linked to a pot. If it thinks
+                    // it's already linked to this pot, unlink it first as the pot was probably broken and put back
+                    // again at the same location
+                    if (hbe.getLinkedPot().equals(potPos)) {
+                        hbe.unlink();
+                    }
+                }
+
                 try {
                     potBE.linkHat(hatPos);
                     lang += ".linked";
