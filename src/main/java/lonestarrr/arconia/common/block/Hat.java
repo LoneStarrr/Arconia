@@ -97,7 +97,7 @@ public class Hat extends BaseEntityBlock {
             } else if (!hbe.getResourceGenerated().isEmpty()) {
                 player.sendSystemMessage(Component.translatable("arconia.block.hat.resource_already_set"));
                 return InteractionResult.FAIL;
-            } else if (root.getTier().getTier() > potbe.getTier().getTier()) {
+            } else if (potbe.getTier() == null || root.getTier().getTier() > potbe.getTier().getTier()) {
                 player.sendSystemMessage(Component.translatable("arconia.block.hat.resource_tier_too_high"));
                 return InteractionResult.FAIL;
 

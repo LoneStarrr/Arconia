@@ -171,7 +171,8 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
      * If multiple gold arconium blocks are linked this way, it will pick the highest tier. Linking multiple blocks does not do anything for the production rate.
      */
     private RainbowColor detectTier() {
-        // Without a gold arconium block, the minimum tier is always red.
+        // A linked hat above a gold arconium block is always required, the first tier can be crafted without needing
+        // essence.
         RainbowColor detectedTier = null;
 
         for (HatData hat : hats) {
