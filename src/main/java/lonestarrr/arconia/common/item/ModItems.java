@@ -19,7 +19,6 @@ import java.util.function.Supplier;
 public final class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Arconia.MOD_ID);
 
-    public static final DeferredItem<Item> goldCoin = ITEMS.registerSimpleItem(ItemNames.GOLD_COIN);
     public static final DeferredItem<Item> cloverStaff = ITEMS.register(ItemNames.CLOVER_STAFF, () -> new CloverStaff(defaultBuilder().stacksTo(1)));
     public static final DeferredItem<Item> fourLeafClover = ITEMS.registerSimpleItem(ItemNames.FOUR_LEAF_CLOVER);
     public static final DeferredItem<Item> threeLeafClover = ITEMS.registerSimpleItem(ItemNames.THREE_LEAF_CLOVER);
@@ -64,7 +63,6 @@ public final class ModItems {
                 event.accept(arconiumSickles.get(color).get());
             }
         } else if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
-            event.accept(goldCoin.get());
             event.accept(fourLeafClover.get());
             event.accept(threeLeafClover.get());
             for (RainbowColor color : RainbowColor.values()) {

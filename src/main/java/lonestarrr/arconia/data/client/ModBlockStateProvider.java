@@ -36,7 +36,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
         registerRainbowGrassBlocks();
         registerSaplings();
         registerArconiumBlocks();
-        registerInfiniteGoldArconiumBlocks();
         registerMisc();
     }
 
@@ -85,16 +84,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
             ModelFile model = models().getExistingFile(prefix("block/arconium_block"));
             simpleBlock(block.get(), model);
             itemModels().withExistingParent(name, prefix("block/arconium_block"));
-        }
-    }
-
-    private void registerInfiniteGoldArconiumBlocks() {
-        for (RainbowColor color: RainbowColor.values()) {
-            Supplier<InfiniteGoldArconiumBlock> block = ModBlocks.getInfiniteGoldArconiumBlock(color);
-            String name = BuiltInRegistries.BLOCK.getKey(block.get()).getPath();
-            ModelFile model = models().getExistingFile(prefix("block/infinite_gold_arconium_block"));
-            simpleBlock(block.get(), model);
-            itemModels().withExistingParent(name, prefix("block/infinite_gold_arconium_block"));
         }
     }
 

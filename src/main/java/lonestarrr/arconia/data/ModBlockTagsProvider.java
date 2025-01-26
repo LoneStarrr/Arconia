@@ -29,9 +29,6 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
             tag(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.getArconiumBlock(tier).get());
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.getArconiumBlock(tier).get());
 
-            tag(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.getInfiniteGoldArconiumBlock(tier).get());
-            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.getInfiniteGoldArconiumBlock(tier).get());
-
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.centerPedestal.get());
 
             tag(BlockTags.MINEABLE_WITH_HOE).add(ModBlocks.getArconiumTreeLeaves(tier).get());

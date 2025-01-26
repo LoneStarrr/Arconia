@@ -40,10 +40,6 @@ public class ColorHandler {
             ArconiumBlock arconiumBlock = ModBlocks.getArconiumBlock(tier).get();
             colorBlocks.register(arconiumBlock, arconiumBlock);
 
-            // Infinite Gold Arconium Blocks
-            InfiniteGoldArconiumBlock infiniteGoldArconiumBlock = ModBlocks.getInfiniteGoldArconiumBlock(tier).get();
-            colorBlocks.register(infiniteGoldArconiumBlock, infiniteGoldArconiumBlock);
-
             RainbowGrassBlock grassBlock = ModBlocks.getRainbowGrassBlock(tier).get();
             colorBlocks.register(grassBlock, grassBlock);
         }
@@ -100,17 +96,6 @@ public class ColorHandler {
                 BlockState blockstate = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
                 return blockColors.getColor(blockstate, (BlockAndTintGetter) null, (BlockPos) null, layer);
             }, Item.byBlock(arconiumBlock));
-
-            // Infinite Gold Arconium Blocks
-            InfiniteGoldArconiumBlock infiniteGoldArconiumBlock = ModBlocks.getInfiniteGoldArconiumBlock(tier).get();
-            // Taken from minecraft's ItemColors
-            itemColors.register((stack, layer) -> {
-                if (layer != 0) {
-                    return 0xFFFFFF;
-                }
-                BlockState blockstate = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
-                return blockColors.getColor(blockstate, (BlockAndTintGetter) null, (BlockPos) null, layer);
-            }, Item.byBlock(infiniteGoldArconiumBlock));
 
             // Colored tree roots
             itemColors.register((stack, layer) -> {

@@ -1,6 +1,6 @@
 {
     "name": "Pot of Gold",
-    "icon": "arconia:gold_coin",
+    "icon": "minecraft:gold_block",
     "category": "arconia:pot_of_gold",
     "advancement": "arconia:main/clover_staff",
     "pages": [

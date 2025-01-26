@@ -1,10 +1,8 @@
 package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.InfiniteGoldArconiumBlock;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
-import lonestarrr.arconia.common.item.ModItems;
 import lonestarrr.arconia.common.network.ModPackets;
 import lonestarrr.arconia.common.network.PotItemTransferPacket;
 import net.minecraft.core.BlockPos;
@@ -16,6 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -110,22 +109,6 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         return null;
     }
 
-    /**
-     * @param goldArconiumPos Position of hat in world
-     * @return If the hat has a gold arconium block entity under it, return that, otherwise return null
-     */
-    private InfiniteGoldArconiumBlock getGoldArconiumInWorld(BlockPos goldArconiumPos) {
-        if (level == null) { return null; }
-
-        BlockState state = level.getBlockState(goldArconiumPos);
-
-        if (!(state.getBlock() instanceof InfiniteGoldArconiumBlock)) {
-            return null;
-        }
-
-        return (InfiniteGoldArconiumBlock)state.getBlock();
-    }
-
     public static void tick(Level level, BlockPos pos, BlockState state, PotMultiBlockPrimaryBlockEntity blockEntity) {
         blockEntity.tickInternal(level, pos, state);
     }
@@ -156,24 +139,12 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         tickHats();
     }
 
-    /**
-     * Visualize sending coins to the pot of gold
-     *
-     */
-    private void collectCoins(RainbowColor tier, BlockPos goldArconiumPos) {
-        int itemGenerationCount = ConfigHandler.COMMON.potGenerationCount.get(tier).get();
-        ItemStack coins = new ItemStack(ModItems.goldCoin.get(), Math.max(itemGenerationCount, 64));
-        ModPackets.sendToNearby(level, goldArconiumPos, new PotItemTransferPacket(worldPosition.above(2), goldArconiumPos.above(), coins));
-    }
-
     /*
-     * Tier of the pot is determined by a linked hat sitting on top of a gold arconium block. The tier of the gold arconium block determines the tier of the pot.
-     * If multiple gold arconium blocks are linked this way, it will pick the highest tier. Linking multiple blocks does not do anything for the production rate.
+     * Tier of the pot is determined by the highest tier of a linked hat
      */
-    private RainbowColor detectTier() {
-        // A linked hat above a gold arconium block is always required, the first tier can be crafted without needing
-        // essence.
-        RainbowColor detectedTier = null;
+    private @Nonnull RainbowColor detectTier() {
+        // RED tier is the minimum tier
+        RainbowColor detectedTier = RainbowColor.RED;
 
         for (HatData hat : hats) {
             BlockPos hatPos = hat.hatPos;
@@ -182,13 +153,9 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             if (hatEntity == null) {
                 continue;
             }
-            if (!hatEntity.getResourceGenerated().isEmpty()) {
-                continue;
-            }
-            BlockPos goldArconiumPos = hatPos.below();
-            InfiniteGoldArconiumBlock goldArconiumBlock = getGoldArconiumInWorld(goldArconiumPos);
-            if (goldArconiumBlock != null && (detectedTier == null || goldArconiumBlock.getTier().getTier() > detectedTier.getTier())) {
-                detectedTier = goldArconiumBlock.getTier();
+
+            if (hatEntity.getTier().getTier() > detectedTier.getTier()) {
+                detectedTier = hatEntity.getTier();
             }
         }
 
@@ -196,14 +163,18 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     }
 
     /**
-     * Loop over all hats in random order and collect coins and/or send (generate) resources to them
+     * Loop over all hats in random order and send (generate) resources to them
      */
     private void tickHats() {
+        if (level == null) {
+            return;
+        }
+
         BlockPos particlePos = worldPosition.above(2);
         Vec3 particleVec = new Vec3(particlePos.getX(), particlePos.getY(), particlePos.getZ());
         particleVec.add(0.5, 1.5, 0.5);
 
-        if (level == null || hats.size() == 0) {
+        if (hats.isEmpty()) {
             level.addParticle(ParticleTypes.POOF, particleVec.x, particleVec.y, particleVec.z, 0, 0, 0);
             return;
         }
@@ -212,16 +183,9 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         List<HatData> hatsToRemove = new ArrayList<>(hats.size());
         RainbowColor potTier = detectTier();
 
-        if (potTier == null) {
-            // Nothing will be generated without a gold arconium block 'generating' gold
-            return;
-        }
-
         int maxHatsToSendto = ConfigHandler.COMMON.potGenerationCount.get(potTier).get().intValue();
 
         Collections.shuffle(hats);
-
-        boolean coinsCollected = false;
 
         for (HatData hat : hats) {
             if (hatsSentTo >= maxHatsToSendto) {
@@ -238,25 +202,18 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             } else {
                 BlockPos potPos = hatEntity.getLinkedPot();
                 if (potPos == null || !potPos.equals(worldPosition)) {
-                    Arconia.logger.warn("Hat linked to pot at " + worldPosition + " thinks it's not linked, or linked to another pot at " + potPos + ". Unlinking");
+                    Arconia.logger.warn("Hat linked to pot at {} thinks it's not linked, or linked to another pot at {}. Unlinking", worldPosition, potPos);
                     hatsToRemove.add(hat);
                     continue;
                 }
             }
 
-            if (!hatEntity.getResourceGenerated().isEmpty()) {
-                if (hatEntity.getTier().getTier() <= potTier.getTier() && sendResourceToHat(hatEntity, hatPos)) {
-                    hatsSentTo++;
-                }
-            } else if (!coinsCollected) {
-                // If the hat sits on top of a coin producer, and the coin generation interval has passed, let's pretend to get some gold.
-                // If there are more coin producers, the first one that meets the criteria will be used.
-                BlockPos goldArconiumPos = hatPos.below();
-                InfiniteGoldArconiumBlock goldArconiumBlock = getGoldArconiumInWorld(goldArconiumPos);
-                if (goldArconiumBlock != null) {
-                    collectCoins(potTier, goldArconiumPos);
-                    coinsCollected = true;
-                }
+            if (hatEntity.getResourceGenerated().isEmpty()) {
+                continue;
+            }
+
+            if (sendResourceToHat(hatEntity, hatPos)) {
+                hatsSentTo++;
             }
         }
 
@@ -274,7 +231,9 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
      * @return Whether resources were sent to the specified hat
      */
     private boolean sendResourceToHat(HatBlockEntity hatEntity, BlockPos hatPos) {
-        RainbowColor tier = hatEntity.getTier();
+        if (level == null) {
+            return false;
+        }
 
         ItemStack sent = hatEntity.generateResource(level);
         if (!sent.isEmpty()) {
@@ -287,8 +246,12 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     }
 
     private HatBlockEntity getHatEntity(BlockPos hatPos) {
+        if (level == null) {
+            return null;
+        }
+
         BlockEntity te = level.getBlockEntity(hatPos);
-        if (te == null || !(te instanceof HatBlockEntity)) {
+        if (!(te instanceof HatBlockEntity)) {
             return null;
         }
 
@@ -309,7 +272,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
     public enum LinkErrorCode { ALREADY_LINKED, TOO_MANY_HATS, HAT_NOT_FOUND, HAT_TOO_FAR, LINKED_TO_OTHER_POT }
 
-    public class LinkHatException extends Exception {
+    public static class LinkHatException extends Exception {
         public LinkErrorCode code;
 
         public LinkHatException(LinkErrorCode code) {
@@ -319,7 +282,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 }
 
 /**
- * Tracks resourcegen/coin collection data for hats. Tracked here rather than on the individual hats so multiple pots may potentially be linked against the
+ * Tracks resourcegen data for hats. Tracked here rather than on the individual hats so multiple pots may potentially be linked against the
  * same hat (is that smart though?)
  */
 class HatData {

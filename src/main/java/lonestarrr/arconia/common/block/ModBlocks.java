@@ -21,7 +21,6 @@ public class ModBlocks {
     private static final Map<RainbowColor, DeferredBlock<ArconiumTreeLeaves>> arconiumTreeLeaves = new HashMap<>();
     private static final Map<RainbowColor, DeferredBlock<ArconiumTreeSapling>> arconiumTreeSaplings = new HashMap<>();
     private static final Map<RainbowColor, DeferredBlock<ArconiumBlock>> arconiumBlocks = new HashMap<>();
-    private static final Map<RainbowColor, DeferredBlock<InfiniteGoldArconiumBlock>> infiniteGoldArconiumBlocks = new HashMap<>();
     private static final Map<RainbowColor, DeferredBlock<RainbowGrassBlock>> rainbowGrassBlocks = new HashMap<>();
 
     public static final DeferredBlock<CloverBlock> clover = BLOCKS.register(BlockNames.CLOVER, CloverBlock::new);
@@ -38,7 +37,6 @@ public class ModBlocks {
             arconiumTreeLeaves.put(color, BLOCKS.register(color.getTierName() + BlockNames.LEAVES_SUFFIX, () -> new ArconiumTreeLeaves(color)));
             arconiumTreeSaplings.put(color, BLOCKS.register(color.getTierName() + BlockNames.SAPLING_SUFFIX, () -> new ArconiumTreeSapling(color)));
             arconiumBlocks.put(color, BLOCKS.register(color.getTierName() + BlockNames.ARCONIUM_BLOCK_SUFFIX, () -> new ArconiumBlock(color)));
-            infiniteGoldArconiumBlocks.put(color, BLOCKS.register(color.getTierName() + BlockNames.INFINITE_GOLD_ARCONIUM_BLOCK_SUFFIX, () -> new InfiniteGoldArconiumBlock(color)));
             rainbowGrassBlocks.put(color, BLOCKS.register(color.getTierName() + BlockNames.RAINBOW_GRASS_BLOCK_SUFFIX, () -> new RainbowGrassBlock(color)));
         }
 
@@ -56,7 +54,6 @@ public class ModBlocks {
         arconiumTreeSaplings.values().forEach(ModItems.ITEMS::registerSimpleBlockItem);
         arconiumTreeLeaves.values().forEach(ModItems.ITEMS::registerSimpleBlockItem);
         arconiumBlocks.values().forEach(ModItems.ITEMS::registerSimpleBlockItem);
-        infiniteGoldArconiumBlocks.values().forEach(ModItems.ITEMS::registerSimpleBlockItem);
         rainbowGrassBlocks.values().forEach(ModItems.ITEMS::registerSimpleBlockItem);
     }
 
@@ -78,13 +75,10 @@ public class ModBlocks {
         } else if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
             for (RainbowColor color: RainbowColor.values()) {
                 event.accept(arconiumBlocks.get(color).get());
-                event.accept(infiniteGoldArconiumBlocks.get(color).get());
             }
         }
     }
     public static DeferredBlock<ArconiumBlock> getArconiumBlock(RainbowColor tier) { return arconiumBlocks.get(tier); }
-
-    public static DeferredBlock<InfiniteGoldArconiumBlock> getInfiniteGoldArconiumBlock(RainbowColor tier) { return infiniteGoldArconiumBlocks.get(tier); }
 
     public static DeferredBlock<ArconiumTreeSapling> getArconiumTreeSapling(RainbowColor tier) {
         return arconiumTreeSaplings.get(tier);

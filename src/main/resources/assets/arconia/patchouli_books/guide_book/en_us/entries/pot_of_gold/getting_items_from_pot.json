@@ -14,10 +14,6 @@
         },
         {
             "type": "patchouli:text",
-            "text": "Items have a gold coin cost, and the pot will only produce items if it is fed gold. This is accomplished by crafting, and then placing, a gold arconium block under another linked hat. The gold arconium block determines the tier of the pot. Only enchanted tree roots of the same, or lower, tier will pull items from the pot."
-        },
-        {
-            "type": "patchouli:text",
             "text": "The first item to collect is arconium essence, which is a powerful ingredient for various other items that unlock more treasures that can be obtained from the pot of gold."
         },
         {

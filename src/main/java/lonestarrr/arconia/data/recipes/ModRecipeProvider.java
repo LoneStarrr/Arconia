@@ -2,7 +2,6 @@ package lonestarrr.arconia.data.recipes;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
-import lonestarrr.arconia.common.core.BlockNames;
 import lonestarrr.arconia.common.core.ItemNames;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.crafting.PedestalRecipe;
@@ -18,7 +17,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -37,7 +35,6 @@ public class ModRecipeProvider extends RecipeProvider {
         // Recipes for the pedestal crafting ritual
         registerColoredRootRecipes(output);
         registerArconiumIngotRecipes(output);
-        registerInfiniteGoldArconiumBlocks(output);
         registerPedestalMisc(output);
 
         // Vanilla recipes
@@ -418,15 +415,6 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     private void registerPedestalMisc(RecipeOutput output) {
-        output.accept(
-                id(ItemNames.GOLD_COIN),
-                new PedestalRecipe(
-                        new ItemStack(ModItems.goldCoin.get().asItem()),
-                        200, // TODO set back to 20, or remove recipe
-                        Ingredient.of(Items.GOLD_NUGGET)
-                ),
-                null
-        );
     }
 
     private void registerVanillaMisc(RecipeOutput output) {
@@ -491,35 +479,6 @@ public class ModRecipeProvider extends RecipeProvider {
                     .unlockedBy("has_item", has(ingot))
                     .save(output);
         }
-    }
-
-
-    private void registerInfiniteGoldArconiumBlocks(RecipeOutput output) {
-        RainbowColor.stream().forEach(color -> {
-            ResourceLocation recipeId = id(color.getTierName() + BlockNames.INFINITE_GOLD_ARCONIUM_BLOCK_SUFFIX);
-            output.accept(recipeId, makeInfiniteGoldArconiumBlock(color), null);
-        });
-    }
-
-    private static PedestalRecipe makeInfiniteGoldArconiumBlock(RainbowColor color) {
-        ItemStack output = new ItemStack(ModBlocks.getInfiniteGoldArconiumBlock(color).get().asItem());
-        Ingredient goldBlock = Ingredient.of(Blocks.GOLD_BLOCK.asItem());
-        if (color != RainbowColor.RED) {
-            goldBlock = Ingredient.of(ModBlocks.getInfiniteGoldArconiumBlock(color.getPreviousTier()).get().asItem());
-        }
-        Ingredient sapling = Ingredient.of(ModBlocks.getArconiumTreeSapling(color).get().asItem());
-        Ingredient clover = Ingredient.of(ModItems.fourLeafClover.get());
-        Ingredient dye = Ingredient.of(RainbowColor.dyeByTier(color));
-        Item extraItem = RainbowColor.dyeByTier(color);
-        switch(color) {
-            case YELLOW: extraItem = Items.YELLOW_CANDLE; break;
-            case GREEN: extraItem = Items.EMERALD_BLOCK; break;
-            case LIGHT_BLUE: extraItem = Items.BLUE_ICE; break;
-            case BLUE: extraItem = Items.TUBE_CORAL_BLOCK; break;
-            case PURPLE: extraItem = Items.PURPLE_SHULKER_BOX; break;
-        }
-        final int durationTicks = 100;
-        return new PedestalRecipe(output, durationTicks, goldBlock, sapling, dye, dye, dye, Ingredient.of(extraItem), clover, clover);
     }
 
 

@@ -33,7 +33,6 @@ public class ModLanguageProvider extends LanguageProvider {
         for (RainbowColor color : RainbowColor.values()) {
             String colorName = color.getUnlocalizedName();
             add(ModBlocks.getArconiumBlock(color).get(), colorName + " Arconium Block");
-            add(ModBlocks.getInfiniteGoldArconiumBlock(color).get(), colorName + " Infinite Gold Arconium Block");
             add(ModBlocks.getArconiumTreeLeaves(color).get(), colorName + " Arconium Tree Leaves");
             add(ModBlocks.getArconiumTreeSapling(color).get(), colorName + " Arconium Tree Sapling");
             add(ModBlocks.getRainbowGrassBlock(color).get(), colorName + " Rainbow Grass Block");
@@ -61,7 +60,6 @@ public class ModLanguageProvider extends LanguageProvider {
     private void registerModItems() {
         add(ModItems.threeLeafClover.get(), "Three Leaf Clover");
         add(ModItems.fourLeafClover.get(), "Four Leaf Clover");
-        add(ModItems.goldCoin.get(), "Gold Coin");
         add(ModItems.cloverStaff.get(), "Clover Staff");
         add(ModItems.magicInABottle.get(), "Magic In A Bottle");
         add(ModItems.magicInABottle.get().getDescriptionId() + ".tooltip", "The Magic Luck-o-Meter indicates it's at %d%%");
@@ -93,8 +91,6 @@ public class ModLanguageProvider extends LanguageProvider {
                 { "advancement.arconia.main.red_arconium_essence.desc", "Get your first red arconium essence" },
                 { "advancement.arconia.main.red_arconium_ingot.title", "Arconium Ingots" },
                 { "advancement.arconia.main.red_arconium_ingot.desc", "Craft your first arconium ingot" },
-                { "advancement.arconia.main.red_infinite_gold_arconium_block.title", "Arconium Gold" },
-                { "advancement.arconia.main.red_infinite_gold_arconium_block.desc", "Get your first arconium infused gold" },
                 { "advancement.arconia.main.orange_arconium_tree_sapling.title", "Orange you glad" },
                 { "advancement.arconia.main.orange_arconium_tree_sapling.desc", "Harvest your first orange arconium sapling" },
                 { "advancement.arconia.main.orange_arconium_ingot.title", "Not so juicy" },
@@ -130,7 +126,6 @@ public class ModLanguageProvider extends LanguageProvider {
         // hat messages
         add("arconia.block.hat.not_linked_to_pot", "The hat is not linked to a pot of gold yet");
         add("arconia.block.hat.resource_already_set", "The hat is already configured with a resource. Crouch with an empty hand to clear the undo this first");
-        add("arconia.block.hat.resource_tier_too_high", "The linked pot of gold does not have a high enough tier for this resource");
         add("arconia.block.hat.resource_empty", "The root is not configured with a resource to generate");
         add("arconia.block.hat.resource_set", "The hat is now setup to receive %s items");
         add("arconia.block.hat.resource_unset", "The hat will now no longer receive resources");

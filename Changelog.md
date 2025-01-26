@@ -1,3 +1,14 @@
+# 0.0.11
+
+## Fixes
+
+## Changes
+
+ - Port to NeoForge 1.20.4
+ - Simplified Pot of Gold logic - no longer require a linked hat above an infinite gold arconium block to 'generate coins'
+ - Remove infinite gold arconium blocks
+ - Remove gold coins
+
 # 0.0.10
 
 ## Fixes
