@@ -131,7 +131,7 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
                     BlockPos toReplace = corner.offset(x, y, z);
                     BlockState bs = world.getBlockState(toReplace);
 
-                    if (bs.getBlock().equals(ModBlocks.potMultiBlockSecondary) || bs.getBlock().equals(ModBlocks.potMultiBlockPrimary)) {
+                    if (bs.getBlock().equals(ModBlocks.potMultiBlockSecondary.get()) || bs.getBlock().equals(ModBlocks.potMultiBlockPrimary.get())) {
                         if (toReplace.equals(goldPos)) {
                             insideBlock.setCount(1);
                         } else {

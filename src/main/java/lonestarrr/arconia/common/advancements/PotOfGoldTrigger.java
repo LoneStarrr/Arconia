@@ -23,24 +23,22 @@ public class PotOfGoldTrigger extends SimpleCriterionTrigger<PotOfGoldTrigger.Tr
         return PotOfGoldTrigger.TriggerInstance.CODEC;
     }
 
-    public void trigger(ServerPlayer player, ServerLevel world, BlockPos pos) {
-        trigger(player, instance -> instance.matches(world, pos));
+    public void trigger(ServerPlayer player) {
+        trigger(player, instance -> instance.matches());
     }
 
     public record TriggerInstance(
-            Optional<ContextAwarePredicate> player, Optional<LocationPredicate> location
+            Optional<ContextAwarePredicate> player
     ) implements SimpleCriterionTrigger.SimpleInstance {
         public static final Codec<PotOfGoldTrigger.TriggerInstance> CODEC = RecordCodecBuilder.create(
                 r -> r.group(
-                                ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(PotOfGoldTrigger.TriggerInstance::player),
-                                ExtraCodecs.strictOptionalField(LocationPredicate.CODEC, "location")
-                                        .forGetter(PotOfGoldTrigger.TriggerInstance::location)
+                                ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(PotOfGoldTrigger.TriggerInstance::player)
                         )
                         .apply(r, PotOfGoldTrigger.TriggerInstance::new)
         );
 
-        boolean matches(ServerLevel world, BlockPos pos) {
-            return this.location.isPresent() && this.location.get().matches(world, pos.getX(), pos.getY(), pos.getZ());
+        boolean matches() {
+            return true;
         }
     }
 }

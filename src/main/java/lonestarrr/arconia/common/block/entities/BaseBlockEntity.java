@@ -9,8 +9,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /** Base class for block entities that implement the standard data syncing
  */
@@ -19,14 +18,14 @@ public abstract class BaseBlockEntity extends BlockEntity {
         super(type, pos, state);
     }
 
-    @Nonnull
     @Override
-    public void saveAdditional(CompoundTag tag) {
+    public void saveAdditional(@NotNull CompoundTag tag) {
+        super.saveAdditional(tag);
         writePacketNBT(tag);
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    public void load(@NotNull CompoundTag tag) {
         super.load(tag);
         readPacketNBT(tag);
     }
@@ -45,7 +44,7 @@ public abstract class BaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    public final CompoundTag getUpdateTag() {
+    public final @NotNull CompoundTag getUpdateTag() {
         CompoundTag result = new CompoundTag();
         saveAdditional(result);
         return result;

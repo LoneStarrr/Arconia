@@ -101,11 +101,13 @@ public class WorldBuilderEntity extends BaseBlockEntity {
     /**
      * Recursive function to find all blocks of a specific blockstate that are connected through one of the cardinal directions and up/down
      * @param pos
+     * @param toMatch
      * @param neighbors
      * @param maxPos x/y/z max values defining the region to search in (inclusive)
      * @param minPos x/y/z min values defining the region to search in (inclusive)
      */
     private void findConnectedNeighbors(BlockPos pos, final BlockState toMatch, final Set<BlockPos> neighbors, final BlockPos maxPos, final BlockPos minPos) {
+        if (level == null) { return; }
         if (pos.getX() < minPos.getX() || pos.getX() > maxPos.getX()
                 || pos.getY() < minPos.getY() || pos.getY() > maxPos.getY()
                 || pos.getZ() < minPos.getZ() || pos.getZ() > maxPos.getZ()

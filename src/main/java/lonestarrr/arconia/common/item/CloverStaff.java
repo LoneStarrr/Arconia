@@ -151,7 +151,7 @@ public class CloverStaff extends Item {
         } else {
             boolean formed = PotMultiBlockPrimary.formMultiBlock(world, pos);
             if (formed) {
-                ModCriteriaTriggers.CREATE_POT_OF_GOLD_TRIGGER.get().trigger((ServerPlayer) player, (ServerLevel) world, pos);
+                ModCriteriaTriggers.CREATE_POT_OF_GOLD_TRIGGER.get().trigger((ServerPlayer) player);
             }
             return formed;
         }

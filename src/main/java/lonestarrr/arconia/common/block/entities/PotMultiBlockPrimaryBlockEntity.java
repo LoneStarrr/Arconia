@@ -76,14 +76,16 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     }
 
     public boolean unlinkHat(BlockPos hatPos) {
+        if (level == null) {
+            return false;
+        }
         HatData hat = getHatByPos(hatPos);
 
         if (hat != null) {
             hats.remove(hat);
             setChanged();
             BlockEntity be = level.getBlockEntity(hatPos);
-            if (be != null && be instanceof HatBlockEntity) {
-                HatBlockEntity hatBE = (HatBlockEntity) be;
+            if (be instanceof HatBlockEntity hatBE) {
                 BlockPos linkedPot = hatBE.getLinkedPot();
                 if (linkedPot != null && linkedPot.equals(worldPosition)) {
                     hatBE.unlink();
@@ -113,9 +115,11 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
      * @return If the hat has a gold arconium block entity under it, return that, otherwise return null
      */
     private InfiniteGoldArconiumBlock getGoldArconiumInWorld(BlockPos goldArconiumPos) {
+        if (level == null) { return null; }
+
         BlockState state = level.getBlockState(goldArconiumPos);
 
-        if (state == null || !(state.getBlock() instanceof InfiniteGoldArconiumBlock)) {
+        if (!(state.getBlock() instanceof InfiniteGoldArconiumBlock)) {
             return null;
         }
 
