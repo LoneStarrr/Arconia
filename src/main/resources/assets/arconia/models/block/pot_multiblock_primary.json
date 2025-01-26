@@ -1,5 +1,6 @@
 {
 	"credit": "Made with Blockbench",
+        "parent": "minecraft:block/block",
 	"textures": {
 		"0": "arconia:block/pot_multiblock_texture",
 		"1": "arconia:block/pot_multiblock_gold_mound",
@@ -8381,16 +8382,6 @@
 			}
 		}
 	],
-	"display": {
-		"thirdperson_righthand": {
-			"scale": [-0.5, -0.5, -0.5]
-		},
-		"gui": {
-			"rotation": [30, 30, -180],
-			"translation": [0, -3, 0],
-			"scale": [-0.33, -0.33, -0.33]
-		}
-	},
 	"groups": [
 		{
 			"name": "Pot Structure",
