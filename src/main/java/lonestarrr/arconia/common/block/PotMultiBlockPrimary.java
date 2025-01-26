@@ -98,7 +98,7 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
                     PotMultiBlockSecondary.PotPosition potPos = PotMultiBlockSecondary.PotPosition.getPositionFromOffset(x, z);
                     world.setBlock(toReplace, ModBlocks.potMultiBlockSecondary.get().defaultBlockState().setValue(PotMultiBlockSecondary.POT_POSITION, potPos), 3);
                     BlockEntity be = world.getBlockEntity(toReplace);
-                    if (be == null || !(be instanceof PotMultiBlockSecondaryBlockEntity)) {
+                    if (!(be instanceof PotMultiBlockSecondaryBlockEntity)) {
                         Arconia.logger.error("Error setting up pot multiblock - expected to find a secondary multiblock block entity at " + toReplace);
                         return false;
                     }

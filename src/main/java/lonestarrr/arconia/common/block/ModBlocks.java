@@ -52,6 +52,7 @@ public class ModBlocks {
         ModItems.ITEMS.registerSimpleBlockItem(hat);
         ModItems.ITEMS.registerSimpleBlockItem(worldBuilder);
 
+
         arconiumTreeSaplings.values().forEach(ModItems.ITEMS::registerSimpleBlockItem);
         arconiumTreeLeaves.values().forEach(ModItems.ITEMS::registerSimpleBlockItem);
         arconiumBlocks.values().forEach(ModItems.ITEMS::registerSimpleBlockItem);
