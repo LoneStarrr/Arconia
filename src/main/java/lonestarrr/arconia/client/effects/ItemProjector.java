@@ -15,6 +15,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import java.util.List;
+
 /**
  * Methods for projecting an animated item
  */
@@ -62,6 +64,42 @@ public class ItemProjector {
 
         Minecraft.getInstance().getItemRenderer()
                 .renderStatic(stack, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, level, 0);
+        poseStack.popPose();
+    }
+
+    /** Displays a carousel of multiple items, where the carousel itself rotates around its center coordinate over time
+     *
+      * @param items
+     * @param poseStack
+     * @param buffer
+     * @param light
+     * @param ticksPerRotation
+     */
+    public static void projectItemCarousel(List<ItemStack> items, PoseStack poseStack, MultiBufferSource buffer, int light, int ticksPerRotation, float distanceFromCenter, float scale) {
+        final Vector3f yAxis = new Vector3f(0f, 1f, 0f);
+
+        Level level = Minecraft.getInstance().level;
+        if (level == null) {
+            return;
+        }
+
+        // Rotate the entire carousel for a nice visual effect
+        float rotationCarousel = (level.getGameTime() % ticksPerRotation) / (float)ticksPerRotation * 360f;
+        poseStack.pushPose();
+        poseStack.mulPose(new Quaternionf().fromAxisAngleDeg(yAxis, rotationCarousel));
+
+        for (int i = 0; i < items.size(); i++) {
+            ItemStack item = items.get(i);
+            float rotation = i * (360f / items.size());
+            poseStack.pushPose();
+            poseStack.mulPose(new Quaternionf().fromAxisAngleDeg(yAxis, rotation));
+            poseStack.translate(distanceFromCenter, 0.0f, 0.0f);
+            poseStack.scale(scale, scale, scale);
+            Minecraft.getInstance().getItemRenderer()
+                    .renderStatic(item, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, level, 0);
+            poseStack.popPose();
+        }
+
         poseStack.popPose();
     }
 }

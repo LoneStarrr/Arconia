@@ -8,6 +8,8 @@ import lonestarrr.arconia.common.network.PotItemTransferPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,10 +24,12 @@ import java.util.stream.Collectors;
 
 public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     private static final String TAG_HAT_POSITIONS = "hat_positions";
+    private static final String TAG_RESOURCES = "resources";
     public static final int MIN_TICK_INTERVAL = 5;
 
     private long lastIntervalGameTime = 0;
     private final List<HatData> hats = new ArrayList<>();
+    private final List<ItemStack> generatedResources = new ArrayList<>();
 
     public PotMultiBlockPrimaryBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.POT_MULTIBLOCK_PRIMARY.get(), pos, state);
@@ -35,12 +39,36 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     public int maxHats() {
         return ConfigHandler.COMMON.potOfGoldMaxHats.get();
     }
+    public int maxResources() { return ConfigHandler.COMMON.potOfGoldMaxResources.get(); }
+
+    public @Nonnull List<ItemStack> getGeneratedResources() { return generatedResources; }
 
     public static int maxHatDistance() {
         return ConfigHandler.COMMON.potOfGoldMaxHatDistance.get();
     }
 
-    public RainbowColor getTier() { return detectTier(); }
+    public @Nonnull RainbowColor getTier() { return detectTier(); }
+
+    public boolean addResourceGenerated(ItemStack itemStack) {
+        if (generatedResources.size() >= maxResources()) {
+            return false;
+        }
+        generatedResources.add(itemStack);
+        setChanged();
+        updateClient();
+        return true;
+    }
+
+    public @Nonnull ItemStack removeResourceGenerated() {
+        if (generatedResources.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+        ItemStack resourceItem = generatedResources.get(generatedResources.size() - 1);
+        generatedResources.remove(generatedResources.size() - 1);
+        setChanged();
+        updateClient();
+        return resourceItem;
+    }
 
     public void linkHat(BlockPos hatPos) throws LinkHatException {
         if (hats.size() >= maxHats()) {
@@ -260,6 +288,9 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
     public void writePacketNBT(CompoundTag tag) {
         tag.putLongArray(TAG_HAT_POSITIONS, hats.stream().map(hat -> hat.hatPos.asLong()).collect(Collectors.toList()));
+        ListTag resourceListTag = new ListTag();
+        generatedResources.forEach(resource -> resourceListTag.add(resource.save(new CompoundTag())));
+        tag.put(TAG_RESOURCES, resourceListTag);
     }
 
     public void readPacketNBT(CompoundTag tag) {
@@ -267,6 +298,13 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         hats.clear();
         for (long longPos: longPositions) {
             hats.add(new HatData(BlockPos.of(longPos)));
+        }
+        ListTag resourceListTag = tag.getList(TAG_RESOURCES, Tag.TAG_COMPOUND);
+        generatedResources.clear();
+        for (int idx = 0; idx < resourceListTag.size(); idx++) {
+            if (generatedResources.size() < maxResources()) {
+                generatedResources.add(ItemStack.of(resourceListTag.getCompound(idx)));
+            }
         }
     }
 

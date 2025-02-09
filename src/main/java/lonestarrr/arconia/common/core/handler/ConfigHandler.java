@@ -34,6 +34,7 @@ public final class ConfigHandler {
 
         public final ModConfigSpec.IntValue potOfGoldMaxHats;
         public final ModConfigSpec.IntValue potOfGoldMaxHatDistance;
+        public final ModConfigSpec.IntValue potOfGoldMaxResources;
 
         public Common(ModConfigSpec.Builder builder) {
             builder.push("potOfGold");
@@ -43,6 +44,9 @@ public final class ConfigHandler {
             potOfGoldMaxHatDistance = builder
                     .comment("Maximum distance at which hats can be linked to a pot of gold")
                     .defineInRange("maxHatDistance", 16, 4, 64);
+            potOfGoldMaxResources = builder
+                    .comment("Maximum number of unique resources a single pot of gold can generate")
+                    .defineInRange("maxResources", 8, 1, 8);
 
             int currentGenerationInterval = 100;
             int currentGenerationCount = 2;

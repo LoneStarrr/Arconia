@@ -123,6 +123,10 @@ public class ModLanguageProvider extends LanguageProvider {
         add("arconia.item.cloverstaff.linkhat.unlink_failed", "Hat was not linked");
         add("arconia.item.cloverstaff.selectpot.success", "Stored coordinate of the pot of gold at %s");
         add("arconia.item.cloverstaff.selectpot.failed", "Invalid pot of gold multiblock structure?");
+        // pot resource setting / unsetting messages
+        add("arconia.block.pot_multiblock.set_resource_empty", "The root needs to be enchanted through the pedestal ritual first");
+        add("arconia.block.pot_multiblock.set_resource_full", "The pot cannot generate any more resources");
+        add("arconia.block.pot_multiblock.set_resource_success", "More riches will be collected by the pot");
         // hat messages
         add("arconia.block.hat.not_linked_to_pot", "The hat is not linked to a pot of gold yet");
         add("arconia.block.hat.resource_already_set", "The hat is already configured with a resource. Crouch with an empty hand to clear the undo this first");

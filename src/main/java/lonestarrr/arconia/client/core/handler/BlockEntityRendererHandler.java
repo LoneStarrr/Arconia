@@ -12,5 +12,6 @@ public class BlockEntityRendererHandler {
         evt.registerBlockEntityRenderer(ModBlockEntities.PEDESTAL.get(), PedestalRenderer::new);
         evt.registerBlockEntityRenderer(ModBlockEntities.CENTER_PEDESTAL.get(), CenterPedestalRenderer::new);
         evt.registerBlockEntityRenderer(ModBlockEntities.HAT.get(), HatRenderer::new);
+        evt.registerBlockEntityRenderer(ModBlockEntities.POT_MULTIBLOCK_PRIMARY.get(), PotRenderer::new);
     }
 }

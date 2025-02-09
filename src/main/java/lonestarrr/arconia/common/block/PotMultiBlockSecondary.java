@@ -5,6 +5,7 @@ import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockSecondaryBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
+import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.ModItems;
 import lonestarrr.arconia.compat.theoneprobe.TOPDriver;
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -92,13 +93,54 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
         }
 
         if (itemUsed.isEmpty()) {
-            RainbowColor potTier = primaryBE.getTier();
-            if (potTier == null) {
-                player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.no_tier"));
+            // If the player is crouching with an empty main hand, unset a previous set resource, else, show info on the pot
+
+            if (player.isCrouching()) {
+                ItemStack removedResource = primaryBE.removeResourceGenerated();
+                if (!removedResource.isEmpty()) {
+                    // I didn't track the tier of the resource when setting it. For now, let's just always give the
+                    // lowest tier root. Doesn't really matter, difficulty lies in crafting the thing the first time.
+                    RainbowColor tier = RainbowColor.RED;
+                    ItemStack root = new ItemStack(ModItems.getColoredRoot(tier).get());
+                    ColoredRoot.setResourceItem(root, removedResource.getItem(), removedResource.getCount());
+                    player.setItemInHand(hand, root);
+                    return InteractionResult.SUCCESS;
+                }
             } else {
-                player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.show_tier", potTier.getTierName()));
+                RainbowColor potTier = primaryBE.getTier();
+                if (potTier == null) {
+                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.no_tier"));
+                } else {
+                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.show_tier", potTier.getTierName()));
+                }
+                return InteractionResult.SUCCESS;
             }
-            return InteractionResult.SUCCESS;
+        }
+
+        if (itemUsed.getItem() instanceof ColoredRoot) {
+            ItemStack resource = ColoredRoot.getResourceItem(itemUsed);
+
+            if (resource.isEmpty()) {
+                player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_empty"));
+                return InteractionResult.FAIL;
+            } else {
+                if (!primaryBE.addResourceGenerated(resource)) {
+                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_full"));
+                    return InteractionResult.FAIL;
+                } else {
+                    if (itemUsed.getCount() > 1) {
+                        itemUsed.shrink(1);
+
+                        player.setItemInHand(hand, itemUsed);
+                    } else {
+                        player.setItemInHand(hand, ItemStack.EMPTY);
+                    }
+
+                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_success"));
+                    return InteractionResult.SUCCESS;
+                }
+            }
+
         }
 
         return InteractionResult.PASS;
