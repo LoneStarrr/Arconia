@@ -105,18 +105,17 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             return;
         }
 
-        ItemStack sent = toGenerate.copy();
+        ItemStack toSend = toGenerate.copy();
         int count = ConfigHandler.COMMON.potGenerationCount.get(tier).get();
-        int sendCount = Math.min(count, sent.getMaxStackSize());
-        sent.setCount(sendCount);
-        ItemStack left = InventoryHelper.insertItem(inventory, toGenerate, false);
-        sent.setCount(sent.getCount() - left.getCount());
-        if (sent.getCount() == 0) {
+        int sendCount = Math.min(count, toSend.getMaxStackSize());
+        toSend.setCount(sendCount);
+        ItemStack left = InventoryHelper.insertItem(inventory, toSend, false);
+        if (left.getCount() > 0) {
             BlockPos particlePos = worldPosition.above(2);
             ServerLevel sLevel = (ServerLevel)level;
-            sLevel.sendParticles(ParticleTypes.SMOKE, particlePos.getX() + 0.5, particlePos.getY(), particlePos.getZ() + 0.5, 1, 0, 0, 1, 0.1);
+            sLevel.sendParticles(ParticleTypes.SMOKE, particlePos.getX() + 0.5, particlePos.getY() + 0.5, particlePos.getZ() + 0.5, 3, 0, 0.5, 0, 0.05);
         } else {
-            PotItemTransferPacket packet = new PotItemTransferPacket(storageBlockPos.above(), worldPosition.above(), sent);
+            PotItemTransferPacket packet = new PotItemTransferPacket(storageBlockPos.above(), worldPosition.above(), toSend);
             ModPackets.sendToNearby(level, worldPosition, packet);
 
         }
