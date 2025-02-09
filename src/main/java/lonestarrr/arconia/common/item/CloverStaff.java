@@ -1,18 +1,13 @@
 package lonestarrr.arconia.common.item;
 
 import lonestarrr.arconia.common.advancements.ModCriteriaTriggers;
-import lonestarrr.arconia.common.advancements.PotOfGoldTrigger;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.PotMultiBlockPrimary;
-import lonestarrr.arconia.common.block.entities.HatBlockEntity;
-import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockSecondaryBlockEntity;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +15,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -60,75 +54,9 @@ public class CloverStaff extends Item {
                 }
             }
             return InteractionResult.PASS;
-        } else if (bs.getBlock() == ModBlocks.hat.get()) {
-            if (!world.isClientSide) {
-                BlockPos potPos = getPotPosition(staff);
-                if (potPos == null) {
-
-                    return InteractionResult.CONSUME;
-                }
-                linkOrUnlinkHat(world, pos, potPos, context);
-            }
-            return InteractionResult.CONSUME;
         }
 
         return InteractionResult.PASS;
-    }
-
-    private static void linkOrUnlinkHat(Level level, BlockPos hatPos, BlockPos potPos, UseOnContext context) {
-        String lang = LANG_PREFIX + ".linkhat";
-
-        BlockEntity be = level.getBlockEntity(potPos);
-        if (!(be instanceof PotMultiBlockPrimaryBlockEntity)) {
-            lang += ".invalidpot";
-        } else {
-            PotMultiBlockPrimaryBlockEntity potBE = (PotMultiBlockPrimaryBlockEntity) be;
-            if (potBE.isHatLinked(hatPos)) {
-                if (potBE.unlinkHat(hatPos)) {
-                    lang += ".unlinked";
-                } else {
-                    lang += ".unlink_failed";
-                }
-            } else {
-                HatBlockEntity hbe = null;
-                if (level.getBlockEntity(hatPos) instanceof HatBlockEntity) {
-                    hbe = (HatBlockEntity)level.getBlockEntity(hatPos);
-                }
-
-                if (hbe != null && hbe.getLinkedPot() != null) {
-                    // The pot thinks it's not linked to the hat, but the hat thinks it's linked to a pot. If it thinks
-                    // it's already linked to this pot, unlink it first as the pot was probably broken and put back
-                    // again at the same location
-                    if (hbe.getLinkedPot().equals(potPos)) {
-                        hbe.unlink();
-                    }
-                }
-
-                try {
-                    potBE.linkHat(hatPos);
-                    lang += ".linked";
-                } catch (PotMultiBlockPrimaryBlockEntity.LinkHatException exc) {
-                    switch (exc.code) {
-                        case HAT_TOO_FAR:
-                            lang += ".toofar";
-                            break;
-                        case HAT_NOT_FOUND:
-                            lang += ".notfound";
-                            break;
-                        case TOO_MANY_HATS:
-                            lang += ".toomanyhats";
-                            break;
-                        case ALREADY_LINKED:
-                            lang += ".alreadylinked";
-                            break;
-                        case LINKED_TO_OTHER_POT:
-                            lang += ".linked_other_pot";
-                            break;
-                    }
-                }
-            }
-        }
-        context.getPlayer().sendSystemMessage(Component.translatable(lang));
     }
 
     private static BlockPos getPotPosition(ItemStack staff) {

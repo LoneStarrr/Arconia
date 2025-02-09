@@ -112,31 +112,12 @@ public class ModLanguageProvider extends LanguageProvider {
         add("jei.arconia.recipe_category.altar", "Pedestal Ritual");
         add("jei.arconia.recipe_category.enchanted_root", "Pot of Gold");
         // clover staff messages
-        add("arconia.item.cloverstaff.linkhat.invalidpot", "The selected pot of gold appears to be invalid or missing");
-        add("arconia.item.cloverstaff.linkhat.linked", "Linked hat");
-        add("arconia.item.cloverstaff.linkhat.toofar", "The hat is too far away to link");
-        add("arconia.item.cloverstaff.linkhat.notfound", "Invalid hat");
-        add("arconia.item.cloverstaff.linkhat.toomanyhats", "Too many hats have been linked already");
-        add("arconia.item.cloverstaff.linkhat.alreadylinked", "The hat's already linked");
-        add("arconia.item.cloverstaff.linkhat.linked_other_pot", "The hat's already linked to another pot");
-        add("arconia.item.cloverstaff.linkhat.unlinked", "Unlinked hat");
-        add("arconia.item.cloverstaff.linkhat.unlink_failed", "Hat was not linked");
         add("arconia.item.cloverstaff.selectpot.success", "Stored coordinate of the pot of gold at %s");
         add("arconia.item.cloverstaff.selectpot.failed", "Invalid pot of gold multiblock structure?");
         // pot resource setting / unsetting messages
         add("arconia.block.pot_multiblock.set_resource_empty", "The root needs to be enchanted through the pedestal ritual first");
         add("arconia.block.pot_multiblock.set_resource_full", "The pot cannot generate any more resources");
         add("arconia.block.pot_multiblock.set_resource_success", "More riches will be collected by the pot");
-        // hat messages
-        add("arconia.block.hat.not_linked_to_pot", "The hat is not linked to a pot of gold yet");
-        add("arconia.block.hat.resource_already_set", "The hat is already configured with a resource. Crouch with an empty hand to clear the undo this first");
-        add("arconia.block.hat.resource_empty", "The root is not configured with a resource to generate");
-        add("arconia.block.hat.resource_set", "The hat is now setup to receive %s items");
-        add("arconia.block.hat.resource_unset", "The hat will now no longer receive resources");
-        add("arconia.block.hat.info_resource_empty", "The hat is not configured to receive resources");
-        add("arconia.block.hat.info_resource", "The hat is configured to receive %s items, for tier: ");
-        add("arconia.block.hat.info_linked", "The hat is linked to a pot of gold at %s");
-        add("arconia.block.hat.info_unlinked", "The hat is not linked to a pot of gold");
 
         // pedestal ritual messages
         add("arconia.block.center_pedestal.ritual_start_failed", "Failed to start ritual. Perhaps some items are missing?");

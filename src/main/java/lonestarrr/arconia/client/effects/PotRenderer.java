@@ -1,9 +1,6 @@
 package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import lonestarrr.arconia.client.particle.ModParticles;
-import lonestarrr.arconia.common.block.PotMultiBlockPrimary;
-import lonestarrr.arconia.common.block.entities.HatBlockEntity;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;

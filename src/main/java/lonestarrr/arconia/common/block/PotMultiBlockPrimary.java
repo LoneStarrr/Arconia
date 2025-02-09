@@ -5,6 +5,9 @@ import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.entities.ModBlockEntities;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockSecondaryBlockEntity;
+import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.item.ColoredRoot;
+import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -29,8 +32,8 @@ import javax.annotation.Nullable;
  * with the pot's logic
  */
 public class PotMultiBlockPrimary extends BaseEntityBlock {
-    public static final Block INSIDE_BLOCK = Blocks.YELLOW_TERRACOTTA;
-    public static final Block OUTSIDE_BLOCK = Blocks.BLACK_TERRACOTTA;
+    public static final Block INSIDE_BLOCK = Blocks.GOLD_BLOCK;
+    public static final Block OUTSIDE_BLOCK = Blocks.CAULDRON;
 
     public PotMultiBlockPrimary() {
         super(Block.Properties.of().mapColor(MapColor.METAL).strength(4.0F));
@@ -116,10 +119,21 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
         }
 
         BlockEntity te = world.getBlockEntity(primaryPos);
-        if (te == null || !(te instanceof PotMultiBlockPrimaryBlockEntity)) {
+        if (!(te instanceof PotMultiBlockPrimaryBlockEntity)) {
             return;
         }
 
+        PotMultiBlockPrimaryBlockEntity primaryBlockEntity = (PotMultiBlockPrimaryBlockEntity)te;
+
+        // Drop the resources set on the pot as enchanted roots
+        for(ItemStack stack: primaryBlockEntity.getGeneratedResources()) {
+            ItemStack root = new ItemStack(ModItems.getColoredRoot(RainbowColor.RED).get());
+            ColoredRoot.setResourceItem(root, stack.getItem(), stack.getCount());
+            Block.popResource(world, primaryPos.above(2), root);
+        }
+
+        // Drop the blocks the pot was made out of initially
+        // TODO this is hardcoded, not following any recipe.s
         BlockPos corner = primaryPos.offset(-1, 0, -1);
         BlockPos goldPos = primaryPos.above();
 

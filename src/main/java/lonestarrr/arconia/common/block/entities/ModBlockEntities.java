@@ -12,8 +12,6 @@ import java.util.function.Supplier;
 public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, Arconia.MOD_ID);
 
-    public static final Supplier<BlockEntityType<HatBlockEntity>> HAT = BLOCK_ENTITIES.register(BlockNames.HAT,
-            () -> BlockEntityType.Builder.of(HatBlockEntity::new, ModBlocks.hat.get()).build(null));
     public static final Supplier<BlockEntityType<WorldBuilderEntity>> WORLD_BUILDER = BLOCK_ENTITIES.register(BlockNames.WORLD_BUILDER,
             () -> BlockEntityType.Builder.of(WorldBuilderEntity::new, ModBlocks.worldBuilder.get()).build(null));
     public static final Supplier<BlockEntityType<PedestalBlockEntity>> PEDESTAL = BLOCK_ENTITIES.register(BlockNames.PEDESTAL,
