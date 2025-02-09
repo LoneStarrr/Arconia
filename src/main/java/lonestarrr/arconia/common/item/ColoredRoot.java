@@ -54,11 +54,12 @@ public class ColoredRoot extends Item {
      *                         Data is stored in NBT so that it can be used for any item from any mod by only adding a pedestal ritual recipe.
      */
     public static void setResourceItem(
-            @Nonnull ItemStack coloredRootStack, @Nonnull ItemLike resourceItem, @Nonnull int count) {
+            @Nonnull ItemStack coloredRootStack, @Nonnull ItemLike resourceItem) {
         CompoundTag tag = coloredRootStack.getOrCreateTag();
         ItemStack stack = new ItemStack(resourceItem);
         int maxCount = stack.getMaxStackSize();
-        int stackCount = count > maxCount ? maxCount : count;
+        int count = 1;
+        int stackCount = Math.min(count, maxCount);
         stack.setCount(stackCount);
         CompoundTag resourceItemTag = stack.save(new CompoundTag());
         // Store a tag on this root item with nbt-serialized itemstack 'stack' in such a way that 'getResourceItem()'

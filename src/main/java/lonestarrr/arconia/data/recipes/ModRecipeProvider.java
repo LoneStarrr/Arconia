@@ -51,228 +51,227 @@ public class ModRecipeProvider extends RecipeProvider {
         final Ingredient clover = Ingredient.of(ModItems.fourLeafClover.get());
 
         int durationTicks = 60; // Time for ritual to create the item from the recipe
-        int count = 1; // Number of items to generate per resource generation event
         RainbowColor tier = RainbowColor.RED;
 
-        makeEnchantedColoredRoot(output, tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count, clover, clover,
+        makeEnchantedColoredRoot(output, tier, ModItems.getArconiumEssence(tier).get(), durationTicks, clover, clover,
                 Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(RainbowColor.woolByTier(tier)));
 
-        makeEnchantedColoredRoot(output, tier, Items.RED_DYE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.RED_DYE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.BEETROOT), Ingredient.of(Items.RED_WOOL), Ingredient.of(Items.RED_CONCRETE), Ingredient.of(Items.RED_TERRACOTTA));
 
-        makeEnchantedColoredRoot(output, tier, Items.KELP, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.KELP, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.KELP), Ingredient.of(Items.DRIED_KELP_BLOCK), Ingredient.of(Items.DRIED_KELP_BLOCK));
-        makeEnchantedColoredRoot(output, tier, Items.APPLE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.APPLE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.APPLE), Ingredient.of(Items.OAK_SAPLING), Ingredient.of(Items.STONE_HOE));
 
-        makeEnchantedColoredRoot(output, tier, Items.SAND, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.SAND, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.SAND), Ingredient.of(Items.SANDSTONE), Ingredient.of(Items.SANDSTONE), Ingredient.of(Items.STONE_SHOVEL));
-        makeEnchantedColoredRoot(output, tier, Items.GRAVEL, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.GRAVEL, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.GRAVEL), Ingredient.of(Items.FLINT), Ingredient.of(Items.FLINT), Ingredient.of(Items.STONE_SHOVEL));
-        makeEnchantedColoredRoot(output, tier, Items.DIRT, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.DIRT, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.DIRT), Ingredient.of(Items.COARSE_DIRT), Ingredient.of(Items.MUD), Ingredient.of(Items.STONE_SHOVEL));
 
-        makeEnchantedColoredRoot(output, tier, Items.OAK_LOG, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.OAK_LOG, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.OAK_LOG), Ingredient.of(Items.OAK_LOG), Ingredient.of(Items.OAK_LOG), Ingredient.of(Items.OAK_SAPLING), Ingredient.of(Items.STONE_AXE));
-        makeEnchantedColoredRoot(output, tier, Items.DARK_OAK_LOG, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.DARK_OAK_LOG, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.DARK_OAK_LOG), Ingredient.of(Items.DARK_OAK_LOG), Ingredient.of(Items.DARK_OAK_LOG), Ingredient.of(Items.DARK_OAK_SAPLING), Ingredient.of(Items.STONE_AXE));
-        makeEnchantedColoredRoot(output, tier, Items.BIRCH_LOG, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.BIRCH_LOG, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.BIRCH_LOG), Ingredient.of(Items.BIRCH_LOG), Ingredient.of(Items.BIRCH_LOG), Ingredient.of(Items.BIRCH_SAPLING), Ingredient.of(Items.STONE_AXE));
-        makeEnchantedColoredRoot(output, tier, Items.JUNGLE_LOG, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.JUNGLE_LOG, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.JUNGLE_LOG), Ingredient.of(Items.JUNGLE_LOG), Ingredient.of(Items.JUNGLE_LOG), Ingredient.of(Items.JUNGLE_SAPLING), Ingredient.of(Items.STONE_AXE));
-        makeEnchantedColoredRoot(output, tier, Items.SPRUCE_LOG, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.SPRUCE_LOG, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.SPRUCE_LOG), Ingredient.of(Items.SPRUCE_LOG), Ingredient.of(Items.SPRUCE_LOG), Ingredient.of(Items.SPRUCE_SAPLING), Ingredient.of(Items.STONE_AXE));
-        makeEnchantedColoredRoot(output, tier, Items.ACACIA_LOG, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.ACACIA_LOG, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.ACACIA_LOG), Ingredient.of(Items.ACACIA_LOG), Ingredient.of(Items.ACACIA_LOG), Ingredient.of(Items.ACACIA_SAPLING), Ingredient.of(Items.STONE_AXE));
-        makeEnchantedColoredRoot(output, tier, Items.MANGROVE_LOG, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.MANGROVE_LOG, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.MANGROVE_LOG), Ingredient.of(Items.MANGROVE_LOG), Ingredient.of(Items.MANGROVE_LOG), Ingredient.of(Items.MANGROVE_PROPAGULE), Ingredient.of(Items.STONE_AXE));
-        
+
         RainbowColor previousTier = tier;
         tier = RainbowColor.ORANGE;
 
-        makeEnchantedColoredRoot(output, tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count, clover, clover,
+        makeEnchantedColoredRoot(output, tier, ModItems.getArconiumEssence(tier).get(), durationTicks, clover, clover,
                 Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(RainbowColor.woolByTier(tier)));
 
-        makeEnchantedColoredRoot(output, tier, Items.ORANGE_DYE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.ORANGE_DYE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.RED_DYE), Ingredient.of(Items.YELLOW_DYE), Ingredient.of(Items.ORANGE_WOOL), Ingredient.of(Items.ORANGE_CONCRETE), Ingredient.of(Items.ORANGE_TERRACOTTA));
 
         for (Item item : new Item[]{Items.SUGAR_CANE, Items.WHEAT, Items.PUMPKIN, Items.MELON}) {
-            makeEnchantedColoredRoot(output, tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+            makeEnchantedColoredRoot(output, tier, item, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                     Ingredient.of(item), Ingredient.of(item), Ingredient.of(item), Ingredient.of(Items.STONE_HOE));
         }
         for (Item item : new Item[]{Items.BEEF, Items.CHICKEN, Items.MUTTON, Items.COD, Items.SALMON}) {
-            makeEnchantedColoredRoot(output, tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+            makeEnchantedColoredRoot(output, tier, item, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                     Ingredient.of(item), Ingredient.of(item), Ingredient.of(item), Ingredient.of(Items.STONE_SWORD));
         }
-        
+
         for (Item item : new Item[]{Items.COBBLESTONE, Items.STONE, Items.DEEPSLATE, Items.DIORITE, Items.GRANITE, Items.CALCITE, Items.ANDESITE}) {
-            makeEnchantedColoredRoot(output, tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+            makeEnchantedColoredRoot(output, tier, item, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                     Ingredient.of(item), Ingredient.of(item), Ingredient.of(item), Ingredient.of(Items.STONE_PICKAXE));
         }
-        makeEnchantedColoredRoot(output, tier, Items.RAW_COPPER, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.RAW_COPPER, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.RAW_COPPER_BLOCK), Ingredient.of(Items.RAW_COPPER_BLOCK), Ingredient.of(Items.RAW_COPPER_BLOCK), Ingredient.of(Items.IRON_PICKAXE));
-        makeEnchantedColoredRoot(output, tier, Items.COAL, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.COAL, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.COAL_BLOCK), Ingredient.of(Items.COAL_BLOCK), Ingredient.of(Items.COAL_BLOCK), Ingredient.of(Items.IRON_PICKAXE));
-        makeEnchantedColoredRoot(output, tier, Items.STRING, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.STRING, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.STRING), Ingredient.of(Items.WHITE_WOOL), Ingredient.of(Items.LOOM));
-        makeEnchantedColoredRoot(output, tier, Items.MUD, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.MUD, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.MUD), Ingredient.of(Items.DIRT), Ingredient.of(Items.GLASS_BOTTLE), Ingredient.of(Items.WATER_BUCKET));
-        makeEnchantedColoredRoot(output, tier, Items.CLAY_BALL, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.CLAY_BALL, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.CLAY), Ingredient.of(Items.CLAY), Ingredient.of(Items.CLAY), Ingredient.of(Items.STONE_SHOVEL));
 
         previousTier = tier;
         tier = RainbowColor.YELLOW;
 
-        makeEnchantedColoredRoot(output, tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count, clover, clover,
-                        Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(RainbowColor.woolByTier(tier)));
+        makeEnchantedColoredRoot(output, tier, ModItems.getArconiumEssence(tier).get(), durationTicks, clover, clover,
+                Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(RainbowColor.woolByTier(tier)));
 
         for (Item item : new Item[]{Items.CACTUS}) {
-            makeEnchantedColoredRoot(output, tier, item, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+            makeEnchantedColoredRoot(output, tier, item, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                     Ingredient.of(item), Ingredient.of(item), Ingredient.of(item));
         }
 
-        makeEnchantedColoredRoot(output, tier, Items.YELLOW_DYE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.YELLOW_DYE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.DANDELION), Ingredient.of(Items.YELLOW_WOOL), Ingredient.of(Items.YELLOW_CONCRETE), Ingredient.of(Items.YELLOW_TERRACOTTA));
 
-        makeEnchantedColoredRoot(output, tier, Items.SPIDER_EYE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.SPIDER_EYE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.SPIDER_EYE), Ingredient.of(Items.STRING), Ingredient.of(Items.STRING), Ingredient.of(Items.IRON_SWORD));
-        makeEnchantedColoredRoot(output, tier, Items.FEATHER, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.FEATHER, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.CHICKEN), Ingredient.of(Items.EGG), Ingredient.of(Items.FEATHER), Ingredient.of(Items.IRON_SWORD));
-        makeEnchantedColoredRoot(output, tier, Items.RAW_IRON, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.RAW_IRON, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.RAW_IRON_BLOCK), Ingredient.of(Items.RAW_IRON_BLOCK), Ingredient.of(Items.RAW_IRON_BLOCK), Ingredient.of(Items.IRON_PICKAXE));
-        makeEnchantedColoredRoot(output, tier, Items.LEATHER, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.LEATHER, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.LEATHER_HELMET), Ingredient.of(Items.LEATHER_CHESTPLATE), Ingredient.of(Items.LEATHER_LEGGINGS), Ingredient.of(Items.LEATHER_BOOTS), Ingredient.of(Items.ITEM_FRAME));
-        makeEnchantedColoredRoot(output, tier, Items.BONE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.BONE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.BONE_BLOCK), Ingredient.of(Items.BONE_BLOCK), Ingredient.of(Items.BONE_BLOCK), Ingredient.of(Items.IRON_SWORD));
-        makeEnchantedColoredRoot(output, tier, Items.PORKCHOP, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.PORKCHOP, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.PORKCHOP), Ingredient.of(Items.PORKCHOP), Ingredient.of(Items.PORKCHOP), Ingredient.of(Items.IRON_SWORD));
-        makeEnchantedColoredRoot(output, tier, Items.ROTTEN_FLESH, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.ROTTEN_FLESH, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.ROTTEN_FLESH), Ingredient.of(Items.ROTTEN_FLESH), Ingredient.of(Items.ROTTEN_FLESH), Ingredient.of(Items.IRON_SHOVEL));
-        makeEnchantedColoredRoot(output, tier, Items.POTATO, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.POTATO, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.POTATO), Ingredient.of(Items.POTATO), Ingredient.of(Items.POTATO), Ingredient.of(Items.IRON_HOE), Ingredient.of(Items.WATER_BUCKET));
-        makeEnchantedColoredRoot(output, tier, Items.BEETROOT, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.BEETROOT, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.BEETROOT), Ingredient.of(Items.BEETROOT), Ingredient.of(Items.BEETROOT), Ingredient.of(Items.IRON_HOE), Ingredient.of(Items.WATER_BUCKET));
-        makeEnchantedColoredRoot(output, tier, Items.CARROT, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.CARROT, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.CARROT), Ingredient.of(Items.CARROT), Ingredient.of(Items.CARROT), Ingredient.of(Items.IRON_HOE), Ingredient.of(Items.WATER_BUCKET));
-        makeEnchantedColoredRoot(output, tier, Items.ARROW, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.ARROW, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.BONE), Ingredient.of(Items.ARROW), Ingredient.of(Items.SHIELD), Ingredient.of(Items.IRON_SWORD));
-        makeEnchantedColoredRoot(output, tier, Items.WHITE_WOOL, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.WHITE_WOOL, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.MUTTON), Ingredient.of(Items.WHITE_WOOL), Ingredient.of(Items.BLACK_WOOL), Ingredient.of(Items.SHEARS));
-        makeEnchantedColoredRoot(output, tier, Items.HONEYCOMB, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.HONEYCOMB, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.HONEYCOMB_BLOCK), Ingredient.of(Items.HONEYCOMB_BLOCK), Ingredient.of(Items.HONEYCOMB_BLOCK), Ingredient.of(Items.CAMPFIRE), Ingredient.of(Items.SHEARS));
-        makeEnchantedColoredRoot(output, tier, Items.HONEY_BOTTLE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.HONEY_BOTTLE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.HONEY_BLOCK), Ingredient.of(Items.HONEY_BLOCK), Ingredient.of(Items.HONEY_BLOCK), Ingredient.of(Items.CAMPFIRE), Ingredient.of(Items.GLASS_BOTTLE));
 
         // Building blocks
-        makeEnchantedColoredRoot(output, tier, Items.NETHER_BRICK, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.NETHER_BRICK, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.NETHERRACK), Ingredient.of(Items.NETHER_BRICK), Ingredient.of(Items.NETHER_BRICK), Ingredient.of(Items.IRON_PICKAXE));
-        makeEnchantedColoredRoot(output, tier, Items.SOUL_SAND, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.SOUL_SAND, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.SOUL_SAND), Ingredient.of(Items.SOUL_CAMPFIRE), Ingredient.of(Items.BONE_BLOCK), Ingredient.of(Items.IRON_SHOVEL));
-        makeEnchantedColoredRoot(output, tier, Items.SOUL_SOIL, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.SOUL_SOIL, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.SOUL_SOIL), Ingredient.of(Items.SOUL_CAMPFIRE), Ingredient.of(Items.BONE_BLOCK), Ingredient.of(Items.IRON_SHOVEL));
-        makeEnchantedColoredRoot(output, tier, Items.BLACKSTONE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.BLACKSTONE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.BLACKSTONE), Ingredient.of(Items.BLACKSTONE_STAIRS), Ingredient.of(Items.BLACKSTONE_WALL), Ingredient.of(Items.IRON_PICKAXE));
-        makeEnchantedColoredRoot(output, tier, Items.BASALT, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.BASALT, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.BASALT), Ingredient.of(Items.POLISHED_BASALT), Ingredient.of(Items.SMOOTH_BASALT), Ingredient.of(Items.IRON_PICKAXE));
-        makeEnchantedColoredRoot(output, tier, Items.CRIMSON_STEM, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.CRIMSON_STEM, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.CRIMSON_STEM), Ingredient.of(Items.NETHER_WART_BLOCK), Ingredient.of(Items.CRIMSON_FUNGUS), Ingredient.of(Items.IRON_AXE));
-        makeEnchantedColoredRoot(output, tier, Items.WARPED_STEM, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.WARPED_STEM, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.WARPED_STEM), Ingredient.of(Items.WARPED_WART_BLOCK), Ingredient.of(Items.WARPED_FUNGUS), Ingredient.of(Items.IRON_AXE));
 
         previousTier = tier;
         tier = RainbowColor.GREEN;
 
-        
-                makeEnchantedColoredRoot(output, tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count, clover, clover,
-                        Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(
-                                RainbowColor.woolByTier(tier)));
 
-        makeEnchantedColoredRoot(output, tier, Items.GREEN_DYE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, ModItems.getArconiumEssence(tier).get(), durationTicks, clover, clover,
+                Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(
+                        RainbowColor.woolByTier(tier)));
+
+        makeEnchantedColoredRoot(output, tier, Items.GREEN_DYE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.CACTUS), Ingredient.of(Items.GREEN_WOOL), Ingredient.of(Items.GREEN_CONCRETE), Ingredient.of(Items.GREEN_TERRACOTTA));
 
-        makeEnchantedColoredRoot(output, tier, Items.AMETHYST_SHARD, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.AMETHYST_SHARD, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.AMETHYST_BLOCK), Ingredient.of(Items.AMETHYST_BLOCK), Ingredient.of(Items.AMETHYST_BLOCK), Ingredient.of(Items.IRON_PICKAXE));
-        makeEnchantedColoredRoot(output, tier, Items.RAW_GOLD, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.RAW_GOLD, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.RAW_GOLD_BLOCK), Ingredient.of(Items.RAW_GOLD_BLOCK), Ingredient.of(Items.RAW_GOLD_BLOCK), Ingredient.of(Items.IRON_PICKAXE));
-        makeEnchantedColoredRoot(output, tier, Items.LAPIS_LAZULI, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.LAPIS_LAZULI, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.LAPIS_BLOCK), Ingredient.of(Items.LAPIS_BLOCK), Ingredient.of(Items.LAPIS_BLOCK), Ingredient.of(Items.IRON_PICKAXE));
-        makeEnchantedColoredRoot(output, tier, Items.REDSTONE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.REDSTONE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.REDSTONE_BLOCK), Ingredient.of(Items.REDSTONE_BLOCK), Ingredient.of(Items.REDSTONE_BLOCK), Ingredient.of(Items.IRON_PICKAXE));
-        makeEnchantedColoredRoot(output, tier, Items.GUNPOWDER, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.GUNPOWDER, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.TNT), Ingredient.of(Items.TNT), Ingredient.of(Items.TNT), Ingredient.of(Items.FLINT_AND_STEEL), Ingredient.of(Items.IRON_SWORD));
-        makeEnchantedColoredRoot(output, tier, Items.INK_SAC, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.INK_SAC, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.INK_SAC), Ingredient.of(Items.INK_SAC), Ingredient.of(Items.INK_SAC), Ingredient.of(Items.IRON_SWORD));
 
         previousTier = tier;
         tier = RainbowColor.LIGHT_BLUE;
 
-        
-                makeEnchantedColoredRoot(output, tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count, clover, clover,
-                        Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(
-                                RainbowColor.woolByTier(tier)));
 
-        makeEnchantedColoredRoot(output, tier, Items.LIGHT_BLUE_DYE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, ModItems.getArconiumEssence(tier).get(), durationTicks, clover, clover,
+                Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(
+                        RainbowColor.woolByTier(tier)));
+
+        makeEnchantedColoredRoot(output, tier, Items.LIGHT_BLUE_DYE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.BLUE_ORCHID), Ingredient.of(Items.LIGHT_BLUE_WOOL), Ingredient.of(Items.LIGHT_BLUE_CONCRETE), Ingredient.of(Items.LIGHT_BLUE_TERRACOTTA));
-        makeEnchantedColoredRoot(output, tier, Items.PRISMARINE_SHARD, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.PRISMARINE_SHARD, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.PRISMARINE_SHARD), Ingredient.of(Items.SEA_LANTERN), Ingredient.of(Items.DARK_PRISMARINE), Ingredient.of(Items.DIAMOND_SWORD));
-        makeEnchantedColoredRoot(output, tier, Items.PRISMARINE_CRYSTALS, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.PRISMARINE_CRYSTALS, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.PRISMARINE_CRYSTALS), Ingredient.of(Items.SEA_LANTERN), Ingredient.of(Items.SPONGE), Ingredient.of(Items.DIAMOND_SWORD));
-        makeEnchantedColoredRoot(output, tier, Items.OBSIDIAN, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.OBSIDIAN, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.OBSIDIAN), Ingredient.of(Items.LAVA_BUCKET), Ingredient.of(Items.CRYING_OBSIDIAN), Ingredient.of(Items.DIAMOND_PICKAXE));
-        makeEnchantedColoredRoot(output, tier, Items.SLIME_BALL, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.SLIME_BALL, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.SLIME_BLOCK), Ingredient.of(Items.SLIME_BLOCK), Ingredient.of(Items.SLIME_BLOCK), Ingredient.of(Items.DIAMOND_SWORD));
-        makeEnchantedColoredRoot(output, tier, Items.EMERALD, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.EMERALD, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.EMERALD_BLOCK), Ingredient.of(Items.EMERALD_BLOCK), Ingredient.of(Items.EMERALD_BLOCK), Ingredient.of(Items.FLETCHING_TABLE));
-        makeEnchantedColoredRoot(output, tier, Items.END_STONE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.END_STONE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.END_STONE), Ingredient.of(Items.END_STONE_BRICKS), Ingredient.of(Items.END_STONE_BRICK_WALL), Ingredient.of(Items.DIAMOND_PICKAXE));
-        makeEnchantedColoredRoot(output, tier, Items.CHORUS_FRUIT, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.CHORUS_FRUIT, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.CHORUS_FRUIT), Ingredient.of(Items.CHORUS_FLOWER), Ingredient.of(Items.END_STONE));
-        makeEnchantedColoredRoot(output, tier, Items.ENDER_PEARL, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.ENDER_PEARL, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.ENDER_PEARL), Ingredient.of(Items.ENDER_PEARL), Ingredient.of(Items.ENDER_PEARL), Ingredient.of(Items.DIAMOND_SWORD));
-        makeEnchantedColoredRoot(output, tier, Items.EXPERIENCE_BOTTLE, durationTicks, 4, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.EXPERIENCE_BOTTLE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.ENCHANTING_TABLE), Ingredient.of(Items.BOOKSHELF), Ingredient.of(Items.ANVIL), Ingredient.of(Items.GRINDSTONE), Ingredient.of(Items.LAPIS_BLOCK));
 
 
         previousTier = tier;
         tier = RainbowColor.BLUE;
 
-        
-                makeEnchantedColoredRoot(output, tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count, clover, clover,
-                        Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(
-                                RainbowColor.woolByTier(tier)));
 
-        makeEnchantedColoredRoot(output, tier, Items.BLUE_DYE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, ModItems.getArconiumEssence(tier).get(), durationTicks, clover, clover,
+                Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(
+                        RainbowColor.woolByTier(tier)));
+
+        makeEnchantedColoredRoot(output, tier, Items.BLUE_DYE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.CORNFLOWER), Ingredient.of(Items.BLUE_WOOL), Ingredient.of(Items.BLUE_CONCRETE), Ingredient.of(Items.BLUE_TERRACOTTA));
 
-        makeEnchantedColoredRoot(output, tier, Items.NETHER_WART, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.NETHER_WART, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.NETHER_WART), Ingredient.of(Items.RED_NETHER_BRICKS), Ingredient.of(Items.NETHER_WART_BLOCK));
-        makeEnchantedColoredRoot(output, tier, Items.WITHER_SKELETON_SKULL, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.WITHER_SKELETON_SKULL, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.WITHER_SKELETON_SKULL), Ingredient.of(Items.SOUL_SAND), Ingredient.of(Items.WITHER_ROSE));
-        makeEnchantedColoredRoot(output, tier, Items.BLAZE_ROD, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.BLAZE_ROD, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.BLAZE_ROD), Ingredient.of(Items.BLAZE_ROD), Ingredient.of(Items.BLAZE_ROD), Ingredient.of(Items.BLAZE_ROD), Ingredient.of(Items.BLAZE_ROD));
-        makeEnchantedColoredRoot(output, tier, Items.DIAMOND, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.DIAMOND, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.DIAMOND_HELMET), Ingredient.of(Items.DIAMOND_CHESTPLATE), Ingredient.of(Items.DIAMOND_LEGGINGS), Ingredient.of(Items.DIAMOND_BOOTS));
-        makeEnchantedColoredRoot(output, tier, Items.ECHO_SHARD, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.ECHO_SHARD, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.ECHO_SHARD), Ingredient.of(Items.SCULK_SENSOR), Ingredient.of(Items.SCULK_CATALYST), Ingredient.of(Items.BLUE_WOOL), Ingredient.of(Items.DIAMOND_SWORD));
 
         previousTier = tier;
         tier = RainbowColor.PURPLE;
 
-        
-                makeEnchantedColoredRoot(output, tier, ModItems.getArconiumEssence(tier).get(), durationTicks, count, clover, clover,
-                        Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(
-                                RainbowColor.woolByTier(tier)));
 
-        makeEnchantedColoredRoot(output, tier, Items.PURPLE_DYE, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, ModItems.getArconiumEssence(tier).get(), durationTicks, clover, clover,
+                Ingredient.of(ModBlocks.getArconiumTreeSapling(tier).get().asItem()), Ingredient.of(
+                        RainbowColor.woolByTier(tier)));
+
+        makeEnchantedColoredRoot(output, tier, Items.PURPLE_DYE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.RED_DYE), Ingredient.of(Items.BLUE_DYE), Ingredient.of(Items.PURPLE_WOOL), Ingredient.of(Items.PURPLE_CONCRETE), Ingredient.of(Items.PURPLE_TERRACOTTA));
 
-        makeEnchantedColoredRoot(output, tier, Items.NETHER_STAR, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.NETHER_STAR, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.NETHER_STAR), Ingredient.of(Items.SCULK_SENSOR), Ingredient.of(Items.SCULK_CATALYST), Ingredient.of(Items.PURPLE_WOOL), Ingredient.of(Items.NETHERITE_SWORD));
-        makeEnchantedColoredRoot(output, tier, Items.SHULKER_SHELL, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.SHULKER_SHELL, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.SHULKER_SHELL), Ingredient.of(Items.PURPLE_SHULKER_BOX), Ingredient.of(Items.NETHERITE_SWORD));
-        makeEnchantedColoredRoot(output, tier, Items.GHAST_TEAR, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.GHAST_TEAR, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.GHAST_TEAR), Ingredient.of(Items.END_CRYSTAL), Ingredient.of(Items.NETHERITE_SWORD));
-        makeEnchantedColoredRoot(output, tier, Items.ANCIENT_DEBRIS, durationTicks, count, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+        makeEnchantedColoredRoot(output, tier, Items.ANCIENT_DEBRIS, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.ANCIENT_DEBRIS), Ingredient.of(Items.NETHERITE_INGOT), Ingredient.of(Items.NETHERITE_HOE));
     }
 
@@ -486,17 +485,16 @@ public class ModRecipeProvider extends RecipeProvider {
      * Craft an enchanted colored root for a given item to be generated as part of the resource generation of the mod
      *
      * @param recipeOutput
-     * @param tier             Tier of colored root to make
-     * @param resourceItem     The item to be produced by the tree
-     * @param durationTicks    time the crafting recipe will take to make the root
-     * @param resourceGenCount Number of items to generate per resource generation event
+     * @param tier          Tier of colored root to make
+     * @param resourceItem  The item to be produced by the tree
+     * @param durationTicks time the crafting recipe will take to make the root
      * @param ingredients
      */
     private static void makeEnchantedColoredRoot(
-            RecipeOutput recipeOutput, RainbowColor tier, ItemLike resourceItem, int durationTicks, int resourceGenCount, Ingredient... ingredients) {
+            RecipeOutput recipeOutput, RainbowColor tier, ItemLike resourceItem, int durationTicks, Ingredient... ingredients) {
         Item root = ModItems.getColoredRoot(tier).get();
         ItemStack coloredRoot = new ItemStack(root);
-        ColoredRoot.setResourceItem(coloredRoot, resourceItem, resourceGenCount);
+        ColoredRoot.setResourceItem(coloredRoot, resourceItem);
         Ingredient[] newIngredients = Arrays.copyOf(ingredients, ingredients.length + 1);
         newIngredients[ingredients.length] = Ingredient.of(root);
         ResourceLocation id = enchantedRootId(tier, resourceItem);
@@ -504,7 +502,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     /**
-     * @param tier tier
+     * @param tier         tier
      * @param resourceItem Item to be produced by enchanted root
      * @return id for an enchanted root item
      */

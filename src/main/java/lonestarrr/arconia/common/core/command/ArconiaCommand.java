@@ -2,7 +2,6 @@ package lonestarrr.arconia.common.core.command;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import lonestarrr.arconia.common.item.ColoredRoot;
@@ -27,22 +26,19 @@ public class ArconiaCommand {
         dispatcher.register(
                 Commands.literal("arconia").then(
                         Commands.literal("enchant_root").then(
-                                Commands.argument("item_id", ItemArgument.item(context)).then(
-                                        Commands.argument("item_count", IntegerArgumentType.integer(1, 8))
-                                                .executes(ctx -> enchantRoot(
-                                                                ctx,
-                                                                ItemArgument.getItem(ctx, "item_id"),
-                                                                IntegerArgumentType.getInteger(ctx, "item_count")
-                                                        )
-                                                )
-                                )
+                                Commands.argument("item_id", ItemArgument.item(context))
+                                            .executes(ctx -> enchantRoot(
+                                                            ctx,
+                                                            ItemArgument.getItem(ctx, "item_id")
+                                                    )
+                                            )
                         )
                 )
         );
     }
 
     private static int enchantRoot(
-            CommandContext<CommandSourceStack> ctx, ItemInput itemInput, int itemCount) throws CommandSyntaxException {
+            CommandContext<CommandSourceStack> ctx, ItemInput itemInput) throws CommandSyntaxException {
         Player player = ctx.getSource().getPlayerOrException();
         Item resourceItem = itemInput.getItem();
 
@@ -53,7 +49,7 @@ public class ArconiaCommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        ColoredRoot.setResourceItem(rootItem, resourceItem, itemCount);
+        ColoredRoot.setResourceItem(rootItem, resourceItem);
         player.sendSystemMessage(Component.literal("Enchanted the colored root with resourceItem " + BuiltInRegistries.ITEM.getKey(resourceItem).toString()));
         return Command.SINGLE_SUCCESS;
     }

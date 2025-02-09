@@ -93,7 +93,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
                     // lowest tier root. Doesn't really matter, difficulty lies in crafting the thing the first time.
                     RainbowColor tier = RainbowColor.RED;
                     ItemStack root = new ItemStack(ModItems.getColoredRoot(tier).get());
-                    ColoredRoot.setResourceItem(root, removedResource.getItem(), removedResource.getCount());
+                    ColoredRoot.setResourceItem(root, removedResource.getItem());
                     player.setItemInHand(hand, root);
                     return InteractionResult.SUCCESS;
                 }
