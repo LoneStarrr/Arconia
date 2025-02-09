@@ -73,9 +73,13 @@ public class ItemProjector {
      * @param poseStack
      * @param buffer
      * @param light
-     * @param ticksPerRotation
+     * @param ticksPerRotation How fast to rotate
+     * @param distanceFromCenter How far from the center should the items render (e.g. radius)
+     * @param scale Item display scale factor
+     * @param itemsPerLevel How many items to display per y layer. If there are more items, a new y layer will be rendered above
+     * @param levelOffset Additional render offset (x+y) for each extra y layer
      */
-    public static void projectItemCarousel(List<ItemStack> items, PoseStack poseStack, MultiBufferSource buffer, int light, int ticksPerRotation, float distanceFromCenter, float scale) {
+    public static void projectItemCarousel(List<ItemStack> items, PoseStack poseStack, MultiBufferSource buffer, int light, int ticksPerRotation, float distanceFromCenter, float scale, int itemsPerLevel, float levelOffset) {
         final Vector3f yAxis = new Vector3f(0f, 1f, 0f);
 
         Level level = Minecraft.getInstance().level;
@@ -89,11 +93,15 @@ public class ItemProjector {
         poseStack.mulPose(new Quaternionf().fromAxisAngleDeg(yAxis, rotationCarousel));
 
         for (int i = 0; i < items.size(); i++) {
+            int yLevel = Math.floorDiv(i, itemsPerLevel);
+            int itemsOnThisLevel = Math.min(itemsPerLevel, items.size() - (yLevel * itemsPerLevel));
+            float yOffset = yLevel * levelOffset;
+            float xOffset = distanceFromCenter + (yLevel * levelOffset);
             ItemStack item = items.get(i);
-            float rotation = i * (360f / items.size());
+            float rotation = i * (360f / itemsOnThisLevel);
             poseStack.pushPose();
             poseStack.mulPose(new Quaternionf().fromAxisAngleDeg(yAxis, rotation));
-            poseStack.translate(distanceFromCenter, 0.0f, 0.0f);
+            poseStack.translate(xOffset, yOffset, 0.0f);
             poseStack.scale(scale, scale, scale);
             Minecraft.getInstance().getItemRenderer()
                     .renderStatic(item, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, level, 0);

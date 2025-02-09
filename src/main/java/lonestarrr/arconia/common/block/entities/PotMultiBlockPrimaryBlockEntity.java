@@ -33,7 +33,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     private long lastResourceGenerateTime = 0;
     private BlockPos storageBlockPos; // Location of naerby chest/storage
     private final List<ItemStack> generatedResources = new ArrayList<>();
-    private static final int maxResources = 8; // TODO make config item
+    private static final int maxResources = 64; // TODO make config item
 
     public PotMultiBlockPrimaryBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.POT_MULTIBLOCK_PRIMARY.get(), pos, state);

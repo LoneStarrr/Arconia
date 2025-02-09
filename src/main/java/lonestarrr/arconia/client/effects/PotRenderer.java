@@ -43,10 +43,12 @@ public class PotRenderer implements BlockEntityRenderer<PotMultiBlockPrimaryBloc
 
         poseStack.pushPose();
         // Render items centered above the pot. The entity is at the bottom of the 2-y-layer pot.
-        poseStack.translate(0.5, 2.5, 0.5);
-        float distanceFromCenter = 1.1f;
-        float scale = 0.9f;
-        ItemProjector.projectItemCarousel(resourceItems, poseStack, buffer, light, ticksPerRotation, distanceFromCenter, scale);
+        poseStack.translate(0.5, 2.1, 0.5);
+        final float distanceFromCenter = 1.1f;
+        final float scale = 0.6f;
+        final int itemsPerLevel = 32;
+        final float levelOffset = 0.25f; // Additional render offset (x+y) for each extra y layer
+        ItemProjector.projectItemCarousel(resourceItems, poseStack, buffer, light, ticksPerRotation, distanceFromCenter, scale, itemsPerLevel, levelOffset);
         poseStack.popPose();
     }
 }
