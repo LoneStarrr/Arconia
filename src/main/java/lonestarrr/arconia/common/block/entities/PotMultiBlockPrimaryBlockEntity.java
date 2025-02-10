@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common.block.entities;
 
+import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
 import lonestarrr.arconia.common.core.helper.InventoryHelper;
@@ -24,20 +25,16 @@ import java.util.List;
 import java.util.Optional;
 
 public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
-    private static final String TAG_HAT_POSITIONS = "hat_positions";
     private static final String TAG_RESOURCES = "resources";
-    public static final int STORAGE_SCAN_INTERVAL = 100; // How frequently to search for nearby storage
 
-    private long lastIntervalGameTime = 0;
-    private long lastStorageScanTime = 0;
     private long lastResourceGenerateTime = 0;
+    private RainbowColor detectedTier = null;
     private BlockPos storageBlockPos; // Location of naerby chest/storage
     private final List<ItemStack> generatedResources = new ArrayList<>();
     private static final int maxResources = 64; // TODO make config item
 
     public PotMultiBlockPrimaryBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.POT_MULTIBLOCK_PRIMARY.get(), pos, state);
-        // TODO check for valid structure at an interval, if not, destroy ourselves
     }
 
     public @Nonnull List<ItemStack> getGeneratedResources() { return generatedResources; }
@@ -64,7 +61,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     }
 
     public RainbowColor getTier() {
-        return RainbowColor.RED; // TODO (re)implement
+        return detectedTier;
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, PotMultiBlockPrimaryBlockEntity blockEntity) {
@@ -76,7 +73,20 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             return;
         }
 
-        locateNearbyStorage(level);
+        if (level.getGameTime() % 84L == 0) {
+            if (storageBlockPos == null) {
+                storageBlockPos = locateNearbyStorage();
+            }
+
+            if (storageBlockPos == null) {
+                BlockPos particlePos = this.worldPosition.above(2);
+                Vec3 particleVec = new Vec3(particlePos.getX(), particlePos.getY(), particlePos.getZ()).add(0.5, 1.5, 0.5);
+                ServerLevel sLevel = (ServerLevel) level;
+                sLevel.sendParticles(ParticleTypes.POOF, particleVec.x, particleVec.y, particleVec.z, 0, 0, 0, 0, 0);
+            } else {
+                this.detectedTier = detectTier();
+            }
+        }
 
         if (storageBlockPos == null) {
             return;
@@ -90,8 +100,16 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             return;
         }
 
-        RainbowColor tier = RainbowColor.RED; /// TODO tiering
+        RainbowColor tier = detectedTier == null ? RainbowColor.RED : detectedTier;
+
         int interval = ConfigHandler.COMMON.potGenerationInterval.get(tier).get();
+        int count = ConfigHandler.COMMON.potGenerationCount.get(tier).get();
+
+        if (detectedTier == null) {
+            // TODO A bit weird to not put this in the config, I should probably fix that
+            interval = interval * 2;
+            count = count / 2;
+        }
         long now = level.getGameTime();
         if (now - lastResourceGenerateTime < interval) {
             return;
@@ -106,7 +124,6 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         }
 
         ItemStack toSend = toGenerate.copy();
-        int count = ConfigHandler.COMMON.potGenerationCount.get(tier).get();
         int sendCount = Math.min(count, toSend.getMaxStackSize());
         toSend.setCount(sendCount);
         ItemStack left = InventoryHelper.insertItem(inventory, toSend, false);
@@ -121,20 +138,66 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         }
     }
 
-    private void locateNearbyStorage(Level level) {
-        if (storageBlockPos == null && level.getGameTime() - lastStorageScanTime >= STORAGE_SCAN_INTERVAL) {
-            final int searchRadius = 5;
-            Optional<BlockPos> storage = BlockPos.findClosestMatch(this.worldPosition, searchRadius, searchRadius, pos -> InventoryHelper.getInventory(level, pos, Direction.UP) != null);
-            storage.ifPresent(blockPos -> this.storageBlockPos = blockPos);
-            this.lastStorageScanTime = level.getGameTime();
+    private BlockPos locateNearbyStorage() {
+        final int searchRadius = 5;
 
-            if (storageBlockPos == null) {
-                BlockPos particlePos = this.worldPosition.above(2);
-                Vec3 particleVec = new Vec3(particlePos.getX(), particlePos.getY(), particlePos.getZ()).add(0.5, 1.5, 0.5);
-                ServerLevel sLevel = (ServerLevel) level;
-                sLevel.sendParticles(ParticleTypes.POOF, particleVec.x, particleVec.y, particleVec.z, 0, 0, 0, 0, 0);
+        if (level == null) {
+            return null;
+        }
+
+        Optional<BlockPos> storage = BlockPos.findClosestMatch(this.worldPosition, searchRadius, searchRadius, pos -> InventoryHelper.getInventory(level, pos, Direction.UP) != null);
+        return storage.orElse(null);
+    }
+
+    /**
+     * Detect the tier for this pot of gold. Tiering is determined by rings of rainbow grass in color order surrounding the pot.
+     * A ring is square, and each tier is 2 blocks wider in diameter than the previous.
+     * The first ring is a 5x5 ring.
+     * @return The detected tier, or null of nu tier was detected.
+     */
+    private RainbowColor detectTier() {
+        BlockPos centerPos = this.worldPosition.below(); // check ground level directly under pot
+        RainbowColor detectedTier = null;
+
+        for (RainbowColor tier: RainbowColor.values()) {
+            int ringDiameter = tier.getTier() * 2 + 3; // 5, 7, .., 17
+            BlockState bs = ModBlocks.getRainbowGrassBlock(tier).get().defaultBlockState();
+            if (!detectRing(centerPos, ringDiameter, bs)) {
+                break;
+            } else {
+                detectedTier = tier;
+            }
+
+        }
+
+        return detectedTier;
+    }
+
+    private boolean detectRing(BlockPos centerPos, int diameter, BlockState ringBlock) {
+        int transformX = centerPos.getX() - ((diameter - (diameter % 2)) / 2);
+        int transformZ = centerPos.getZ() - ((diameter - (diameter % 2)) / 2);
+        boolean ringBlocksMatch = true;
+
+        if (level == null) {
+            return false;
+        }
+
+        for (int z = 0; z < diameter; z++) {
+            int xIncrement = (z == 0 || z == diameter - 1) ? 1 : diameter - 1;
+            for (int x = 0; x < diameter; x += xIncrement) {
+                BlockPos toCheck = new BlockPos(x + transformX, centerPos.getY(), z + transformZ);
+                BlockState bs = level.getBlockState(toCheck);
+                if (!bs.equals(ringBlock)) {
+                    ringBlocksMatch = false;
+                    break;
+                }
+            }
+            if (!ringBlocksMatch) {
+                break;
             }
         }
+
+        return ringBlocksMatch;
     }
 
     public void writePacketNBT(CompoundTag tag) {

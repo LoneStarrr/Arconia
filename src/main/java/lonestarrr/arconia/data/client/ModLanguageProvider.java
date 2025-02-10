@@ -124,8 +124,8 @@ public class ModLanguageProvider extends LanguageProvider {
         // Pot multiblock
         add("block.arconia.pot_multiblock_secondary", "Pot of Gold");
         add("block.arconia.pot_multiblock_primary", "Pot of Gold");
-        add("arconia.block.pot_multiblock.no_tier", "The pot is not linked to a hat that sits on a gold arconium block");
-        add("arconia.block.pot_multiblock.show_tier", "The pot's tier is %s");
+        add("arconia.block.pot_multiblock.no_tier", "The pot is at the slowest tier");
+        add("arconia.block.pot_multiblock.show_tier", "The pot's detected tier is %s");
         // world builder
         add("arconia.block.world_builder.in_progress", "The world builder is a little busy right now, please try again later");
         add("arconia.block.world_builder.start_build", "Starting the builder");
