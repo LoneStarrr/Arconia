@@ -85,8 +85,6 @@ public class ModLanguageProvider extends LanguageProvider {
                 { "advancement.arconia.main.red_root_of_essence.desc", "Imbue magical properties onto a tree root using the altar" },
                 { "advancement.arconia.main.pot_of_gold.title", "This has pot-ential" },
                 { "advancement.arconia.main.pot_of_gold.desc", "Build a pot of gold" },
-                { "advancement.arconia.main.hat.title", "I've hat it with these puns" },
-                { "advancement.arconia.main.hat.desc", "Craft a leprechaun hat" },
                 { "advancement.arconia.main.red_arconium_essence.title", "Arconium Essence" },
                 { "advancement.arconia.main.red_arconium_essence.desc", "Get your first red arconium essence" },
                 { "advancement.arconia.main.red_arconium_ingot.title", "Arconium Ingots" },
