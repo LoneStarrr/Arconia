@@ -2,6 +2,7 @@ package lonestarrr.arconia.data.client;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.item.ArconiumEssence;
 import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -50,7 +51,7 @@ public class ModItemModelProvider extends ItemModelProvider {
                 .texture("layer0", prefix("item/arconium_essence"));
 
         for (RainbowColor color: RainbowColor.values()) {
-            Supplier<Item> item = ModItems.getArconiumEssence(color);
+            Supplier<ArconiumEssence> item = ModItems.getArconiumEssence(color);
             String name = BuiltInRegistries.ITEM.getKey(item.get()).getPath();
             withExistingParent(name, prefix(modelName));
         }

@@ -34,22 +34,22 @@ public class CloverStaff extends Item {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         BlockPos pos = context.getClickedPos();
-        Level world = context.getLevel();
+        Level level = context.getLevel();
         Player player = context.getPlayer();
         ItemStack staff = context.getItemInHand();
 
-        BlockState bs = world.getBlockState(pos);
+        BlockState bs = level.getBlockState(pos);
         if (bs.getBlock() == PotMultiBlockPrimary.INSIDE_BLOCK) {
-            return attemptFormMultiblock(player, world, pos) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+            return attemptFormMultiblock(player, level, pos) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
         } else if (bs.getBlock() == ModBlocks.potMultiBlockSecondary.get()) {
-            BlockPos potPos = storePotCoordinate(world, pos, staff);
+            BlockPos potPos = storePotCoordinate(level, pos, staff);
             if (potPos != null) {
-                if (!world.isClientSide) {
+                if (!level.isClientSide) {
                     context.getPlayer().sendSystemMessage(Component.translatable(LANG_PREFIX + ".selectpot.success", potPos.toShortString()));
                 }
                 return InteractionResult.SUCCESS;
             } else {
-                if (!world.isClientSide) {
+                if (!level.isClientSide) {
                     context.getPlayer().sendSystemMessage(Component.translatable(LANG_PREFIX + ".selectpot.failed"));
                 }
             }

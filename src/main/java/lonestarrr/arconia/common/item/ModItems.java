@@ -3,7 +3,6 @@ package lonestarrr.arconia.common.item;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.ItemNames;
 import lonestarrr.arconia.common.core.RainbowColor;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
@@ -24,7 +23,7 @@ public final class ModItems {
     public static final DeferredItem<Item> threeLeafClover = ITEMS.registerSimpleItem(ItemNames.THREE_LEAF_CLOVER);
     public static final DeferredItem<Item> magicInABottle = ITEMS.register(ItemNames.MAGIC_IN_A_BOTTLE, () -> new MagicInABottle(defaultBuilder()));
 
-    private static final Map<RainbowColor, DeferredItem<Item>> arconiumEssences = new HashMap<>();
+    private static final Map<RainbowColor, DeferredItem<ArconiumEssence>> arconiumEssences = new HashMap<>();
     private static final Map<RainbowColor, DeferredItem<ColoredRoot>> coloredRoots = new HashMap<>();
     private static final Map<RainbowColor, DeferredItem<Item>> arconiumIngots = new HashMap<>();
 
@@ -39,7 +38,7 @@ public final class ModItems {
         final Item.Properties builder = defaultBuilder();
 
         for (RainbowColor tier: RainbowColor.values()) {
-            arconiumEssences.put(tier, ITEMS.registerSimpleItem(tier.getTierName() + ItemNames.ARCONIUM_ESSENCE_SUFFIX));
+            arconiumEssences.put(tier, ITEMS.register(tier.getTierName() + ItemNames.ARCONIUM_ESSENCE_SUFFIX, () -> new ArconiumEssence(builder, tier)));
             coloredRoots.put(tier, ITEMS.register(tier.getTierName() + ItemNames.COLORED_TREE_ROOT_SUFFIX, () -> new ColoredRoot(builder, tier)));
             arconiumIngots.put(tier, ITEMS.registerSimpleItem(tier.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX));
         }
@@ -76,7 +75,7 @@ public final class ModItems {
         arconiumSickles.put(tier, ITEMS.register(tier.getTierName() + ItemNames.SICKLE_SUFFIX, hoe));
     }
 
-    public static DeferredItem<Item> getArconiumEssence(RainbowColor tier) {
+    public static DeferredItem<ArconiumEssence> getArconiumEssence(RainbowColor tier) {
         return arconiumEssences.get(tier);
     }
 

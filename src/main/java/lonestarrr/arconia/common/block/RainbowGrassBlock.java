@@ -16,9 +16,14 @@ public class RainbowGrassBlock extends GrassBlock implements BlockColor {
     private RainbowColor tier;
 
     public RainbowGrassBlock(RainbowColor color) {
-        super(BlockBehaviour.Properties.of().mapColor(MapColor.GRASS).randomTicks().strength(0.6F).sound(SoundType.GRASS));
+        super(BlockBehaviour.Properties.of().mapColor(MapColor.GRASS).strength(0.6F).sound(SoundType.GRASS));
         this.tier = color;
     }
+
+    public RainbowColor getTier() {
+        return tier;
+    }
+
 
     @Override
     public int getColor(

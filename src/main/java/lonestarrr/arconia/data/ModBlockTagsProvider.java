@@ -36,6 +36,8 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
             tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.worldBuilder.get());
             tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.pedestal.get());
 
+            tag(BlockTags.MINEABLE_WITH_SHOVEL).add(ModBlocks.getRainbowGrassBlock(tier).get());
+
             tag(BlockTags.LEAVES).add(ModBlocks.getArconiumTreeLeaves(tier).get());
             tag(BlockTags.SAPLINGS).add(ModBlocks.getArconiumTreeSapling(tier).get());
         }
