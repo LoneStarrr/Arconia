@@ -31,7 +31,7 @@ public class ArconiumTreeSapling extends SaplingBlock implements BlockColor {
             trees.put(tier, new TreeGrower(
                     tier.getTierName() + "_arconium_tree",
                     Optional.empty(),
-                    Optional.of(ModFeatures.getArconiumTreeConfigured(RainbowColor.RED)),
+                    Optional.of(ModFeatures.getArconiumTreeConfigured(tier)),
                     Optional.empty()
             ));
         }

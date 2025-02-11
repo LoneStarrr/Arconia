@@ -3,10 +3,10 @@
   "durationTicks": 60,
   "ingredients": [
     {
-      "item": "minecraft:emerald"
+      "item": "minecraft:lime_candle"
     },
     {
-      "item": "minecraft:emerald"
+      "item": "minecraft:emerald_block"
     },
     {
       "item": "minecraft:waxed_weathered_copper"

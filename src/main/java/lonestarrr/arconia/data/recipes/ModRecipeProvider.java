@@ -14,9 +14,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.common.crafting.NBTIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -157,10 +160,6 @@ public class ModRecipeProvider extends RecipeProvider {
                 Ingredient.of(Items.BONE), Ingredient.of(Items.ARROW), Ingredient.of(Items.SHIELD), Ingredient.of(Items.IRON_SWORD));
         makeEnchantedColoredRoot(output, tier, Items.WHITE_WOOL, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.MUTTON), Ingredient.of(Items.WHITE_WOOL), Ingredient.of(Items.BLACK_WOOL), Ingredient.of(Items.SHEARS));
-        makeEnchantedColoredRoot(output, tier, Items.HONEYCOMB, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
-                Ingredient.of(Items.HONEYCOMB_BLOCK), Ingredient.of(Items.HONEYCOMB_BLOCK), Ingredient.of(Items.HONEYCOMB_BLOCK), Ingredient.of(Items.CAMPFIRE), Ingredient.of(Items.SHEARS));
-        makeEnchantedColoredRoot(output, tier, Items.HONEY_BOTTLE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
-                Ingredient.of(Items.HONEY_BLOCK), Ingredient.of(Items.HONEY_BLOCK), Ingredient.of(Items.HONEY_BLOCK), Ingredient.of(Items.CAMPFIRE), Ingredient.of(Items.GLASS_BOTTLE));
 
         // Building blocks
         makeEnchantedColoredRoot(output, tier, Items.NETHER_BRICK, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
@@ -201,6 +200,12 @@ public class ModRecipeProvider extends RecipeProvider {
                 Ingredient.of(Items.TNT), Ingredient.of(Items.TNT), Ingredient.of(Items.TNT), Ingredient.of(Items.FLINT_AND_STEEL), Ingredient.of(Items.IRON_SWORD));
         makeEnchantedColoredRoot(output, tier, Items.INK_SAC, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
                 Ingredient.of(Items.INK_SAC), Ingredient.of(Items.INK_SAC), Ingredient.of(Items.INK_SAC), Ingredient.of(Items.IRON_SWORD));
+        // This one's green tier because you need to do bees to unlock the green ingots first, and after the first one it can be easier
+        makeEnchantedColoredRoot(output, tier, Items.HONEYCOMB, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+                Ingredient.of(Items.HONEYCOMB_BLOCK), Ingredient.of(Items.HONEYCOMB_BLOCK), Ingredient.of(Items.HONEYCOMB_BLOCK), Ingredient.of(Items.CAMPFIRE), Ingredient.of(Items.SHEARS));
+        makeEnchantedColoredRoot(output, tier, Items.HONEY_BOTTLE, durationTicks, Ingredient.of(ModItems.getArconiumIngot(tier).get()), clover,
+                Ingredient.of(Items.HONEY_BLOCK), Ingredient.of(Items.HONEY_BLOCK), Ingredient.of(Items.HONEY_BLOCK), Ingredient.of(Items.CAMPFIRE), Ingredient.of(Items.GLASS_BOTTLE));
+
 
         previousTier = tier;
         tier = RainbowColor.LIGHT_BLUE;
@@ -342,8 +347,8 @@ public class ModRecipeProvider extends RecipeProvider {
                 new PedestalRecipe(
                         new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
                         60,
-                        Ingredient.of(Items.EMERALD),
-                        Ingredient.of(Items.EMERALD),
+                        Ingredient.of(Items.LIME_CANDLE),
+                        Ingredient.of(Items.EMERALD_BLOCK),
                         Ingredient.of(Items.WAXED_WEATHERED_COPPER),
                         Ingredient.of(Items.MELON),
                         essence,
@@ -361,8 +366,8 @@ public class ModRecipeProvider extends RecipeProvider {
                 new PedestalRecipe(
                         new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
                         60,
-                        Ingredient.of(Items.DIAMOND),
-                        Ingredient.of(Items.DIAMOND),
+                        Ingredient.of(Items.SOUL_CAMPFIRE),
+                        Ingredient.of(Items.DIAMOND_BLOCK),
                         Ingredient.of(Items.OBSIDIAN),
                         Ingredient.of(Items.BLUE_ICE),
                         essence,
@@ -380,10 +385,10 @@ public class ModRecipeProvider extends RecipeProvider {
                 new PedestalRecipe(
                         new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
                         60,
-                        Ingredient.of(Items.WARPED_NYLIUM),
-                        Ingredient.of(Items.PRISMARINE),
-                        Ingredient.of(Items.NETHERITE_SCRAP),
-                        Ingredient.of(Items.BLAZE_ROD),
+                        NBTIngredient.of(true, (PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.AWKWARD))),
+                        Ingredient.of(Items.TUBE_CORAL_BLOCK),
+                        Ingredient.of(Items.NETHERITE_INGOT),
+                        Ingredient.of(Items.NETHER_STAR),
                         essence,
                         essence,
                         essence,
@@ -394,6 +399,7 @@ public class ModRecipeProvider extends RecipeProvider {
 
         color = RainbowColor.PURPLE;
         essence = Ingredient.of(ModItems.getArconiumEssence(color).get());
+
         output.accept(
                 id(color.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX),
                 new PedestalRecipe(
@@ -402,7 +408,7 @@ public class ModRecipeProvider extends RecipeProvider {
                         Ingredient.of(Items.SHULKER_SHELL),
                         Ingredient.of(Items.DRAGON_BREATH),
                         Ingredient.of(Items.PURPUR_BLOCK),
-                        Ingredient.of(Items.END_ROD),
+                        NBTIngredient.of(true, (PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), Potions.REGENERATION))),
                         essence,
                         essence,
                         essence,

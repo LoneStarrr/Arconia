@@ -12,7 +12,10 @@
       "item": "minecraft:purpur_block"
     },
     {
-      "item": "minecraft:end_rod"
+      "type": "neoforge:nbt",
+      "item": "minecraft:lingering_potion",
+      "strict": true,
+      "tag": "{Potion:\"minecraft:regeneration\"}"
     },
     {
       "item": "arconia:purple_arconium_essence"

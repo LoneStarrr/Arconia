@@ -59,7 +59,7 @@ public class ItemProjector {
         final float HALF_INTERVAL = SCALE_INTERVAL / 2;
         float scale = (ticks % HALF_INTERVAL) / HALF_INTERVAL;
         scale = (ticks % SCALE_INTERVAL < HALF_INTERVAL ? scale: 1 - scale);
-        scale = 0.5f + 0.1f * scale;
+        scale = 0.75f + 0.25f * scale;
         poseStack.scale(scale, scale, scale);
 
         Minecraft.getInstance().getItemRenderer()

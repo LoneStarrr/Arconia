@@ -3,16 +3,19 @@
   "durationTicks": 60,
   "ingredients": [
     {
-      "item": "minecraft:warped_nylium"
+      "type": "neoforge:nbt",
+      "item": "minecraft:potion",
+      "strict": true,
+      "tag": "{Potion:\"minecraft:awkward\"}"
     },
     {
-      "item": "minecraft:prismarine"
+      "item": "minecraft:tube_coral_block"
     },
     {
-      "item": "minecraft:netherite_scrap"
+      "item": "minecraft:netherite_ingot"
     },
     {
-      "item": "minecraft:blaze_rod"
+      "item": "minecraft:nether_star"
     },
     {
       "item": "arconia:blue_arconium_essence"
