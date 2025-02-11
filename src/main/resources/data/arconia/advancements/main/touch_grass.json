@@ -1,0 +1,22 @@
+{
+  "display": {
+    "icon": {
+      "item": "arconia:red_rainbow_grass_block"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.touch_grass.title"
+    },
+    "description": {
+      "translate": "advancement.arconia.main.touch_grass.desc"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "arconia:main/red_arconium_essence",
+  "criteria": {
+    "touch_grass": {
+      "trigger": "arconia:touch_grass"
+    }
+  }
+}
