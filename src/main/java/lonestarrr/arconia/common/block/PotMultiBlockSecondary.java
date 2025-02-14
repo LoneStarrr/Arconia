@@ -84,49 +84,53 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
         }
 
         if (itemUsed.isEmpty()) {
-            // If the player is crouching with an empty main hand, unset a previous set resource, else, show info on the pot
-
-            if (player.isCrouching()) {
-                ItemStack removedResource = primaryBE.removeResourceGenerated();
-                if (!removedResource.isEmpty()) {
-                    // I didn't track the tier of the resource when setting it. For now, let's just always give the
-                    // lowest tier root. Doesn't really matter, difficulty lies in crafting the thing the first time.
-                    RainbowColor tier = RainbowColor.RED;
-                    ItemStack root = new ItemStack(ModItems.getColoredRoot(tier).get());
-                    ColoredRoot.setResourceItem(root, removedResource.getItem());
-                    player.setItemInHand(hand, root);
-                    return InteractionResult.SUCCESS;
-                }
+            RainbowColor potTier = primaryBE.getTier();
+            if (potTier == null) {
+                player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.no_tier"));
             } else {
-                RainbowColor potTier = primaryBE.getTier();
-                if (potTier == null) {
-                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.no_tier"));
-                } else {
-                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.show_tier", potTier.getTierName()));
-                }
-                return InteractionResult.SUCCESS;
+                player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.show_tier", potTier.getTierName()));
             }
-        }
-
-        if (itemUsed.getItem() instanceof ColoredRoot) {
+            return InteractionResult.SUCCESS;
+        } else if (itemUsed.getItem() instanceof ColoredRoot) {
             ItemStack resource = ColoredRoot.getResourceItem(itemUsed);
 
             if (resource.isEmpty()) {
-                player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_empty"));
-                return InteractionResult.FAIL;
+                /* Players can remove treasure being extracted by using a single non-imbued root in their main hand.
+                 * An item in the off-hand can be used to remove specific treasure.
+                 */
+                ItemStack offhandItem = player.getOffhandItem();
+                ItemStack removedResource;
+                if (offhandItem.isEmpty()) {
+                    // no offhand item -> pop off the last treasure
+                    removedResource = primaryBE.removeResourceGenerated(ItemStack.EMPTY);
+                    if (removedResource.isEmpty()) {
+                        player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_none_set"));
+                        return InteractionResult.FAIL;
+                    }
+                } else {
+                    // pop off matching treasure if offhand item matches
+                    removedResource = primaryBE.removeResourceGenerated(offhandItem);
+                }
+
+                if (removedResource.isEmpty()) {
+                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_not_found"));
+                    return InteractionResult.FAIL;
+                } else {
+                    ItemStack root = makeImbuedRootFromItem((ColoredRoot)itemUsed.getItem(), removedResource);
+                    itemUsed.shrink(1);
+                    if (!player.getInventory().add(root)) {
+                        player.drop(root, false);
+                    }
+                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_success", removedResource.getItem().getDescription()));
+                    return InteractionResult.SUCCESS;
+                }
             } else {
+                // Using an imbued root on the pot tells it to extract treasure
                 if (!primaryBE.addResourceGenerated(resource)) {
                     player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_full"));
                     return InteractionResult.FAIL;
                 } else {
-                    if (itemUsed.getCount() > 1) {
-                        itemUsed.shrink(1);
-
-                        player.setItemInHand(hand, itemUsed);
-                    } else {
-                        player.setItemInHand(hand, ItemStack.EMPTY);
-                    }
-
+                    itemUsed.shrink(1);
                     player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_success"));
                     return InteractionResult.SUCCESS;
                 }
@@ -135,6 +139,16 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
         }
 
         return InteractionResult.PASS;
+    }
+
+    private ItemStack makeImbuedRootFromItem(ColoredRoot root, ItemStack resource) {
+        /* This allows treasure to be set on any color root, but that is ok. The difficulty lies in imbuing the root
+         * for the first time, which is what gates the more difficult treasure.
+         */
+        RainbowColor tier = RainbowColor.RED;
+        ItemStack rootStack = new ItemStack(root);
+        ColoredRoot.setResourceItem(rootStack, resource.getItem());
+        return rootStack;
     }
 
     @Override

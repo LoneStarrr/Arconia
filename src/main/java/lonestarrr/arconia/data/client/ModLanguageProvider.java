@@ -113,11 +113,14 @@ public class ModLanguageProvider extends LanguageProvider {
         add("jei.arconia.recipe_category.enchanted_root", "Pot of Gold");
         // clover staff messages
         add("arconia.item.cloverstaff.selectpot.success", "Stored coordinate of the pot of gold at %s");
-        add("arconia.item.cloverstaff.selectpot.failed", "Invalid pot of gold multiblock structure?");
-        // pot resource setting / unsetting messages
-        add("arconia.block.pot_multiblock.set_resource_empty", "The root needs to be enchanted through the pedestal ritual first");
-        add("arconia.block.pot_multiblock.set_resource_full", "The pot cannot generate any more resources");
+        add("arconia.item.cloverstaff.selectpot.failed", "Invalid pot of gold multi-block structure?");
+        // pot treasure setting / unsetting messages
+        add("arconia.block.pot_multiblock.set_resource_empty", "You either need to use an imbued root to extract new treasure, or use a plain root in your main hand and an item in your offhand matching the treasure you do not want the pot to extract anymore");
+        add("arconia.block.pot_multiblock.set_resource_full", "The pot cannot extract any more treasure");
         add("arconia.block.pot_multiblock.set_resource_success", "More riches will be collected by the pot");
+        add("arconia.block.pot_multiblock.remove_resource_not_found", "The item in your offhand is not treasure currently being extracted by the pot");
+        add("arconia.block.pot_multiblock.remove_resource_none_set", "The pot is not extracting any treasure. If you want to extract new treasure, you will need to imbue your root using the pedestal ritual");
+        add("arconia.block.pot_multiblock.remove_resource_success", "The pot will no longer extract %s");
 
         // pedestal ritual messages
         add("arconia.block.center_pedestal.ritual_start_failed", "Failed to start ritual. Perhaps some items are missing?");

@@ -10,15 +10,15 @@
         },
         {
             "type": "patchouli:text",
-            "text": "First, they put a chest near the pot of gold. Then, they would use an imbued tree root on the pot. I wrote an entry about those on another page. The root makes the pot dispense a specific desired item. Doing so will visualize that item over the pot, a nifty trick if you ask me."
+            "text": "First, they put a chest near the pot of gold. Then, they would use one or more imbued tree roots on the pot. I wrote an entry about how to imbue those on another page. The root makes the pot dispense a specific desired item. Doing so will visualize that item over the pot, a nifty trick if you ask me."
         },
         {
             "type": "patchouli:text",
-            "text": "I also noticed if the greedy little critters pulled too much treasure and the chest would fill up, black smoke particles would show above the pot. The lack of a nearby chest seemed to have the same effect."
+            "text": "You can make the pot stop extracting any one of its items by clicking it with a non-imbued root and an empty offhand. If there are multiple items being extracted, you can remove a specific item by putting it in your offhand along with the non-imbued root in your main hand. In either case, you will get an imbued root back for that item."
         },
         {
             "type": "patchouli:text",
-            "text": "They wouldn't limit themselves to just a single type of treasure either. They used multiple roots on the pot, and it seemed to be willingly dispense a good amount of unique items. I also saw them crouching and touch the pot with both hands empty to get their tree roots back, one at a time."
+            "text": "I also noticed that if the greedy little critters pulled too much treasure, and the chest would fill up, black smoke particles would show above the pot. The lack of a nearby chest seemed to have the same effect."
         }
     ]
 }

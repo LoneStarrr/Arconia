@@ -49,15 +49,31 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         return true;
     }
 
-    public @Nonnull ItemStack removeResourceGenerated() {
+    public @Nonnull ItemStack removeResourceGenerated(ItemStack resourceToRemove) {
         if (generatedResources.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        ItemStack resourceItem = generatedResources.get(generatedResources.size() - 1);
-        generatedResources.remove(generatedResources.size() - 1);
+
+        if (resourceToRemove.isEmpty()) {
+            ItemStack resourceItem = generatedResources.get(generatedResources.size() - 1);
+            removeResourceGeneratedAtIndex(generatedResources.size() - 1);
+            return resourceItem;
+        } else {
+            for (int idx = 0; idx < generatedResources.size(); idx++) {
+                ItemStack item = generatedResources.get(idx);
+                if (ItemStack.isSameItemSameTags(item, resourceToRemove)) {
+                    removeResourceGeneratedAtIndex(idx);
+                    return item;
+                }
+            }
+            return ItemStack.EMPTY;
+        }
+    }
+
+    private void removeResourceGeneratedAtIndex(int idx) {
+        generatedResources.remove(idx);
         setChanged();
         updateClient();
-        return resourceItem;
     }
 
     public RainbowColor getTier() {
