@@ -22,13 +22,18 @@
     }
   ],
   "output": {
-    "Count": 1,
-    "id": "arconia:blue_colored_tree_root",
-    "tag": {
-      "item": {
-        "Count": 1,
-        "id": "minecraft:nether_wart"
-      }
-    }
+    "components": {
+      "minecraft:container": [
+        {
+          "item": {
+            "count": 1,
+            "id": "minecraft:nether_wart"
+          },
+          "slot": 0
+        }
+      ]
+    },
+    "count": 1,
+    "id": "arconia:blue_colored_tree_root"
   }
 }

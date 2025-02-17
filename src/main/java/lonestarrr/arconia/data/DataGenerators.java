@@ -27,7 +27,7 @@ public class DataGenerators {
 
 
         if (event.includeServer()) {
-            gen.addProvider(event.includeServer(), new ModRecipeProvider(output));
+            gen.addProvider(event.includeServer(), new ModRecipeProvider(output, event.getLookupProvider()));
             gen.addProvider(event.includeServer(), new ModBlockTagsProvider(output, lookupProvider, helper));
             gen.addProvider(event.includeServer(), new BiomeModifiers(output, lookupProvider));
         }

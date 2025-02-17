@@ -4,21 +4,20 @@ import lonestarrr.arconia.common.Arconia;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handlers.ClientPayloadHandler;
-import net.neoforged.neoforge.network.handlers.ServerPayloadHandler;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class ModPackets {
 
-    public static void registerPackets(final RegisterPayloadHandlerEvent event) {
-        final IPayloadRegistrar registrar = event.registrar(Arconia.MOD_ID);
-        registrar.play(
-            PotItemTransferPacket.ID,
-            PotItemTransferPacket::new, handler -> handler.client(PotItemTransferPacket.Handler::handleClient)
+    public static void registerPackets(final RegisterPayloadHandlersEvent event) {
+        final PayloadRegistrar registrar = event.registrar(Arconia.MOD_ID);
+        registrar.playToClient(
+            PotItemTransferPacket.TYPE,
+            PotItemTransferPacket.STREAM_CODEC,
+            PotItemTransferPacket.Handler::handleClient
         );
     }
 
@@ -28,9 +27,9 @@ public class ModPackets {
      * @param pos
      * @param toSend Packet to send
      */
-    public static void sendToNearby(Level level, BlockPos pos, CustomPacketPayload toSend) {
+    public static void sendToNearby(ServerLevel level, BlockPos pos, CustomPacketPayload toSend) {
         if (!level.isClientSide()) {
-            PacketDistributor.TRACKING_CHUNK.with(level.getChunkAt(pos)).send(toSend);
+            PacketDistributor.sendToPlayersNear(level, null, pos.getX(), pos.getY(), pos.getZ(), 64, toSend);
         }
     }
 }

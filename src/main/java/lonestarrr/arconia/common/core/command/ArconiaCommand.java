@@ -49,7 +49,7 @@ public class ArconiaCommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        ColoredRoot.setResourceItem(rootItem, resourceItem);
+        ColoredRoot.setResourceItem(rootItem, new ItemStack(resourceItem));
         player.sendSystemMessage(Component.literal("Enchanted the colored root with resourceItem " + BuiltInRegistries.ITEM.getKey(resourceItem).toString()));
         return Command.SINGLE_SUCCESS;
     }

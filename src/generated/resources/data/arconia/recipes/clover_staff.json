@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "arconia:four_leaf_clover"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "pattern": [
+    "  C",
+    " S ",
+    "S  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "arconia:clover_staff"
+  }
+}

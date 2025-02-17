@@ -8,6 +8,7 @@ import lonestarrr.arconia.common.network.ModPackets;
 import lonestarrr.arconia.common.network.PotItemTransferPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -61,7 +63,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         } else {
             for (int idx = 0; idx < generatedResources.size(); idx++) {
                 ItemStack item = generatedResources.get(idx);
-                if (ItemStack.isSameItemSameTags(item, resourceToRemove)) {
+                if (ItemStack.isSameItemSameComponents(item, resourceToRemove)) {
                     removeResourceGeneratedAtIndex(idx);
                     return item;
                 }
@@ -143,13 +145,13 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         int sendCount = Math.min(count, toSend.getMaxStackSize());
         toSend.setCount(sendCount);
         ItemStack left = InventoryHelper.insertItem(inventory, toSend, false);
+        ServerLevel sLevel = (ServerLevel)level;
         if (left.getCount() > 0) {
             BlockPos particlePos = worldPosition.above(2);
-            ServerLevel sLevel = (ServerLevel)level;
             sLevel.sendParticles(ParticleTypes.SMOKE, particlePos.getX() + 0.5, particlePos.getY() + 0.5, particlePos.getZ() + 0.5, 3, 0, 0.5, 0, 0.05);
         } else {
             PotItemTransferPacket packet = new PotItemTransferPacket(storageBlockPos.above(), worldPosition.above(), toSend);
-            ModPackets.sendToNearby(level, worldPosition, packet);
+            ModPackets.sendToNearby(sLevel, worldPosition, packet);
 
         }
     }
@@ -216,18 +218,18 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         return ringBlocksMatch;
     }
 
-    public void writePacketNBT(CompoundTag tag) {
+    public void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
         ListTag resourceListTag = new ListTag();
-        generatedResources.forEach(resource -> resourceListTag.add(resource.save(new CompoundTag())));
+        generatedResources.forEach(resource -> resourceListTag.add(resource.saveOptional(registries)));
         tag.put(TAG_RESOURCES, resourceListTag);
     }
 
-    public void readPacketNBT(CompoundTag tag) {
+    public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
         ListTag resourceListTag = tag.getList(TAG_RESOURCES, Tag.TAG_COMPOUND);
         generatedResources.clear();
         for (int idx = 0; idx < resourceListTag.size(); idx++) {
             if (generatedResources.size() < maxResources) {
-                generatedResources.add(ItemStack.of(resourceListTag.getCompound(idx)));
+                generatedResources.add(ItemStack.parseOptional(registries, resourceListTag.getCompound(idx)));
             }
         }
     }

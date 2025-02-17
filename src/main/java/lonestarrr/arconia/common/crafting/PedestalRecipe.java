@@ -1,16 +1,22 @@
 package lonestarrr.arconia.common.crafting;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -47,7 +53,7 @@ public class PedestalRecipe implements Recipe<Container> {
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
+    public @NotNull ItemStack getResultItem(HolderLookup.Provider pRegistries) {
         return output;
     }
 
@@ -98,8 +104,8 @@ public class PedestalRecipe implements Recipe<Container> {
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull Container container, @NotNull RegistryAccess registryAccess) {
-        return getResultItem(registryAccess).copy();
+    public @NotNull ItemStack assemble(@NotNull Container pCraftingContainer, HolderLookup.@NotNull Provider pRegistries) {
+        return getResultItem(pRegistries).copy();
     }
 
     @Override
@@ -108,13 +114,16 @@ public class PedestalRecipe implements Recipe<Container> {
     }
 
     public static class Serializer implements RecipeSerializer<PedestalRecipe> {
-        private Codec<PedestalRecipe> codec;
+        public static final StreamCodec<RegistryFriendlyByteBuf, PedestalRecipe> STREAM_CODEC = StreamCodec.of(
+                Serializer::toNetwork, Serializer::fromNetwork
+        );
+        private MapCodec<PedestalRecipe> codec;
 
         @NotNull
         @Override
-        public Codec<PedestalRecipe> codec() {
+        public MapCodec<PedestalRecipe> codec() {
             if (codec == null) {
-                codec = RecordCodecBuilder.create(instance -> instance.group(
+                codec = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     ItemStack.CODEC.fieldOf("output").forGetter(PedestalRecipe::getOutput),
                         Codec.INT.fieldOf("durationTicks").forGetter(PedestalRecipe::getDurationTicks),
                         Ingredient.LIST_CODEC.fieldOf("ingredients").forGetter(PedestalRecipe::getIngredients)
@@ -123,26 +132,29 @@ public class PedestalRecipe implements Recipe<Container> {
             return codec;
         }
 
-
         @Override
-        public @NotNull PedestalRecipe fromNetwork(@NotNull FriendlyByteBuf buf) {
+        public @NotNull StreamCodec<RegistryFriendlyByteBuf, PedestalRecipe> streamCodec() {
+            return STREAM_CODEC;
+        }
+
+
+        private static @NotNull PedestalRecipe fromNetwork(@NotNull RegistryFriendlyByteBuf buf) {
             Ingredient[] inputs = new Ingredient[buf.readVarInt()];
             for (int i = 0; i < inputs.length; i++) {
-                inputs[i] = Ingredient.fromNetwork(buf);
+                inputs[i] = Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
             }
-            ItemStack output = buf.readItem();
+            ItemStack output = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
             int durationTicks = buf.readInt();
             return new PedestalRecipe(output, durationTicks, inputs);
 
         }
 
-        @Override
-        public void toNetwork(@NotNull FriendlyByteBuf buf, @NotNull PedestalRecipe recipe) {
+        private static void toNetwork(@NotNull RegistryFriendlyByteBuf buf, @NotNull PedestalRecipe recipe) {
             buf.writeVarInt(recipe.getIngredients().size());
             for (Ingredient input : recipe.getIngredients()) {
-                input.toNetwork(buf);
+                Ingredient.CONTENTS_STREAM_CODEC.encode(buf, input);
             }
-            buf.writeItem(recipe.getOutput());
+            ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, recipe.output);
             buf.writeInt(recipe.durationTicks);
         }
     }

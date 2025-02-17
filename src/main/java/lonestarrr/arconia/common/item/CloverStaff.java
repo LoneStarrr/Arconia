@@ -6,6 +6,7 @@ import lonestarrr.arconia.common.block.PotMultiBlockPrimary;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockSecondaryBlockEntity;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,6 +14,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -38,6 +40,10 @@ public class CloverStaff extends Item {
         Player player = context.getPlayer();
         ItemStack staff = context.getItemInHand();
 
+        if (player == null) {
+            return InteractionResult.PASS;
+        }
+
         BlockState bs = level.getBlockState(pos);
         if (bs.getBlock() == PotMultiBlockPrimary.INSIDE_BLOCK) {
             return attemptFormMultiblock(player, level, pos) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
@@ -45,12 +51,12 @@ public class CloverStaff extends Item {
             BlockPos potPos = storePotCoordinate(level, pos, staff);
             if (potPos != null) {
                 if (!level.isClientSide) {
-                    context.getPlayer().sendSystemMessage(Component.translatable(LANG_PREFIX + ".selectpot.success", potPos.toShortString()));
+                    player.sendSystemMessage(Component.translatable(LANG_PREFIX + ".selectpot.success", potPos.toShortString()));
                 }
                 return InteractionResult.SUCCESS;
             } else {
                 if (!level.isClientSide) {
-                    context.getPlayer().sendSystemMessage(Component.translatable(LANG_PREFIX + ".selectpot.failed"));
+                    player.sendSystemMessage(Component.translatable(LANG_PREFIX + ".selectpot.failed"));
                 }
             }
             return InteractionResult.PASS;
@@ -60,13 +66,17 @@ public class CloverStaff extends Item {
     }
 
     private static BlockPos getPotPosition(ItemStack staff) {
-        CompoundTag tag = staff.getTag();
-        if (tag == null || !tag.contains(TAG_POT_POS)) {
+        CustomData customData = staff.get(DataComponents.CUSTOM_DATA);
+
+        if (customData == null) return null;
+
+        CompoundTag tag = customData.copyTag();
+
+        if (!tag.contains(TAG_POT_POS)) {
             return null;
         }
 
-        BlockPos potPos = BlockPos.of(tag.getLong(TAG_POT_POS));
-        return potPos;
+        return BlockPos.of(tag.getLong(TAG_POT_POS));
     }
 
     private static BlockPos storePotCoordinate(Level world, BlockPos pos, ItemStack staff) {
@@ -77,8 +87,12 @@ public class CloverStaff extends Item {
         PotMultiBlockSecondaryBlockEntity potTE = (PotMultiBlockSecondaryBlockEntity) te;
         BlockPos primaryPos = potTE.getPrimaryPos();
         if (primaryPos != null) {
-            CompoundTag tag = staff.getOrCreateTag();
+            // This is not how you are supposed to store data, should register a specific data component, which is
+            // specific to what you're using it for, not what type it is
+            CompoundTag tag = new CompoundTag();
             tag.putLong(TAG_POT_POS, primaryPos.asLong());
+            CustomData customData = CustomData.of(tag);
+            staff.set(DataComponents.CUSTOM_DATA, customData);
             // TODO indicate this in the description of the staff
             return primaryPos;
         }

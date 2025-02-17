@@ -44,13 +44,13 @@ public final class ModItems {
         }
 
         // Arconium sickles. Numerical values: base attack modifier, attack speed modifier.
-        registerSickle(RainbowColor.RED, () -> new HoeItem(Tiers.WOOD, 4, -2.1F, builder));
-        registerSickle(RainbowColor.ORANGE, () -> new HoeItem(Tiers.STONE, 4, -2.1F, builder));
-        registerSickle(RainbowColor.YELLOW, () -> new HoeItem(Tiers.IRON, 4, -2.1F, builder));
-        registerSickle(RainbowColor.GREEN, () -> new HoeItem(Tiers.GOLD, 7, -2.1F, builder));
-        registerSickle(RainbowColor.LIGHT_BLUE, () -> new HoeItem(Tiers.DIAMOND, 5, -2.1F, builder));
-        registerSickle(RainbowColor.BLUE, () -> new HoeItem(Tiers.NETHERITE, 5, -2.1F, builder.fireResistant()));
-        registerSickle(RainbowColor.PURPLE, () -> new HoeItem(Tiers.NETHERITE, 6, -2.1F, builder.fireResistant()));
+        registerSickle(RainbowColor.RED, () -> new HoeItem(Tiers.WOOD, new Item.Properties().attributes(HoeItem.createAttributes(Tiers.WOOD, 4, -2.1F))));
+        registerSickle(RainbowColor.ORANGE, () -> new HoeItem(Tiers.STONE, new Item.Properties().attributes(HoeItem.createAttributes(Tiers.WOOD, 4, -2.1F))));
+        registerSickle(RainbowColor.YELLOW, () -> new HoeItem(Tiers.IRON, new Item.Properties().attributes(HoeItem.createAttributes(Tiers.WOOD, 4, -2.1F))));
+        registerSickle(RainbowColor.GREEN, () -> new HoeItem(Tiers.GOLD, new Item.Properties().attributes(HoeItem.createAttributes(Tiers.WOOD, 7, -2.1F))));
+        registerSickle(RainbowColor.LIGHT_BLUE, () -> new HoeItem(Tiers.DIAMOND, new Item.Properties().attributes(HoeItem.createAttributes(Tiers.WOOD, 5, -2.1F))));
+        registerSickle(RainbowColor.BLUE, () -> new HoeItem(Tiers.NETHERITE, new Item.Properties().fireResistant().attributes(HoeItem.createAttributes(Tiers.WOOD, 5, -2.1F))));
+        registerSickle(RainbowColor.PURPLE, () -> new HoeItem(Tiers.NETHERITE, new Item.Properties().fireResistant().attributes(HoeItem.createAttributes(Tiers.WOOD, 6, -2.1F))));
     }
 
     public static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {

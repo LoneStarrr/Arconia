@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -66,21 +67,19 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(
-            BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public @NotNull ItemInteractionResult useItemOn(
+            ItemStack itemUsed, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (world.isClientSide || hand != InteractionHand.MAIN_HAND) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         if (!(player instanceof ServerPlayer) || player instanceof FakePlayer) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-
-        ItemStack itemUsed = player.getInventory().getSelected();
 
         PotMultiBlockPrimaryBlockEntity primaryBE = getPrimaryBlockEntity(world, pos);
         if (primaryBE == null) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         if (itemUsed.isEmpty()) {
@@ -90,7 +89,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
             } else {
                 player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.show_tier", potTier.getTierName()));
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         } else if (itemUsed.getItem() instanceof ColoredRoot) {
             ItemStack resource = ColoredRoot.getResourceItem(itemUsed);
 
@@ -105,7 +104,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
                     removedResource = primaryBE.removeResourceGenerated(ItemStack.EMPTY);
                     if (removedResource.isEmpty()) {
                         player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_none_set"));
-                        return InteractionResult.FAIL;
+                        return ItemInteractionResult.FAIL;
                     }
                 } else {
                     // pop off matching treasure if offhand item matches
@@ -114,7 +113,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
 
                 if (removedResource.isEmpty()) {
                     player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_not_found"));
-                    return InteractionResult.FAIL;
+                    return ItemInteractionResult.FAIL;
                 } else {
                     ItemStack root = makeImbuedRootFromItem((ColoredRoot)itemUsed.getItem(), removedResource);
                     itemUsed.shrink(1);
@@ -122,23 +121,23 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
                         player.drop(root, false);
                     }
                     player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_success", removedResource.getItem().getDescription()));
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 }
             } else {
                 // Using an imbued root on the pot tells it to extract treasure
                 if (!primaryBE.addResourceGenerated(resource)) {
                     player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_full"));
-                    return InteractionResult.FAIL;
+                    return ItemInteractionResult.FAIL;
                 } else {
                     itemUsed.shrink(1);
                     player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_success"));
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 }
             }
 
         }
 
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     private ItemStack makeImbuedRootFromItem(ColoredRoot root, ItemStack resource) {
@@ -147,7 +146,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
          */
         RainbowColor tier = RainbowColor.RED;
         ItemStack rootStack = new ItemStack(root);
-        ColoredRoot.setResourceItem(rootStack, resource.getItem());
+        ColoredRoot.setResourceItem(rootStack, resource);
         return rootStack;
     }
 

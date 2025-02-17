@@ -28,13 +28,18 @@
     }
   ],
   "output": {
-    "Count": 1,
-    "id": "arconia:red_colored_tree_root",
-    "tag": {
-      "item": {
-        "Count": 1,
-        "id": "minecraft:birch_log"
-      }
-    }
+    "components": {
+      "minecraft:container": [
+        {
+          "item": {
+            "count": 1,
+            "id": "minecraft:birch_log"
+          },
+          "slot": 0
+        }
+      ]
+    },
+    "count": 1,
+    "id": "arconia:red_colored_tree_root"
   }
 }

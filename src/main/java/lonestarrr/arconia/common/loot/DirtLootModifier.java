@@ -1,9 +1,8 @@
 package lonestarrr.arconia.common.loot;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.helper.PatchouliHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -17,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
  * before. To be used in conjunction with this mod's loot condition that checks whether this player has already received/mined the book.
  */
 public class DirtLootModifier extends LootModifier {
+    public static final MapCodec<DirtLootModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> codecStart(instance).apply(instance, DirtLootModifier::new));
     protected DirtLootModifier(LootItemCondition[] conditionsIn) {
         super(conditionsIn);
     }
@@ -29,11 +29,7 @@ public class DirtLootModifier extends LootModifier {
     }
 
     @Override
-    public @NotNull Codec<? extends IGlobalLootModifier> codec() {
+    public @NotNull MapCodec<? extends IGlobalLootModifier> codec() {
         return ModLootModifiers.DIRT_MODIFIER.get();
-    }
-
-    public static Codec<DirtLootModifier> createCodec() {
-        return RecordCodecBuilder.create(instance -> codecStart(instance).apply(instance, DirtLootModifier::new));
     }
 }

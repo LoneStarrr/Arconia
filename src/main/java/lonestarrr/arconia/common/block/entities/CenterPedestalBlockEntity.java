@@ -5,6 +5,7 @@ import lonestarrr.arconia.common.crafting.ModRecipeTypes;
 import lonestarrr.arconia.common.crafting.PedestalRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -79,8 +80,8 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     }
 
     @Override
-    public void writePacketNBT(CompoundTag tag) {
-        super.writePacketNBT(tag);
+    public void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        super.writePacketNBT(tag, registries);
         if (currentRecipeID != null) {
             tag.putString(TAG_RECIPE, currentRecipeID.toString());
         }
@@ -89,8 +90,8 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     }
 
     @Override
-    public void readPacketNBT(CompoundTag tag) {
-        super.readPacketNBT(tag);
+    public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        super.readPacketNBT(tag, registries);
         if (tag.contains(TAG_RECIPE)) {
             currentRecipeID = new ResourceLocation(tag.getString(TAG_RECIPE));
         }

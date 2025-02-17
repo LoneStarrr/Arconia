@@ -1,6 +1,7 @@
 package lonestarrr.arconia.common.block.entities;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -19,20 +20,20 @@ public abstract class BaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag tag) {
-        super.saveAdditional(tag);
-        writePacketNBT(tag);
+    protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        super.saveAdditional(tag, registries);
+        writePacketNBT(tag, registries);
     }
 
     @Override
-    public void load(@NotNull CompoundTag tag) {
-        super.load(tag);
-        readPacketNBT(tag);
+    protected void loadAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        super.loadAdditional(tag, registries);
+        readPacketNBT(tag, registries);
     }
 
-    public abstract void writePacketNBT(CompoundTag tag);
+    public abstract void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries);
 
-    public abstract void readPacketNBT(CompoundTag tag);
+    public abstract void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries);
 
     /**
      * Updates client on block updates
@@ -44,16 +45,15 @@ public abstract class BaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    public final @NotNull CompoundTag getUpdateTag() {
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider registries) {
         CompoundTag result = new CompoundTag();
-        saveAdditional(result);
+        saveAdditional(result, registries);
         return result;
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        // Called on client to read server data
-        load(tag);
+    public void handleUpdateTag(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider lookupProvider) {
+        loadAdditional(tag, lookupProvider);
     }
 
     /**

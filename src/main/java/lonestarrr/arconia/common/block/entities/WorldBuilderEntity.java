@@ -10,6 +10,7 @@ import com.google.gson.stream.JsonWriter;
 import lonestarrr.arconia.common.Arconia;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -52,12 +53,12 @@ public class WorldBuilderEntity extends BaseBlockEntity {
     }
 
     @Override
-    public void writePacketNBT(CompoundTag tag) {
+    public void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
 
     }
 
     @Override
-    public void readPacketNBT(CompoundTag tag) {
+    public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
 
     }
 
@@ -66,7 +67,7 @@ public class WorldBuilderEntity extends BaseBlockEntity {
     }
 
     private void tickInternal() {
-        if (level.getGameTime() - lastBuilderTick < this.gameTicksPerBuilderTick) {
+        if (level == null || level.getGameTime() - lastBuilderTick < this.gameTicksPerBuilderTick) {
             return;
         }
         lastBuilderTick = level.getGameTime();

@@ -1,11 +1,15 @@
 package lonestarrr.arconia.common.core.helper;
 
 import lonestarrr.arconia.common.Arconia;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import org.spongepowered.tools.obfuscation.ObfuscationData;
 
 public class PatchouliHelper {
     public static final String GUIDE_BOOK_ID = new ResourceLocation(Arconia.MOD_ID, "guide_book").toString(); //Also hardcoded in advancement icon
@@ -17,7 +21,14 @@ public class PatchouliHelper {
         ItemStack bookStack = new ItemStack(bookItem);
         CompoundTag tag = new CompoundTag();
         tag.putString(TAG_PATCHOULI_BOOK, GUIDE_BOOK_ID);
-        bookStack.setTag(tag);
+
+        // TODO finish/rewrite this if this somehow magically works
+        // TODO at least check for class cast exceptions!
+        DataComponentType dct = BuiltInRegistries.DATA_COMPONENT_TYPE.get(new ResourceLocation("patchouli", "book"));
+        if (dct != null) {
+            DataComponentType<ResourceLocation> dctRloc = (DataComponentType<ResourceLocation>)dct;
+            bookStack.set(dctRloc, new ResourceLocation(Arconia.MOD_ID, "guide_book"));
+        }
         return bookStack;
     }
 
@@ -26,8 +37,12 @@ public class PatchouliHelper {
         if (!itemResLoc.equals(PATCHOULI_GUIDE_BOOK)) {
             return false;
         }
-        CompoundTag tag = itemStack.getTag();
-        String bookId = tag.getString(TAG_PATCHOULI_BOOK);
-        return (bookId.equals(GUIDE_BOOK_ID));
+        DataComponentType dct = BuiltInRegistries.DATA_COMPONENT_TYPE.get(new ResourceLocation("patchouli", "book"));
+        Object ob = itemStack.get(dct);
+        if (ob != null) {
+            ResourceLocation rloc = (ResourceLocation) ob;
+            return rloc.equals(new ResourceLocation(Arconia.MOD_ID, "guide_book"));
+        }
+        return false;
     }
 }

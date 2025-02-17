@@ -25,13 +25,18 @@
     }
   ],
   "output": {
-    "Count": 1,
-    "id": "arconia:orange_colored_tree_root",
-    "tag": {
-      "item": {
-        "Count": 1,
-        "id": "minecraft:mud"
-      }
-    }
+    "components": {
+      "minecraft:container": [
+        {
+          "item": {
+            "count": 1,
+            "id": "minecraft:mud"
+          },
+          "slot": 0
+        }
+      ]
+    },
+    "count": 1,
+    "id": "arconia:orange_colored_tree_root"
   }
 }

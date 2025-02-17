@@ -25,13 +25,18 @@
     }
   ],
   "output": {
-    "Count": 1,
-    "id": "arconia:light_blue_colored_tree_root",
-    "tag": {
-      "item": {
-        "Count": 1,
-        "id": "minecraft:ender_pearl"
-      }
-    }
+    "components": {
+      "minecraft:container": [
+        {
+          "item": {
+            "count": 1,
+            "id": "minecraft:ender_pearl"
+          },
+          "slot": 0
+        }
+      ]
+    },
+    "count": 1,
+    "id": "arconia:light_blue_colored_tree_root"
   }
 }

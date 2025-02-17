@@ -7,6 +7,7 @@ import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.crafting.PedestalRecipe;
 import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.ModItems;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -14,23 +15,24 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.crafting.NBTIngredient;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Registers recipes
  */
 public class ModRecipeProvider extends RecipeProvider {
 
-    public ModRecipeProvider(PackOutput output) {
-        super(output);
+    public ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+        super(output, registries);
     }
 
     @Override
@@ -385,7 +387,8 @@ public class ModRecipeProvider extends RecipeProvider {
                 new PedestalRecipe(
                         new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
                         60,
-                        NBTIngredient.of(true, (PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.AWKWARD))),
+                        // TODO check if potions are correctly in the recipe with the 1.20.6 changes
+                        DataComponentIngredient.of(true, (PotionContents.createItemStack(Items.POTION, Potions.AWKWARD))),
                         Ingredient.of(Items.TUBE_CORAL_BLOCK),
                         Ingredient.of(Items.NETHERITE_INGOT),
                         Ingredient.of(Items.NETHER_STAR),
@@ -408,7 +411,7 @@ public class ModRecipeProvider extends RecipeProvider {
                         Ingredient.of(Items.SHULKER_SHELL),
                         Ingredient.of(Items.DRAGON_BREATH),
                         Ingredient.of(Items.PURPUR_BLOCK),
-                        NBTIngredient.of(true, (PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), Potions.REGENERATION))),
+                        DataComponentIngredient.of(true, (PotionContents.createItemStack(Items.LINGERING_POTION, Potions.REGENERATION))),
                         essence,
                         essence,
                         essence,
@@ -423,15 +426,40 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     private void registerVanillaMisc(RecipeOutput output) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.hat.get())
-                .define('W', Items.GREEN_WOOL)
-                .define('H', Items.GOLDEN_HELMET)
-                .pattern("WWW")
-                .pattern("WHW")
-                .pattern("   ")
-                .unlockedBy("has_item", has(Items.GOLDEN_HELMET))
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.cloverStaff.get())
+                .define('S', Items.STICK)
+                .define('C', ModItems.fourLeafClover.get())
+                .pattern("  C")
+                .pattern(" S ")
+                .pattern("S  ")
+                .unlockedBy("has_item", has(Items.STICK)) //unlockedBy is required, URGH
                 .save(output);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.centerPedestal.get())
+                .define('S', Items.STONE_SLAB)
+                .define('B', Items.MOSSY_COBBLESTONE)
+                .pattern(" S ")
+                .pattern(" B ")
+                .pattern(" S ")
+                .unlockedBy("has_item", has(Items.STICK)) //unlockedBy is required, URGH
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.pedestal.get())
+                .define('S', Items.OAK_SLAB)
+                .define('L', Items.STRIPPED_OAK_LOG)
+                .pattern(" S ")
+                .pattern(" L ")
+                .pattern(" S ")
+                .unlockedBy("has_item", has(Items.STICK)) //unlockedBy is required, URGH
+                .save(output);
+
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.GREEN_DYE, 1)
+                .requires(ModItems.threeLeafClover)
+                .unlockedBy("has_item", has(Items.STICK)) //unlockedBy is required, URGH
+                .save(output);
+
+//        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, )
         // Disabled for now, still available in creative for toying around with
 //        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.worldBuilder.get())
 //                .define('D', Items.DIRT)
@@ -500,7 +528,7 @@ public class ModRecipeProvider extends RecipeProvider {
             RecipeOutput recipeOutput, RainbowColor tier, ItemLike resourceItem, int durationTicks, Ingredient... ingredients) {
         Item root = ModItems.getColoredRoot(tier).get();
         ItemStack coloredRoot = new ItemStack(root);
-        ColoredRoot.setResourceItem(coloredRoot, resourceItem);
+        ColoredRoot.setResourceItem(coloredRoot, new ItemStack(resourceItem));
         Ingredient[] newIngredients = Arrays.copyOf(ingredients, ingredients.length + 1);
         newIngredients[ingredients.length] = Ingredient.of(root);
         ResourceLocation id = enchantedRootId(tier, resourceItem);

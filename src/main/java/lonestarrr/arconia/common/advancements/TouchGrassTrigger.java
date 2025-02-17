@@ -21,7 +21,7 @@ public class TouchGrassTrigger extends SimpleCriterionTrigger<TouchGrassTrigger.
     }
 
     public void trigger(ServerPlayer player) {
-        trigger(player, instance -> instance.matches());
+        trigger(player, TriggerInstance::matches);
     }
 
     public record TriggerInstance(
@@ -29,7 +29,7 @@ public class TouchGrassTrigger extends SimpleCriterionTrigger<TouchGrassTrigger.
     ) implements SimpleInstance {
         public static final Codec<TouchGrassTrigger.TriggerInstance> CODEC = RecordCodecBuilder.create(
                 r -> r.group(
-                                ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(TouchGrassTrigger.TriggerInstance::player)
+                                Codec.optionalField("player", EntityPredicate.ADVANCEMENT_CODEC, false).forGetter(TouchGrassTrigger.TriggerInstance::player)
                         )
                         .apply(r, TouchGrassTrigger.TriggerInstance::new)
         );

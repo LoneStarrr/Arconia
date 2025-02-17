@@ -3,6 +3,7 @@ package lonestarrr.arconia.common.block.entities;
 import lonestarrr.arconia.common.block.entities.BaseBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,12 +27,12 @@ public abstract class BaseInventoryBlockEntity extends BaseBlockEntity {
     protected abstract ItemStackHandler getInventory();
 
     @Override
-    public void writePacketNBT(CompoundTag tag) {
-        tag.merge(getInventory().serializeNBT());
+    public void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        tag.merge(getInventory().serializeNBT(registries));
     }
 
     @Override
-    public void readPacketNBT(CompoundTag tag) {
-        getInventory().deserializeNBT(tag);
+    public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        getInventory().deserializeNBT(registries, tag);
     }
 }

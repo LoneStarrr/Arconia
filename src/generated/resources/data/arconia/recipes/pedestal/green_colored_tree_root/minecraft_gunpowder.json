@@ -28,13 +28,18 @@
     }
   ],
   "output": {
-    "Count": 1,
-    "id": "arconia:green_colored_tree_root",
-    "tag": {
-      "item": {
-        "Count": 1,
-        "id": "minecraft:gunpowder"
-      }
-    }
+    "components": {
+      "minecraft:container": [
+        {
+          "item": {
+            "count": 1,
+            "id": "minecraft:gunpowder"
+          },
+          "slot": 0
+        }
+      ]
+    },
+    "count": 1,
+    "id": "arconia:green_colored_tree_root"
   }
 }

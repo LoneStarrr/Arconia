@@ -25,13 +25,18 @@
     }
   ],
   "output": {
-    "Count": 1,
-    "id": "arconia:light_blue_colored_tree_root",
-    "tag": {
-      "item": {
-        "Count": 1,
-        "id": "minecraft:prismarine_shard"
-      }
-    }
+    "components": {
+      "minecraft:container": [
+        {
+          "item": {
+            "count": 1,
+            "id": "minecraft:prismarine_shard"
+          },
+          "slot": 0
+        }
+      ]
+    },
+    "count": 1,
+    "id": "arconia:light_blue_colored_tree_root"
   }
 }

@@ -28,13 +28,18 @@
     }
   ],
   "output": {
-    "Count": 1,
-    "id": "arconia:purple_colored_tree_root",
-    "tag": {
-      "item": {
-        "Count": 1,
-        "id": "minecraft:purple_dye"
-      }
-    }
+    "components": {
+      "minecraft:container": [
+        {
+          "item": {
+            "count": 1,
+            "id": "minecraft:purple_dye"
+          },
+          "slot": 0
+        }
+      ]
+    },
+    "count": 1,
+    "id": "arconia:purple_colored_tree_root"
   }
 }

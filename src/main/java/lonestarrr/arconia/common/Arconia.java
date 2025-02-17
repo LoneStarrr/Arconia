@@ -6,6 +6,7 @@ import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.entities.ModBlockEntities;
 import lonestarrr.arconia.common.block.entities.WorldBuilderEntity;
 import lonestarrr.arconia.common.capabilities.ModCapabilities;
+import lonestarrr.arconia.common.components.ModDataComponents;
 import lonestarrr.arconia.common.core.command.ArconiaCommand;
 import lonestarrr.arconia.common.core.command.FractalTreeCommand;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
@@ -23,7 +24,7 @@ import lonestarrr.arconia.data.DataGenerators;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -45,12 +46,17 @@ public class Arconia {
 
     public static IProxy proxy;
 
-    public Arconia(IEventBus modBus, Dist dist) {
-        proxy = (dist == Dist.CLIENT ? new ClientProxy() : new ServerProxy());
-        proxy.registerHandlers(modBus); // TODO get rid of the proxy pattern
+    public Arconia(IEventBus modBus, ModContainer modContainer, Dist dist) {
+        modContainer.registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_SPEC);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_SPEC);
+        if (dist.isClient()) {
+            new ClientProxy().registerHandlers(modBus);
+        }
+
+        if (dist.isDedicatedServer()) {
+            new ServerProxy().registerHandlers(modBus);
+        }
 
         modBus.addListener(this::commonSetup);
         modBus.addListener(DataGenerators::gatherData);
@@ -64,6 +70,7 @@ public class Arconia {
         ModLootModifiers.LOOT_CONDITION_TYPES.register(modBus);
         ModParticles.PARTICLE_TYPES.register(modBus);
         ModCriteriaTriggers.CRITERIA_TRIGGERS.register(modBus);
+        ModDataComponents.DATA_COMPONENTS.register(modBus);
 
         modBus.addListener(ConfigHandler::onConfigLoad);
         modBus.addListener(ConfigHandler::onConfigReload);

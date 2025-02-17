@@ -137,5 +137,8 @@ public class ModLanguageProvider extends LanguageProvider {
         // Guide book
         add("arconia.guide_book.landing_text", "A collection of notes on my discovery of the secrets to the Leprechaun's wealth, and how to help myself to some of that.");
         add("arconia.guide_book.name", "Arconia Notebook");
+
+        // Errors during network packet transfers (what good are these!?)
+        add("arconia.network.potitemtransfer_failed", "Error sending Arconia item transfer packet: %s");
     }
 }

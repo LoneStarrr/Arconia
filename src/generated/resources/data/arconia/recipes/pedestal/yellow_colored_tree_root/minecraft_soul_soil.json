@@ -25,13 +25,18 @@
     }
   ],
   "output": {
-    "Count": 1,
-    "id": "arconia:yellow_colored_tree_root",
-    "tag": {
-      "item": {
-        "Count": 1,
-        "id": "minecraft:soul_soil"
-      }
-    }
+    "components": {
+      "minecraft:container": [
+        {
+          "item": {
+            "count": 1,
+            "id": "minecraft:soul_soil"
+          },
+          "slot": 0
+        }
+      ]
+    },
+    "count": 1,
+    "id": "arconia:yellow_colored_tree_root"
   }
 }

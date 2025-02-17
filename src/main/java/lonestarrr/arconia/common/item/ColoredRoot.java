@@ -1,18 +1,23 @@
 package lonestarrr.arconia.common.item;
 
 import lonestarrr.arconia.common.core.RainbowColor;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ColoredRoot extends Item {
@@ -36,12 +41,11 @@ public class ColoredRoot extends Item {
 
     @Nonnull
     public static ItemStack getResourceItem(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        if (tag == null || !tag.contains(TAG_ITEM)) {
+        ItemContainerContents contents = stack.get(DataComponents.CONTAINER);
+        if (contents == null || contents.getSlots() != 1) {
             return ItemStack.EMPTY;
         }
-
-        return ItemStack.of(tag.getCompound(TAG_ITEM));
+        return contents.getStackInSlot(0);
     }
 
     /**
@@ -50,32 +54,19 @@ public class ColoredRoot extends Item {
      *
      * @param coloredRootStack colored root to set resource on
      * @param resourceItem     resource to set
-     * @param count            Number of items generated per event. Must not exceed item's max stack count
-     *                         Data is stored in NBT so that it can be used for any item from any mod by only adding a pedestal ritual recipe.
      */
     public static void setResourceItem(
-            @Nonnull ItemStack coloredRootStack, @Nonnull ItemLike resourceItem) {
-        CompoundTag tag = coloredRootStack.getOrCreateTag();
-        ItemStack stack = new ItemStack(resourceItem);
-        int maxCount = stack.getMaxStackSize();
-        int count = 1;
-        int stackCount = Math.min(count, maxCount);
-        stack.setCount(stackCount);
-        CompoundTag resourceItemTag = stack.save(new CompoundTag());
-        // Store a tag on this root item with nbt-serialized itemstack 'stack' in such a way that 'getResourceItem()'
-        // can read it again.
-        tag.put(TAG_ITEM, resourceItemTag);
-
+            @Nonnull ItemStack coloredRootStack, @Nonnull ItemStack resourceItem) {
+        coloredRootStack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(new ArrayList<>(List.of(resourceItem))));
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(
-            ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext ctx, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, ctx, tooltipComponents, tooltipFlag);
         ItemStack resource = getResourceItem(stack);
         if (!resource.isEmpty()) {
-            tooltip.add(resource.getItem().getName(resource));
+            tooltipComponents.add(resource.getItem().getName(resource));
         }
     }
 }

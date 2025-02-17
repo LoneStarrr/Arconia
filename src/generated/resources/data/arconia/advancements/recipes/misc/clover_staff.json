@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:golden_helmet"
-            ]
+            "items": "minecraft:stick"
           }
         ]
       },
@@ -15,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "arconia:hat"
+        "recipe": "arconia:clover_staff"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "arconia:hat"
+      "arconia:clover_staff"
     ]
   }
 }

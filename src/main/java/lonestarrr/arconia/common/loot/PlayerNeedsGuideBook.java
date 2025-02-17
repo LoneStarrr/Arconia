@@ -42,7 +42,7 @@ import java.util.Set;
  */
 public class PlayerNeedsGuideBook implements LootItemCondition {
     public static final PlayerNeedsGuideBook INSTANCE = new PlayerNeedsGuideBook();
-    public static Codec<PlayerNeedsGuideBook> CODEC = MapCodec.of(Encoder.empty(), Decoder.unit(PlayerNeedsGuideBook.INSTANCE)).codec();
+    public static MapCodec<PlayerNeedsGuideBook> CODEC = MapCodec.of(Encoder.empty(), Decoder.unit(PlayerNeedsGuideBook.INSTANCE));
     public static final LootItemConditionType NEEDS_GUIDEBOOK = new LootItemConditionType(CODEC);
 
     private PlayerNeedsGuideBook() {}

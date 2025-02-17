@@ -24,7 +24,7 @@ public class PotOfGoldTrigger extends SimpleCriterionTrigger<PotOfGoldTrigger.Tr
     }
 
     public void trigger(ServerPlayer player) {
-        trigger(player, instance -> instance.matches());
+        trigger(player, TriggerInstance::matches);
     }
 
     public record TriggerInstance(
@@ -32,7 +32,7 @@ public class PotOfGoldTrigger extends SimpleCriterionTrigger<PotOfGoldTrigger.Tr
     ) implements SimpleCriterionTrigger.SimpleInstance {
         public static final Codec<PotOfGoldTrigger.TriggerInstance> CODEC = RecordCodecBuilder.create(
                 r -> r.group(
-                                ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(PotOfGoldTrigger.TriggerInstance::player)
+                                Codec.optionalField("player", EntityPredicate.ADVANCEMENT_CODEC, false).forGetter(PotOfGoldTrigger.TriggerInstance::player)
                         )
                         .apply(r, PotOfGoldTrigger.TriggerInstance::new)
         );

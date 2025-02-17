@@ -3,6 +3,7 @@ package lonestarrr.arconia.common.core;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,6 +31,16 @@ public enum RainbowColor implements StringRepresentable {
         this.tierName = name;
         this.unlocalizedName = unlocalizedName;
         this.colorValue = colorValue;
+    }
+
+    public static RainbowColor byTier(int tier) {
+        // TODO use a codec for this probably, and do this smarter?
+        for (RainbowColor color: RainbowColor.values()) {
+            if (color.getTier() == tier) {
+                return color;
+            }
+        }
+        return null;
     }
 
     @Nonnull
@@ -76,7 +87,7 @@ public enum RainbowColor implements StringRepresentable {
     }
 
     @Override
-    public String getSerializedName() {
+    public @NotNull String getSerializedName() {
         return this.tierName;
     }
 

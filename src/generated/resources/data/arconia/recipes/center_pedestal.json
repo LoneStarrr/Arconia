@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:mossy_cobblestone"
+    },
+    "S": {
+      "item": "minecraft:stone_slab"
+    }
+  },
+  "pattern": [
+    " S ",
+    " B ",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "arconia:center_pedestal"
+  }
+}
