@@ -56,10 +56,10 @@ public class ColorHandler {
         itemColors.register((stack, tint) -> {
             // only the overlay is colored - each layer is a tint index
             if (tint == 0) {
-                return 0xffffff;
+                return -1;
             }
             MagicInABottle bottle = (MagicInABottle) stack.getItem();
-            return bottle.getTier(stack).getColorValue();
+            return MagicInABottle.getTier(stack).getColorValue();
         }, ModItems.magicInABottle.get());
 
         for (RainbowColor tier : RainbowColor.values()) {
@@ -76,7 +76,7 @@ public class ColorHandler {
             // Taken from minecraft's ItemColors - for saplings, only layer0 is dynamically colored
             itemColors.register((stack, tint) -> {
                 if (tint != 0) {
-                    return 0xFFFFFF;
+                    return -1;
                 }
                 BlockState blockstate = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
                 return blockColors.getColor(blockstate, (BlockAndTintGetter) null, (BlockPos) null, tint);
@@ -112,14 +112,13 @@ public class ColorHandler {
                 return tier.getColorValue();
             }, ModItems.getArconiumIngot(tier).get());
 
-            // Colored arconium hoes.
-            // Hoes are colored differently based on ItemStack NBT data
+            // Colored arconium sickles.
             // 'color' corresponds to the layer in the model (layer0 -> color 0, etc)
             // layer 0 is not dynamically colored, only layer1 is
             itemColors.register((stack, layer) -> {
                 // only the overlay is colored - each layer is a tint index
                 if (layer == 0) {
-                    return 0xffffff;
+                    return -1;
                 }
                 return tier.getColorValue();
             }, ModItems.getArconiumSickle(tier).get());

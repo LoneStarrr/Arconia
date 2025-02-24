@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common.core;
 
+import net.minecraft.util.FastColor;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -13,13 +14,13 @@ import java.util.stream.Stream;
  * All the colors of the Minecraft rainbow roughly matching dye colors - used by various blocks and items
  */
 public enum RainbowColor implements StringRepresentable {
-    RED(1, "red", "Red", 0xFF0000),
-    ORANGE(2, "orange", "Orange", 0xFF7F00),
-    YELLOW(3, "yellow", "Yellow", 0xFFFF00),
-    GREEN(4, "green", "Green", 0x00FF00),
-    LIGHT_BLUE(5, "light_blue", "Light Blue", 0x00FFFF),
-    BLUE(6, "blue", "Blue", 0x0000FF),
-    PURPLE(7, "purple", "Purple", 0x800080);
+    RED(1, "red", "Red", FastColor.ARGB32.color(0xFF, 0, 0)),
+    ORANGE(2, "orange", "Orange", FastColor.ARGB32.color(0xFF, 0x7F, 0)),
+    YELLOW(3, "yellow", "Yellow", FastColor.ARGB32.color(0xFF, 0xFF, 0)),
+    GREEN(4, "green", "Green", FastColor.ARGB32.color(0, 0xFF, 0)),
+    LIGHT_BLUE(5, "light_blue", "Light Blue", FastColor.ARGB32.color(0, 0xFF, 0xFF)),
+    BLUE(6, "blue", "Blue", FastColor.ARGB32.color(0, 0, 0xFF)),
+    PURPLE(7, "purple", "Purple", FastColor.ARGB32.color(0x80, 0, 0x80));
 
     private int tier;
     private int colorValue;
