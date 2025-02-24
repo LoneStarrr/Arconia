@@ -4,6 +4,7 @@ import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.data.client.ModBlockStateProvider;
 import lonestarrr.arconia.data.client.ModItemModelProvider;
 import lonestarrr.arconia.data.client.ModLanguageProvider;
+import lonestarrr.arconia.data.loot.ArconiaLootTableProvider;
 import lonestarrr.arconia.data.recipes.ModRecipeProvider;
 import lonestarrr.arconia.data.world.BiomeModifiers;
 import net.minecraft.core.HolderLookup;
@@ -30,6 +31,7 @@ public class DataGenerators {
             gen.addProvider(event.includeServer(), new ModRecipeProvider(output, event.getLookupProvider()));
             gen.addProvider(event.includeServer(), new ModBlockTagsProvider(output, lookupProvider, helper));
             gen.addProvider(event.includeServer(), new BiomeModifiers(output, lookupProvider));
+            gen.addProvider(event.includeServer(), ArconiaLootTableProvider.create(output, lookupProvider));
         }
         if (event.includeClient()) {
             gen.addProvider(event.includeServer(), new ModBlockStateProvider(output, helper));

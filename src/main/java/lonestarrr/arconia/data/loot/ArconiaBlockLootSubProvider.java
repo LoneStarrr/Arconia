@@ -1,0 +1,106 @@
+package lonestarrr.arconia.data.loot;
+
+import lonestarrr.arconia.common.block.ArconiumTreeLeaves;
+import lonestarrr.arconia.common.block.ModBlocks;
+import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.item.ModItems;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
+import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.MatchTool;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
+
+public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
+    private static final float[] COLORED_STICK_CHANCES = new float[]{0.02F, 0.022222223F, 0.025F, 0.033333335F, 0.1F};
+
+    public ArconiaBlockLootSubProvider() {
+        // The first parameter is a set of blocks we are creating loot tables for. Instead of hardcoding,
+        // we use our block registry and just pass an empty set here.
+        // The second parameter is the feature flag set, this will be the default flags
+        // unless you are adding custom flags (which is beyond the scope of this article).
+        super(Set.of(), FeatureFlags.REGISTRY.allFlags());
+    }
+    @Override
+    protected @NotNull Iterable<Block> getKnownBlocks() {
+        /*
+         * Add all of this mod's blocks here that should have loot dropped.
+         */
+
+        // Which should be all blocks, unless they're special in some way. Like this set.
+        Set<? extends Block> lootlessBlocks = Set.of(
+          ModBlocks.potMultiBlockPrimary.get(),
+          ModBlocks.potMultiBlockSecondary.get()
+        );
+        return ModBlocks.BLOCKS.getEntries().stream()
+                .filter(e -> !lootlessBlocks.contains(e.value()))
+                .map(e -> (Block)e.value()).toList();
+    }
+
+    @Override
+    protected void generate() {
+        // See VanillaBlockLoot.java as an example. This will fail if not all known blocks from our mod are covered.
+        
+        // Basic blocks
+        this.dropSelf(ModBlocks.clover.value());
+        this.dropSelf(ModBlocks.pedestal.value());
+        this.dropSelf(ModBlocks.centerPedestal.value());
+        this.dropSelf(ModBlocks.hat.value());
+        this.dropSelf(ModBlocks.worldBuilder.value());
+
+        // Colored blocks
+        for (RainbowColor color: RainbowColor.values()) {
+            // Basic self droppers
+            this.dropSelf(ModBlocks.getArconiumTreeSapling(color).value());
+            this.dropSelf(ModBlocks.getArconiumBlock(color).value());
+
+            this.add(ModBlocks.getRainbowGrassBlock(color).value(), b -> this.createSingleItemTableWithSilkTouch(b, Blocks.DIRT));
+
+            this.add(ModBlocks.getArconiumTreeLeaves(color).value(), this::createArconiumLeavesDrops);
+        }
+    }
+
+    private LootTable.Builder createArconiumLeavesDrops(Block pLeaves) {
+        ArconiumTreeLeaves leaves = (ArconiumTreeLeaves) pLeaves;
+        RainbowColor nextTier = leaves.getTier().getNextTier();
+        if (nextTier == null) nextTier = RainbowColor.PURPLE; // Maybe add some cool super special drop when mining the last tier tree?
+
+        //  Arconium leaves have a chance to drop leaves of the next tier's tree, IF mined with an appropriately colored sickle
+        return this.createLeavesDrops(leaves, ModBlocks.getArconiumTreeSapling(leaves.getTier()).value(), NORMAL_LEAVES_SAPLING_CHANCES)
+                .withPool(
+                        LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1.0F))
+                                .when(hasSickle((leaves.getTier())))
+                                .add(
+                                        ((LootPoolSingletonContainer.Builder)this.applyExplosionCondition(pLeaves, LootItem.lootTableItem(ModBlocks.getArconiumTreeSapling(nextTier).asItem())))
+                                                .when(BonusLevelTableCondition.bonusLevelFlatChance(Enchantments.FORTUNE, NORMAL_LEAVES_SAPLING_CHANCES))
+                                )
+                )
+                .withPool(
+                        LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1.0F))
+                                .when(HAS_SHEARS.or(HAS_SILK_TOUCH).invert()) // Why tf is HAS_NO_SHEARS_OR_SILK_TOUCH private!?
+                                .add(
+                                        ((LootPoolSingletonContainer.Builder)this.applyExplosionCondition(pLeaves, LootItem.lootTableItem(ModItems.getColoredRoot(leaves.getTier()))))
+                                                .when(BonusLevelTableCondition.bonusLevelFlatChance(Enchantments.FORTUNE, COLORED_STICK_CHANCES))
+                                )
+                );
+    }
+
+    private LootItemCondition.Builder hasSickle(RainbowColor color) {
+        return MatchTool.toolMatches(ItemPredicate.Builder.item().of(ModItems.getArconiumSickle(color)));
+    }
+}
