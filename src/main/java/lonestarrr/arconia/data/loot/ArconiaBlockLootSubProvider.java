@@ -1,5 +1,6 @@
 package lonestarrr.arconia.data.loot;
 
+import com.mojang.datafixers.kinds.Const;
 import lonestarrr.arconia.common.block.ArconiumTreeLeaves;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
 import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +28,7 @@ import java.util.Set;
 
 public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
     private static final float[] COLORED_STICK_CHANCES = new float[]{0.02F, 0.022222223F, 0.025F, 0.033333335F, 0.1F};
+    private static final LootItemCondition.Builder HAS_CLOVER_STAFF = MatchTool.toolMatches(ItemPredicate.Builder.item().of(ModItems.cloverStaff.value()));
 
     public ArconiaBlockLootSubProvider() {
         // The first parameter is a set of blocks we are creating loot tables for. Instead of hardcoding,
@@ -36,26 +39,20 @@ public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
     }
     @Override
     protected @NotNull Iterable<Block> getKnownBlocks() {
-        /*
-         * Add all of this mod's blocks here that should have loot dropped.
-         */
-
-        // Which should be all blocks, unless they're special in some way. Like this set.
-        Set<? extends Block> lootlessBlocks = Set.of(
-          ModBlocks.potMultiBlockPrimary.get(),
-          ModBlocks.potMultiBlockSecondary.get()
-        );
+        // Add all of this mod's blocks here.
         return ModBlocks.BLOCKS.getEntries().stream()
-                .filter(e -> !lootlessBlocks.contains(e.value()))
                 .map(e -> (Block)e.value()).toList();
     }
 
     @Override
     protected void generate() {
         // See VanillaBlockLoot.java as an example. This will fail if not all known blocks from our mod are covered.
-        
+
+        // No drops
+        this.add(ModBlocks.potMultiBlockPrimary.value(), noDrop());
+        this.add(ModBlocks.potMultiBlockSecondary.value(), noDrop());
+
         // Basic blocks
-        this.dropSelf(ModBlocks.clover.value());
         this.dropSelf(ModBlocks.pedestal.value());
         this.dropSelf(ModBlocks.centerPedestal.value());
         this.dropSelf(ModBlocks.hat.value());
@@ -71,6 +68,28 @@ public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
 
             this.add(ModBlocks.getArconiumTreeLeaves(color).value(), this::createArconiumLeavesDrops);
         }
+
+        // Clover, which gets four leaf clover drops when hit with a staff
+        this.add(ModBlocks.clover.value(), b ->
+                LootTable.lootTable()
+                        .withPool(
+                                LootPool.lootPool().setRolls(ConstantValue.exactly(1F))
+                                        .when(HAS_CLOVER_STAFF)
+                                        .add(
+                                                LootItem.lootTableItem(ModItems.fourLeafClover)
+                                                    .when(BonusLevelTableCondition.bonusLevelFlatChance(Enchantments.FORTUNE, 0.3F, 0.5F, 0.65F, 0.8F))
+                                                    .otherwise(LootItem.lootTableItem(ModItems.threeLeafClover))
+                                        )
+                        ).withPool(
+                                LootPool.lootPool().setRolls(ConstantValue.exactly(1F))
+                                        .when(HAS_CLOVER_STAFF.invert())
+                                        .add(
+                                                LootItem.lootTableItem(ModItems.fourLeafClover)
+                                                        .when(LootItemRandomChanceCondition.randomChance(0.15F))
+                                                        .otherwise(LootItem.lootTableItem(ModItems.threeLeafClover))
+                                        )
+                        )
+        );
     }
 
     private LootTable.Builder createArconiumLeavesDrops(Block pLeaves) {

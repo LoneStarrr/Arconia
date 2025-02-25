@@ -5,13 +5,73 @@
       "bonus_rolls": 0.0,
       "conditions": [
         {
-          "condition": "minecraft:survives_explosion"
+          "condition": "minecraft:match_tool",
+          "predicate": {
+            "items": "arconia:clover_staff"
+          }
         }
       ],
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "arconia:clover"
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "conditions": [
+                {
+                  "chances": [
+                    0.3,
+                    0.5,
+                    0.65,
+                    0.8
+                  ],
+                  "condition": "minecraft:table_bonus",
+                  "enchantment": "minecraft:fortune"
+                }
+              ],
+              "name": "arconia:four_leaf_clover"
+            },
+            {
+              "type": "minecraft:item",
+              "name": "arconia:three_leaf_clover"
+            }
+          ]
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:inverted",
+          "term": {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "arconia:clover_staff"
+            }
+          }
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "conditions": [
+                {
+                  "chance": 0.15,
+                  "condition": "minecraft:random_chance"
+                }
+              ],
+              "name": "arconia:four_leaf_clover"
+            },
+            {
+              "type": "minecraft:item",
+              "name": "arconia:three_leaf_clover"
+            }
+          ]
         }
       ],
       "rolls": 1.0
