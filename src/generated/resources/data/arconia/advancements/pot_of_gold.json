@@ -1,0 +1,26 @@
+{
+  "parent": "arconia:clover_staff",
+  "criteria": {
+    "pot_of_gold": {
+      "trigger": "arconia:create_pot_of_gold"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.arconia.main.pot_of_gold.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:gold_block"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.pot_of_gold.title"
+    }
+  },
+  "requirements": [
+    [
+      "pot_of_gold"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

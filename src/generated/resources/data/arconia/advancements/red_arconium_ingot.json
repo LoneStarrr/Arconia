@@ -1,0 +1,34 @@
+{
+  "parent": "arconia:red_arconium_essence",
+  "criteria": {
+    "red_arconium_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "arconia:red_arconium_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.arconia.main.red_arconium_ingot.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "arconia:red_arconium_ingot"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.red_arconium_ingot.title"
+    }
+  },
+  "requirements": [
+    [
+      "red_arconium_ingot"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

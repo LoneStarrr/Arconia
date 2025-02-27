@@ -1,0 +1,33 @@
+{
+  "parent": "arconia:yellow_arconium_ingot",
+  "criteria": {
+    "green_arconium_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "arconia:green_arconium_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.arconia.main.green_arconium_ingot.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "arconia:green_arconium_ingot"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.green_arconium_ingot.title"
+    }
+  },
+  "requirements": [
+    [
+      "green_arconium_ingot"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

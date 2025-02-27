@@ -10,9 +10,11 @@ import lonestarrr.arconia.data.world.BiomeModifiers;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -32,6 +34,8 @@ public class DataGenerators {
             gen.addProvider(event.includeServer(), new ModBlockTagsProvider(output, lookupProvider, helper));
             gen.addProvider(event.includeServer(), new BiomeModifiers(output, lookupProvider));
             gen.addProvider(event.includeServer(), ArconiaLootTableProvider.create(output, lookupProvider));
+            gen.addProvider(event.includeServer(), new AdvancementProvider(output, lookupProvider, helper, List.of(new AdvancementSubProvider())));
+
         }
         if (event.includeClient()) {
             gen.addProvider(event.includeServer(), new ModBlockStateProvider(output, helper));

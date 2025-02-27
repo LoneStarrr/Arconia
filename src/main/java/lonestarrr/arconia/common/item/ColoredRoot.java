@@ -60,6 +60,13 @@ public class ColoredRoot extends Item {
         coloredRootStack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(new ArrayList<>(List.of(resourceItem))));
     }
 
+    public static ItemStack getColoredRootWithResource(RainbowColor color, ItemStack resource) {
+        Item root = ModItems.getColoredRoot(color).get();
+        ItemStack coloredRoot = new ItemStack(root);
+        setResourceItem(coloredRoot, resource.copy());
+        return coloredRoot;
+    }
+
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext ctx, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {

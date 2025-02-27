@@ -526,11 +526,9 @@ public class ModRecipeProvider extends RecipeProvider {
      */
     private static void makeEnchantedColoredRoot(
             RecipeOutput recipeOutput, RainbowColor tier, ItemLike resourceItem, int durationTicks, Ingredient... ingredients) {
-        Item root = ModItems.getColoredRoot(tier).get();
-        ItemStack coloredRoot = new ItemStack(root);
-        ColoredRoot.setResourceItem(coloredRoot, new ItemStack(resourceItem));
+        ItemStack coloredRoot = ColoredRoot.getColoredRootWithResource(tier, new ItemStack(resourceItem));
         Ingredient[] newIngredients = Arrays.copyOf(ingredients, ingredients.length + 1);
-        newIngredients[ingredients.length] = Ingredient.of(root);
+        newIngredients[ingredients.length] = Ingredient.of(ModItems.getColoredRoot(tier));
         ResourceLocation id = enchantedRootId(tier, resourceItem);
         recipeOutput.accept(id, new PedestalRecipe(coloredRoot, durationTicks, newIngredients), null);
     }

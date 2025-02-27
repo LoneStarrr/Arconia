@@ -1,0 +1,55 @@
+{
+  "parent": "arconia:center_pedestal",
+  "criteria": {
+    "red_root_of_essence": {
+      "conditions": {
+        "items": [
+          {
+            "components": {
+              "minecraft:container": [
+                {
+                  "item": {
+                    "count": 1,
+                    "id": "arconia:red_arconium_essence"
+                  },
+                  "slot": 0
+                }
+              ]
+            },
+            "items": "arconia:red_colored_tree_root"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.arconia.main.red_root_of_essence.desc"
+    },
+    "icon": {
+      "components": {
+        "minecraft:container": [
+          {
+            "item": {
+              "count": 1,
+              "id": "arconia:red_arconium_essence"
+            },
+            "slot": 0
+          }
+        ]
+      },
+      "count": 1,
+      "id": "arconia:red_colored_tree_root"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.red_root_of_essence.title"
+    }
+  },
+  "requirements": [
+    [
+      "red_root_of_essence"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

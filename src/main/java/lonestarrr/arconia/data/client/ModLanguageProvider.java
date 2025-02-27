@@ -92,7 +92,7 @@ public class ModLanguageProvider extends LanguageProvider {
                 { "advancement.arconia.main.orange_arconium_tree_sapling.title", "Orange you glad" },
                 { "advancement.arconia.main.orange_arconium_tree_sapling.desc", "Harvest your first orange arconium sapling" },
                 { "advancement.arconia.main.orange_arconium_ingot.title", "Not so juicy" },
-                { "advancement.arconia.main.orange_arconium_ingot.desc", "Craft an orange arconium ingots" },
+                { "advancement.arconia.main.orange_arconium_ingot.desc", "Craft an orange arconium ingot" },
                 { "advancement.arconia.main.yellow_arconium_ingot.title", "Nautical Nonsense" },
                 { "advancement.arconia.main.yellow_arconium_ingot.desc", "Craft a yellow arconium ingot" },
                 { "advancement.arconia.main.green_arconium_ingot.title", "It's not easy being green" },

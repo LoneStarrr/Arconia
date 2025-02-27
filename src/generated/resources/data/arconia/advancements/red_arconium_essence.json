@@ -1,0 +1,33 @@
+{
+  "parent": "arconia:red_root_of_essence",
+  "criteria": {
+    "red_arconium_essence": {
+      "conditions": {
+        "items": [
+          {
+            "items": "arconia:red_arconium_essence"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.arconia.main.red_arconium_essence.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "arconia:red_arconium_essence"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.red_arconium_essence.title"
+    }
+  },
+  "requirements": [
+    [
+      "red_arconium_essence"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

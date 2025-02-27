@@ -127,8 +127,7 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
 
         // Drop the resources set on the pot as enchanted roots
         for(ItemStack stack: primaryBlockEntity.getGeneratedResources()) {
-            ItemStack root = new ItemStack(ModItems.getColoredRoot(RainbowColor.RED).get());
-            ColoredRoot.setResourceItem(root, stack);
+            ItemStack root = ColoredRoot.getColoredRootWithResource(RainbowColor.RED, stack);
             Block.popResource(world, primaryPos.above(2), root);
         }
 

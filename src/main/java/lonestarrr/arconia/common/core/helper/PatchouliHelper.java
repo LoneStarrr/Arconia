@@ -3,13 +3,10 @@ package lonestarrr.arconia.common.core.helper;
 import lonestarrr.arconia.common.Arconia;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import org.spongepowered.tools.obfuscation.ObfuscationData;
 
 public class PatchouliHelper {
     public static final String GUIDE_BOOK_ID = new ResourceLocation(Arconia.MOD_ID, "guide_book").toString(); //Also hardcoded in advancement icon
@@ -21,15 +18,19 @@ public class PatchouliHelper {
         ItemStack bookStack = new ItemStack(bookItem);
         CompoundTag tag = new CompoundTag();
         tag.putString(TAG_PATCHOULI_BOOK, GUIDE_BOOK_ID);
-
         // TODO finish/rewrite this if this somehow magically works
         // TODO at least check for class cast exceptions!
-        DataComponentType dct = BuiltInRegistries.DATA_COMPONENT_TYPE.get(new ResourceLocation("patchouli", "book"));
+        DataComponentType<?> dct = BuiltInRegistries.DATA_COMPONENT_TYPE.get(new ResourceLocation("patchouli", "book"));
         if (dct != null) {
             DataComponentType<ResourceLocation> dctRloc = (DataComponentType<ResourceLocation>)dct;
             bookStack.set(dctRloc, new ResourceLocation(Arconia.MOD_ID, "guide_book"));
         }
         return bookStack;
+    }
+
+    public static DataComponentType<ResourceLocation> patchouliGuideBookComponent() {
+        DataComponentType<?> dct = BuiltInRegistries.DATA_COMPONENT_TYPE.get(new ResourceLocation("patchouli", "book"));
+        return (DataComponentType<ResourceLocation>) dct;
     }
 
     public static boolean isGuideBook(ItemStack itemStack) {
