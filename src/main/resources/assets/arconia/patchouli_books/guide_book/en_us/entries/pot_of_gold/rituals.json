@@ -10,7 +10,7 @@
         },
         {
             "type": "patchouli:text",
-            "text": "Anyway, I digress. The master leprechaun magician I witnessed performing rituals was no different. I saw him place down a stone pedestal, and surround them with up to 8 wood pedestals nearby to place items on. Activating a ritual was done by using the clover staff (see my other notes) on the center pedestal. To see what you can craft using this ritual, look up the center pedestal item, and $(italic)use$() it to pull up all recipes."
+            "text": "Anyway, I digress. The master leprechaun magician I witnessed performing rituals was no different. I saw him place down a stone pedestal, and surround them with up to 8 wood pedestals nearby. Activating a ritual was done by putting items on the wood pedestals, followed by using the clover staff (see my other notes) on the empty center pedestal. To see what you can craft using this ritual, look up the center pedestal item, and $(italic)use$() it to pull up all recipes."
         },
         {
             "type": "patchouli:text",
