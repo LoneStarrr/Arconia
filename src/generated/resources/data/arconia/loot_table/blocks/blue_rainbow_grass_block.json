@@ -16,7 +16,7 @@
                     "predicates": {
                       "minecraft:enchantments": [
                         {
-                          "enchantment": "minecraft:silk_touch",
+                          "enchantments": "minecraft:silk_touch",
                           "levels": {
                             "min": 1
                           }
@@ -26,7 +26,7 @@
                   }
                 }
               ],
-              "name": "arconia:purple_rainbow_grass_block"
+              "name": "arconia:blue_rainbow_grass_block"
             },
             {
               "type": "minecraft:item",
@@ -43,5 +43,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "arconia:blocks/purple_rainbow_grass_block"
+  "random_sequence": "arconia:blocks/blue_rainbow_grass_block"
 }
