@@ -23,7 +23,7 @@ public class PatchouliHelper {
         DataComponentType<?> dct = BuiltInRegistries.DATA_COMPONENT_TYPE.get(ResourceLocation.fromNamespaceAndPath("patchouli", "book"));
         if (dct != null) {
             DataComponentType<ResourceLocation> dctRloc = (DataComponentType<ResourceLocation>)dct;
-            bookStack.set(dctRloc, new ResourceLocation(Arconia.MOD_ID, "guide_book"));
+            bookStack.set(dctRloc, ResourceLocationHelper.prefix("guide_book"));
         }
         return bookStack;
     }

@@ -107,7 +107,7 @@ public class RainbowLightningProjector {
             Matrix4f positionMatrix = poseStack.last().pose();
             for (Vector4f vertex: vertices) {
                 float alpha = vertex.w();
-                builder.vertex(positionMatrix, vertex.x(), vertex.y(), vertex.z()).color(colorR, colorG, colorB, alpha).endVertex();
+                builder.addVertex(positionMatrix, vertex.x(), vertex.y(), vertex.z()).setColor(colorR, colorG, colorB, alpha);
             }
             poseStack.popPose();
         }
