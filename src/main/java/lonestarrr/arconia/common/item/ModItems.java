@@ -3,29 +3,31 @@ package lonestarrr.arconia.common.item;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.ItemNames;
 import lonestarrr.arconia.common.core.RainbowColor;
-import net.minecraft.world.item.*;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Tiers;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.DeferredItem;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
 public final class ModItems {
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Arconia.MOD_ID);
-    public static RegistryObject<Item> goldCoin;
-    public static RegistryObject<Item> cloverStaff;
-    public static RegistryObject<Item> fourLeafClover;
-    public static RegistryObject<Item> threeLeafClover;
-    public static RegistryObject<Item> magicInABottle;
+    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Arconia.MOD_ID);
 
-    private static final Map<RainbowColor, RegistryObject<Item>> arconiumEssences = new HashMap<>();
-    private static final Map<RainbowColor, RegistryObject<ColoredRoot>> coloredRoots = new HashMap<>();
-    private static final Map<RainbowColor, RegistryObject<Item>> arconiumIngots = new HashMap<>();
+    public static final DeferredItem<Item> cloverStaff = ITEMS.register(ItemNames.CLOVER_STAFF, () -> new CloverStaff(defaultBuilder().stacksTo(1)));
+    public static final DeferredItem<Item> fourLeafClover = ITEMS.registerSimpleItem(ItemNames.FOUR_LEAF_CLOVER);
+    public static final DeferredItem<Item> threeLeafClover = ITEMS.registerSimpleItem(ItemNames.THREE_LEAF_CLOVER);
+    public static final DeferredItem<Item> magicInABottle = ITEMS.register(ItemNames.MAGIC_IN_A_BOTTLE, () -> new MagicInABottle(defaultBuilder()));
 
-    private static final Map<RainbowColor, RegistryObject<Item>> arconiumSickles = new HashMap<>();
+    private static final Map<RainbowColor, DeferredItem<ArconiumEssence>> arconiumEssences = new HashMap<>();
+    private static final Map<RainbowColor, DeferredItem<ColoredRoot>> coloredRoots = new HashMap<>();
+    private static final Map<RainbowColor, DeferredItem<Item>> arconiumIngots = new HashMap<>();
+
+    private static final Map<RainbowColor, DeferredItem<Item>> arconiumSickles = new HashMap<>();
 
     public static Item.Properties defaultBuilder() {
         return new Item.Properties();
@@ -33,48 +35,39 @@ public final class ModItems {
 
     static {
         // Register stand-alone items, not associated with a block - those go into ModBlocks
-        Item.Properties builder;
-
-        builder = defaultBuilder();
-
-        goldCoin = ITEMS.register(ItemNames.GOLD_COIN, () -> new Item(defaultBuilder()));
-        cloverStaff = ITEMS.register(ItemNames.CLOVER_STAFF, () -> new CloverStaff(defaultBuilder().stacksTo(1)));
-        fourLeafClover = ITEMS.register(ItemNames.FOUR_LEAF_CLOVER, () -> new Item(defaultBuilder()));
-        threeLeafClover = ITEMS.register(ItemNames.THREE_LEAF_CLOVER, () -> new Item(defaultBuilder()));
-        magicInABottle = ITEMS.register(ItemNames.MAGIC_IN_A_BOTTLE, () -> new MagicInABottle(defaultBuilder()));
+        final Item.Properties builder = defaultBuilder();
 
         for (RainbowColor tier: RainbowColor.values()) {
-            arconiumEssences.put(tier, ITEMS.register(tier.getTierName() + ItemNames.ARCONIUM_ESSENCE_SUFFIX, () -> new Item(builder)));
+            arconiumEssences.put(tier, ITEMS.register(tier.getTierName() + ItemNames.ARCONIUM_ESSENCE_SUFFIX, () -> new ArconiumEssence(builder, tier)));
             coloredRoots.put(tier, ITEMS.register(tier.getTierName() + ItemNames.COLORED_TREE_ROOT_SUFFIX, () -> new ColoredRoot(builder, tier)));
-            arconiumIngots.put(tier, ITEMS.register(tier.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX, () -> new Item(builder)));
+            arconiumIngots.put(tier, ITEMS.registerSimpleItem(tier.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX));
         }
 
         // Arconium sickles. Numerical values: base attack modifier, attack speed modifier.
-        registerSickle(RainbowColor.RED, () -> new HoeItem(Tiers.WOOD, 4, -2.1F, (new Item.Properties())));
-        registerSickle(RainbowColor.ORANGE, () -> new HoeItem(Tiers.STONE, 4, -2.1F, (new Item.Properties())));
-        registerSickle(RainbowColor.YELLOW, () -> new HoeItem(Tiers.IRON, 4, -2.1F, (new Item.Properties())));
-        registerSickle(RainbowColor.GREEN, () -> new HoeItem(Tiers.GOLD, 7, -2.1F, (new Item.Properties())));
-        registerSickle(RainbowColor.LIGHT_BLUE, () -> new HoeItem(Tiers.DIAMOND, 5, -2.1F, (new Item.Properties())));
-        registerSickle(RainbowColor.BLUE, () -> new HoeItem(Tiers.NETHERITE, 5, -2.1F, (new Item.Properties()).fireResistant()));
-        registerSickle(RainbowColor.PURPLE, () -> new HoeItem(Tiers.NETHERITE, 6, -2.1F, (new Item.Properties()).fireResistant()));
+        registerSickle(RainbowColor.RED, () -> new HoeItem(Tiers.WOOD, new Item.Properties().attributes(HoeItem.createAttributes(Tiers.WOOD, 4, -2.1F))));
+        registerSickle(RainbowColor.ORANGE, () -> new HoeItem(Tiers.STONE, new Item.Properties().attributes(HoeItem.createAttributes(Tiers.WOOD, 4, -2.1F))));
+        registerSickle(RainbowColor.YELLOW, () -> new HoeItem(Tiers.IRON, new Item.Properties().attributes(HoeItem.createAttributes(Tiers.WOOD, 4, -2.1F))));
+        registerSickle(RainbowColor.GREEN, () -> new HoeItem(Tiers.GOLD, new Item.Properties().attributes(HoeItem.createAttributes(Tiers.WOOD, 7, -2.1F))));
+        registerSickle(RainbowColor.LIGHT_BLUE, () -> new HoeItem(Tiers.DIAMOND, new Item.Properties().attributes(HoeItem.createAttributes(Tiers.WOOD, 5, -2.1F))));
+        registerSickle(RainbowColor.BLUE, () -> new HoeItem(Tiers.NETHERITE, new Item.Properties().fireResistant().attributes(HoeItem.createAttributes(Tiers.WOOD, 5, -2.1F))));
+        registerSickle(RainbowColor.PURPLE, () -> new HoeItem(Tiers.NETHERITE, new Item.Properties().fireResistant().attributes(HoeItem.createAttributes(Tiers.WOOD, 6, -2.1F))));
     }
 
     public static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.accept(cloverStaff);
-            event.accept(magicInABottle);
+            event.accept(cloverStaff.get());
+            event.accept(magicInABottle.get());
             for (RainbowColor color: RainbowColor.values()) {
                 // TODO acceptAll values()?
-                event.accept(arconiumSickles.get(color));
+                event.accept(arconiumSickles.get(color).get());
             }
         } else if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
-            event.accept(goldCoin);
-            event.accept(fourLeafClover);
-            event.accept(threeLeafClover);
+            event.accept(fourLeafClover.get());
+            event.accept(threeLeafClover.get());
             for (RainbowColor color : RainbowColor.values()) {
-                event.accept(arconiumEssences.get(color));
-                event.accept(coloredRoots.get(color));
-                event.accept(arconiumIngots.get(color));
+                event.accept(arconiumEssences.get(color).get());
+                event.accept(coloredRoots.get(color).get());
+                event.accept(arconiumIngots.get(color).get());
             }
         }
     }
@@ -82,17 +75,17 @@ public final class ModItems {
         arconiumSickles.put(tier, ITEMS.register(tier.getTierName() + ItemNames.SICKLE_SUFFIX, hoe));
     }
 
-    public static final RegistryObject<Item> getArconiumEssence(RainbowColor tier) {
+    public static DeferredItem<ArconiumEssence> getArconiumEssence(RainbowColor tier) {
         return arconiumEssences.get(tier);
     }
 
-    public static final RegistryObject<Item> getArconiumIngot(RainbowColor tier) {
+    public static DeferredItem<Item> getArconiumIngot(RainbowColor tier) {
         return arconiumIngots.get(tier);
     }
 
-    public static final RegistryObject<Item> getArconiumSickle(RainbowColor tier) { return arconiumSickles.get(tier); }
+    public static DeferredItem<Item> getArconiumSickle(RainbowColor tier) { return arconiumSickles.get(tier); }
 
-    public static final RegistryObject<ColoredRoot> getColoredRoot(RainbowColor tier) {
+    public static DeferredItem<ColoredRoot> getColoredRoot(RainbowColor tier) {
         return coloredRoots.get(tier);
     }
 }

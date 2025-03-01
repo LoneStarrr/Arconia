@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common.block;
 
+import com.mojang.serialization.MapCodec;
 import lonestarrr.arconia.common.block.entities.CenterPedestalBlockEntity;
 import lonestarrr.arconia.common.block.entities.ModBlockEntities;
 import lonestarrr.arconia.common.core.helper.LanguageHelper;
@@ -11,7 +12,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -67,6 +70,11 @@ public class CenterPedestal extends BaseEntityBlock {
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new CenterPedestalBlockEntity(pos, state); }
 
     @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
+    }
+
+    @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
@@ -83,13 +91,11 @@ public class CenterPedestal extends BaseEntityBlock {
 
 
     @Override
-    public InteractionResult use(
-            BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult traceResult) {
-        ItemStack playerStack = player.getItemInHand(hand);
-
+    public ItemInteractionResult useItemOn(
+            ItemStack playerStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult traceResult) {
         CenterPedestalBlockEntity cbe = getBlockEntity(level, pos);
         if (cbe == null) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         if (!cbe.getItemOnDisplay().isEmpty()) {
@@ -97,11 +103,11 @@ public class CenterPedestal extends BaseEntityBlock {
             if (player.addItem(displayedItem)) {
                 cbe.removeItem();
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
 
         if (playerStack.isEmpty() || playerStack.getItem() != ModItems.cloverStaff.get()) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         if (!level.isClientSide()) {
@@ -113,7 +119,7 @@ public class CenterPedestal extends BaseEntityBlock {
                 }
             }
         }
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     private static void startRitualEffect(Level level, BlockPos pos) {
@@ -122,7 +128,7 @@ public class CenterPedestal extends BaseEntityBlock {
 
     private CenterPedestalBlockEntity getBlockEntity(Level level, BlockPos pos) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity == null || !(blockEntity instanceof CenterPedestalBlockEntity)) {
+        if (!(blockEntity instanceof CenterPedestalBlockEntity)) {
             return null;
         }
         return (CenterPedestalBlockEntity) blockEntity;

@@ -4,5 +4,6 @@
     "book_texture": "patchouli:textures/gui/book_green.png",
     "model": "patchouli:book_green",
     "show_progress": false,
-    "use_resource_pack": true
+    "use_resource_pack": true,
+    "creative_tab": "tools_and_utilities"
 }

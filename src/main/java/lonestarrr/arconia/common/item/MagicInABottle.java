@@ -1,13 +1,23 @@
 package lonestarrr.arconia.common.item;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.common.components.ModDataComponents;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -28,15 +38,16 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
 /**
  * Time in a bottle? What's that? Never heard of that. No, this is *magic* in a bottle. It generates a random resource from a loot table at a slow rate.
- * These resources can be used to kickstart a resource generator (of a resource tree), which will then generate that resource at a much faster rate.
  * Mainly intended for use in skyblocks where these items are not necessarily available, in a way that is not grindy but just takes time.
  */
 public class MagicInABottle extends Item {
@@ -64,14 +75,12 @@ public class MagicInABottle extends Item {
         if (!world.isClientSide()) {
             RainbowColor currentTier = getTier(itemStack);
             int tierNum = currentTier.ordinal();
-            tierNum = (tierNum >= RainbowColor.values().length - 1 ? 0: tierNum + 1);
-            RainbowColor newTier = RainbowColor.values()[tierNum];
-            CompoundTag tag = itemStack.getTag();
-            if (tag == null) {
-                tag = new CompoundTag();
-                itemStack.setTag(tag);
+//            RainbowColor newTier = RainbowColor.byTier((tierNum >= RainbowColor.values().length - 1 ? 0: tierNum + 1));
+            RainbowColor newTier = currentTier.getNextTier();
+            if (newTier == null) {
+                newTier = RainbowColor.RED; // Cycle around
             }
-            tag.putString("tier", newTier.name());
+            setTier(itemStack, newTier);
             player.displayClientMessage(Component.literal("Taste the " + newTier.getTierName() + " rainbow!"), true);
         }
         return InteractionResult.SUCCESS;
@@ -80,27 +89,30 @@ public class MagicInABottle extends Item {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(
-            ItemStack stack, @Nullable Level world, List<Component> toolTips, TooltipFlag flag) {
-        super.appendHoverText(stack, world, toolTips, flag);
-        int ticksElapsed = getTicksElapsed(stack);
+            @NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> toolTips, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, toolTips, flag);
+        long ticksElapsed = getTicksElapsed(stack);
         int ticksBetweenLoot = getTicksBetweenLoot(stack);
         int pct = (int)Math.min(100, (int)(ticksElapsed * 100d / ticksBetweenLoot));
         toolTips.add(Component.translatable(stack.getDescriptionId() + ".tooltip", pct).withStyle(ChatFormatting.AQUA, ChatFormatting.ITALIC));
     }
 
-    public static int getTicksElapsed(ItemStack stack) {
-        if (stack.isEmpty() || stack.getItem() != ModItems.magicInABottle.get()) {
-            return 0;
-        }
-        CompoundTag tag = stack.getOrCreateTag();
-        return tag.getInt(TAG_TICKS_ELAPSED);
+    public static long getTicksElapsed(ItemStack stack) {
+        return getData(stack).ticksElapsed;
     }
 
-    public static void setTicksElapsed(ItemStack stack, int ticks) {
-        if (!stack.isEmpty() && stack.getItem() == ModItems.magicInABottle.get()) {
-            CompoundTag tag = stack.getOrCreateTag();
-            tag.putInt(TAG_TICKS_ELAPSED, ticks);
+    public static void setTicksElapsed(ItemStack stack, long ticks) {
+        MagicInABottleData data = getData(stack);
+        data = new MagicInABottleData(data.tier(), ticks);
+        stack.set(ModDataComponents.MAGIC_IN_A_BOTTLE_DATA, data);
+    }
+
+    private static @Nonnull  MagicInABottleData getData(@Nonnull ItemStack stack) {
+        MagicInABottleData data = stack.get(ModDataComponents.MAGIC_IN_A_BOTTLE_DATA);
+        if (data == null) {
+            return new MagicInABottleData(RainbowColor.RED.getTier(), 0);
         }
+        return data;
     }
 
     @Override
@@ -113,7 +125,7 @@ public class MagicInABottle extends Item {
         long gameTime = world.getGameTime();
 
         if (gameTime % tickEvalInterval == 0) {
-            int ticksElapsed = getTicksElapsed(stack);
+            long ticksElapsed = getTicksElapsed(stack);
             int ticksNextLoot = getTicksBetweenLoot(stack);
             if (ticksElapsed < ticksNextLoot) {
                 ticksElapsed += tickEvalInterval;
@@ -130,7 +142,7 @@ public class MagicInABottle extends Item {
                 for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
                     ItemStack otherStack = player.getInventory().getItem(slot);
                     if (otherStack.getItem() == this && otherStack != stack) {
-                        int otherTicksElapsed = getTicksElapsed(otherStack);
+                        long otherTicksElapsed = getTicksElapsed(otherStack);
                         if (otherTicksElapsed < ticksElapsed) {
                             setTicksElapsed(otherStack, 0);
                         }
@@ -153,7 +165,7 @@ public class MagicInABottle extends Item {
             return InteractionResultHolder.consume(stack);
         }
 
-        int ticks = getTicksElapsed(stack);
+        long ticks = getTicksElapsed(stack);
         if (ticks < getTicksBetweenLoot(stack)) {
             return InteractionResultHolder.fail(stack);
         }
@@ -181,29 +193,27 @@ public class MagicInABottle extends Item {
         return (int)(60 * 20 * Math.pow(0.8, tier.ordinal()));
     }
 
-    public static RainbowColor getTier(ItemStack stack) {
-        RainbowColor tier = RainbowColor.RED;
-
-        if (stack.isEmpty() || stack.getItem() != ModItems.magicInABottle.get()) {
-            return tier;
+    public static @Nonnull RainbowColor getTier(ItemStack stack) {
+        RainbowColor tier = RainbowColor.byTier(getData(stack).tier());
+        if (tier == null) {
+            return RainbowColor.RED;
         }
-
-        CompoundTag tag = stack.getTag();
-        if (tag != null) {
-            String tierStr = tag.getString("tier");
-            try {
-                tier = RainbowColor.valueOf(tierStr);
-            } catch (IllegalArgumentException e) {}
-        }
-
         return tier;
+    }
+
+    private void setTier(ItemStack stack, RainbowColor tier) {
+        MagicInABottleData data = getData(stack);
+        // TODO I really think this should be done with multiple data components. E.g. what is this thing gained more
+        // fields, it would be awkward to update it like this.
+        stack.set(ModDataComponents.MAGIC_IN_A_BOTTLE_DATA, new MagicInABottleData(tier.getTier(), data.ticksElapsed()));
     }
 
     protected List<ItemStack> getLoot(ItemStack stack, Level world) {
         RainbowColor tier = getTier(stack);
 
         final ResourceLocation lootResource = new ResourceLocation(Arconia.MOD_ID, "magic_in_a_bottle_" + tier.getTierName());
-        LootTable lootTable = ((ServerLevel) world).getServer().getLootData().getLootTable(lootResource);
+
+        LootTable lootTable = ((ServerLevel) world).getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, lootResource));
         LootParams params = (new LootParams.Builder((ServerLevel)world)).create(LootContextParamSets.EMPTY);
         return lootTable.getRandomItems(params);
     }
@@ -212,5 +222,18 @@ public class MagicInABottle extends Item {
     public static float getFilledPercentage(ItemStack stack, ClientLevel world, LivingEntity entity, int seed) {
         // Used to register ItemProperty, used to render model based on filled %
         return Math.min(100f, (float)getTicksElapsed(stack) / getTicksBetweenLoot(stack));
+    }
+
+    public record MagicInABottleData(int tier, long ticksElapsed) {
+        public static final Codec<MagicInABottleData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.INT.fieldOf("tier").forGetter(MagicInABottleData::tier),
+                Codec.LONG.fieldOf("ticksElapsed").forGetter(MagicInABottleData::ticksElapsed)
+        ).apply(instance, MagicInABottleData::new));
+
+        public static final StreamCodec<ByteBuf, MagicInABottleData> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.INT, MagicInABottleData::tier,
+                ByteBufCodecs.VAR_LONG, MagicInABottleData::ticksElapsed,
+                MagicInABottleData::new
+        );
     }
 }

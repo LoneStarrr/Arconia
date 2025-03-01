@@ -1,0 +1,43 @@
+# The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
+modLoader="javafml"
+# A version range to match for said mod loader - for regular FML @Mod it will be the forge version
+loaderVersion="${loader_version_range}"
+# Who can do what with this?
+license="${mod_license}"
+# A URL to refer people to when problems occur with this mod
+# issueTrackerURL="https://github.com/LoneStarrr/Arconia/issues"
+# If the mods defined in this file should show as seperate resource packs
+showAsResourcePack=false
+
+[[mods]]
+  modId="${mod_id}"
+  version="${mod_version}"
+  displayName="${mod_name}"
+  #updateJSONURL="http://minecraftforge.net/versions.json"
+  # A URL for the "homepage" for this mod, displayed in the mod UI
+  #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
+  #logoFile="assets/examplemod/textures/logo.png"
+  credits="Mankind."
+  authors="${mod_authors}"
+  description='''${mod_description}'''
+
+  # The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.
+  # [[mixins]]
+  # config="${mod_id}.mixins.json"
+
+  [[dependencies.${mod_id}]]
+    modId="neoforge"
+    # The type of the dependency. Can be one of "required", "optional", "incompatible" or "discouraged" (case insensitive).
+    # 'required' requires the mod to exist, 'optional' does not
+    # 'incompatible' will prevent the game from loading when the mod exists, and 'discouraged' will show a warning
+    type="required"
+    versionRange="${neo_version_range}"
+    ordering="NONE"
+    side="BOTH"
+
+  [[dependencies.${mod_id}]]
+    modId="minecraft"
+    type="required"
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"

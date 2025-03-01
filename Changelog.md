@@ -1,3 +1,17 @@
+# 0.0.11
+
+## Fixes
+
+## Changes
+
+ - Port to NeoForge 1.20.4
+ - Simplified Pot of Gold logic to no longer require linked hats, just the pot by itself
+ - Implement pot tiering by making 'circles' of grass around it
+ - Turn grass into rainbow grass by using arconium essence of the desired color on it
+ - Remove (infinite) gold arconium blocks
+ - Remove gold coins
+ - Bugfixes
+
 # 0.0.10
 
 ## Fixes

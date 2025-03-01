@@ -1,0 +1,33 @@
+{
+  "parent": "arconia:red_arconium_sickle",
+  "criteria": {
+    "orange_arconium_tree_sapling": {
+      "conditions": {
+        "items": [
+          {
+            "items": "arconia:orange_arconium_tree_sapling"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.arconia.main.orange_arconium_tree_sapling.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "arconia:orange_arconium_tree_sapling"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.orange_arconium_tree_sapling.title"
+    }
+  },
+  "requirements": [
+    [
+      "orange_arconium_tree_sapling"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

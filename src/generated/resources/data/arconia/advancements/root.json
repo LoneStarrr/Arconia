@@ -1,0 +1,39 @@
+{
+  "criteria": {
+    "guide_book": {
+      "conditions": {
+        "items": [
+          {
+            "components": {
+              "patchouli:book": "arconia:guide_book"
+            },
+            "items": "patchouli:guide_book"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "background": "minecraft:textures/block/stripped_oak_log.png",
+    "description": {
+      "translate": "advancement.arconia.main.root.desc"
+    },
+    "icon": {
+      "components": {
+        "patchouli:book": "arconia:guide_book"
+      },
+      "count": 1,
+      "id": "patchouli:guide_book"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "guide_book"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

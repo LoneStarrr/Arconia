@@ -1,0 +1,33 @@
+{
+  "parent": "arconia:four_leaf_clover",
+  "criteria": {
+    "clover_staff": {
+      "conditions": {
+        "items": [
+          {
+            "items": "arconia:clover_staff"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.arconia.main.clover_staff.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "arconia:clover_staff"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.clover_staff.title"
+    }
+  },
+  "requirements": [
+    [
+      "clover_staff"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

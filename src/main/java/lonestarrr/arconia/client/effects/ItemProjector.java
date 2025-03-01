@@ -15,6 +15,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import java.util.List;
+
 /**
  * Methods for projecting an animated item
  */
@@ -57,11 +59,55 @@ public class ItemProjector {
         final float HALF_INTERVAL = SCALE_INTERVAL / 2;
         float scale = (ticks % HALF_INTERVAL) / HALF_INTERVAL;
         scale = (ticks % SCALE_INTERVAL < HALF_INTERVAL ? scale: 1 - scale);
-        scale = 0.5f + 0.1f * scale;
+        scale = 0.75f + 0.25f * scale;
         poseStack.scale(scale, scale, scale);
 
         Minecraft.getInstance().getItemRenderer()
                 .renderStatic(stack, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, level, 0);
+        poseStack.popPose();
+    }
+
+    /** Displays a carousel of multiple items, where the carousel itself rotates around its center coordinate over time
+     *
+      * @param items
+     * @param poseStack
+     * @param buffer
+     * @param light
+     * @param ticksPerRotation How fast to rotate
+     * @param distanceFromCenter How far from the center should the items render (e.g. radius)
+     * @param scale Item display scale factor
+     * @param itemsPerLevel How many items to display per y layer. If there are more items, a new y layer will be rendered above
+     * @param levelOffset Additional render offset (x+y) for each extra y layer
+     */
+    public static void projectItemCarousel(List<ItemStack> items, PoseStack poseStack, MultiBufferSource buffer, int light, int ticksPerRotation, float distanceFromCenter, float scale, int itemsPerLevel, float levelOffset) {
+        final Vector3f yAxis = new Vector3f(0f, 1f, 0f);
+
+        Level level = Minecraft.getInstance().level;
+        if (level == null) {
+            return;
+        }
+
+        // Rotate the entire carousel for a nice visual effect
+        float rotationCarousel = (level.getGameTime() % ticksPerRotation) / (float)ticksPerRotation * 360f;
+        poseStack.pushPose();
+        poseStack.mulPose(new Quaternionf().fromAxisAngleDeg(yAxis, rotationCarousel));
+
+        for (int i = 0; i < items.size(); i++) {
+            int yLevel = Math.floorDiv(i, itemsPerLevel);
+            int itemsOnThisLevel = Math.min(itemsPerLevel, items.size() - (yLevel * itemsPerLevel));
+            float yOffset = yLevel * levelOffset;
+            float xOffset = distanceFromCenter + (yLevel * levelOffset);
+            ItemStack item = items.get(i);
+            float rotation = i * (360f / itemsOnThisLevel);
+            poseStack.pushPose();
+            poseStack.mulPose(new Quaternionf().fromAxisAngleDeg(yAxis, rotation));
+            poseStack.translate(xOffset, yOffset, 0.0f);
+            poseStack.scale(scale, scale, scale);
+            Minecraft.getInstance().getItemRenderer()
+                    .renderStatic(item, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, level, 0);
+            poseStack.popPose();
+        }
+
         poseStack.popPose();
     }
 }

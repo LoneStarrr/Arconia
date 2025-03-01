@@ -1,5 +1,6 @@
 {
 	"credit": "Made with Blockbench",
+        "parent": "minecraft:block/block",
 	"textures": {
 		"0": "arconia:block/hat_green_felt",
 		"1": "arconia:block/hat_belt",
@@ -688,36 +689,6 @@
 			}
 		}
 	],
-	"display": {
-		"thirdperson_righthand": {
-			"rotation": [100, 100, 3],
-			"scale": [0.7, 0.7, 0.7]
-		},
-		"thirdperson_lefthand": {
-			"rotation": [100, -100, 3],
-			"scale": [0.7, 0.7, 0.7]
-		},
-		"firstperson_righthand": {
-			"rotation": [-49, -130, -9],
-			"translation": [3.75, 4.75, -8.75]
-		},
-		"firstperson_lefthand": {
-			"rotation": [-56, 47, 13],
-			"translation": [3.25, 4.5, -8.75]
-		},
-		"ground": {
-			"translation": [0, 4.5, 0]
-		},
-		"gui": {
-			"rotation": [-56, -116, -50],
-			"translation": [0.25, 1.5, 0],
-			"scale": [0.88, 0.88, 0.88]
-		},
-		"fixed": {
-			"rotation": [92, 90, 2],
-			"translation": [-0.25, 0.75, -3]
-		}
-	},
 	"groups": [
 		{
 			"name": "Hat Green",

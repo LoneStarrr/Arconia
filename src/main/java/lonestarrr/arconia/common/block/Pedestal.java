@@ -1,10 +1,13 @@
 package lonestarrr.arconia.common.block;
 
+import com.mojang.serialization.MapCodec;
 import lonestarrr.arconia.common.block.entities.PedestalBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -19,6 +22,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
@@ -54,26 +58,29 @@ public class Pedestal extends BaseEntityBlock {
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
+    }
+
+    @Override
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.MODEL;
     }
 
-
     @Override
-    public InteractionResult use(
-            BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult traceResult) {
-        ItemStack playerStack = player.getItemInHand(hand);
+    public @NotNull ItemInteractionResult useItemOn(
+            @NotNull ItemStack playerStack, @NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult traceResult) {
 
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity == null || !(blockEntity instanceof PedestalBlockEntity)) {
-            return InteractionResult.PASS;
+        if (!(blockEntity instanceof PedestalBlockEntity)) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         ItemStack currentItem = ((PedestalBlockEntity) blockEntity).getItemOnDisplay();
 
         if (currentItem.isEmpty()) {
             if (playerStack.isEmpty()) {
-                return InteractionResult.FAIL;
+                return ItemInteractionResult.FAIL;
             }
             ((PedestalBlockEntity) blockEntity).putItem(playerStack);
             if (playerStack.getCount() > 1) {
@@ -81,13 +88,13 @@ public class Pedestal extends BaseEntityBlock {
             } else {
                 player.setItemInHand(hand, ItemStack.EMPTY);
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         } else {
             if (player.addItem(currentItem)) {
                 ((PedestalBlockEntity) blockEntity).removeItem();
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
     }
 }

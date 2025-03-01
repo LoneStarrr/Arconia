@@ -1,0 +1,33 @@
+{
+  "parent": "arconia:light_blue_arconium_ingot",
+  "criteria": {
+    "blue_arconium_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "arconia:blue_arconium_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.arconia.main.blue_arconium_ingot.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "arconia:blue_arconium_ingot"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.blue_arconium_ingot.title"
+    }
+  },
+  "requirements": [
+    [
+      "blue_arconium_ingot"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

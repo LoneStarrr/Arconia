@@ -1,26 +1,20 @@
 package lonestarrr.arconia.common.block;
 
+import com.mojang.serialization.MapCodec;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockSecondaryBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.core.helper.LanguageHelper;
+import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.ModItems;
-import lonestarrr.arconia.compat.theoneprobe.TOPDriver;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.ProbeMode;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -34,9 +28,9 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.FakePlayer;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -73,21 +67,19 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(
-            BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public @NotNull ItemInteractionResult useItemOn(
+            ItemStack itemUsed, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (world.isClientSide || hand != InteractionHand.MAIN_HAND) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         if (!(player instanceof ServerPlayer) || player instanceof FakePlayer) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-
-        ItemStack itemUsed = player.getInventory().getSelected();
 
         PotMultiBlockPrimaryBlockEntity primaryBE = getPrimaryBlockEntity(world, pos);
         if (primaryBE == null) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         if (itemUsed.isEmpty()) {
@@ -97,10 +89,65 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
             } else {
                 player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.show_tier", potTier.getTierName()));
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
+        } else if (itemUsed.getItem() instanceof ColoredRoot) {
+            ItemStack resource = ColoredRoot.getResourceItem(itemUsed);
+
+            if (resource.isEmpty()) {
+                /* Players can remove treasure being extracted by using a single non-imbued root in their main hand.
+                 * An item in the off-hand can be used to remove specific treasure.
+                 */
+                ItemStack offhandItem = player.getOffhandItem();
+                ItemStack removedResource;
+                if (offhandItem.isEmpty()) {
+                    // no offhand item -> pop off the last treasure
+                    removedResource = primaryBE.removeResourceGenerated(ItemStack.EMPTY);
+                    if (removedResource.isEmpty()) {
+                        player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_none_set"));
+                        return ItemInteractionResult.FAIL;
+                    }
+                } else {
+                    // pop off matching treasure if offhand item matches
+                    removedResource = primaryBE.removeResourceGenerated(offhandItem);
+                }
+
+                if (removedResource.isEmpty()) {
+                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_not_found"));
+                    return ItemInteractionResult.FAIL;
+                } else {
+                    ItemStack root = makeImbuedRootFromItem((ColoredRoot)itemUsed.getItem(), removedResource);
+                    itemUsed.shrink(1);
+                    if (!player.getInventory().add(root)) {
+                        player.drop(root, false);
+                    }
+                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_success", removedResource.getItem().getDescription()));
+                    return ItemInteractionResult.SUCCESS;
+                }
+            } else {
+                // Using an imbued root on the pot tells it to extract treasure
+                if (!primaryBE.addResourceGenerated(resource)) {
+                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_full"));
+                    return ItemInteractionResult.FAIL;
+                } else {
+                    itemUsed.shrink(1);
+                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_success"));
+                    return ItemInteractionResult.SUCCESS;
+                }
+            }
+
         }
 
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    private ItemStack makeImbuedRootFromItem(ColoredRoot root, ItemStack resource) {
+        /* This allows treasure to be set on any color root, but that is ok. The difficulty lies in imbuing the root
+         * for the first time, which is what gates the more difficult treasure.
+         */
+        RainbowColor tier = RainbowColor.RED;
+        ItemStack rootStack = new ItemStack(root);
+        ColoredRoot.setResourceItem(rootStack, resource);
+        return rootStack;
     }
 
     @Override
@@ -110,6 +157,11 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
     @Override
     public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
     }
 
     // inspired by Barrier block
@@ -125,13 +177,14 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
     }
 
     @Override
-    public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-        super.playerWillDestroy(world, pos, state, player);
+    public @NotNull BlockState playerWillDestroy(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
+        BlockState result = super.playerWillDestroy(world, pos, state, player);
 
         BlockPos primaryPos = getPrimaryBlockPos(world, pos);
         if (primaryPos != null) {
             PotMultiBlockPrimary.breakMultiBlock(world, primaryPos);
         }
+        return result;
     }
 
     private BlockPos getPrimaryBlockPos(Level world, BlockPos pos) {

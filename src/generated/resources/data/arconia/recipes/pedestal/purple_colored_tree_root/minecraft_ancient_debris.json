@@ -22,12 +22,18 @@
     }
   ],
   "output": {
-    "item": "arconia:purple_colored_tree_root",
-    "nbt": {
-      "item": {
-        "Count": 1,
-        "id": "minecraft:ancient_debris"
-      }
-    }
+    "components": {
+      "minecraft:container": [
+        {
+          "item": {
+            "count": 1,
+            "id": "minecraft:ancient_debris"
+          },
+          "slot": 0
+        }
+      ]
+    },
+    "count": 1,
+    "id": "arconia:purple_colored_tree_root"
   }
 }

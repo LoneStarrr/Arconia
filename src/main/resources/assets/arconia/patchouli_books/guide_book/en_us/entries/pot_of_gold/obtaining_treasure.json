@@ -1,0 +1,24 @@
+{
+    "name": "Obtaining treasure",
+    "icon": "minecraft:gold_block",
+    "category": "arconia:pot_of_gold",
+    "advancement": "arconia:main/red_root_of_essence",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "text": "If you recall from my diary notes, the pot of gold at the end of the rainbow is not a mere fantasy. I observed leprechauns use it to retrieve bounty that they no doubt stole from unsuspecting travellers, and I think I know how they did this."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "First, they put a chest near the pot of gold. Then, they would use one or more imbued tree roots on the pot. I wrote an entry about how to imbue those on another page. The root makes the pot dispense a specific desired item. Doing so will visualize that item over the pot, a nifty trick if you ask me."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "You can make the pot stop extracting any one of its items by clicking it with a non-imbued root and an empty offhand. If there are multiple items being extracted, you can remove a specific item by putting it in your offhand along with the non-imbued root in your main hand. In either case, you will get an imbued root back for that item."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "I also noticed that if the greedy little critters pulled too much treasure, and the chest would fill up, black smoke particles would show above the pot. The lack of a nearby chest seemed to have the same effect."
+        }
+    ]
+}

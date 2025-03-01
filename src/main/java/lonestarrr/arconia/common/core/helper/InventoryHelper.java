@@ -5,9 +5,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -17,24 +17,14 @@ public class InventoryHelper {
     /**
      * Get inventory for a given position and side - taken verbatim from Botania, thanks Vazkii!
      *
-     * @param world
+     * @param level
      * @param pos
-     * @param side
+     * @param direction
      * @return
      */
     @Nullable
-    public static IItemHandler getInventory(Level world, BlockPos pos, Direction side) {
-        BlockEntity be = world.getBlockEntity(pos);
-
-        if (be == null) {
-            return null;
-        }
-
-        LazyOptional<IItemHandler> ret = be.getCapability(ForgeCapabilities.ITEM_HANDLER, side);
-        if (!ret.isPresent()) {
-            ret = be.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
-        }
-        return ret.orElse(null);
+    public static IItemHandler getInventory(Level level, BlockPos pos, Direction direction) {
+        return level.getCapability(Capabilities.ItemHandler.BLOCK, pos, direction);
     }
 
     /**

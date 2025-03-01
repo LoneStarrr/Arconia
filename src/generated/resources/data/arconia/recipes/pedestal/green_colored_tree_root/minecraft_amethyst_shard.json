@@ -25,12 +25,18 @@
     }
   ],
   "output": {
-    "item": "arconia:green_colored_tree_root",
-    "nbt": {
-      "item": {
-        "Count": 1,
-        "id": "minecraft:amethyst_shard"
-      }
-    }
+    "components": {
+      "minecraft:container": [
+        {
+          "item": {
+            "count": 1,
+            "id": "minecraft:amethyst_shard"
+          },
+          "slot": 0
+        }
+      ]
+    },
+    "count": 1,
+    "id": "arconia:green_colored_tree_root"
   }
 }

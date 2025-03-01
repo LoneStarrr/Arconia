@@ -3,10 +3,10 @@
   "durationTicks": 60,
   "ingredients": [
     {
-      "item": "minecraft:emerald"
+      "item": "minecraft:lime_candle"
     },
     {
-      "item": "minecraft:emerald"
+      "item": "minecraft:emerald_block"
     },
     {
       "item": "minecraft:waxed_weathered_copper"
@@ -28,6 +28,7 @@
     }
   ],
   "output": {
-    "item": "arconia:green_arconium_ingot"
+    "count": 1,
+    "id": "arconia:green_arconium_ingot"
   }
 }

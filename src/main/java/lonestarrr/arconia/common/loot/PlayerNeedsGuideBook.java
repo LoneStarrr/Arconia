@@ -4,9 +4,17 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
+import com.mojang.datafixers.kinds.App;
+import com.mojang.datafixers.util.Unit;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.Decoder;
+import com.mojang.serialization.Encoder;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.helper.PatchouliHelper;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,7 +27,10 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
-import net.minecraftforge.common.util.FakePlayer;
+import net.neoforged.neoforge.common.ToolAction;
+import net.neoforged.neoforge.common.loot.CanToolPerformAction;
+import net.neoforged.neoforge.common.util.FakePlayer;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -30,6 +41,12 @@ import java.util.Set;
  * Should really break this up into 2 conditions, is a real player, and has found guidebook
  */
 public class PlayerNeedsGuideBook implements LootItemCondition {
+    public static final PlayerNeedsGuideBook INSTANCE = new PlayerNeedsGuideBook();
+    public static MapCodec<PlayerNeedsGuideBook> CODEC = MapCodec.of(Encoder.empty(), Decoder.unit(PlayerNeedsGuideBook.INSTANCE));
+    public static final LootItemConditionType NEEDS_GUIDEBOOK = new LootItemConditionType(CODEC);
+
+    private PlayerNeedsGuideBook() {}
+
     @Override
     public boolean test(LootContext lootContext) {
         Entity looter = lootContext.getParamOrNull(LootContextParams.THIS_ENTITY);
@@ -38,11 +55,11 @@ public class PlayerNeedsGuideBook implements LootItemCondition {
         }
 
         ServerPlayer player = (ServerPlayer)looter;
-        ServerLevel world = player.serverLevel();
+        ServerLevel level = player.serverLevel();
         // Only drop a book if the player does not have the advancement yet, AND there is no nearby guide book entity (you could mine a whole bunch of dirt
         // without picking up the book!). I suppose you could game this with e.g. a hopper if you really, really wanted to have a large collection of useless
         // guide books!
-        Advancement guideBookAdvancement = world.getServer().getAdvancements().getAdvancement(new ResourceLocation(Arconia.MOD_ID, "main/root"));
+        AdvancementHolder guideBookAdvancement = level.getServer().getAdvancements().get(new ResourceLocation(Arconia.MOD_ID, "main/root"));
         if (guideBookAdvancement == null) {
             // Should not happen, but if it does, better be safe than sorry!
             Arconia.logger.error("Missing guide book advancement");
@@ -54,7 +71,7 @@ public class PlayerNeedsGuideBook implements LootItemCondition {
         }
 
         // Check if the player has recently mined a block that already did drop the book by checking for the entity in the near vicinity
-        List<ItemEntity> items = world.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(32));
+        List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(32));
 
         for (ItemEntity itemEntity : items) {
             ItemStack itemStack = itemEntity.getItem();
@@ -67,22 +84,12 @@ public class PlayerNeedsGuideBook implements LootItemCondition {
     }
 
     @Override
-    public Set<LootContextParam<?>> getReferencedContextParams() {
+    public @NotNull Set<LootContextParam<?>> getReferencedContextParams() {
         return ImmutableSet.of(LootContextParams.THIS_ENTITY);
     }
 
     @Override
-    public LootItemConditionType getType() {
-        return ModLootModifiers.NEEDS_GUIDEBOOK.get();
-    }
-
-    public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<PlayerNeedsGuideBook> {
-        @Override
-        public void serialize(@Nonnull JsonObject json, @Nonnull PlayerNeedsGuideBook value, @Nonnull JsonSerializationContext context) {}
-
-        @Override
-        public PlayerNeedsGuideBook deserialize(@Nonnull JsonObject json, @Nonnull JsonDeserializationContext context) {
-            return new PlayerNeedsGuideBook();
-        }
+    public @NotNull LootItemConditionType getType() {
+        return NEEDS_GUIDEBOOK;
     }
 }

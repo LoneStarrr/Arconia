@@ -1,0 +1,33 @@
+{
+  "parent": "arconia:red_arconium_ingot",
+  "criteria": {
+    "red_arconium_sickle": {
+      "conditions": {
+        "items": [
+          {
+            "items": "arconia:red_arconium_sickle"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.arconia.main.red_arconium_sickle.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "arconia:red_arconium_sickle"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.red_arconium_sickle.title"
+    }
+  },
+  "requirements": [
+    [
+      "red_arconium_sickle"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

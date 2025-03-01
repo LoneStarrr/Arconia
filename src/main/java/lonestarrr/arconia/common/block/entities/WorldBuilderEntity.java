@@ -10,7 +10,9 @@ import com.google.gson.stream.JsonWriter;
 import lonestarrr.arconia.common.Arconia;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -20,7 +22,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import static lonestarrr.arconia.common.core.helper.ResourceLocationHelper.prefix;
@@ -52,12 +53,12 @@ public class WorldBuilderEntity extends BaseBlockEntity {
     }
 
     @Override
-    public void writePacketNBT(CompoundTag tag) {
+    public void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
 
     }
 
     @Override
-    public void readPacketNBT(CompoundTag tag) {
+    public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
 
     }
 
@@ -66,7 +67,7 @@ public class WorldBuilderEntity extends BaseBlockEntity {
     }
 
     private void tickInternal() {
-        if (level.getGameTime() - lastBuilderTick < this.gameTicksPerBuilderTick) {
+        if (level == null || level.getGameTime() - lastBuilderTick < this.gameTicksPerBuilderTick) {
             return;
         }
         lastBuilderTick = level.getGameTime();
@@ -101,11 +102,13 @@ public class WorldBuilderEntity extends BaseBlockEntity {
     /**
      * Recursive function to find all blocks of a specific blockstate that are connected through one of the cardinal directions and up/down
      * @param pos
+     * @param toMatch
      * @param neighbors
      * @param maxPos x/y/z max values defining the region to search in (inclusive)
      * @param minPos x/y/z min values defining the region to search in (inclusive)
      */
     private void findConnectedNeighbors(BlockPos pos, final BlockState toMatch, final Set<BlockPos> neighbors, final BlockPos maxPos, final BlockPos minPos) {
+        if (level == null) { return; }
         if (pos.getX() < minPos.getX() || pos.getX() > maxPos.getX()
                 || pos.getY() < minPos.getY() || pos.getY() > maxPos.getY()
                 || pos.getZ() < minPos.getZ() || pos.getZ() > maxPos.getZ()
@@ -310,10 +313,10 @@ class BlockJsonAdapter extends TypeAdapter<Block> {
     public Block read(JsonReader in) throws IOException {
         String blockStr = in.nextString();
         ResourceLocation blockLoc = new ResourceLocation(blockStr);
-        if (!ForgeRegistries.BLOCKS.containsKey(blockLoc)) {
+        if (!BuiltInRegistries.BLOCK.containsKey(blockLoc)) {
             throw new RuntimeException("Unknown block " + blockStr + " in world builder configuration");
         }
-        Block block = ForgeRegistries.BLOCKS.getValue(blockLoc);
+        Block block = BuiltInRegistries.BLOCK.get(blockLoc);
         return block;
     }
 }

@@ -28,12 +28,18 @@
     }
   ],
   "output": {
-    "item": "arconia:blue_colored_tree_root",
-    "nbt": {
-      "item": {
-        "Count": 1,
-        "id": "minecraft:blaze_rod"
-      }
-    }
+    "components": {
+      "minecraft:container": [
+        {
+          "item": {
+            "count": 1,
+            "id": "minecraft:blaze_rod"
+          },
+          "slot": 0
+        }
+      ]
+    },
+    "count": 1,
+    "id": "arconia:blue_colored_tree_root"
   }
 }

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": {
+      "item": "minecraft:stripped_oak_log"
+    },
+    "S": {
+      "item": "minecraft:oak_slab"
+    }
+  },
+  "pattern": [
+    " S ",
+    " L ",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "arconia:pedestal"
+  }
+}

@@ -19,12 +19,18 @@
     }
   ],
   "output": {
-    "item": "arconia:light_blue_colored_tree_root",
-    "nbt": {
-      "item": {
-        "Count": 1,
-        "id": "arconia:light_blue_arconium_essence"
-      }
-    }
+    "components": {
+      "minecraft:container": [
+        {
+          "item": {
+            "count": 1,
+            "id": "arconia:light_blue_arconium_essence"
+          },
+          "slot": 0
+        }
+      ]
+    },
+    "count": 1,
+    "id": "arconia:light_blue_colored_tree_root"
   }
 }

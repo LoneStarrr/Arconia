@@ -1,5 +1,6 @@
 {
 	"credit": "Made with Blockbench",
+        "parent": "minecraft:block/block",
 	"textures": {
 		"0": "minecraft:block/mossy_cobblestone",
 		"1": "minecraft:block/stone",
@@ -116,12 +117,6 @@
 			}
 		}
 	],
-	"display": {
-		"gui": {
-			"rotation": [30, 225, 0],
-			"scale": [0.625, 0.625, 0.625]
-		}
-	},
 	"groups": [0, 1, 2, 3, 4,
 		{
 			"name": "Decoration",

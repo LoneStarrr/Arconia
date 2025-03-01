@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "arconia:red_arconium_block"
-            ]
+            "items": "arconia:red_arconium_block"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_item",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_item"
     ]
   ],
   "rewards": {
     "recipes": [
       "arconia:red_arconium_ingot"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

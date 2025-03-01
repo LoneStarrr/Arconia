@@ -1,9 +1,11 @@
 package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.common.crafting.ModRecipeTypes;
 import lonestarrr.arconia.common.crafting.PedestalRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -12,10 +14,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -61,7 +64,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     }
 
     @Override
-    public ItemStackHandler getInventory() {
+    protected ItemStackHandler getInventory() {
         return inventory;
     }
 
@@ -69,16 +72,16 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         if (currentRecipeID == null) {
             return null;
         }
-        Optional<? extends Recipe> recipe = level.getRecipeManager().byKey(currentRecipeID);
-        if (recipe.isPresent() && recipe.get() instanceof PedestalRecipe) {
-            return (PedestalRecipe)recipe.get();
+        Optional<RecipeHolder<?>> recipe = level.getRecipeManager().byKey(currentRecipeID);
+        if (recipe.isPresent() && recipe.get().value() instanceof PedestalRecipe) {
+            return (PedestalRecipe)recipe.get().value();
         }
         return null;
     }
 
     @Override
-    public void writePacketNBT(CompoundTag tag) {
-        super.writePacketNBT(tag);
+    public void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        super.writePacketNBT(tag, registries);
         if (currentRecipeID != null) {
             tag.putString(TAG_RECIPE, currentRecipeID.toString());
         }
@@ -87,8 +90,8 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     }
 
     @Override
-    public void readPacketNBT(CompoundTag tag) {
-        super.readPacketNBT(tag);
+    public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        super.readPacketNBT(tag, registries);
         if (tag.contains(TAG_RECIPE)) {
             currentRecipeID = new ResourceLocation(tag.getString(TAG_RECIPE));
         }
@@ -123,13 +126,13 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
             return false;
         }
 
-        PedestalRecipe recipe = findRecipe(inv);
+        ResourceLocation recipeId = findRecipe(inv);
 
-        if (recipe == null) {
+        if (recipeId == null) {
             return false;
         }
 
-        currentRecipeID = recipe.getId();
+        currentRecipeID = recipeId;
         ritualOngoing = true;
         ritualTicksElapsed = 0;
         setChanged();
@@ -236,13 +239,10 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         return inv;
     }
 
-    private PedestalRecipe findRecipe(SimpleContainer inv) {
-        Optional<PedestalRecipe> hasRecipe = level.getRecipeManager().getRecipeFor(PedestalRecipe.Type.INSTANCE, inv, level);
-        if (hasRecipe.isPresent()) {
-            return hasRecipe.get();
-        }
+    private ResourceLocation findRecipe(SimpleContainer inv) {
+        Optional<RecipeHolder<PedestalRecipe>> hasRecipe = level.getRecipeManager().getRecipeFor(ModRecipeTypes.PEDESTAL_TYPE.get(), inv, level);
+        return hasRecipe.map(RecipeHolder::id).orElse(null);
 
-        return null;
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, CenterPedestalBlockEntity blockEntity) {

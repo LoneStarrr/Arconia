@@ -1,0 +1,33 @@
+{
+  "parent": "arconia:root",
+  "criteria": {
+    "center_pedestal": {
+      "conditions": {
+        "items": [
+          {
+            "items": "arconia:center_pedestal"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.arconia.main.center_pedestal.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "arconia:center_pedestal"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.center_pedestal.title"
+    }
+  },
+  "requirements": [
+    [
+      "center_pedestal"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

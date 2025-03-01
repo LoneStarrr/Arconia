@@ -12,7 +12,7 @@
     "III"
   ],
   "result": {
-    "item": "arconia:orange_arconium_block"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "arconia:orange_arconium_block"
+  }
 }

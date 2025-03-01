@@ -1,6 +1,6 @@
 {
     "name": "Pot of Gold",
-    "icon": "arconia:gold_coin",
+    "icon": "minecraft:cauldron",
     "category": "arconia:pot_of_gold",
     "advancement": "arconia:main/clover_staff",
     "pages": [
@@ -16,9 +16,9 @@
                   [ "CCC", "C0C", "CCC" ]
                 ],
                 "mapping": {
-                    "C": "minecraft:black_terracotta",
-                    "0": "minecraft:black_terracotta",
-                    "G": "minecraft:yellow_terracotta"
+                    "C": "minecraft:cauldron",
+                    "0": "minecraft:cauldron",
+                    "G": "minecraft:gold_block"
                 },
                 "symmetrical": true
             },

@@ -2,43 +2,34 @@ package lonestarrr.arconia.common.network;
 
 import lonestarrr.arconia.common.Arconia;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handlers.ClientPayloadHandler;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class ModPackets {
-    private static final String PROTOCOL = "1";
 
-    public static final SimpleChannel HANDLER = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(Arconia.MOD_ID, "chan"),
-            () -> PROTOCOL,
-            PROTOCOL::equals,
-            PROTOCOL::equals
-    );
-
-    public static void init() {
-        int id = 0;
-        HANDLER.registerMessage(id++, PotItemTransferPacket.class, PotItemTransferPacket::encode,
-                PotItemTransferPacket::decode, PotItemTransferPacket.Handler::handle);
+    public static void registerPackets(final RegisterPayloadHandlersEvent event) {
+        final PayloadRegistrar registrar = event.registrar(Arconia.MOD_ID);
+        registrar.playToClient(
+            PotItemTransferPacket.TYPE,
+            PotItemTransferPacket.STREAM_CODEC,
+            PotItemTransferPacket.Handler::handleClient
+        );
     }
 
     /**
-     * Send a network packet to anyone within a radius of 64 meters of the given position
-     * @param world
+     * Send a network packet to any players that have loaded the chunk the given position is at
+     * @param level
      * @param pos
-     * @param toSend Packet to send (why does this not bother to implement at least an interface?)
+     * @param toSend Packet to send
      */
-    public static void sendToNearby(Level world, BlockPos pos, Object toSend) {
-        if (world instanceof ServerLevel) {
-            ServerLevel serverWorld = (ServerLevel) world;
-
-            serverWorld.getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false)
-                    .stream().filter(p -> p.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) < 64 * 64)
-                    .forEach(p -> HANDLER.send(PacketDistributor.PLAYER.with(() -> p), toSend));
+    public static void sendToNearby(ServerLevel level, BlockPos pos, CustomPacketPayload toSend) {
+        if (!level.isClientSide()) {
+            PacketDistributor.sendToPlayersNear(level, null, pos.getX(), pos.getY(), pos.getZ(), 64, toSend);
         }
     }
 }

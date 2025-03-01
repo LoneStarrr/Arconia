@@ -1,18 +1,23 @@
 package lonestarrr.arconia.common.crafting;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -20,22 +25,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PedestalRecipe implements Recipe<Container> {
-    private final ResourceLocation id;
     private final ItemStack output;
     private final int durationTicks; // How long the ritual runs for
-    private final NonNullList<Ingredient> inputs;
+    private final List<Ingredient> ingredients;
 
-    public PedestalRecipe(ResourceLocation id, ItemStack output, int durationTicks, Ingredient... inputs) {
-        this.id = id;
+    // Constructor used by codec
+    public PedestalRecipe(ItemStack output, int durationTicks, List<Ingredient> ingredients) {
         this.output = output;
         this.durationTicks = durationTicks;
-        this.inputs = NonNullList.of(Ingredient.EMPTY, inputs);
+        this.ingredients = ingredients;
+    }
+
+    // Convenience constructor using varargs
+    public PedestalRecipe(ItemStack output, int durationTicks, Ingredient... ingredients) {
+        this(output, durationTicks, List.of(ingredients));
     }
 
     @Nonnull
     @Override
     public RecipeType<?> getType() {
-        return PedestalRecipe.Type.INSTANCE;
+        return ModRecipeTypes.PEDESTAL_TYPE.get();
     }
 
     @Override
@@ -44,8 +53,19 @@ public class PedestalRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
+    public @NotNull ItemStack getResultItem(HolderLookup.Provider pRegistries) {
         return output;
+    }
+
+    public ItemStack getOutput() { return output; }
+
+    public int getDurationTicks() {
+        return durationTicks;
+    }
+
+    @Override
+    public @NotNull NonNullList<Ingredient> getIngredients() {
+        return NonNullList.copyOf(ingredients);
     }
 
     @Override
@@ -53,10 +73,9 @@ public class PedestalRecipe implements Recipe<Container> {
         return true;
     }
 
-
     @Override
     public boolean matches(Container inv, Level world) {
-        List<Ingredient> missing = new ArrayList<>(inputs);
+        List<Ingredient> missing = new ArrayList<>(ingredients);
 
         for (int i = 0; i < inv.getContainerSize(); i++) {
             ItemStack input = inv.getItem(i);
@@ -85,70 +104,57 @@ public class PedestalRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack assemble(Container container, RegistryAccess registryAccess) {
-        return getResultItem(registryAccess).copy();
+    public @NotNull ItemStack assemble(@NotNull Container pCraftingContainer, HolderLookup.@NotNull Provider pRegistries) {
+        return getResultItem(pRegistries).copy();
     }
 
     @Override
-    public ResourceLocation getId() {
-        return id;
-    }
-
-    public int getDurationTicks() {
-        return durationTicks;
-    }
-
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
-        return null;
-    }
-
-    @Override
-    public NonNullList<Ingredient> getIngredients() {
-        return inputs;
-    }
-
-    public static class Type implements RecipeType<PedestalRecipe> {
-        public static final Type INSTANCE = new Type();
-        public static final String ID = "pedestal";
+    public @NotNull RecipeSerializer<?> getSerializer() {
+        return ModRecipeTypes.PEDESTAL_SERIALIZER.get();
     }
 
     public static class Serializer implements RecipeSerializer<PedestalRecipe> {
+        public static final StreamCodec<RegistryFriendlyByteBuf, PedestalRecipe> STREAM_CODEC = StreamCodec.of(
+                Serializer::toNetwork, Serializer::fromNetwork
+        );
+        private MapCodec<PedestalRecipe> codec;
 
+        @NotNull
         @Override
-        public PedestalRecipe fromJson(ResourceLocation id, JsonObject json) {
-            // Serializer is in PedestalProvider which is part of data generation
-            ItemStack output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "output"));
-            int durationTicks = GsonHelper.getAsInt(json, "durationTicks");
-            JsonArray ingrs = GsonHelper.getAsJsonArray(json, "ingredients");
-            List<Ingredient> inputs = new ArrayList<>();
-            for (JsonElement e : ingrs) {
-                inputs.add(Ingredient.fromJson(e));
+        public MapCodec<PedestalRecipe> codec() {
+            if (codec == null) {
+                codec = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                    ItemStack.CODEC.fieldOf("output").forGetter(PedestalRecipe::getOutput),
+                        Codec.INT.fieldOf("durationTicks").forGetter(PedestalRecipe::getDurationTicks),
+                        Ingredient.LIST_CODEC.fieldOf("ingredients").forGetter(PedestalRecipe::getIngredients)
+                ).apply(instance, PedestalRecipe::new));
             }
-            return new PedestalRecipe(id, output, durationTicks, inputs.toArray(new Ingredient[0]));
+            return codec;
         }
 
-        @Nullable
         @Override
-        public PedestalRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
+        public @NotNull StreamCodec<RegistryFriendlyByteBuf, PedestalRecipe> streamCodec() {
+            return STREAM_CODEC;
+        }
+
+
+        private static @NotNull PedestalRecipe fromNetwork(@NotNull RegistryFriendlyByteBuf buf) {
             Ingredient[] inputs = new Ingredient[buf.readVarInt()];
             for (int i = 0; i < inputs.length; i++) {
-                inputs[i] = Ingredient.fromNetwork(buf);
+                inputs[i] = Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
             }
-            ItemStack output = buf.readItem();
+            ItemStack output = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
             int durationTicks = buf.readInt();
-            return new PedestalRecipe(id, output, durationTicks, inputs);
+            return new PedestalRecipe(output, durationTicks, inputs);
 
         }
 
-        @Override
-        public void toNetwork(FriendlyByteBuf buf, PedestalRecipe recipe) {
+        private static void toNetwork(@NotNull RegistryFriendlyByteBuf buf, @NotNull PedestalRecipe recipe) {
             buf.writeVarInt(recipe.getIngredients().size());
             for (Ingredient input : recipe.getIngredients()) {
-                input.toNetwork(buf);
+                Ingredient.CONTENTS_STREAM_CODEC.encode(buf, input);
             }
-            buf.writeItemStack(recipe.getResultItem(Minecraft.getInstance().level.registryAccess()), false);
+            ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, recipe.output);
             buf.writeInt(recipe.durationTicks);
         }
     }

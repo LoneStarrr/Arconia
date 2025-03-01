@@ -1,57 +1,44 @@
 package lonestarrr.arconia.common.advancements;
 
-import com.google.gson.JsonObject;
-import lonestarrr.arconia.common.Arconia;
-import net.minecraft.advancements.critereon.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.LocationPredicate;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ExtraCodecs;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
+import java.util.Optional;
 
 /**
  * Advancement trigger for creating a pot of gold
  */
-public class PotOfGoldTrigger extends SimpleCriterionTrigger<PotOfGoldTrigger.Instance> {
-    public static final ResourceLocation ID = new ResourceLocation(Arconia.MOD_ID, "create_pot_of_gold");
-    public static final PotOfGoldTrigger INSTANCE = new PotOfGoldTrigger();
-
-    private PotOfGoldTrigger() {}
-
-    @Nonnull
+public class PotOfGoldTrigger extends SimpleCriterionTrigger<PotOfGoldTrigger.TriggerInstance> {
     @Override
-    public ResourceLocation getId() {
-        return ID;
+    public @NotNull Codec<TriggerInstance> codec() {
+        return PotOfGoldTrigger.TriggerInstance.CODEC;
     }
 
-    @Nonnull
-    @Override
-    public Instance createInstance(@Nonnull JsonObject json, ContextAwarePredicate playerPred, DeserializationContext conditions) {
-        // This allows mod pack authors to limit where the pot can be constructed through a datapack
-        return new Instance(playerPred, LocationPredicate.fromJson(json.get("location")));
+    public void trigger(ServerPlayer player) {
+        trigger(player, TriggerInstance::matches);
     }
 
-    public void trigger(ServerPlayer player, ServerLevel world, BlockPos pos) {
-        trigger(player, instance -> instance.test(world, pos));
-    }
+    public record TriggerInstance(
+            Optional<ContextAwarePredicate> player
+    ) implements SimpleCriterionTrigger.SimpleInstance {
+        public static final Codec<PotOfGoldTrigger.TriggerInstance> CODEC = RecordCodecBuilder.create(
+                r -> r.group(
+                                Codec.optionalField("player", EntityPredicate.ADVANCEMENT_CODEC, false).forGetter(PotOfGoldTrigger.TriggerInstance::player)
+                        )
+                        .apply(r, PotOfGoldTrigger.TriggerInstance::new)
+        );
 
-    static class Instance extends AbstractCriterionTriggerInstance {
-        private final LocationPredicate pos;
-
-        Instance(ContextAwarePredicate playerPred, LocationPredicate pos) {
-            super(ID, playerPred);
-            this.pos = pos;
-        }
-
-        @Nonnull
-        @Override
-        public ResourceLocation getCriterion() {
-            return ID;
-        }
-
-        boolean test(ServerLevel world, BlockPos pos) {
-            return this.pos.matches(world, pos.getX(), pos.getY(), pos.getZ());
+        boolean matches() {
+            return true;
         }
     }
 }

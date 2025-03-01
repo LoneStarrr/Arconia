@@ -15,7 +15,7 @@
     "  S"
   ],
   "result": {
-    "item": "arconia:light_blue_arconium_sickle"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "arconia:light_blue_arconium_sickle"
+  }
 }

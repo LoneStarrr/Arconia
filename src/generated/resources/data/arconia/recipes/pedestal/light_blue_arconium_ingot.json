@@ -3,10 +3,10 @@
   "durationTicks": 60,
   "ingredients": [
     {
-      "item": "minecraft:diamond"
+      "item": "minecraft:soul_campfire"
     },
     {
-      "item": "minecraft:diamond"
+      "item": "minecraft:diamond_block"
     },
     {
       "item": "minecraft:obsidian"
@@ -28,6 +28,7 @@
     }
   ],
   "output": {
-    "item": "arconia:light_blue_arconium_ingot"
+    "count": 1,
+    "id": "arconia:light_blue_arconium_ingot"
   }
 }

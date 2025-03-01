@@ -15,7 +15,7 @@
     "  S"
   ],
   "result": {
-    "item": "arconia:purple_arconium_sickle"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "arconia:purple_arconium_sickle"
+  }
 }

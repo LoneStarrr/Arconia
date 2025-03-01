@@ -1,0 +1,20 @@
+{
+    "name": "Crop cirles?",
+    "icon": "arconia:red_rainbow_grass_block",
+    "category": "arconia:pot_of_gold",
+    "advancement": "arconia:main/touch_grass",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "text": "Gathering treasure from the pot may seem slow, but surrounding it with colorful grass realizes its full potential. By coloring grass red in a 5 by 5 square around the pot, it gains both speed and increases the quantity of loot. Each additional ring in the next color does the same, until all colors have been used. Arconium essence can be used to change the color of a grass block."
+        },
+        {
+            "type": "patchouli:image",
+            "images": ["arconia:textures/gui/guide_book/potofgold_tiered.png","arconia:textures/gui/guide_book/potofgold_tiered2.png"],
+            "title": "Maxed out pot",
+            "border": true,
+            "text": "This pot has reached its full potential. The center 3 by 3 blocks can be any block."
+        }
+    ]
+}
+

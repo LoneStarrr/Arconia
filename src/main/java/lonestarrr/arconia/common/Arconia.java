@@ -1,10 +1,12 @@
 package lonestarrr.arconia.common;
 
 import lonestarrr.arconia.client.particle.ModParticles;
-import lonestarrr.arconia.common.advancements.ModCriterialTriggers;
+import lonestarrr.arconia.common.advancements.ModCriteriaTriggers;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.block.entities.ModBlockEntities;
 import lonestarrr.arconia.common.block.entities.WorldBuilderEntity;
+import lonestarrr.arconia.common.capabilities.ModCapabilities;
+import lonestarrr.arconia.common.components.ModDataComponents;
 import lonestarrr.arconia.common.core.command.ArconiaCommand;
 import lonestarrr.arconia.common.core.command.FractalTreeCommand;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
@@ -17,23 +19,17 @@ import lonestarrr.arconia.common.crafting.ModRecipeTypes;
 import lonestarrr.arconia.common.item.ModItems;
 import lonestarrr.arconia.common.loot.ModLootModifiers;
 import lonestarrr.arconia.common.network.ModPackets;
-import lonestarrr.arconia.common.world.ModFeatures;
 import lonestarrr.arconia.compat.theoneprobe.TheOneProbe;
 import lonestarrr.arconia.data.DataGenerators;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,17 +44,19 @@ public class Arconia {
 
     public static final Logger logger = LogManager.getLogger(Arconia.MOD_ID);
 
-    public static IProxy proxy = DistExecutor.runForDist(
-            ()-> ClientProxy::new, ()-> ServerProxy::new
-    );
+    public static IProxy proxy;
 
-    public Arconia() {
-        proxy.registerHandlers();
+    public Arconia(IEventBus modBus, ModContainer modContainer, Dist dist) {
+        modContainer.registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_SPEC);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_SPEC);
+        if (dist.isClient()) {
+            new ClientProxy().registerHandlers(modBus);
+        }
 
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        if (dist.isDedicatedServer()) {
+            new ServerProxy().registerHandlers(modBus);
+        }
 
         modBus.addListener(this::commonSetup);
         modBus.addListener(DataGenerators::gatherData);
@@ -71,17 +69,19 @@ public class Arconia {
         ModLootModifiers.CODECS.register(modBus);
         ModLootModifiers.LOOT_CONDITION_TYPES.register(modBus);
         ModParticles.PARTICLE_TYPES.register(modBus);
+        ModCriteriaTriggers.CRITERIA_TRIGGERS.register(modBus);
+        ModDataComponents.DATA_COMPONENTS.register(modBus);
 
         modBus.addListener(ConfigHandler::onConfigLoad);
         modBus.addListener(ConfigHandler::onConfigReload);
 
         modBus.addListener(ModBlocks::addToCreativeTabs);
         modBus.addListener(ModItems::addToCreativeTabs);
+        modBus.addListener(ModCapabilities::registerCapabilities);
+        modBus.addListener(ModPackets::registerPackets);
 
-        IEventBus forgeBus = MinecraftForge.EVENT_BUS;
-        forgeBus.addListener(EventPriority.HIGH, this::registerCommands);
-
-        ModCriterialTriggers.init();
+        IEventBus eventBus = NeoForge.EVENT_BUS;
+        eventBus.addListener(EventPriority.HIGH, this::registerCommands);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
@@ -89,8 +89,6 @@ public class Arconia {
 
         // !! This mod life cycle event is called in parallel with any other mods - use event.enqueueWork() for things that are not thread-safe.
 
-        // Register network packets to synchronize server/client data
-        ModPackets.init();
         // The One Probe - optional, checks for mod presence
         TheOneProbe.init();
 
