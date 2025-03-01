@@ -4,6 +4,7 @@ import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.ItemNames;
 import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.core.helper.ResourceLocationHelper;
 import lonestarrr.arconia.common.crafting.PedestalRecipe;
 import lonestarrr.arconia.common.item.ColoredRoot;
 import lonestarrr.arconia.common.item.ModItems;
@@ -546,6 +547,6 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     private static ResourceLocation id(String s) {
-        return new ResourceLocation(Arconia.MOD_ID, "pedestal/" + s);
+        return ResourceLocationHelper.prefix("pedestal/" + s);
     }
 }

@@ -5,6 +5,6 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ResourceLocationHelper {
     public static ResourceLocation prefix(String path) {
-        return new ResourceLocation(Arconia.MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, path);
     }
 }

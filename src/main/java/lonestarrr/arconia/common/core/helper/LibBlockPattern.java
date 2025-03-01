@@ -155,7 +155,7 @@ public abstract class LibBlockPattern {
         String[] blockNameParts = blockByName.split(":");
         String namespace = blockNameParts[0];
         String blockId = blockNameParts[1];
-        ResourceLocation resourceLocation = new ResourceLocation(namespace, blockId);
+        ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(namespace, blockId);
 
         if (!BuiltInRegistries.BLOCK.containsKey(resourceLocation)) {
             throw new BlockPatternException("Unknown block: " + blockByName);

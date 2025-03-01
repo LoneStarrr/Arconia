@@ -59,7 +59,7 @@ public class ClientProxy implements IProxy {
     }
 
     private static void registerItemProperties() {
-        ItemProperties.register(ModItems.magicInABottle.get(), new ResourceLocation(Arconia.MOD_ID, "filled"), MagicInABottle::getFilledPercentage);
+        ItemProperties.register(ModItems.magicInABottle.get(), ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "filled"), MagicInABottle::getFilledPercentage);
     }
 
     private void registerParticleFactories(RegisterParticleProvidersEvent event) {

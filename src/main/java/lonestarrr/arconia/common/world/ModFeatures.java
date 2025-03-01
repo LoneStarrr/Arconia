@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModFeatures {
-    public static final ResourceKey<PlacedFeature> CLOVER_PATCH = ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "clover_patch"));
-    public static final ResourceKey<ConfiguredFeature<?,?>> CLOVER_PATCH_CONFIGURED = ResourceKey.create(Registries.CONFIGURED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "clover_patch"));
+    public static final ResourceKey<PlacedFeature> CLOVER_PATCH = ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "clover_patch"));
+    public static final ResourceKey<ConfiguredFeature<?,?>> CLOVER_PATCH_CONFIGURED = ResourceKey.create(Registries.CONFIGURED_FEATURE, ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "clover_patch"));
     /// Configured features
     private static final Map<RainbowColor, ResourceKey<ConfiguredFeature<?, ?>>> configuredTrees =
             new HashMap<>(RainbowColor.values().length);
@@ -23,8 +23,8 @@ public class ModFeatures {
     static {
         // Actual configuration happens in data generation as dynamic features are no longer supported since 1.19.3
         for (RainbowColor tier : RainbowColor.values()) {
-            configuredTrees.put(tier, ResourceKey.create(Registries.CONFIGURED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "tree_" + tier.getTierName())));
-            placedTrees.put(tier, ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(Arconia.MOD_ID, "tree_" + tier.getTierName())));
+            configuredTrees.put(tier, ResourceKey.create(Registries.CONFIGURED_FEATURE, ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "tree_" + tier.getTierName())));
+            placedTrees.put(tier, ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "tree_" + tier.getTierName())));
         }
     }
 

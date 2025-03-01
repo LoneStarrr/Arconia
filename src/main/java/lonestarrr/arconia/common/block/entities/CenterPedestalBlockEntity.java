@@ -93,7 +93,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
         super.readPacketNBT(tag, registries);
         if (tag.contains(TAG_RECIPE)) {
-            currentRecipeID = new ResourceLocation(tag.getString(TAG_RECIPE));
+            currentRecipeID = ResourceLocation.parse(tag.getString(TAG_RECIPE));
         }
         if (tag.contains(TAG_ONGOING)) {
             ritualOngoing = tag.getBoolean(TAG_ONGOING);

@@ -58,7 +58,7 @@ public class BuildPatternTier {
                 RainbowColor color = entry.getKey();
                 String filename = entry.getValue();
 
-                ResourceLocation res = new ResourceLocation("arconia", "block_patterns/" + filename);
+                ResourceLocation res = ResourceLocation.fromNamespaceAndPath("arconia", "block_patterns/" + filename);
                 try {
                     BuildPattern bp = BuildPattern.loadPattern(res);
                     patterns.put(color, bp);
@@ -67,7 +67,7 @@ public class BuildPatternTier {
                     throw e;
                 }
 
-                ResourceLocation resCompleted = new ResourceLocation("arconia", "block_patterns/completed/" + filename);
+                ResourceLocation resCompleted = ResourceLocation.fromNamespaceAndPath("arconia", "block_patterns/completed/" + filename);
                 try {
                     BuildPattern bp = BuildPattern.loadPattern(resCompleted);
                     patternsCompleted.put(color, bp);
