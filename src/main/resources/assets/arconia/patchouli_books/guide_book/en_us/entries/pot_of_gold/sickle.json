@@ -2,7 +2,7 @@
     "name": "Sickle",
     "icon": "arconia:red_arconium_sickle",
     "category": "arconia:pot_of_gold",
-    "advancement": "arconia:main/red_arconium_ingot",
+    "advancement": "arconia:red_arconium_ingot",
     "pages": [
         {
             "type": "patchouli:text",

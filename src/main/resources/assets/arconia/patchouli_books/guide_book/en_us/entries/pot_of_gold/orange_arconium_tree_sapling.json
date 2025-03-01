@@ -2,7 +2,7 @@
     "name": "Orange trees",
     "icon": "arconia:orange_arconium_tree_sapling",
     "category": "arconia:pot_of_gold",
-    "advancement": "arconia:main/red_arconium_sickle",
+    "advancement": "arconia:red_arconium_sickle",
     "pages": [
 	"Harvesting leaves with a sickle of the same color seems to occasionally produce tree saplings of a different color. Planting and growing those should prove to be useful for obtaining further resources."
     ]

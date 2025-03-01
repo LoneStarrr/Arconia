@@ -47,7 +47,7 @@ public class PlayerNeedsGuideBook implements LootItemCondition {
         // Only drop a book if the player does not have the advancement yet, AND there is no nearby guide book entity (you could mine a whole bunch of dirt
         // without picking up the book!). I suppose you could game this with e.g. a hopper if you really, really wanted to have a large collection of useless
         // guide books!
-        AdvancementHolder guideBookAdvancement = level.getServer().getAdvancements().get(ResourceLocationHelper.prefix("main/root"));
+        AdvancementHolder guideBookAdvancement = level.getServer().getAdvancements().get(ResourceLocationHelper.prefix("root"));
         if (guideBookAdvancement == null) {
             // Should not happen, but if it does, better be safe than sorry!
             Arconia.logger.error("Missing guide book advancement");

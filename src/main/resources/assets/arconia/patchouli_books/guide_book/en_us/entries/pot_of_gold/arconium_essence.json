@@ -2,7 +2,7 @@
     "name": "Arconium essence",
     "icon": "arconia:red_arconium_essence",
     "category": "arconia:pot_of_gold",
-    "advancement": "arconia:main/center_pedestal",
+    "advancement": "arconia:center_pedestal",
     "pages": [
         "One of the rituals I saw being performed by the leprechauns on the pedestals was to imbue tree roots. These imbued roots are used to retrieve treasure from a pot of gold. To imbue roots with this magical power, a special ingredient is often required.",
         "The first step towards getting this essence is to imbue a tree root. Of course, this time it only requires items you should already be able to find in the wild. If you look up red arconium essence, click on it to get the recipe. It should show a crafting recipe using an imbued root. Clicking on that root should then show you how to make it using the pedestal ritual I wrote about on another page.",

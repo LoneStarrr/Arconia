@@ -2,7 +2,7 @@
     "name": "Pedestal Ritual",
     "icon": "arconia:center_pedestal",
     "category": "arconia:pot_of_gold",
-    "advancement": "arconia:main/clover_staff",
+    "advancement": "arconia:clover_staff",
     "pages": [
         {
             "type": "patchouli:text",

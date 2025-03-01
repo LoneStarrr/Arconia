@@ -2,7 +2,7 @@
     "name": "Imbuing tree roots",
     "icon": "arconia:red_colored_tree_root",
     "category": "arconia:pot_of_gold",
-    "advancement": "arconia:main/center_pedestal",
+    "advancement": "arconia:center_pedestal",
     "pages": [
         {
             "type": "patchouli:text",
