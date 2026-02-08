@@ -1,3 +1,9 @@
+# 0.0.13
+
+## Fixes
+
+ - Leaf colors correctly shown on maps
+
 # 0.0.12
 
 ## Fixes
