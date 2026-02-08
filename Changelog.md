@@ -1,3 +1,15 @@
+# 0.0.12
+
+## Fixes
+
+## Changes
+
+ - Port to NeoForge 1.21.1
+ - Gave notebook its own distinctive look
+ - Small documentation updates in notebook
+ - Rename fixes (enchanted -> imbued)
+ - Remove unused code and tests
+
 # 0.0.11
 
 ## Fixes

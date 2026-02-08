@@ -10,8 +10,6 @@ import lonestarrr.arconia.common.components.ModDataComponents;
 import lonestarrr.arconia.common.core.command.ArconiaCommand;
 import lonestarrr.arconia.common.core.command.FractalTreeCommand;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
-import lonestarrr.arconia.common.core.helper.BlockPatternException;
-import lonestarrr.arconia.common.core.helper.BuildPatternTier;
 import lonestarrr.arconia.common.core.proxy.ClientProxy;
 import lonestarrr.arconia.common.core.proxy.IProxy;
 import lonestarrr.arconia.common.core.proxy.ServerProxy;
@@ -91,14 +89,6 @@ public class Arconia {
 
         // The One Probe - optional, checks for mod presence
         TheOneProbe.init();
-
-        try {
-            BuildPatternTier.loadPatterns();
-        } catch (IOException e) {
-            throw new RuntimeException("Error loading build patterns", e);
-        } catch (BlockPatternException e) {
-            throw new RuntimeException("Error parsing build patterns", e);
-        }
 
         try {
             WorldBuilderEntity.loadDistributionTables();
