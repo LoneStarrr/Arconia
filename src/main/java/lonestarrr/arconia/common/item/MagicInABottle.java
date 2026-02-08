@@ -211,7 +211,7 @@ public class MagicInABottle extends Item {
     protected List<ItemStack> getLoot(ItemStack stack, Level world) {
         RainbowColor tier = getTier(stack);
 
-        final ResourceLocation lootResource = new ResourceLocation(Arconia.MOD_ID, "magic_in_a_bottle_" + tier.getTierName());
+        final ResourceLocation lootResource = ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "magic_in_a_bottle_" + tier.getTierName());
 
         LootTable lootTable = ((ServerLevel) world).getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, lootResource));
         LootParams params = (new LootParams.Builder((ServerLevel)world)).create(LootContextParamSets.EMPTY);

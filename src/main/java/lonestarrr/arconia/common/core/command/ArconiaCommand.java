@@ -25,7 +25,7 @@ public class ArconiaCommand {
         //   /arconia <subcommand> <subcommand args>
         dispatcher.register(
                 Commands.literal("arconia").then(
-                        Commands.literal("enchant_root").then(
+                        Commands.literal("imbue_root").then(
                                 Commands.argument("item_id", ItemArgument.item(context))
                                             .executes(ctx -> enchantRoot(
                                                             ctx,
@@ -50,7 +50,7 @@ public class ArconiaCommand {
         }
 
         ColoredRoot.setResourceItem(rootItem, new ItemStack(resourceItem));
-        player.sendSystemMessage(Component.literal("Enchanted the colored root with resourceItem " + BuiltInRegistries.ITEM.getKey(resourceItem).toString()));
+        player.sendSystemMessage(Component.literal("Imbued the colored root with resourceItem " + BuiltInRegistries.ITEM.getKey(resourceItem).toString()));
         return Command.SINGLE_SUCCESS;
     }
 }

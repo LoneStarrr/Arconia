@@ -312,7 +312,7 @@ class BlockJsonAdapter extends TypeAdapter<Block> {
     @Override
     public Block read(JsonReader in) throws IOException {
         String blockStr = in.nextString();
-        ResourceLocation blockLoc = new ResourceLocation(blockStr);
+        ResourceLocation blockLoc = ResourceLocation.parse(blockStr);
         if (!BuiltInRegistries.BLOCK.containsKey(blockLoc)) {
             throw new RuntimeException("Unknown block " + blockStr + " in world builder configuration");
         }

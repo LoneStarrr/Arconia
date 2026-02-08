@@ -2,6 +2,7 @@ package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.crafting.ModRecipeTypes;
+import lonestarrr.arconia.common.crafting.PedestalInput;
 import lonestarrr.arconia.common.crafting.PedestalRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -93,7 +94,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
         super.readPacketNBT(tag, registries);
         if (tag.contains(TAG_RECIPE)) {
-            currentRecipeID = new ResourceLocation(tag.getString(TAG_RECIPE));
+            currentRecipeID = ResourceLocation.parse(tag.getString(TAG_RECIPE));
         }
         if (tag.contains(TAG_ONGOING)) {
             ritualOngoing = tag.getBoolean(TAG_ONGOING);
@@ -120,7 +121,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
 
         List<PedestalBlockEntity> pedestals = findPedestals();
         Arconia.logger.debug("Found " + pedestals.size() + " ritual pedestal(s)");
-        SimpleContainer inv = getPedestalItems(pedestals);
+        PedestalInput inv = getPedestalItems(pedestals);
 
         if (inv.isEmpty()) {
             return false;
@@ -168,7 +169,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         }
 
         List<PedestalBlockEntity> pedestals = findPedestals();
-        SimpleContainer inv = getPedestalItems(pedestals);
+        PedestalInput inv = getPedestalItems(pedestals);
 
         if (currentRecipe.matches(inv, level)) {
             produceRecipeOutput();
@@ -222,7 +223,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         return pedestals;
     }
 
-    private SimpleContainer getPedestalItems(List<PedestalBlockEntity> pedestals) {
+    private PedestalInput getPedestalItems(List<PedestalBlockEntity> pedestals) {
         List<ItemStack> stacks = new ArrayList<>(pedestals.size());
         for (PedestalBlockEntity entity: pedestals) {
             if (!entity.getItemOnDisplay().isEmpty()) {
@@ -230,16 +231,10 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
             }
         }
 
-        SimpleContainer inv = new SimpleContainer(stacks.size());
-        for (int i = 0; i < stacks.size(); i++) {
-            ItemStack ingredient = stacks.get(i);
-            inv.setItem(i, ingredient);
-        }
-
-        return inv;
+        return new PedestalInput(stacks);
     }
 
-    private ResourceLocation findRecipe(SimpleContainer inv) {
+    private ResourceLocation findRecipe(PedestalInput inv) {
         Optional<RecipeHolder<PedestalRecipe>> hasRecipe = level.getRecipeManager().getRecipeFor(ModRecipeTypes.PEDESTAL_TYPE.get(), inv, level);
         return hasRecipe.map(RecipeHolder::id).orElse(null);
 

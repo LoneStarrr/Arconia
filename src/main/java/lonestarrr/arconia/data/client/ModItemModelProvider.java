@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 import static lonestarrr.arconia.common.core.helper.ResourceLocationHelper.prefix;
 
 public class ModItemModelProvider extends ItemModelProvider {
-    private static final ResourceLocation GENERATED = new ResourceLocation("item/generated");
+    private static final ResourceLocation GENERATED = ResourceLocation.withDefaultNamespace("item/generated");
 
     public ModItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, Arconia.MOD_ID, existingFileHelper);

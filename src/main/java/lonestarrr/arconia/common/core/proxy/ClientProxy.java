@@ -2,9 +2,7 @@ package lonestarrr.arconia.common.core.proxy;
 
 import lonestarrr.arconia.client.core.handler.BlockEntityRendererHandler;
 import lonestarrr.arconia.client.core.handler.ColorHandler;
-import lonestarrr.arconia.client.effects.BuildPatternPreview;
 import lonestarrr.arconia.client.effects.PotItemTransfers;
-import lonestarrr.arconia.client.gui.render.HighlightPatternStructure;
 import lonestarrr.arconia.client.particle.ModParticles;
 import lonestarrr.arconia.client.particle.custom.RainbowParticles;
 import lonestarrr.arconia.common.Arconia;
@@ -34,9 +32,7 @@ public class ClientProxy implements IProxy {
         modBus.addListener(this::registerParticleFactories);
 
         IEventBus forgeBus = NeoForge.EVENT_BUS;
-        forgeBus.addListener(BuildPatternPreview::render);
         forgeBus.addListener(PotItemTransfers::render);
-        forgeBus.addListener(HighlightPatternStructure::render);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
@@ -59,7 +55,7 @@ public class ClientProxy implements IProxy {
     }
 
     private static void registerItemProperties() {
-        ItemProperties.register(ModItems.magicInABottle.get(), new ResourceLocation(Arconia.MOD_ID, "filled"), MagicInABottle::getFilledPercentage);
+        ItemProperties.register(ModItems.magicInABottle.get(), ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "filled"), MagicInABottle::getFilledPercentage);
     }
 
     private void registerParticleFactories(RegisterParticleProvidersEvent event) {

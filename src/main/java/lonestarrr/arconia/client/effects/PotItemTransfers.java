@@ -68,7 +68,7 @@ public class PotItemTransfers {
 
         // Probably also add a random delay and don't fire them all at the same tick
         for (ItemTransfer transfer: transfers) {
-            if (transfer.isComplete(event.getPartialTick())) {
+            if (transfer.isComplete(event.getPartialTick().getGameTimeDeltaPartialTick(false))) {
                 toRemove.add(transfer);
                 continue;
             }
@@ -78,9 +78,7 @@ public class PotItemTransfers {
                 continue;
             }
 
-            renderItemTransfer(transfer, event.getPoseStack(), buffer, event.getPartialTick());
-            // TODO: Temporary - testing rainbow rendering
-//            RainbowRenderer.renderRainbow(transfer.potPos, transfer.hatPos, event.getMatrixStack(), buffer);
+            renderItemTransfer(transfer, event.getPoseStack(), buffer, event.getPartialTick().getGameTimeDeltaPartialTick(false));
         }
         buffer.endBatch();
 

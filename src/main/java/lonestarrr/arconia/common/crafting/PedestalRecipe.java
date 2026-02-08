@@ -3,28 +3,25 @@ package lonestarrr.arconia.common.crafting;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PedestalRecipe implements Recipe<Container> {
+public class
+PedestalRecipe implements Recipe<PedestalInput> {
     private final ItemStack output;
     private final int durationTicks; // How long the ritual runs for
     private final List<Ingredient> ingredients;
@@ -74,10 +71,10 @@ public class PedestalRecipe implements Recipe<Container> {
     }
 
     @Override
-    public boolean matches(Container inv, Level world) {
+    public boolean matches(PedestalInput inv, Level world) {
         List<Ingredient> missing = new ArrayList<>(ingredients);
 
-        for (int i = 0; i < inv.getContainerSize(); i++) {
+        for (int i = 0; i < inv.size(); i++) {
             ItemStack input = inv.getItem(i);
             if (input.isEmpty()) {
                 continue;
@@ -104,7 +101,7 @@ public class PedestalRecipe implements Recipe<Container> {
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull Container pCraftingContainer, HolderLookup.@NotNull Provider pRegistries) {
+    public @NotNull ItemStack assemble(@NotNull PedestalInput pCraftingContainer, HolderLookup.@NotNull Provider pRegistries) {
         return getResultItem(pRegistries).copy();
     }
 

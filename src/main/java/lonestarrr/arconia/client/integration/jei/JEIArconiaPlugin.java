@@ -24,7 +24,7 @@ import java.util.List;
 
 @JeiPlugin
 public class JEIArconiaPlugin implements IModPlugin {
-    private static final ResourceLocation ID = new ResourceLocation(Arconia.MOD_ID, "main");
+    private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "main");
 
     @Override
     public ResourceLocation getPluginUid() {

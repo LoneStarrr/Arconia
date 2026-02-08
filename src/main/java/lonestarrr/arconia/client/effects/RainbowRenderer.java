@@ -45,14 +45,14 @@ public class RainbowRenderer {
         for (int i = 0; i < numEdges - 1; i++) {
             Vector3f[] corners = {outerArch.get(i), outerArch.get(i + 1), innerArch.get(i +1), innerArch.get(i)};
             for (Vector3f v: corners) {
-                builder.vertex(positionMatrix, v.x(), v.y(), v.z()).color(colorR, colorG, colorB, alpha).endVertex();
+                builder.addVertex(positionMatrix, v.x(), v.y(), v.z()).setColor(colorR, colorG, colorB, alpha);
             }
         }
 
         // FIXME How am I supposed to indicate that I'm done drawing? Closing the polygon? Nope. This here works, but something
         // tells me I am not supposed to be doing this this way.
-        RainbowSegmentRenderType.RAINBOW_SEGMENT.end((BufferBuilder)builder, VertexSorting.DISTANCE_TO_ORIGIN);
-        ((BufferBuilder)builder).begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+//        RainbowSegmentRenderType.RAINBOW_SEGMENT.end((BufferBuilder)builder, VertexSorting.DISTANCE_TO_ORIGIN);
+//        ((BufferBuilder)builder).begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
         poseStack.popPose();
     }

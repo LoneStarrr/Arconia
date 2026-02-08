@@ -39,7 +39,7 @@ public class AltarRecipeCategory implements IRecipeCategory<PedestalRecipe> {
 
     public AltarRecipeCategory(@Nonnull IGuiHelper guiHelper) {
         this.background = guiHelper.createBlankDrawable(144, 81);
-        this.overlay = guiHelper.createDrawable(new ResourceLocation(Arconia.MOD_ID, "textures/gui/jei/altar_overlay.png"),
+        this.overlay = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "textures/gui/jei/altar_overlay.png"),
                 0, 0, 144, 81);
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, renderStack.copy());
     }

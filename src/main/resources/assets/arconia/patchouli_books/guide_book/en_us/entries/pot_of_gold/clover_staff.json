@@ -2,7 +2,7 @@
     "name": "Clover staff",
     "icon": "arconia:clover_staff",
     "category": "arconia:pot_of_gold",
-    "advancement": "arconia:main/four_leaf_clover",
+    "advancement": "arconia:four_leaf_clover",
     "pages": [
         {
             "type": "patchouli:text",

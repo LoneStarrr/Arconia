@@ -3,6 +3,7 @@ package lonestarrr.arconia.data.world;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.core.helper.ResourceLocationHelper;
 import lonestarrr.arconia.common.world.ModFeatures;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
@@ -45,11 +46,11 @@ public class BiomeModifiers extends DatapackBuiltinEntriesProvider {
     private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder();
     public static final ResourceKey<BiomeModifier> ADD_TREES = ResourceKey.create(
             NeoForgeRegistries.Keys.BIOME_MODIFIERS, // The registry this key is for
-            new ResourceLocation(Arconia.MOD_ID, "add_trees") // The registry name
+            ResourceLocationHelper.prefix("add_trees") // The registry name
     );
     public static final ResourceKey<BiomeModifier> ADD_CLOVERS = ResourceKey.create(
             NeoForgeRegistries.Keys.BIOME_MODIFIERS, // The registry this key is for
-            new ResourceLocation(Arconia.MOD_ID, "add_clovers") // The registry name
+            ResourceLocationHelper.prefix("add_clovers") // The registry name
     );
 
     static {

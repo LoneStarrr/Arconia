@@ -6,10 +6,13 @@ import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -30,12 +33,12 @@ public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
     private static final float[] COLORED_STICK_CHANCES = new float[]{0.02F, 0.022222223F, 0.025F, 0.033333335F, 0.1F};
     private static final LootItemCondition.Builder HAS_CLOVER_STAFF = MatchTool.toolMatches(ItemPredicate.Builder.item().of(ModItems.cloverStaff.value()));
 
-    public ArconiaBlockLootSubProvider() {
+    public ArconiaBlockLootSubProvider(HolderLookup.Provider registries) {
         // The first parameter is a set of blocks we are creating loot tables for. Instead of hardcoding,
         // we use our block registry and just pass an empty set here.
         // The second parameter is the feature flag set, this will be the default flags
         // unless you are adding custom flags (which is beyond the scope of this article).
-        super(Set.of(), FeatureFlags.REGISTRY.allFlags());
+        super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
     }
     @Override
     protected @NotNull Iterable<Block> getKnownBlocks() {
@@ -47,6 +50,8 @@ public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
     @Override
     protected void generate() {
         // See VanillaBlockLoot.java as an example. This will fail if not all known blocks from our mod are covered.
+        HolderLookup.RegistryLookup<Enchantment> registrylookup = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
+
 
         // No drops
         this.add(ModBlocks.potMultiBlockPrimary.value(), noDrop());
@@ -77,7 +82,7 @@ public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
                                         .when(HAS_CLOVER_STAFF)
                                         .add(
                                                 LootItem.lootTableItem(ModItems.fourLeafClover)
-                                                    .when(BonusLevelTableCondition.bonusLevelFlatChance(Enchantments.FORTUNE, 0.3F, 0.5F, 0.65F, 0.8F))
+                                                    .when(BonusLevelTableCondition.bonusLevelFlatChance(registrylookup.getOrThrow(Enchantments.FORTUNE), 0.3F, 0.5F, 0.65F, 0.8F))
                                                     .otherwise(LootItem.lootTableItem(ModItems.threeLeafClover))
                                         )
                         ).withPool(
@@ -93,6 +98,8 @@ public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
     }
 
     private LootTable.Builder createArconiumLeavesDrops(Block pLeaves) {
+        HolderLookup.RegistryLookup<Enchantment> registrylookup = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
+
         ArconiumTreeLeaves leaves = (ArconiumTreeLeaves) pLeaves;
         RainbowColor nextTier = leaves.getTier().getNextTier();
         if (nextTier == null) nextTier = RainbowColor.PURPLE; // Maybe add some cool super special drop when mining the last tier tree?
@@ -105,16 +112,16 @@ public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
                                 .when(hasSickle((leaves.getTier())))
                                 .add(
                                         ((LootPoolSingletonContainer.Builder)this.applyExplosionCondition(pLeaves, LootItem.lootTableItem(ModBlocks.getArconiumTreeSapling(nextTier).asItem())))
-                                                .when(BonusLevelTableCondition.bonusLevelFlatChance(Enchantments.FORTUNE, NORMAL_LEAVES_SAPLING_CHANCES))
+                                                .when(BonusLevelTableCondition.bonusLevelFlatChance(registrylookup.getOrThrow(Enchantments.FORTUNE), NORMAL_LEAVES_SAPLING_CHANCES))
                                 )
                 )
                 .withPool(
                         LootPool.lootPool()
                                 .setRolls(ConstantValue.exactly(1.0F))
-                                .when(HAS_SHEARS.or(HAS_SILK_TOUCH).invert()) // Why tf is HAS_NO_SHEARS_OR_SILK_TOUCH private!?
+                                .when(HAS_SHEARS.or(this.hasSilkTouch()).invert())
                                 .add(
                                         ((LootPoolSingletonContainer.Builder)this.applyExplosionCondition(pLeaves, LootItem.lootTableItem(ModItems.getColoredRoot(leaves.getTier()))))
-                                                .when(BonusLevelTableCondition.bonusLevelFlatChance(Enchantments.FORTUNE, COLORED_STICK_CHANCES))
+                                                .when(BonusLevelTableCondition.bonusLevelFlatChance(registrylookup.getOrThrow(Enchantments.FORTUNE), COLORED_STICK_CHANCES))
                                 )
                 );
     }

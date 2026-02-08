@@ -44,7 +44,7 @@ public class TheOneProbe {
             theOneProbe.registerProvider(new IProbeInfoProvider() {
                 @Override
                 public ResourceLocation getID() {
-                    return new ResourceLocation(Arconia.MOD_ID, "default");
+                    return ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "default");
                 }
 
                 @Override

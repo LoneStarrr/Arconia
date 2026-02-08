@@ -90,7 +90,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     private void registerMisc() {
         Supplier<WorldBuilder> block = ModBlocks.worldBuilder;
         String name = BuiltInRegistries.BLOCK.getKey(block.get()).getPath();
-        ModelFile model = models().cubeTop(name, new ResourceLocation("block/oak_planks"), prefix("block/world_builder"));
+        ModelFile model = models().cubeTop(name, ResourceLocation.withDefaultNamespace("block/oak_planks"), prefix("block/world_builder"));
         simpleBlock(block.get(), model);
         itemModels().withExistingParent(name, prefix("block/world_builder"));
     }

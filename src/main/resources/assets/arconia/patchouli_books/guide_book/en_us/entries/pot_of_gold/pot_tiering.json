@@ -2,7 +2,7 @@
     "name": "Crop cirles?",
     "icon": "arconia:red_rainbow_grass_block",
     "category": "arconia:pot_of_gold",
-    "advancement": "arconia:main/touch_grass",
+    "advancement": "arconia:touch_grass",
     "pages": [
         {
             "type": "patchouli:text",

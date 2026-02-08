@@ -2,7 +2,7 @@
     "name": "Obtaining treasure",
     "icon": "minecraft:gold_block",
     "category": "arconia:pot_of_gold",
-    "advancement": "arconia:main/red_root_of_essence",
+    "advancement": "arconia:red_root_of_essence",
     "pages": [
         {
             "type": "patchouli:text",
