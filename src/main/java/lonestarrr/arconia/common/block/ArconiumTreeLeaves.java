@@ -23,7 +23,7 @@ public class ArconiumTreeLeaves extends LeavesBlock implements BlockColor {
     private final RainbowColor tier;
 
     public ArconiumTreeLeaves(RainbowColor tier) {
-        super(Block.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.DESTROY).strength(0.2F).randomTicks().sound(SoundType.GRASS).noOcclusion());
+        super(Block.Properties.of().mapColor(RainbowColor.getMapColor(tier)).ignitedByLava().pushReaction(PushReaction.DESTROY).strength(0.2F).randomTicks().sound(SoundType.GRASS).noOcclusion());
         this.tier = tier;
     }
 
@@ -37,18 +37,5 @@ public class ArconiumTreeLeaves extends LeavesBlock implements BlockColor {
             @NotNull BlockState blockState, @Nullable BlockAndTintGetter iBlockDisplayReader, @Nullable BlockPos blockPos, int tintIndex) {
         // Colors are not dependent on tint index, but on rainbow tier (though may use tintIndex later for less saturated versions)
         return tier.getColorValue();
-    }
-
-    @Override
-    public @NotNull MapColor getMapColor(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull MapColor defaultColor) {
-        return switch (this.tier) {
-            case RainbowColor.RED -> MapColor.COLOR_RED;
-            case RainbowColor.ORANGE -> MapColor.COLOR_ORANGE;
-            case RainbowColor.YELLOW -> MapColor.COLOR_YELLOW;
-            case RainbowColor.GREEN -> MapColor.COLOR_GREEN;
-            case RainbowColor.BLUE -> MapColor.COLOR_BLUE;
-            case RainbowColor.LIGHT_BLUE -> MapColor.COLOR_LIGHT_BLUE;
-            case RainbowColor.PURPLE -> MapColor.COLOR_PURPLE;
-        };
     }
 }
