@@ -9,6 +9,9 @@
 
  - Added biome tags indicating where clovers and arconium trees may grow
  - Clovers and arconium trees grow in more (and different) biomes
+ - Added pot generation starter tier to configuration
+ - Configfile keys for pot tiering have been renamed
+ - Notebook now unlocks 'touch grass' entry when player gets arconium essence
 
 # 0.0.13
 

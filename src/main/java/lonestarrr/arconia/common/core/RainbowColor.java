@@ -28,7 +28,7 @@ public enum RainbowColor implements StringRepresentable {
     private String tierName;
     private String unlocalizedName;
 
-    private RainbowColor(int tier, String name, String unlocalizedName, int colorValue) {
+    private RainbowColor(int tier, @Nonnull String name, @Nonnull String unlocalizedName, int colorValue) {
         this.tier = tier;
         this.tierName = name;
         this.unlocalizedName = unlocalizedName;

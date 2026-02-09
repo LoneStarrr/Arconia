@@ -29,26 +29,29 @@ public final class ConfigHandler {
     }
 
     public static class Common {
-        public final Map<RainbowColor, ModConfigSpec.IntValue> potGenerationInterval = new HashMap<>(RainbowColor.values().length);
-        public final Map<RainbowColor, ModConfigSpec.IntValue> potGenerationCount = new HashMap<>(RainbowColor.values().length);
+        public final Map<Integer, ModConfigSpec.IntValue> potGenerationInterval = new HashMap<>(RainbowColor.values().length + 1);
+        public final Map<Integer, ModConfigSpec.IntValue> potGenerationCount = new HashMap<>(RainbowColor.values().length + 1);
 
         public Common(ModConfigSpec.Builder builder) {
-            final int[] counts = {1, 2, 2, 4, 4, 8, 8};
-            final int[] intervalSeconds = {8, 8, 4, 4, 2, 2, 1};
+            final int[] counts = {1, 1, 2, 2, 4, 4, 8, 8};
+            final int[] intervalSeconds = {16, 8, 8, 4, 4, 2, 2, 1};
             builder.push("potOfGold");
 
-            for (RainbowColor color : RainbowColor.values()) {
-                int currentGenerationCount = counts[color.getTier() - 1];
-                int currentGenerationInterval = intervalSeconds[color.getTier() - 1] * 20;
+            // There is a tier per rainbow color, and an initial starter tier 0. This is because the tiers are built
+            // from items produced by the pot, which needs to be running at that point already.
+            for (int tier = 0; tier < RainbowColor.values().length + 1; tier++) {
+                String colorLabel = "tier" + tier;
+                int currentGenerationCount = counts[tier];
+                int currentGenerationInterval = intervalSeconds[tier] * 20;
                 ModConfigSpec.IntValue generationInterval = builder
                         .comment("Time between item generation attempts, in game ticks")
-                        .defineInRange(color.getTierName() + "GenerationInterval", currentGenerationInterval, 5, 1200);
-                potGenerationInterval.put(color, generationInterval);
+                        .defineInRange(colorLabel + "GenerationInterval", currentGenerationInterval, 5, 1200);
+                potGenerationInterval.put(tier, generationInterval);
 
                 ModConfigSpec.IntValue generationCount = builder
                         .comment("Maximum number of items to generate per attempt")
-                        .defineInRange(color.getTierName() + "GenerationCount", currentGenerationCount, 1, 64);
-                potGenerationCount.put(color, generationCount);
+                        .defineInRange(colorLabel + "GenerationCount", currentGenerationCount, 1, 64);
+                potGenerationCount.put(tier, generationCount);
             }
 
             builder.pop(); // potOfGold

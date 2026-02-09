@@ -118,16 +118,10 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             return;
         }
 
-        RainbowColor tier = detectedTier == null ? RainbowColor.RED : detectedTier;
-
+        int tier = detectedTier == null ? 0 : detectedTier.getTier();
         int interval = ConfigHandler.COMMON.potGenerationInterval.get(tier).get();
         int count = ConfigHandler.COMMON.potGenerationCount.get(tier).get();
 
-        if (detectedTier == null) {
-            // TODO A bit weird to not put this in the config, I should probably fix that
-            interval = interval * 2;
-            count = count / 2;
-        }
         long now = level.getGameTime();
         if (now - lastResourceGenerateTime < interval) {
             return;
