@@ -33,11 +33,13 @@ public final class ConfigHandler {
         public final Map<RainbowColor, ModConfigSpec.IntValue> potGenerationCount = new HashMap<>(RainbowColor.values().length);
 
         public Common(ModConfigSpec.Builder builder) {
+            final int[] counts = {1, 2, 2, 4, 4, 8, 8};
+            final int[] intervalSeconds = {8, 8, 4, 4, 2, 2, 1};
             builder.push("potOfGold");
 
             for (RainbowColor color : RainbowColor.values()) {
-                int currentGenerationInterval = (color.getColorValue() * 2 + 1);
-                int currentGenerationCount = 75 - 10 * color.getColorValue();
+                int currentGenerationCount = counts[color.getTier() - 1];
+                int currentGenerationInterval = intervalSeconds[color.getTier() - 1] * 20;
                 ModConfigSpec.IntValue generationInterval = builder
                         .comment("Time between item generation attempts, in game ticks")
                         .defineInRange(color.getTierName() + "GenerationInterval", currentGenerationInterval, 5, 1200);
