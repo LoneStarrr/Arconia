@@ -30,11 +30,12 @@ public class DataGenerators {
 
 
         if (event.includeServer()) {
-            gen.addProvider(event.includeServer(), new ModRecipeProvider(output, event.getLookupProvider()));
+            gen.addProvider(event.includeServer(), new ModRecipeProvider(output, lookupProvider));
             gen.addProvider(event.includeServer(), new ModBlockTagsProvider(output, lookupProvider, helper));
             gen.addProvider(event.includeServer(), new BiomeModifiers(output, lookupProvider));
             gen.addProvider(event.includeServer(), ArconiaLootTableProvider.create(output, lookupProvider));
             gen.addProvider(event.includeServer(), new AdvancementProvider(output, lookupProvider, helper, List.of(new AdvancementSubProvider())));
+            gen.addProvider(event.includeServer(), new ArconiaBiomeTagsProvider(output, lookupProvider, helper));
 
         }
         if (event.includeClient()) {

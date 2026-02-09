@@ -1,3 +1,24 @@
+# 0.1.0
+
+## Fixes
+
+ - Sanitized resoure generation rates that were off the chart
+ - Actually use semantic versioning
+
+## Changes
+
+ - Added biome tags indicating where clovers and arconium trees may grow
+ - Clovers and arconium trees grow in more (and different) biomes
+ - Added pot generation starter tier to configuration
+ - Configfile keys for pot tiering have been renamed
+ - Notebook now unlocks 'touch grass' entry when player gets arconium essence
+
+# 0.0.13
+
+## Fixes
+
+ - Leaf colors correctly shown on maps
+
 # 0.0.12
 
 ## Fixes

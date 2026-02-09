@@ -4,6 +4,7 @@ import net.minecraft.util.FastColor;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -27,7 +28,7 @@ public enum RainbowColor implements StringRepresentable {
     private String tierName;
     private String unlocalizedName;
 
-    private RainbowColor(int tier, String name, String unlocalizedName, int colorValue) {
+    private RainbowColor(int tier, @Nonnull String name, @Nonnull String unlocalizedName, int colorValue) {
         this.tier = tier;
         this.tierName = name;
         this.unlocalizedName = unlocalizedName;
@@ -49,7 +50,6 @@ public enum RainbowColor implements StringRepresentable {
         return this.tierName;
     }
 
-    @Nonnull
     /**
      * @return Color RGB value associated with the tier
      */
@@ -104,64 +104,38 @@ public enum RainbowColor implements StringRepresentable {
     }
 
     public static Item woolByTier(RainbowColor tier) {
-        Item wool;
-
-        switch (tier) {
-            case RED:
-                wool = Items.RED_WOOL;
-                break;
-            case ORANGE:
-                wool = Items.ORANGE_WOOL;
-                break;
-            case YELLOW:
-                wool = Items.YELLOW_WOOL;
-                break;
-            case GREEN:
-                wool = Items.GREEN_WOOL;
-                break;
-            case LIGHT_BLUE:
-                wool = Items.LIGHT_BLUE_WOOL;
-                break;
-            case BLUE:
-                wool = Items.BLUE_WOOL;
-                break;
-            case PURPLE:
-                wool = Items.PURPLE_WOOL;
-                break;
-            default:
-                wool = Items.RED_WOOL;
-        }
-        return wool;
+        return switch (tier) {
+            case RED -> Items.RED_WOOL;
+            case ORANGE -> Items.ORANGE_WOOL;
+            case YELLOW -> Items.YELLOW_WOOL;
+            case GREEN -> Items.GREEN_WOOL;
+            case LIGHT_BLUE -> Items.LIGHT_BLUE_WOOL;
+            case BLUE -> Items.BLUE_WOOL;
+            case PURPLE -> Items.PURPLE_WOOL;
+        };
     }
 
     public static Item dyeByTier(RainbowColor tier) {
-        Item dye;
+        return switch (tier) {
+            case RED -> Items.RED_DYE;
+            case ORANGE -> Items.ORANGE_DYE;
+            case YELLOW -> Items.YELLOW_DYE;
+            case GREEN -> Items.GREEN_DYE;
+            case LIGHT_BLUE -> Items.LIGHT_BLUE_DYE;
+            case BLUE -> Items.BLUE_DYE;
+            case PURPLE -> Items.PURPLE_DYE;
+        };
+    }
 
-        switch (tier) {
-            case RED:
-                dye = Items.RED_DYE;
-                break;
-            case ORANGE:
-                dye = Items.ORANGE_DYE;
-                break;
-            case YELLOW:
-                dye = Items.YELLOW_DYE;
-                break;
-            case GREEN:
-                dye = Items.GREEN_DYE;
-                break;
-            case LIGHT_BLUE:
-                dye = Items.LIGHT_BLUE_DYE;
-                break;
-            case BLUE:
-                dye = Items.BLUE_DYE;
-                break;
-            case PURPLE:
-                dye = Items.PURPLE_DYE;
-                break;
-            default:
-                dye = Items.RED_DYE;
-        }
-        return dye;
+    public static MapColor getMapColor(RainbowColor tier) {
+        return switch (tier) {
+            case RainbowColor.RED -> MapColor.COLOR_RED;
+            case RainbowColor.ORANGE -> MapColor.COLOR_ORANGE;
+            case RainbowColor.YELLOW -> MapColor.COLOR_YELLOW;
+            case RainbowColor.GREEN -> MapColor.COLOR_GREEN;
+            case RainbowColor.LIGHT_BLUE -> MapColor.COLOR_LIGHT_BLUE;
+            case RainbowColor.BLUE -> MapColor.COLOR_BLUE;
+            case RainbowColor.PURPLE -> MapColor.COLOR_PURPLE;
+        };
     }
 }
