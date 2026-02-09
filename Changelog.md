@@ -1,3 +1,15 @@
+# 0.1.0
+
+## Fixes
+
+ - Sanitized resoure generation rates that were off the chart
+ - Actually use semantic versioning
+
+## Changes
+
+ - Added biome tags indicating where clovers and arconium trees may grow
+ - Clovers and arconium trees grow in more (and different) biomes
+
 # 0.0.13
 
 ## Fixes

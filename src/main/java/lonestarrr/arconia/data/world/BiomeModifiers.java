@@ -1,6 +1,7 @@
 package lonestarrr.arconia.data.world;
 
 import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.common.Tags;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.ResourceLocationHelper;
@@ -98,15 +99,9 @@ public class BiomeModifiers extends DatapackBuiltinEntriesProvider {
         BUILDER.add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, bootstrap -> {
             HolderGetter<Biome> biomes = bootstrap.lookup(Registries.BIOME);
             HolderGetter<PlacedFeature> placedFeatures = bootstrap.lookup(Registries.PLACED_FEATURE);
-            HolderSet.Named<Biome> forestBiomes = biomes.getOrThrow(BiomeTags.IS_FOREST);
+            HolderSet.Named<Biome> forestBiomes = biomes.getOrThrow(Tags.Biomes.HAS_ARCONIUM_TREES);
+            HolderSet.Named<Biome> cloverBiomes = biomes.getOrThrow(Tags.Biomes.HAS_CLOVER);
 
-            // TODO: Should do this tag based, e.g. have an arconia:biome_clovers tag.
-            // YES, because this either is a biome list, or a tag. And to be modder friendly, one needs to use a tag.
-            // This is also why everything has 1000 tags nowadays, because if 10 mods want to allow something based on
-            // a tag, an item/biome/.... will have 10 mod-specific tags. Unless there's a nice generic 'neoforge' tag
-            // covering such a case of course.
-
-            // Red arconium trees grow in forest biomes
             bootstrap.register(ADD_TREES,
                     new net.neoforged.neoforge.common.world.BiomeModifiers.AddFeaturesBiomeModifier(
                             forestBiomes,
@@ -115,10 +110,9 @@ public class BiomeModifiers extends DatapackBuiltinEntriesProvider {
                     )
             );
 
-            // Clovers grow in many overworld biomes
             bootstrap.register(ADD_CLOVERS,
                     new net.neoforged.neoforge.common.world.BiomeModifiers.AddFeaturesBiomeModifier(
-                            forestBiomes,
+                            cloverBiomes,
                             HolderSet.direct(placedFeatures.getOrThrow(ModFeatures.CLOVER_PATCH)),
                             GenerationStep.Decoration.VEGETAL_DECORATION
                     )

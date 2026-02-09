@@ -1,6 +1,6 @@
 {
   "type": "neoforge:add_features",
-  "biomes": "#minecraft:is_forest",
+  "biomes": "#arconia:has_arconium_trees",
   "features": "arconia:tree_red",
   "step": "vegetal_decoration"
 }
