@@ -1,3 +1,13 @@
+# 0.2.0
+
+## Fixes
+
+ - Use neoforge tag sets to determine biomes in which to place clovers and trees, which should also cover modded biomes
+
+## Changes
+
+ - The clover staff can now be enchanted with fortune for increased four-leaf clover drops. With fortune level 3, you will get a four-leaf clover every time
+
 # 0.1.0
 
 ## Fixes

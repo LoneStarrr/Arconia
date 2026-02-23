@@ -82,7 +82,7 @@ public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
                                         .when(HAS_CLOVER_STAFF)
                                         .add(
                                                 LootItem.lootTableItem(ModItems.fourLeafClover)
-                                                    .when(BonusLevelTableCondition.bonusLevelFlatChance(registrylookup.getOrThrow(Enchantments.FORTUNE), 0.3F, 0.5F, 0.65F, 0.8F))
+                                                    .when(BonusLevelTableCondition.bonusLevelFlatChance(registrylookup.getOrThrow(Enchantments.FORTUNE), 0.3F, 0.6F, 0.8F, 1F))
                                                     .otherwise(LootItem.lootTableItem(ModItems.threeLeafClover))
                                         )
                         ).withPool(
