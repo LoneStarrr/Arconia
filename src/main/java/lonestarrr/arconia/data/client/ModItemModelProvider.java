@@ -72,10 +72,17 @@ public class ModItemModelProvider extends ItemModelProvider {
     }
 
     private void registerTreeRoots() {
-        // All tree roots share a single model. Layer0 is dynamically colored based on tier.
+        // Tree Roots are dynamically rendered because they display the item they are imbued with, which needs to be
+        // done dynamically. The dynamic renderer makes use of an item model that is separately defined to render the
+        // base 'root' object
+        final String baseRootModelName = "item/tree_root_base";
+        withExistingParent(baseRootModelName, GENERATED)
+            .texture("layer0", prefix("item/colored_tree_root"));
+
+        // The tree roots themselves share a single dynamic model.
+        // This is defined in a static json file because it uses builtin/entity as the "model" which can't be
+        // data-generated.
         final String modelName = "item/colored_tree_root";
-        withExistingParent(modelName, GENERATED)
-                .texture("layer0", prefix("item/colored_tree_root"));
 
         for (RainbowColor color: RainbowColor.values()) {
             Supplier<ColoredRoot> item = ModItems.getColoredRoot(color);

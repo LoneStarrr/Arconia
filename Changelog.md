@@ -6,6 +6,7 @@
 
 ## Changes
 
+ - Imbued tree roots now visually show the item they are imbued with
  - The clover staff can now be enchanted with fortune for increased four-leaf clover drops. With fortune level 3, you will get a four-leaf clover every time
 
 # 0.1.0

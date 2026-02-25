@@ -98,6 +98,7 @@ public class ColorHandler {
             }, Item.byBlock(arconiumBlock));
 
             // Colored tree roots
+            // Surprisingly, this still works after adding a custom renderer
             itemColors.register((stack, layer) -> {
                 return ((ColoredRoot) (stack.getItem())).getTier().getColorValue();
             }, ModItems.getColoredRoot(tier).get());
