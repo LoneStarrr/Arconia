@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common.block.entities;
 
+import lonestarrr.arconia.common.block.ArconiumTreeLeaves;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
@@ -22,9 +23,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     private static final String TAG_RESOURCES = "resources";
@@ -149,6 +148,39 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
         }
     }
+
+    private LeafCountResult countNearbyLeaves() {
+        Map<RainbowColor, Integer> result = new HashMap<>();
+        final int RADIUS = 10; // cuboid
+        BlockPos first = this.worldPosition.offset(-RADIUS, -RADIUS, -RADIUS);
+        BlockPos second = this.worldPosition.offset(RADIUS, RADIUS, RADIUS);
+
+        double minDistanceSq = Double.MAX_VALUE;
+        BlockPos nearestLeafPos = null;
+        RainbowColor nearestLeafTier = null;
+
+        for (BlockPos pos: BlockPos.betweenClosed(first, second)) {
+            BlockState bs = this.level.getBlockState(pos);
+            if (bs.getBlock() instanceof ArconiumTreeLeaves leaves) {
+                result.put(leaves.getTier(), result.getOrDefault(leaves.getTier(), 0) + 1);
+
+                double distSq = pos.distSqr(this.worldPosition);
+                if (distSq < minDistanceSq) {
+                    minDistanceSq = distSq;
+                    nearestLeafPos = pos.immutable();
+                    nearestLeafTier = leaves.getTier();
+                }
+            }
+        }
+
+        return new LeafCountResult(result, nearestLeafPos, nearestLeafTier);
+    }
+
+    private record LeafCountResult(
+        Map<RainbowColor, Integer> countByTier,
+        BlockPos nearestLeafPos,
+        RainbowColor nearestLeafTier
+    ) {}
 
     private BlockPos locateNearbyStorage() {
         final int searchRadius = 5;

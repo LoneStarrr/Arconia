@@ -5,7 +5,7 @@ loaderVersion="${loader_version_range}"
 # Who can do what with this?
 license="${mod_license}"
 # A URL to refer people to when problems occur with this mod
-# issueTrackerURL="https://github.com/LoneStarrr/Arconia/issues"
+issueTrackerURL="https://github.com/LoneStarrr/Arconia/issues"
 # If the mods defined in this file should show as seperate resource packs
 showAsResourcePack=false
 
@@ -31,7 +31,7 @@ showAsResourcePack=false
     # 'required' requires the mod to exist, 'optional' does not
     # 'incompatible' will prevent the game from loading when the mod exists, and 'discouraged' will show a warning
     type="required"
-    versionRange="${neo_version_range}"
+    versionRange="[${neo_version},)"
     ordering="NONE"
     side="BOTH"
 

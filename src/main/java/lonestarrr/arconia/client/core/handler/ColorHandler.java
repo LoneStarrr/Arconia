@@ -23,25 +23,32 @@ public class ColorHandler {
 
     public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
         Arconia.logger.info("***** registerBlockColors");
-
         BlockColors colorBlocks = event.getBlockColors();
 
         // Gleaned from minecraft's ItemColors
         for (RainbowColor tier : RainbowColor.values()) {
             // Tree leaves
             ArconiumTreeLeaves treeLeaf = ModBlocks.getArconiumTreeLeaves(tier).get();
-            event.register(treeLeaf, treeLeaf);
+            colorBlocks.register((state, level, pos, tintIndex) -> {
+                return tier.getColorValue();
+            }, treeLeaf);
 
             // Tree saplings
             ArconiumTreeSapling treeSapling = ModBlocks.getArconiumTreeSapling(tier).get();
-            colorBlocks.register(treeSapling, treeSapling);
+            colorBlocks.register((state, level, pos, tintIndex) -> {
+                return tier.getColorValue();
+            }, treeSapling);
 
             // Arconium blocks
             ArconiumBlock arconiumBlock = ModBlocks.getArconiumBlock(tier).get();
-            colorBlocks.register(arconiumBlock, arconiumBlock);
+            colorBlocks.register((state, level, pos, tintIndex) -> {
+                return tier.getColorValue();
+            }, arconiumBlock);
 
             RainbowGrassBlock grassBlock = ModBlocks.getRainbowGrassBlock(tier).get();
-            colorBlocks.register(grassBlock, grassBlock);
+            colorBlocks.register((state, level, pos, tintIndex) -> {
+                return tier.getColorValue();
+            }, grassBlock);
         }
     }
 

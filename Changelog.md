@@ -1,3 +1,13 @@
+# 0.2.1
+
+## Fixes
+
+ - Removed dependencies on client side when running on a server
+
+## Changes
+
+ - Switch from NeoGradle to ModDevGradle plugin
+
 # 0.2.0
 
 ## Fixes
