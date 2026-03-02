@@ -1,3 +1,13 @@
+# 1.0.0
+
+## Fixes
+
+ -
+
+## Changes
+
+ - The pot of gold now needs to consume Arconium tree leaves as fuel to generate items
+
 # 0.2.1
 
 ## Fixes
