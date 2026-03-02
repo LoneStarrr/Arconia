@@ -33,7 +33,10 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
+    // tags for keys for persisted data
     private static final String TAG_RESOURCES = "resources";
+    private static final String TAG_ITEM_GEN_CREDITS = "item_gen_credits";
+    private static final String TAG_DETECTED_TIER = "detected_tier";
 
     private int itemGenerationCredits = 0; // TODO persist
     private long lastResourceGenerateTime = 0;
@@ -180,7 +183,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     }
 
     private void sendResources(Level level) {
-        if (storageBlockPos == null) {
+        if (storageBlockPos == null || generatedResources.isEmpty()) {
             return;
         }
 
@@ -379,6 +382,12 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         ListTag resourceListTag = new ListTag();
         generatedResources.forEach(resource -> resourceListTag.add(resource.saveOptional(registries)));
         tag.put(TAG_RESOURCES, resourceListTag);
+        tag.putInt(TAG_ITEM_GEN_CREDITS, itemGenerationCredits);
+        // This needs to be stored as, while the presence of trees determines the tier, the highest tier tree might have
+        // been eaten. It still counts towards the highest tier.
+        if (this.detectedTier != null) {
+            tag.putInt(TAG_DETECTED_TIER, detectedTier.getTier());
+        }
     }
 
     public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
@@ -388,6 +397,11 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             if (generatedResources.size() < maxResources) {
                 generatedResources.add(ItemStack.parseOptional(registries, resourceListTag.getCompound(idx)));
             }
+        }
+        this.itemGenerationCredits = tag.getInt(TAG_ITEM_GEN_CREDITS);
+        int detectedTierInt = tag.getInt(TAG_DETECTED_TIER);
+        if (detectedTierInt > 0) {
+            this.detectedTier = RainbowColor.byTier(detectedTierInt);
         }
     }
 
