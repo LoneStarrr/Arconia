@@ -16,11 +16,14 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Display;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -28,6 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
+import org.openjdk.nashorn.internal.runtime.options.Option;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -37,10 +41,15 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     private static final String TAG_RESOURCES = "resources";
     private static final String TAG_ITEM_GEN_CREDITS = "item_gen_credits";
     private static final String TAG_DETECTED_TIER = "detected_tier";
+    private static final String TAG_STORAGE_FULL = "storage_full";
+    private static final String TAG_STORAGE_BLOCKPOS = "storage_blockpos";
+
+    private final int TREE_SEARCH_RADIUS = 10; // Radius of bounding box around pot
 
     private int itemGenerationCredits = 0; // TODO persist
     private long lastResourceGenerateTime = 0;
     private long nextTreeScanTime = 0;
+    private boolean storageFull = false;
 
     private RainbowColor detectedTier = null;
     private BlockPos storageBlockPos; // Location of naerby chest/storage
@@ -59,6 +68,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             return false;
         }
         generatedResources.add(itemStack);
+        // Update Entity on client side so the Block Entity Renderer renders correctly
         setChanged();
         updateClient();
         return true;
@@ -87,6 +97,29 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
     private void removeResourceGeneratedAtIndex(int idx) {
         generatedResources.remove(idx);
+        // Update Entity on client side so the Block Entity Renderer renders correctly
+        setChanged();
+        updateClient();
+    }
+
+    public boolean isStorageFull() {
+        return storageFull;
+    }
+
+    public BlockPos getStorageBlockPos() {
+        return storageBlockPos;
+    }
+
+    private void setStorageBlockPos(BlockPos pos) {
+        this.storageBlockPos = pos;
+        // Update Entity on client side so the Block Entity Renderer renders correctly
+        setChanged();
+        updateClient();
+    }
+
+    private void setStorageFull(boolean storageFull) {
+        this.storageFull = storageFull;
+        // Update Entity on client side so the Block Entity Renderer renders correctly
         setChanged();
         updateClient();
     }
@@ -96,24 +129,19 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, PotMultiBlockPrimaryBlockEntity blockEntity) {
-        blockEntity.processTick(level, pos, state);
+        blockEntity.processTick((ServerLevel)level, pos, state);
     }
 
-    private void processTick(Level level, BlockPos pos, BlockState state) {
-        final long TREE_SCAN_INTERVAL_SECONDS = 10; // TODO config
+    private void processTick(ServerLevel level, BlockPos pos, BlockState state) {
+        final long TREE_SCAN_INTERVAL_SECONDS = 5; // TODO config
+
 
         final int STORAGE_SCAN_INTERVAL = 84; //move this to main tick()
         final int NO_CREDITS_WARN_INTERVAL = 20;
-        final int TREE_EAT_INTERVAL = 1;
 
         if (level.getGameTime() % STORAGE_SCAN_INTERVAL == 0) {
             if (storageBlockPos == null) {
-                storageBlockPos = locateNearbyStorage();
-            }
-
-            if (storageBlockPos == null) {
-                // TODO particle with a chest item to indicate there is a storage issue
-                showParticleAbovePot(ParticleTypes.POOF, level);
+                setStorageBlockPos(locateNearbyStorage());
             }
         }
 
@@ -123,30 +151,51 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
         long now = level.getGameTime();
 
-        if (now % TREE_EAT_INTERVAL == 0 && treeToEat != null && !treeToEat.isEmpty()) {
-            eatTree((ServerLevel)level);
+        // This triggers eating a small part of a previously detected tree until it's all gone
+        if (treeToEat != null && !treeToEat.isEmpty()) {
+            eatTree(level);
         }
 
         if (itemGenerationCredits > 0) {
-            sendResources(level); //updates itemGenerationCount
-            return;
-        } else {
-            if (now % NO_CREDITS_WARN_INTERVAL == 0) {
-                showParticleAbovePot(ParticleTypes.POOF, level);
-                // TODO also display an item icon indicating no credits (tree leaves block?)
-            }
+            sendResources(level);
         }
-        // TODO particle indicating there are no itemGeneration credits - sapling + smoke?
 
-        // No trees to eat, no more item generation credits, let's find some new trees to eat.
-        if (treeToEat == null || treeToEat.isEmpty()) {
-            if (now < nextTreeScanTime) {
-                return; // Too soon.
+        // We scan for trees even when the credits gained from eating the last tree hasn't been fully 'used up'
+        // because the user may have planted a higher tier tree meanwhile. While we don't want to instantly
+        // consume it, we do want a potential higher tier to become effective quickly.
+        if (now >= nextTreeScanTime){
+            LeafCountResult lcf = countNearbyLeaves(level);
+            RainbowColor newTier = determineTierFromLeaves(lcf).orElse(null);
+
+            if (itemGenerationCredits > 0) {
+                // Only if the detected tier is higer do we update the detected tier. Because we immediately eat the
+                // highest tier tree when looking for a new tree, and thus a scan right after would show a lower tier.
+                if (newTier != null && newTier.getTier() > detectedTier.getTier()) {
+                    setDetectedTier(newTier);
+                }
             } else {
-                // In case no trees are found, don't immediately go scanning for trees on the next loop
-                nextTreeScanTime = now + TREE_SCAN_INTERVAL_SECONDS * (long) level.tickRateManager().tickrate();
-                treeToEat = findNewTreeToEat(level);
+                if (treeToEat == null || treeToEat.isEmpty()) {
+                    // No credits, tree's been eaten, let's eat a new one.
+                    setDetectedTier(newTier);
+
+                    // Eat a tree with the leaves of the detected tier. Trees with higher tier leaves MAY
+                    // exist, but they do not count if not all the previous tiers are present.
+                    if (newTier != null) {
+                        BlockPos first = this.worldPosition.offset(-TREE_SEARCH_RADIUS, -TREE_SEARCH_RADIUS, -TREE_SEARCH_RADIUS);
+                        BlockPos second = this.worldPosition.offset(TREE_SEARCH_RADIUS, TREE_SEARCH_RADIUS, TREE_SEARCH_RADIUS);
+                        List<TreeFinder.Tree> trees = TreeFinder.findTrees(
+                                level, Blocks.OAK_LOG.defaultBlockState(),
+                                ModBlocks.getArconiumTreeLeaves(newTier).get().defaultBlockState(),
+                                first,
+                                second
+                        );
+                        if (!trees.isEmpty()) {
+                            treeToEat = trees.getFirst();
+                        }
+                    }
+                }
             }
+            nextTreeScanTime = now + TREE_SCAN_INTERVAL_SECONDS* (long) level.tickRateManager().tickrate();
         }
     }
 
@@ -158,50 +207,36 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     }
 
     private TreeFinder.Tree findNewTreeToEat(Level level) {
-        final int TREE_SEARCH_RADIUS = 10; // Radius of bounding box around pot
-        BlockPos first = this.worldPosition.offset(-TREE_SEARCH_RADIUS, -TREE_SEARCH_RADIUS, -TREE_SEARCH_RADIUS);
-        BlockPos second = this.worldPosition.offset(TREE_SEARCH_RADIUS, TREE_SEARCH_RADIUS, TREE_SEARCH_RADIUS);
-        LeafCountResult lcf = countNearbyLeaves(level, first, second);
-        RainbowColor leavesTier = lcf.highestTierLeaf;
-        // The tier of the pot is not necessarily the highest tier leaves found
-        this.detectedTier = determineTierFromLeaves(lcf); // TODO indicate with particles of the right color
-
-        // Eat a tree associated with the highest tier found.
-        if (leavesTier != null) {
-            List<TreeFinder.Tree> trees = TreeFinder.findTrees(
-                    level, Blocks.OAK_LOG.defaultBlockState(),
-                    ModBlocks.getArconiumTreeLeaves(leavesTier).get().defaultBlockState(),
-                    first,
-                    second
-            );
-            if (!trees.isEmpty()) {
-                return trees.getFirst();
-            }
-        }
+        LeafCountResult lcf = countNearbyLeaves(level);
 
         return null;
     }
 
-    private void sendResources(Level level) {
+    /**
+     * Attempts to send generated items to storage.
+     * @param level
+     * @return The actual number of items sent to storage
+     */
+    private int sendResources(Level level) {
         if (storageBlockPos == null || generatedResources.isEmpty()) {
-            return;
+            return 0;
         }
 
         int tier = detectedTier == null ? 0 : detectedTier.getTier();
         int interval = ConfigHandler.COMMON.potGenerationInterval.get(tier).get();
-        int count = Math.min(ConfigHandler.COMMON.potGenerationCount.get(tier).get(), this.itemGenerationCredits);
+        int count = Math.min(ConfigHandler.COMMON.potGenerationCount.get(tier).get(), itemGenerationCredits);
 
         long now = level.getGameTime();
         if (now - lastResourceGenerateTime < interval) {
-            return;
+            return 0;
         }
         lastResourceGenerateTime = now;
 
         ItemStack toGenerate = this.generatedResources.get(level.random.nextInt(generatedResources.size()));
         IItemHandler inventory = InventoryHelper.getInventory(level, this.storageBlockPos, Direction.UP);
         if (inventory == null) {
-            this.storageBlockPos = null;
-            return;
+            setStorageBlockPos(null);
+            return 0;
         }
 
         ItemStack toSend = toGenerate.copy();
@@ -211,15 +246,19 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         ServerLevel sLevel = (ServerLevel)level;
         // TODO validate this logic
         int actuallySent = sendCount - left.getCount();
-        this.itemGenerationCredits -= actuallySent;
+        itemGenerationCredits -= actuallySent;
 
         if (actuallySent == 0) {
             BlockPos particlePos = worldPosition.above(2);
             sLevel.sendParticles(ParticleTypes.SMOKE, particlePos.getX() + 0.5, particlePos.getY() + 0.5, particlePos.getZ() + 0.5, 3, 0, 0.5, 0, 0.05);
+            setStorageFull(true);
         } else {
             PotItemTransferPacket packet = new PotItemTransferPacket(storageBlockPos.above(), worldPosition.above(), toSend);
             ModPackets.sendToNearby(sLevel, worldPosition, packet);
+            setStorageFull(false);
         }
+
+        return actuallySent;
     }
 
     /**
@@ -269,7 +308,8 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             level.playSound(null, toEatPos, SoundEvents.AZALEA_LEAVES_BREAK, SoundSource.BLOCKS, 1, 1);
         }
     }
-    RainbowColor determineTierFromLeaves(LeafCountResult leafCounts) {
+
+    Optional<RainbowColor> determineTierFromLeaves(LeafCountResult leafCounts) {
         final int MIN_LEAVES_PER_TIER = 16;
         RainbowColor tierFound = null;
 
@@ -287,12 +327,13 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             }
         }
 
-        return tierFound;
+        return Optional.ofNullable(tierFound);
     }
 
-    private LeafCountResult countNearbyLeaves(Level level, final BlockPos first, final BlockPos second) {
+    private LeafCountResult countNearbyLeaves(Level level) {
+        BlockPos first = this.worldPosition.offset(-TREE_SEARCH_RADIUS, -TREE_SEARCH_RADIUS, -TREE_SEARCH_RADIUS);
+        BlockPos second = this.worldPosition.offset(TREE_SEARCH_RADIUS, TREE_SEARCH_RADIUS, TREE_SEARCH_RADIUS);
         Map<RainbowColor, Integer> result = new HashMap<>();
-
         RainbowColor highestTierLeaf = null;
 
         for (BlockPos pos: BlockPos.betweenClosed(first, second)) {
@@ -325,6 +366,17 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
         Optional<BlockPos> storage = BlockPos.findClosestMatch(this.worldPosition, searchRadius, searchRadius, pos -> InventoryHelper.getInventory(level, pos, Direction.UP) != null);
         return storage.orElse(null);
+    }
+
+    public RainbowColor getDetectedTier() {
+        return detectedTier;
+    }
+
+    private void setDetectedTier(RainbowColor detectedTier) {
+        this.detectedTier = detectedTier;
+        // Update Entity on client side so the Block Entity Renderer renders correctly
+        setChanged();
+        updateClient();
     }
 
     /**
@@ -388,6 +440,12 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         if (this.detectedTier != null) {
             tag.putInt(TAG_DETECTED_TIER, detectedTier.getTier());
         }
+        // This is required for the block entity renderer
+        tag.putBoolean(TAG_STORAGE_FULL, storageFull);
+        // As is this
+        if (storageBlockPos != null) {
+            tag.put(TAG_STORAGE_BLOCKPOS, NbtUtils.writeBlockPos(storageBlockPos));
+        }
     }
 
     public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
@@ -403,6 +461,8 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         if (detectedTierInt > 0) {
             this.detectedTier = RainbowColor.byTier(detectedTierInt);
         }
+        this.storageFull = tag.getBoolean(TAG_STORAGE_FULL);
+        this.storageBlockPos = NbtUtils.readBlockPos(tag, TAG_STORAGE_BLOCKPOS).orElse(null);
     }
 
     public enum LinkErrorCode { ALREADY_LINKED, TOO_MANY_HATS, HAT_NOT_FOUND, HAT_TOO_FAR, LINKED_TO_OTHER_POT }
