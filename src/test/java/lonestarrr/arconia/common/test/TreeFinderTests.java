@@ -1,8 +1,14 @@
 package lonestarrr.arconia.common.test;
 
+import lonestarrr.arconia.common.block.ArconiumTreeLeaves;
+import lonestarrr.arconia.common.block.RainbowGrassBlock;
+import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
+import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.TreeFinder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.testframework.junit.EphemeralTestServerProvider;
@@ -11,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,221 +29,323 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(EphemeralTestServerProvider.class)
 class TreeFinderTests {
 
-    private static BlockState WOOD;
-    private static BlockState LEAVES;
-
     @BeforeAll
     static void init(MinecraftServer server) {
         // Server parameter injection ensures registries are loaded
-        WOOD = Blocks.OAK_LOG.defaultBlockState();
-        LEAVES = Blocks.OAK_LEAVES.defaultBlockState();
+        
     }
 
     @Test
-    void findsSingleTree() {
-        MockLevel level = new MockLevel();
-        // Trunk
-        level.setBlockState(new BlockPos(0, 64, 0), WOOD);
-        level.setBlockState(new BlockPos(0, 65, 0), WOOD);
-        level.setBlockState(new BlockPos(0, 66, 0), WOOD);
-        // Canopy (Manhattan distance <= 2 from top wood)
-        level.setBlockState(new BlockPos(0, 67, 0), LEAVES);
-        level.setBlockState(new BlockPos(1, 67, 0), LEAVES);
-        level.setBlockState(new BlockPos(-1, 67, 0), LEAVES);
-        level.setBlockState(new BlockPos(0, 67, 1), LEAVES);
+    void testTreeLocatorSingleTree(MinecraftServer server) {
+        ServerLevel level = server.overworld();
 
-        List<TreeFinder.Tree> trees = TreeFinder.findTrees(
-            level, WOOD, LEAVES,
-            new BlockPos(-5, 60, -5),
-            new BlockPos(5, 70, 5)
-        );
+        // Tree at x=-6, y=60, z=-6 (color RED)
+        level.setBlock(new BlockPos(-6, 60, -6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 61, -6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 63, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 64, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-7, 61, -6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-5, 61, -6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -7), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -5), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
 
-        assertEquals(1, trees.size());
-        TreeFinder.Tree tree = trees.getFirst();
-        assertEquals(3, tree.woodBlocks().size());
-        assertEquals(4, tree.leafBlocks().size());
+        BlockPos potPos = new BlockPos(0, 60, 0);
+
+        Map<RainbowColor, List<PotMultiBlockPrimaryBlockEntity.TreeLocator.Tree>> result = PotMultiBlockPrimaryBlockEntity.TreeLocator.locateTrees(level, potPos);
+
+        assertEquals(1, result.size());
+        assertTrue(result.containsKey(RainbowColor.RED));
+        assertEquals(1, result.get(RainbowColor.RED).size());
     }
 
     @Test
-    void findsMultipleSeparateTrees() {
-        MockLevel level = new MockLevel();
+    void testTreeLocatorMultipleTrees(MinecraftServer server) {
+        ServerLevel level = server.overworld();
 
-        // Tree A at x=0
-        level.setBlockState(new BlockPos(0, 64, 0), WOOD);
-        level.setBlockState(new BlockPos(0, 65, 0), WOOD);
-        level.setBlockState(new BlockPos(0, 66, 0), LEAVES);
+        // RED tree at x=-6, z=-6
+        level.setBlock(new BlockPos(-6, 60, -6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 61, -6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 63, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 64, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-7, 61, -6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-5, 61, -6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -7), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -5), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
 
-        // Tree B at x=20 — far enough to be a separate component
-        level.setBlockState(new BlockPos(20, 64, 0), WOOD);
-        level.setBlockState(new BlockPos(20, 65, 0), WOOD);
-        level.setBlockState(new BlockPos(20, 66, 0), LEAVES);
+        // ORANGE tree at x=6, z=-6
+        level.setBlock(new BlockPos(6, 60, -6), new ArconiumTreeLeaves(RainbowColor.ORANGE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 61, -6), new ArconiumTreeLeaves(RainbowColor.ORANGE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 62, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 63, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 64, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(7, 61, -6), new RainbowGrassBlock(RainbowColor.ORANGE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(5, 61, -6), new RainbowGrassBlock(RainbowColor.ORANGE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 62, -7), new RainbowGrassBlock(RainbowColor.ORANGE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 62, -5), new RainbowGrassBlock(RainbowColor.ORANGE).defaultBlockState(), 0);
 
-        List<TreeFinder.Tree> trees = TreeFinder.findTrees(
-            level, WOOD, LEAVES,
-                new BlockPos(-5, 60, -5),
-                new BlockPos(25, 70, 5)
-        );
+        // YELLOW tree at x=-6, z=6
+        level.setBlock(new BlockPos(-6, 60, 6), new ArconiumTreeLeaves(RainbowColor.YELLOW).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 61, 6), new ArconiumTreeLeaves(RainbowColor.YELLOW).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 63, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 64, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-7, 61, 6), new RainbowGrassBlock(RainbowColor.YELLOW).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-5, 61, 6), new RainbowGrassBlock(RainbowColor.YELLOW).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, 7), new RainbowGrassBlock(RainbowColor.YELLOW).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, 5), new RainbowGrassBlock(RainbowColor.YELLOW).defaultBlockState(), 0);
 
-        assertEquals(2, trees.size());
+        // GREEN tree at x=6, z=6
+        level.setBlock(new BlockPos(6, 60, 6), new ArconiumTreeLeaves(RainbowColor.GREEN).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 61, 6), new ArconiumTreeLeaves(RainbowColor.GREEN).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 62, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 63, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 64, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(7, 61, 6), new RainbowGrassBlock(RainbowColor.GREEN).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(5, 61, 6), new RainbowGrassBlock(RainbowColor.GREEN).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 62, 7), new RainbowGrassBlock(RainbowColor.GREEN).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 62, 5), new RainbowGrassBlock(RainbowColor.GREEN).defaultBlockState(), 0);
+
+        // LIGHT_BLUE tree at x=0, z=-6
+        level.setBlock(new BlockPos(0, 60, -6), new ArconiumTreeLeaves(RainbowColor.LIGHT_BLUE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 61, -6), new ArconiumTreeLeaves(RainbowColor.LIGHT_BLUE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 62, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 63, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 64, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-1, 61, -6), new RainbowGrassBlock(RainbowColor.LIGHT_BLUE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(1, 61, -6), new RainbowGrassBlock(RainbowColor.LIGHT_BLUE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 62, -7), new RainbowGrassBlock(RainbowColor.LIGHT_BLUE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 62, -5), new RainbowGrassBlock(RainbowColor.LIGHT_BLUE).defaultBlockState(), 0);
+
+        // BLUE tree at x=0, z=6
+        level.setBlock(new BlockPos(0, 60, 6), new ArconiumTreeLeaves(RainbowColor.BLUE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 61, 6), new ArconiumTreeLeaves(RainbowColor.BLUE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 62, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 63, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 64, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-1, 61, 6), new RainbowGrassBlock(RainbowColor.BLUE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(1, 61, 6), new RainbowGrassBlock(RainbowColor.BLUE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 62, 7), new RainbowGrassBlock(RainbowColor.BLUE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 62, 5), new RainbowGrassBlock(RainbowColor.BLUE).defaultBlockState(), 0);
+
+        // PURPLE tree at x=0, z=0
+        level.setBlock(new BlockPos(0, 60, 0), new ArconiumTreeLeaves(RainbowColor.PURPLE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 61, 0), new ArconiumTreeLeaves(RainbowColor.PURPLE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 62, 0), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 63, 0), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 64, 0), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-1, 61, 0), new RainbowGrassBlock(RainbowColor.PURPLE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(1, 61, 0), new RainbowGrassBlock(RainbowColor.PURPLE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 62, -1), new RainbowGrassBlock(RainbowColor.PURPLE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(0, 62, 1), new RainbowGrassBlock(RainbowColor.PURPLE).defaultBlockState(), 0);
+
+        BlockPos potPos = new BlockPos(0, 60, 0);
+
+        Map<RainbowColor, List<PotMultiBlockPrimaryBlockEntity.TreeLocator.Tree>> result = PotMultiBlockPrimaryBlockEntity.TreeLocator.locateTrees(level, potPos);
+
+        assertEquals(6, result.size());
+        assertTrue(result.containsKey(RainbowColor.RED));
+        assertTrue(result.containsKey(RainbowColor.ORANGE));
+        assertTrue(result.containsKey(RainbowColor.YELLOW));
+        assertTrue(result.containsKey(RainbowColor.GREEN));
+        assertTrue(result.containsKey(RainbowColor.LIGHT_BLUE));
+        assertTrue(result.containsKey(RainbowColor.BLUE));
+        assertTrue(result.containsKey(RainbowColor.PURPLE));
     }
 
     @Test
-    void returnsEmptyListForEmptyLevel() {
-        MockLevel level = new MockLevel();
+    void testTreeLocatorDuplicateTrees(MinecraftServer server) {
+        ServerLevel level = server.overworld();
 
-        List<TreeFinder.Tree> trees = TreeFinder.findTrees(
-            level, WOOD, LEAVES,
-            new BlockPos(-5, 60, -5),
-            new BlockPos(5, 70, 5)
-        );
 
-        assertTrue(trees.isEmpty());
+        // RED tree 1 at x=-6, z=-6
+        level.setBlock(new BlockPos(-6, 60, -6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 61, -6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 63, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 64, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-7, 61, -6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-5, 61, -6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -7), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -5), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+
+        // RED tree 2 at x=-6, z=6 (same color RED)
+        level.setBlock(new BlockPos(-6, 60, 6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 61, 6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 63, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 64, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-7, 61, 6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-5, 61, 6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, 7), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, 5), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+
+        BlockPos potPos = new BlockPos(0, 60, 0);
+
+        Map<RainbowColor, List<PotMultiBlockPrimaryBlockEntity.TreeLocator.Tree>> result = PotMultiBlockPrimaryBlockEntity.TreeLocator.locateTrees(level, potPos);
+
+        assertEquals(1, result.size());
+        assertTrue(result.containsKey(RainbowColor.RED));
+        assertEquals(2, result.get(RainbowColor.RED).size(), "Should find 2 trees of the same color");
     }
 
     @Test
-    void returnsEmptyListWhenOnlyLeavesExist() {
-        MockLevel level = new MockLevel();
-        level.setBlockState(new BlockPos(0, 65, 0), LEAVES);
-        level.setBlockState(new BlockPos(1, 65, 0), LEAVES);
+    void testTreeLocatorIncompleteTree(MinecraftServer server) {
+        ServerLevel level = server.overworld();
 
-        List<TreeFinder.Tree> trees = TreeFinder.findTrees(
-            level, WOOD, LEAVES,
-            new BlockPos(-5, 60, -5),
-            new BlockPos(5, 70, 5)
-        );
+        // RED tree at x=-6, z=-6 (complete with colored grass)
+        level.setBlock(new BlockPos(-6, 60, -6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 61, -6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 63, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 64, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-7, 61, -6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-5, 61, -6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -7), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -5), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
 
-        assertTrue(trees.isEmpty());
+        // ORANGE tree at x=6, z=-6 (incomplete - missing colored grass)
+        level.setBlock(new BlockPos(6, 60, -6), new ArconiumTreeLeaves(RainbowColor.ORANGE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 61, -6), new ArconiumTreeLeaves(RainbowColor.ORANGE).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 62, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 63, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 64, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(7, 61, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(5, 61, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 62, -7), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(6, 62, -5), Blocks.OAK_LOG.defaultBlockState(), 0);
+
+        // YELLOW tree at x=-6, z=6 (complete with colored grass)
+        level.setBlock(new BlockPos(-6, 60, 6), new ArconiumTreeLeaves(RainbowColor.YELLOW).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 61, 6), new ArconiumTreeLeaves(RainbowColor.YELLOW).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 63, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 64, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-7, 61, 6), new RainbowGrassBlock(RainbowColor.YELLOW).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-5, 61, 6), new RainbowGrassBlock(RainbowColor.YELLOW).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, 7), new RainbowGrassBlock(RainbowColor.YELLOW).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, 5), new RainbowGrassBlock(RainbowColor.YELLOW).defaultBlockState(), 0);
+
+        BlockPos potPos = new BlockPos(0, 60, 0);
+
+        Map<RainbowColor, List<PotMultiBlockPrimaryBlockEntity.TreeLocator.Tree>> result = PotMultiBlockPrimaryBlockEntity.TreeLocator.locateTrees(level, potPos);
+
+        assertEquals(2, result.size());
+        assertTrue(result.containsKey(RainbowColor.RED));
+        assertTrue(result.containsKey(RainbowColor.YELLOW));
+        assertFalse(result.containsKey(RainbowColor.ORANGE), "Incomplete tree should not be found");
     }
 
     @Test
-    void groupsDiagonalWoodWith26Connectivity() {
-        MockLevel level = new MockLevel();
-        // Three wood blocks connected only diagonally (each differs by 1 on every axis)
-        level.setBlockState(new BlockPos(0, 64, 0), WOOD);
-        level.setBlockState(new BlockPos(1, 65, 1), WOOD);
-        level.setBlockState(new BlockPos(2, 66, 2), WOOD);
-        // Leaf near the first wood block
-        level.setBlockState(new BlockPos(0, 65, 0), LEAVES);
+    void testTreeLocator_withValidTree(MinecraftServer server) throws Exception {
+        ServerLevel level = server.overworld();
 
-        List<TreeFinder.Tree> trees = TreeFinder.findTrees(
-            level, WOOD, LEAVES,
-            new BlockPos(-5, 60, -5),
-            new BlockPos(10, 70, 10)
-        );
+        BlockPos potPos = new BlockPos(0, 60, 0);
 
-        assertEquals(1, trees.size(), "Diagonally adjacent wood should form a single component");
-        assertEquals(3, trees.getFirst().woodBlocks().size());
+        // Tree at x=-6, z=-6 (color RED)
+        level.setBlock(new BlockPos(-6, 60, -6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 61, -6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 63, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 64, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-7, 61, -6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-5, 61, -6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -7), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -5), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+
+        // Find trees using TreeLocator
+        Map<RainbowColor, List<PotMultiBlockPrimaryBlockEntity.TreeLocator.Tree>> result = PotMultiBlockPrimaryBlockEntity.TreeLocator.locateTrees(level, potPos);
+
+        List<PotMultiBlockPrimaryBlockEntity.TreeLocator.Tree> redTrees = result.get(RainbowColor.RED);
+        assertNotNull(redTrees, "RED trees should be found");
+        assertFalse(redTrees.isEmpty(), "Should find at least one RED tree");
+
+        // Verify tree structure
+        PotMultiBlockPrimaryBlockEntity.TreeLocator.Tree tree = redTrees.getFirst();
+        assertNotNull(tree, "Tree should not be null");
+
+        // Verify wood and leaves are found
+        List<BlockPos> woodBlocks = tree.trunkBlocks();
+        List<BlockPos> leafBlocks = tree.leaves();
+        assertFalse(woodBlocks.isEmpty(), "Should find at least one wood block");
+        assertFalse(leafBlocks.isEmpty(), "Should find at least one leaf block");
+
+        // Verify wood is at lower Y levels
+        assertTrue(woodBlocks.getFirst().getY() < 64, "Wood should be at lower Y levels");
+        // Verify leaves are at higher Y levels
+        assertTrue(leafBlocks.getFirst().getY() >= 60, "Leaves should be at higher Y levels");
     }
 
     @Test
-    void doesNotGroupWoodeyond26Connectivity() {
-        MockLevel level = new MockLevel();
-        // Two wood blocks separated by 2 on one axis — not 26-connected
-        level.setBlockState(new BlockPos(0, 64, 0), WOOD);
-        level.setBlockState(new BlockPos(2, 64, 0), WOOD);
-        // Each gets its own leaf
-        level.setBlockState(new BlockPos(0, 65, 0), LEAVES);
-        level.setBlockState(new BlockPos(2, 65, 0), LEAVES);
+    void testTreeLocator_withMultipleTrees(MinecraftServer server) throws Exception {
+        // Set up mock level with multiple RED trees
+        ServerLevel level = server.overworld();
 
-        List<TreeFinder.Tree> trees = TreeFinder.findTrees(
-            level, WOOD, LEAVES,
-            new BlockPos(-5, 60, -5),
-            new BlockPos(5, 70, 5)
-        );
+        BlockPos potPos = new BlockPos(0, 60, 0);
 
-        assertEquals(2, trees.size(), "Wood separated by 2 blocks should be two components");
+        // Tree 1 at x=-6, z=-6
+        level.setBlock(new BlockPos(-6, 60, -6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 61, -6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 63, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 64, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-7, 61, -6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-5, 61, -6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -7), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -5), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+
+        // Tree 2 at x=-6, z=6 (same color RED)
+        level.setBlock(new BlockPos(-6, 60, 6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 61, 6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 63, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 64, 6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-7, 61, 6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-5, 61, 6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, 5), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, 7), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+
+        Map<RainbowColor, List<PotMultiBlockPrimaryBlockEntity.TreeLocator.Tree>> result = PotMultiBlockPrimaryBlockEntity.TreeLocator.locateTrees(level, potPos);
+
+        List<PotMultiBlockPrimaryBlockEntity.TreeLocator.Tree> redTrees = result.get(RainbowColor.RED);
+        assertNotNull(redTrees, "RED trees should be found");
+        assertEquals(2, redTrees.size(), "Should find exactly 2 RED trees");
     }
 
     @Test
-    void assignsLeavesWithinDistance3() {
-        MockLevel level = new MockLevel();
-        level.setBlockState(new BlockPos(0, 64, 0), WOOD);
-        //included blocks with no x/y/z exceeding the max distance
-        level.setBlockState(new BlockPos(1, 64, 0), LEAVES);
-        level.setBlockState(new BlockPos(-3, 61, -3), LEAVES);
-        level.setBlockState(new BlockPos(3, 67, 3), LEAVES);
-        // excluded
-        level.setBlockState(new BlockPos(0, 68, 0), LEAVES);
-        level.setBlockState(new BlockPos(4, 64, 4), LEAVES);
+    void testTreeLocator_withCompleteTree(MinecraftServer server) throws Exception {
+        // Set up mock level with a complete RED tree (with colored grass)
+        ServerLevel level = server.overworld();
 
-        List<TreeFinder.Tree> trees = TreeFinder.findTrees(
-            level, WOOD, LEAVES,
-            new BlockPos(-5, 60, -5),
-            new BlockPos(5, 70, 5)
-        );
+        BlockPos potPos = new BlockPos(0, 60, 0);
 
-        assertEquals(1, trees.size());
-        assertEquals(3, trees.getFirst().leafBlocks().size(),
-            "Only leaves within distance 3 should be assigned");
-    }
+        // Complete RED tree at x=-6, z=-6
+        level.setBlock(new BlockPos(-6, 60, -6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 61, -6), new ArconiumTreeLeaves(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 63, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 64, -6), Blocks.OAK_LOG.defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-7, 61, -6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-5, 61, -6), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -7), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
+        level.setBlock(new BlockPos(-6, 62, -5), new RainbowGrassBlock(RainbowColor.RED).defaultBlockState(), 0);
 
-    @Test
-    void sortedByYOrdersBlocksCorrectly() {
-        MockLevel level = new MockLevel();
-        // Connected trunk from y=64 to y=68
-        level.setBlockState(new BlockPos(0, 64, 0), WOOD);
-        level.setBlockState(new BlockPos(0, 65, 0), WOOD);
-        level.setBlockState(new BlockPos(0, 66, 0), WOOD);
-        level.setBlockState(new BlockPos(0, 67, 0), WOOD);
-        level.setBlockState(new BlockPos(0, 68, 0), WOOD);
-        // Leaf at top
-        level.setBlockState(new BlockPos(0, 69, 0), LEAVES);
+        // Find trees
+        Map<RainbowColor, List<PotMultiBlockPrimaryBlockEntity.TreeLocator.Tree>> result = PotMultiBlockPrimaryBlockEntity.TreeLocator.locateTrees(level, potPos);
 
-        List<TreeFinder.Tree> trees = TreeFinder.findTrees(
-            level, WOOD, LEAVES,
-            new BlockPos(-5, 60, -5),
-            new BlockPos(5, 75, 5)
-        );
+        List<PotMultiBlockPrimaryBlockEntity.TreeLocator.Tree> redTrees = result.get(RainbowColor.RED);
+        assertNotNull(redTrees, "RED trees should be found");
+        assertFalse(redTrees.isEmpty(), "Should find at least one RED tree");
 
-        assertEquals(1, trees.size());
-        for (List<BlockPos> sorted: List.of(trees.getFirst().leafBlocks(), trees.getFirst().woodBlocks())) {
-            for (int i = 1; i < sorted.size(); i++) {
-                assertTrue(sorted.get(i).getY() >= sorted.get(i - 1).getY(),
-                        "Blocks should be in ascending Y order");
-            }
-        }
-        assertEquals(64, trees.getFirst().woodBlocks().getFirst().getY());
-        assertEquals(69, trees.getFirst().leafBlocks().getFirst().getY());
-    }
+        // Verify tree structure
+        PotMultiBlockPrimaryBlockEntity.TreeLocator.Tree tree = redTrees.getFirst();
+        assertNotNull(tree, "Tree should not be null");
 
-    @Test
-    void boundingBoxNormalizesCoordinates() {
-        MockLevel level = new MockLevel();
-        level.setBlockState(new BlockPos(0, 64, 0), WOOD);
-        level.setBlockState(new BlockPos(0, 65, 0), LEAVES);
-
-        // Pass reversed bounding box (max before min)
-        List<TreeFinder.Tree> trees = TreeFinder.findTrees(
-            level, WOOD, LEAVES,
-            new BlockPos(5, 70, 5),
-            new BlockPos(-5, 60, -5)
-        );
-
-        assertEquals(1, trees.size(), "Reversed bounding box coordinates should still work");
-    }
-
-    @Test
-    void blocksOutsideBoundingBoxAreNotScanned() {
-        MockLevel level = new MockLevel();
-        // Wood inside bbox
-        level.setBlockState(new BlockPos(0, 64, 0), WOOD);
-        // Leaf inside bbox — near wood
-        level.setBlockState(new BlockPos(0, 65, 0), LEAVES);
-        // Leaf outside bbox (x=5, bbox ends at x=3) — never scanned
-        level.setBlockState(new BlockPos(5, 64, 0), LEAVES);
-        // Wood outside bbox — never scanned
-        level.setBlockState(new BlockPos(5, 65, 0), WOOD);
-
-        List<TreeFinder.Tree> trees = TreeFinder.findTrees(
-            level, WOOD, LEAVES,
-            new BlockPos(-3, 60, -3),
-            new BlockPos(3, 70, 3)
-        );
-
-        assertEquals(1, trees.size());
-        TreeFinder.Tree tree = trees.getFirst();
-        // Only the in-bbox wood and leaf are found
-        assertEquals(1, tree.woodBlocks().size());
-        assertEquals(1, tree.leafBlocks().size());
+        // Verify wood and leaves are found
+        List<BlockPos> woodBlocks = tree.trunkBlocks();
+        List<BlockPos> leafBlocks = tree.leaves();
+        assertFalse(woodBlocks.isEmpty(), "Should find at least one wood block");
+        assertFalse(leafBlocks.isEmpty(), "Should find at least one leaf block");
     }
 }

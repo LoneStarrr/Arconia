@@ -2,9 +2,8 @@ package lonestarrr.arconia.common.block.entities;
 
 import lonestarrr.arconia.client.particle.ModParticles;
 import lonestarrr.arconia.common.block.ArconiumTreeLeaves;
-import lonestarrr.arconia.common.block.ModBlocks;
+import lonestarrr.arconia.common.block.RainbowGrassBlock;
 import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.core.TreeFinder;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
 import lonestarrr.arconia.common.core.helper.InventoryHelper;
 import lonestarrr.arconia.common.network.ModPackets;
@@ -21,9 +20,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Display;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -31,7 +28,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
-import org.openjdk.nashorn.internal.runtime.options.Option;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -55,7 +51,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     private BlockPos storageBlockPos; // Location of naerby chest/storage
     private final List<ItemStack> generatedResources = new ArrayList<>();
     private static final int maxResources = 64; // TODO make config item
-    private TreeFinder.Tree treeToEat = null; // TODO persist
+    private TreeLocator.Tree treeToEat = null; // TODO persist
 
     public PotMultiBlockPrimaryBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.POT_MULTIBLOCK_PRIMARY.get(), pos, state);
@@ -134,10 +130,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
     private void processTick(ServerLevel level, BlockPos pos, BlockState state) {
         final long TREE_SCAN_INTERVAL_SECONDS = 5; // TODO config
-
-
         final int STORAGE_SCAN_INTERVAL = 84; //move this to main tick()
-        final int NO_CREDITS_WARN_INTERVAL = 20;
 
         if (level.getGameTime() % STORAGE_SCAN_INTERVAL == 0) {
             if (storageBlockPos == null) {
@@ -160,42 +153,34 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             sendResources(level);
         }
 
-        // We scan for trees even when the credits gained from eating the last tree hasn't been fully 'used up'
-        // because the user may have planted a higher tier tree meanwhile. While we don't want to instantly
-        // consume it, we do want a potential higher tier to become effective quickly.
         if (now >= nextTreeScanTime){
-            LeafCountResult lcf = countNearbyLeaves(level);
-            RainbowColor newTier = determineTierFromLeaves(lcf).orElse(null);
+            nextTreeScanTime = now + TREE_SCAN_INTERVAL_SECONDS * (long) level.tickRateManager().tickrate();
 
-            if (itemGenerationCredits > 0) {
-                // Only if the detected tier is higer do we update the detected tier. Because we immediately eat the
-                // highest tier tree when looking for a new tree, and thus a scan right after would show a lower tier.
-                if (newTier != null && newTier.getTier() > detectedTier.getTier()) {
-                    setDetectedTier(newTier);
+            Map<RainbowColor, List<TreeLocator.Tree>> trees = TreeLocator.locateTrees(this.level, this.worldPosition);
+            RainbowColor foundTier = determineTierFromTrees(trees).orElse(null);
+
+            boolean mayEatTree = false;
+            /* The tier can be updated when the current trea being eaten hasn't been "used up" yet since it can take a
+             * while before that is the case, and we don't want to have the player wait that long to advance a tier.
+             */
+            if (foundTier != null) {
+                // The pot will never go down a previously detected tier. This is to prevent eating
+                // lower tier trees if the highest tier tree hasn't been replanted quick enough, which
+                // would make automation potentially difficult.
+                if (detectedTier == null || foundTier.getTier() >= detectedTier.getTier()) {
+                    setDetectedTier(foundTier);
+                    mayEatTree = true;
                 }
-            } else {
-                if (treeToEat == null || treeToEat.isEmpty()) {
-                    // No credits, tree's been eaten, let's eat a new one.
-                    setDetectedTier(newTier);
+            }
 
-                    // Eat a tree with the leaves of the detected tier. Trees with higher tier leaves MAY
-                    // exist, but they do not count if not all the previous tiers are present.
-                    if (newTier != null) {
-                        BlockPos first = this.worldPosition.offset(-TREE_SEARCH_RADIUS, -TREE_SEARCH_RADIUS, -TREE_SEARCH_RADIUS);
-                        BlockPos second = this.worldPosition.offset(TREE_SEARCH_RADIUS, TREE_SEARCH_RADIUS, TREE_SEARCH_RADIUS);
-                        List<TreeFinder.Tree> trees = TreeFinder.findTrees(
-                                level, Blocks.OAK_LOG.defaultBlockState(),
-                                ModBlocks.getArconiumTreeLeaves(newTier).get().defaultBlockState(),
-                                first,
-                                second
-                        );
-                        if (!trees.isEmpty()) {
-                            treeToEat = trees.getFirst();
-                        }
+            if (itemGenerationCredits <= 0) {
+                if (treeToEat == null || treeToEat.isEmpty()) {
+                    if (mayEatTree) {
+                        // No remaining credits, tree's been eaten, new one's been found, let's eat the bastard
+                        treeToEat = trees.get(foundTier).getFirst();
                     }
                 }
             }
-            nextTreeScanTime = now + TREE_SCAN_INTERVAL_SECONDS* (long) level.tickRateManager().tickrate();
         }
     }
 
@@ -204,12 +189,6 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         BlockPos particlePos = this.worldPosition.above(2);
         Vec3 particleVec = new Vec3(particlePos.getX(), particlePos.getY(), particlePos.getZ()).add(0.5, 1.5, 0.5);
         sLevel.sendParticles(pType, particleVec.x, particleVec.y, particleVec.z, 1, 0, 0, 0, 0.05);
-    }
-
-    private TreeFinder.Tree findNewTreeToEat(Level level) {
-        LeafCountResult lcf = countNearbyLeaves(level);
-
-        return null;
     }
 
     /**
@@ -275,10 +254,10 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
         while (true) {
             toEatPos = null;
-            if (!treeToEat.leafBlocks().isEmpty()) {
-                toEatPos = treeToEat.leafBlocks().removeLast();
-            } else if (!treeToEat.woodBlocks().isEmpty()) {
-                toEatPos = treeToEat.woodBlocks().removeLast();
+            if (!treeToEat.leaves.isEmpty()) {
+                toEatPos = treeToEat.leaves.removeLast();
+            } else if (!treeToEat.trunkBlocks.isEmpty()) {
+                toEatPos = treeToEat.trunkBlocks.removeLast();
             }
 
             if (toEatPos == null)
@@ -309,7 +288,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         }
     }
 
-    Optional<RainbowColor> determineTierFromLeaves(LeafCountResult leafCounts) {
+    Optional<RainbowColor> determineTierFromTrees(Map<RainbowColor, List<TreeLocator.Tree>> trees) {
         final int MIN_LEAVES_PER_TIER = 16;
         RainbowColor tierFound = null;
 
@@ -317,8 +296,15 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         // MIN_LEAVES_PER_TIER leaves present. This is to encourage placing actual trees nearby rather than just
         // a single leaves block.
         for (RainbowColor tier: RainbowColor.values()) {
-            int leafCount = leafCounts.countByTier.getOrDefault(tier, 0);
+            List<TreeLocator.Tree> tierTrees = trees.getOrDefault(tier, new ArrayList<>());
+            int leafCount = tierTrees.stream().mapToInt(ob -> ob.leaves.size()).sum();
             if (leafCount == 0) {
+                if (!tierTrees.isEmpty() && !tierTrees.getFirst().trunkBlocks.isEmpty()) {
+                    // A tree without leaves but with a trunk does count as a detected tier, because it will make the
+                    // pot eat the trunk, allowing (automated) replanting of saplings.
+                    tierFound = tier;
+                }
+                // But no leaves for a lower tier means the detected tier cannot be higher.
                 break;
             }
             tierFound = tier;
@@ -329,33 +315,6 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
         return Optional.ofNullable(tierFound);
     }
-
-    private LeafCountResult countNearbyLeaves(Level level) {
-        BlockPos first = this.worldPosition.offset(-TREE_SEARCH_RADIUS, -TREE_SEARCH_RADIUS, -TREE_SEARCH_RADIUS);
-        BlockPos second = this.worldPosition.offset(TREE_SEARCH_RADIUS, TREE_SEARCH_RADIUS, TREE_SEARCH_RADIUS);
-        Map<RainbowColor, Integer> result = new HashMap<>();
-        RainbowColor highestTierLeaf = null;
-
-        for (BlockPos pos: BlockPos.betweenClosed(first, second)) {
-            BlockState bs = level.getBlockState(pos);
-            if (bs.getBlock() instanceof ArconiumTreeLeaves leaves) {
-                result.put(leaves.getTier(), result.getOrDefault(leaves.getTier(), 0) + 1);
-
-                // Find the highest tier leaf, specifically the one nearest to the pot
-                if (highestTierLeaf == null || highestTierLeaf.getTier() < leaves.getTier().getTier()) {
-                    highestTierLeaf = leaves.getTier();
-                }
-
-            }
-        }
-
-        return new LeafCountResult(result, highestTierLeaf);
-    }
-
-    private record LeafCountResult(
-        Map<RainbowColor, Integer> countByTier,
-        RainbowColor highestTierLeaf
-    ) {}
 
     private BlockPos locateNearbyStorage() {
         final int searchRadius = 5;
@@ -377,57 +336,6 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         // Update Entity on client side so the Block Entity Renderer renders correctly
         setChanged();
         updateClient();
-    }
-
-    /**
-     * Detect the tier for this pot of gold. Tiering is determined by rings of rainbow grass in color order surrounding the pot.
-     * A ring is square, and each tier is 2 blocks wider in diameter than the previous.
-     * The first ring is a 5x5 ring.
-     * @return The detected tier, or null of nu tier was detected.
-     */
-    private RainbowColor detectTier() {
-        BlockPos centerPos = this.worldPosition.below(); // check ground level directly under pot
-        RainbowColor detectedTier = null;
-
-        for (RainbowColor tier: RainbowColor.values()) {
-            int ringDiameter = tier.getTier() * 2 + 3; // 5, 7, .., 17
-            BlockState bs = ModBlocks.getRainbowGrassBlock(tier).get().defaultBlockState();
-            if (!detectRing(centerPos, ringDiameter, bs)) {
-                break;
-            } else {
-                detectedTier = tier;
-            }
-
-        }
-
-        return detectedTier;
-    }
-
-    private boolean detectRing(BlockPos centerPos, int diameter, BlockState ringBlock) {
-        int transformX = centerPos.getX() - ((diameter - (diameter % 2)) / 2);
-        int transformZ = centerPos.getZ() - ((diameter - (diameter % 2)) / 2);
-        boolean ringBlocksMatch = true;
-
-        if (level == null) {
-            return false;
-        }
-
-        for (int z = 0; z < diameter; z++) {
-            int xIncrement = (z == 0 || z == diameter - 1) ? 1 : diameter - 1;
-            for (int x = 0; x < diameter; x += xIncrement) {
-                BlockPos toCheck = new BlockPos(x + transformX, centerPos.getY(), z + transformZ);
-                BlockState bs = level.getBlockState(toCheck);
-                if (!bs.equals(ringBlock)) {
-                    ringBlocksMatch = false;
-                    break;
-                }
-            }
-            if (!ringBlocksMatch) {
-                break;
-            }
-        }
-
-        return ringBlocksMatch;
     }
 
     public void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
@@ -472,6 +380,117 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
         public LinkHatException(LinkErrorCode code) {
             this.code = code;
+        }
+    }
+
+    public class TreeLocator {
+        /**
+         * Locate grown arconium trees around the base of the pot in 8 fixed x/z locations
+         *
+         * @return For each tree found, return the blockpos of the base of the trunk of the tree, and its color.
+         */
+        public static Map<RainbowColor, List<Tree>> locateTrees(Level level, BlockPos potPos) {
+            Map<RainbowColor, List<Tree>> result = new HashMap<>();
+            Set<BlockPos> foundTreeSet = new HashSet<>();
+            for(int y = potPos.getY() - 1; y <= potPos.getY() + 1; y++) {
+                // There are 5 blocks between the center of the pot and the sapling locations in the four cardinal
+                // directions. And then there are the four additional corner spots that have both x and x offsets.
+                for (int x = potPos.getX() - 6; x <= potPos.getX() + 6; x+= 6) {
+                    for (int z = potPos.getZ() - 6; z <= potPos.getZ() + 6; z+= 6) {
+                        if (x == potPos.getX() && z == potPos.getZ()) {
+                            continue;
+                        }
+
+                        if(foundTreeSet.contains(new BlockPos(x, 0, z))) {
+                            // Already found a tree at this x/z position, at another y level
+                            continue;
+                        }
+
+                        // Is there a log at this position? And is it surrounded by colored grass? Then it counts as a
+                        // tree trunk base.
+                        BlockPos treeBase = new BlockPos(x, y, z);
+                        BlockState bs = level.getBlockState(treeBase);
+                        if (bs.getBlock().equals(Blocks.OAK_LOG)) {
+                            RainbowColor coloredGrassBase = findColoredGrassBase(level, treeBase);
+                            if (coloredGrassBase != null) {
+                                // It's possible the tree only has a trunk and no leaves. That's ok, the trunk should
+                                // be consumed as well to not hinder (automated) replanting.
+                                Tree tree = findLeavesAndTrunk(level, treeBase, coloredGrassBase);
+                                List<Tree> trees = result.getOrDefault(coloredGrassBase, new ArrayList<Tree>());
+                                trees.add(tree);
+                                result.put(coloredGrassBase, trees);
+                                foundTreeSet.add(new BlockPos(x, 0, z));
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        private static Tree findLeavesAndTrunk(Level level, BlockPos treeBase, RainbowColor tier) {
+            ArrayList<BlockPos> result = new ArrayList<>();
+            final int MAX_Y_OFFSET = 12; // Max y position of leaves, relative from base of tree trunk
+            List<BlockPos> leaves = new ArrayList<>();
+            List<BlockPos> trunkBlocks = new ArrayList<>();
+
+            int startY = treeBase.getY();
+
+            // Add blocks lower-y first so that eating the tree will eat them from the top down as they pop the
+            // last element off the list.
+            for (int y = startY; y < treeBase.getY() + MAX_Y_OFFSET; y++) {
+                for (int x = treeBase.getX() - 3; x <= treeBase.getX() + 3; x++) {
+                    for (int z = treeBase.getZ() - 3; z <= treeBase.getZ() + 3; z++) {
+                        BlockPos pos = new BlockPos(x, y, z);
+                        Block b = level.getBlockState(pos).getBlock();
+                        if (b instanceof ArconiumTreeLeaves leavesBlock) {
+                            if (leavesBlock.getTier().equals(tier)) {
+                                leaves.add(pos);
+                            }
+                        } else if (b.equals(Blocks.OAK_LOG)) {
+                            trunkBlocks.add(pos);
+                        }
+                    }
+                }
+            }
+
+            return new Tree(treeBase, leaves, trunkBlocks, tier);
+        }
+
+        private static RainbowColor findColoredGrassBase(Level level, BlockPos logPos) {
+            RainbowColor result = null;
+
+            // All blocks surrounding the logPos at 1 level lower must be colored grass blocks of the same tier.
+            int y = logPos.getY() - 1;
+            for (int x = logPos.getX() - 1; x <= logPos.getX() + 1; x++) {
+                for (int z = logPos.getZ() - 1; z <= logPos.getZ() + 1; z++) {
+                    if (x == logPos.getX() && z == logPos.getZ())
+                        continue;
+                    Block b = level.getBlockState(new BlockPos(x, y, z)).getBlock();
+                    if (b instanceof RainbowGrassBlock grassBlock) {
+                        if (result == null)
+                            result = grassBlock.getTier();
+                        else if (!result.equals(grassBlock.getTier())) {
+                            // Must all be of the same color
+                            return null;
+                        }
+                    } else {
+                        return null;
+                    }
+                }
+            }
+            return result;
+        }
+
+        public record Tree(
+                BlockPos trunkBasePos,
+                List<BlockPos> leaves,
+                List<BlockPos> trunkBlocks,
+                RainbowColor color
+        ){
+            public boolean isEmpty() {
+                return leaves.isEmpty() && trunkBlocks.isEmpty();
+            }
         }
     }
 }
