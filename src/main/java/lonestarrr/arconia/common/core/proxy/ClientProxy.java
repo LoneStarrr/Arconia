@@ -100,5 +100,6 @@ public class ClientProxy implements IProxy {
 
     private void registerParticleFactories(RegisterParticleProvidersEvent event) {
         Minecraft.getInstance().particleEngine.register(ModParticles.RAINBOW_PARTICLES.get(), RainbowParticles.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ModParticles.RAINBOW_PARTICLES_RED.get(), RainbowParticles.Provider::new);
     }
 }

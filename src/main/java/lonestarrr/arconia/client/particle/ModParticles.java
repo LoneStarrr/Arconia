@@ -11,5 +11,7 @@ import java.util.function.Supplier;
 public class ModParticles {
     public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(BuiltInRegistries.PARTICLE_TYPE, Arconia.MOD_ID);
 
+    // actual rainbow
     public static final Supplier<SimpleParticleType> RAINBOW_PARTICLES = PARTICLE_TYPES.register("rainbow_particles", () -> new SimpleParticleType(true));
+    public static final Supplier<SimpleParticleType> RAINBOW_PARTICLES_RED = PARTICLE_TYPES.register("rainbow_particles_red", () -> new SimpleParticleType(true));
 }
