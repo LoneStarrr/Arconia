@@ -151,6 +151,8 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             eatTree(level);
         }
 
+        displayTierParticles(level);
+
         if (itemGenerationCredits > 0) {
             sendResources(level);
         }
@@ -183,6 +185,31 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
                     }
                 }
             }
+        }
+    }
+
+    private void displayTierParticles(ServerLevel level) {
+        if (this.detectedTier != null && level.getGameTime() % 4 == 0) {
+            List<BlockPos> ring = new ArrayList<>();
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dz = -2; dz <= 2; dz++) {
+                    if (Math.abs(dx) == 2 || Math.abs(dz) == 2) {
+                        ring.add(this.worldPosition.offset(dx, 0, dz));
+                    }
+                }
+            }
+            BlockPos pos = ring.get(level.random.nextInt(ring.size()));
+            SimpleParticleType pType = ModParticles.RAINBOW_PARTICLES.get();
+            switch(this.detectedTier) {
+                case RED -> pType = ModParticles.RAINBOW_PARTICLES_RED.get();
+                case ORANGE -> pType = ModParticles.RAINBOW_PARTICLES_ORANGE.get();
+                case YELLOW -> pType = ModParticles.RAINBOW_PARTICLES_YELLOW.get();
+                case GREEN -> pType = ModParticles.RAINBOW_PARTICLES_GREEN.get();
+                case LIGHT_BLUE -> pType = ModParticles.RAINBOW_PARTICLES_LIGHT_BLUE.get();
+                case BLUE -> pType = ModParticles.RAINBOW_PARTICLES_BLUE.get();
+                case PURPLE -> pType = ModParticles.RAINBOW_PARTICLES_PURPLE.get();
+            }
+            level.sendParticles(pType, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 1, 0, 0.02, 0, 0.01);
         }
     }
 
