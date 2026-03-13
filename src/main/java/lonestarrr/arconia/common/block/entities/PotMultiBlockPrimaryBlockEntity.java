@@ -3,7 +3,9 @@ package lonestarrr.arconia.common.block.entities;
 import lonestarrr.arconia.client.particle.ModParticles;
 import lonestarrr.arconia.common.block.ArconiumTreeLeaves;
 import lonestarrr.arconia.common.block.RainbowGrassBlock;
+import lonestarrr.arconia.common.core.LevelBlockAccess;
 import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.core.SimplifiedLevel;
 import lonestarrr.arconia.common.core.handler.ConfigHandler;
 import lonestarrr.arconia.common.core.helper.InventoryHelper;
 import lonestarrr.arconia.common.network.ModPackets;
@@ -156,7 +158,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         if (now >= nextTreeScanTime){
             nextTreeScanTime = now + TREE_SCAN_INTERVAL_SECONDS * (long) level.tickRateManager().tickrate();
 
-            Map<RainbowColor, List<TreeLocator.Tree>> trees = TreeLocator.locateTrees(this.level, this.worldPosition);
+            Map<RainbowColor, List<TreeLocator.Tree>> trees = TreeLocator.locateTrees(new LevelBlockAccess(this.level), this.worldPosition);
             RainbowColor foundTier = determineTierFromTrees(trees).orElse(null);
 
             boolean mayEatTree = false;
@@ -389,7 +391,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
          *
          * @return For each tree found, return the blockpos of the base of the trunk of the tree, and its color.
          */
-        public static Map<RainbowColor, List<Tree>> locateTrees(Level level, BlockPos potPos) {
+        public static Map<RainbowColor, List<Tree>> locateTrees(SimplifiedLevel level, BlockPos potPos) {
             Map<RainbowColor, List<Tree>> result = new HashMap<>();
             Set<BlockPos> foundTreeSet = new HashSet<>();
             for(int y = potPos.getY() - 1; y <= potPos.getY() + 1; y++) {
@@ -428,7 +430,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             return result;
         }
 
-        private static Tree findLeavesAndTrunk(Level level, BlockPos treeBase, RainbowColor tier) {
+        private static Tree findLeavesAndTrunk(SimplifiedLevel level, BlockPos treeBase, RainbowColor tier) {
             ArrayList<BlockPos> result = new ArrayList<>();
             final int MAX_Y_OFFSET = 12; // Max y position of leaves, relative from base of tree trunk
             List<BlockPos> leaves = new ArrayList<>();
@@ -457,7 +459,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             return new Tree(treeBase, leaves, trunkBlocks, tier);
         }
 
-        private static RainbowColor findColoredGrassBase(Level level, BlockPos logPos) {
+        private static RainbowColor findColoredGrassBase(SimplifiedLevel level, BlockPos logPos) {
             RainbowColor result = null;
 
             // All blocks surrounding the logPos at 1 level lower must be colored grass blocks of the same tier.
