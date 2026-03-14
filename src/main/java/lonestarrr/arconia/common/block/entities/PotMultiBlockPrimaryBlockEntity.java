@@ -48,6 +48,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     private long lastResourceGenerateTime = 0;
     private long nextTreeScanTime = 0;
     private boolean storageFull = false;
+    private int numBonusTrees = 0; //
 
     private RainbowColor detectedTier = null;
     private BlockPos storageBlockPos; // Location of naerby chest/storage
@@ -157,35 +158,48 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             sendResources(level);
         }
 
-        if (now >= nextTreeScanTime){
+        if (now >= nextTreeScanTime) {
             nextTreeScanTime = now + TREE_SCAN_INTERVAL_SECONDS * (long) level.tickRateManager().tickrate();
 
             Map<RainbowColor, List<TreeLocator.Tree>> trees = TreeLocator.locateTrees(new LevelBlockAccess(this.level), this.worldPosition);
             RainbowColor foundTier = determineTierFromTrees(trees).orElse(null);
 
-            boolean mayEatTree = false;
-            /* The tier can be updated when the current trea being eaten hasn't been "used up" yet since it can take a
-             * while before that is the case, and we don't want to have the player wait that long to advance a tier.
-             */
-            if (foundTier != null) {
-                // The pot will never go down a previously detected tier. This is to prevent eating
-                // lower tier trees if the highest tier tree hasn't been replanted quick enough, which
-                // would make automation potentially difficult.
-                if (detectedTier == null || foundTier.getTier() >= detectedTier.getTier()) {
+            if (itemGenerationCredits > 0) {
+                // Still eating a previous tree. In that case, make sure we don't go down a tier because we may have
+                // eaten a tree of that tier and that should make the tier stick until we've exhausted the credits.
+                // However, if we find a higher tier tree, it's fine to go up because we want to reward the player for
+                // planting down a higher tier tree at all times.
+                if (foundTier != null && (detectedTier == null || foundTier.getTier() > detectedTier.getTier())) {
                     setDetectedTier(foundTier);
-                    mayEatTree = true;
+                    countAndUpdateBonusTrees(trees, foundTier);
                 }
-            }
-
-            if (itemGenerationCredits <= 0) {
-                if (treeToEat == null || treeToEat.isEmpty()) {
-                    if (mayEatTree) {
-                        // No remaining credits, tree's been eaten, new one's been found, let's eat the bastard
-                        treeToEat = trees.get(foundTier).getFirst();
-                    }
+            } else {
+                if (foundTier != null && (treeToEat == null || treeToEat.isEmpty())) {
+                    // No remaining credits, tree's been eaten, new one's been found, let's eat the bastard
+                    treeToEat = trees.get(foundTier).getFirst();
+                    setDetectedTier(foundTier);
+                    countAndUpdateBonusTrees(trees, foundTier);
                 }
             }
         }
+    }
+
+    private void countAndUpdateBonusTrees(@Nonnull Map<RainbowColor, List<TreeLocator.Tree>> trees, @Nonnull RainbowColor treeTier) {
+        /* The bonus value: For each tier below the detected tier, check if there's a tree present (based on minimum
+         * leaf count). If so, that adds one bonus multiplier. More trees for the same color do not add to it.
+         * The total bonus is then a % from config to the power of the multiplier.
+         * The bonus represents extra resources pulled from the pot, e.g. a bonus of 250% means 2 extra draws, and 50%
+         * chance on another draw.
+         */
+        final int MIN_LEAVES_COUNT = 32; // minimum leaves count for a tree to be considered present for bonus reasons
+        this.numBonusTrees = (int) trees.entrySet().stream()
+                // Filter only those entries where the RainbowColor's tier is smaller than the threshold and the
+                // trees for that color have enough leaves to count as a "bonus tree"
+                .filter(
+                        entry -> entry.getKey().getTier() < treeTier.getTier()
+                                && !entry.getValue().isEmpty()
+                                && entry.getValue().stream().mapToInt(ob -> ob.leaves.size()).sum() >= MIN_LEAVES_COUNT
+                ).count();
     }
 
     private void displayTierParticles(ServerLevel level) {
@@ -225,48 +239,67 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
      * @param level
      * @return The actual number of items sent to storage
      */
-    private int sendResources(Level level) {
+    private void sendResources(Level level) {
         if (storageBlockPos == null || generatedResources.isEmpty()) {
-            return 0;
+            return;
         }
 
         int tier = detectedTier == null ? 0 : detectedTier.getTier();
         int interval = ConfigHandler.COMMON.potGenerationInterval.get(tier).get();
-        int count = Math.min(ConfigHandler.COMMON.potGenerationCount.get(tier).get(), itemGenerationCredits);
 
         long now = level.getGameTime();
         if (now - lastResourceGenerateTime < interval) {
-            return 0;
+            return;
         }
         lastResourceGenerateTime = now;
 
-        ItemStack toGenerate = this.generatedResources.get(level.random.nextInt(generatedResources.size()));
         IItemHandler inventory = InventoryHelper.getInventory(level, this.storageBlockPos, Direction.UP);
         if (inventory == null) {
             setStorageBlockPos(null);
-            return 0;
+            return;
         }
 
-        ItemStack toSend = toGenerate.copy();
-        int sendCount = Math.min(count, toSend.getMaxStackSize());
-        toSend.setCount(sendCount);
-        ItemStack left = InventoryHelper.insertItem(inventory, toSend, false);
-        ServerLevel sLevel = (ServerLevel)level;
-        // TODO validate this logic
-        int actuallySent = sendCount - left.getCount();
-        itemGenerationCredits -= actuallySent;
+        int drawCount = 1;
 
-        if (actuallySent == 0) {
-            BlockPos particlePos = worldPosition.above(2);
-            sLevel.sendParticles(ParticleTypes.SMOKE, particlePos.getX() + 0.5, particlePos.getY() + 0.5, particlePos.getZ() + 0.5, 3, 0, 0.5, 0, 0.05);
-            setStorageFull(true);
-        } else {
-            PotItemTransferPacket packet = new PotItemTransferPacket(storageBlockPos.above(), worldPosition.above(), toSend);
-            ModPackets.sendToNearby(sLevel, worldPosition, packet);
-            setStorageFull(false);
+        if (this.numBonusTrees > 0) {
+            int bonusChancePerTree = ConfigHandler.COMMON.bonusPerExtraTree.getAsInt();
+            int bonusChance = numBonusTrees * bonusChancePerTree;
+            drawCount += bonusChance / 100;
+            int extraDrawChancePct = bonusChance % 100;
+            if (level.random.nextInt(100) < extraDrawChancePct) {
+                drawCount++;
+            }
         }
 
-        return actuallySent;
+        /**
+         * Even is storage is full, continue looping, it may not be full for another item
+         */
+        for (int i = 0; i < drawCount; i++) {
+            if (itemGenerationCredits <= 0) {
+                break;
+            }
+            int maxSendCount = Math.min(ConfigHandler.COMMON.potGenerationCount.get(tier).get(), itemGenerationCredits);
+            ItemStack toGenerate = this.generatedResources.get(level.random.nextInt(generatedResources.size()));
+
+            ItemStack toSend = toGenerate.copy();
+            int sendCount = Math.min(maxSendCount, toSend.getMaxStackSize());
+            toSend.setCount(sendCount);
+            ItemStack left = InventoryHelper.insertItem(inventory, toSend, false);
+            ServerLevel sLevel = (ServerLevel) level;
+            // TODO validate this logic
+            int actuallySent = sendCount - left.getCount();
+            itemGenerationCredits -= actuallySent;
+
+            if (actuallySent == 0) {
+                BlockPos particlePos = worldPosition.above(2);
+                sLevel.sendParticles(ParticleTypes.SMOKE, particlePos.getX() + 0.5, particlePos.getY() + 0.5, particlePos.getZ() + 0.5, 3, 0, 0.5, 0, 0.05);
+                setStorageFull(true);
+            } else {
+                PotItemTransferPacket packet = new PotItemTransferPacket(storageBlockPos.above(), worldPosition.above(), toSend);
+                ModPackets.sendToNearby(sLevel, worldPosition, packet);
+                setStorageFull(false);
+            }
+        }
     }
 
     /**
@@ -318,26 +351,15 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     }
 
     Optional<RainbowColor> determineTierFromTrees(Map<RainbowColor, List<TreeLocator.Tree>> trees) {
-        final int MIN_LEAVES_PER_TIER = 16;
         RainbowColor tierFound = null;
 
-        // The tier is determined by the highest tier leaves found, but all previous tiers must have at least
-        // MIN_LEAVES_PER_TIER leaves present. This is to encourage placing actual trees nearby rather than just
-        // a single leaves block.
-        for (RainbowColor tier: RainbowColor.values()) {
+        // The tier is determined by the highest tier tree found. Even if they do not have leaves, as long as the
+        // colored grass area at the base is there it counts. This is to avoid getting stuck with automation if a tree
+        // was only partially eaten and just the trunk is left behind.
+        for (RainbowColor tier: Arrays.stream(RainbowColor.values()).toList().reversed()) {
             List<TreeLocator.Tree> tierTrees = trees.getOrDefault(tier, new ArrayList<>());
-            int leafCount = tierTrees.stream().mapToInt(ob -> ob.leaves.size()).sum();
-            if (leafCount == 0) {
-                if (!tierTrees.isEmpty() && !tierTrees.getFirst().trunkBlocks.isEmpty()) {
-                    // A tree without leaves but with a trunk does count as a detected tier, because it will make the
-                    // pot eat the trunk, allowing (automated) replanting of saplings.
-                    tierFound = tier;
-                }
-                // But no leaves for a lower tier means the detected tier cannot be higher.
-                break;
-            }
-            tierFound = tier;
-            if (leafCount < MIN_LEAVES_PER_TIER) {
+            if (!tierTrees.isEmpty()) {
+                tierFound = tier;
                 break;
             }
         }

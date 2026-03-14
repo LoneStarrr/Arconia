@@ -31,18 +31,19 @@ public final class ConfigHandler {
     public static class Common {
         public final Map<Integer, ModConfigSpec.IntValue> potGenerationInterval = new HashMap<>(RainbowColor.values().length + 1);
         public final Map<Integer, ModConfigSpec.IntValue> potGenerationCount = new HashMap<>(RainbowColor.values().length + 1);
+        public final ModConfigSpec.IntValue bonusPerExtraTree;
 
         public Common(ModConfigSpec.Builder builder) {
-            final int[] counts = {1, 1, 2, 2, 4, 4, 8, 8};
-            final int[] intervalSeconds = {16, 8, 8, 4, 4, 2, 2, 1};
+            final int[] counts = {1, 1, 2, 2, 4, 4, 8}; // Counts per tier (rainbow color)
+            final int[] intervalSeconds = {16, 8, 8, 4, 4, 2, 2}; // interval between item draws per tier
             builder.push("potOfGold");
 
-            // There is a tier per rainbow color, and an initial starter tier 0. This is because the tiers are built
-            // from items produced by the pot, which needs to be running at that point already.
-            for (int tier = 0; tier < RainbowColor.values().length + 1; tier++) {
+            // Each color of the rainbow represents a tier
+            for (RainbowColor color: RainbowColor.values()) {
+                int tier = color.getTier(); // 1..7
                 String colorLabel = "tier" + tier;
-                int currentGenerationCount = counts[tier];
-                int currentGenerationInterval = intervalSeconds[tier] * 20;
+                int currentGenerationCount = counts[tier - 1];
+                int currentGenerationInterval = intervalSeconds[tier - 1] * 20;
                 ModConfigSpec.IntValue generationInterval = builder
                         .comment("Time between item generation attempts, in game ticks")
                         .defineInRange(colorLabel + "GenerationInterval", currentGenerationInterval, 5, 1200);
@@ -53,6 +54,10 @@ public final class ConfigHandler {
                         .defineInRange(colorLabel + "GenerationCount", currentGenerationCount, 1, 64);
                 potGenerationCount.put(tier, generationCount);
             }
+
+            bonusPerExtraTree = builder
+                    .comment("Extra item draw bonus chance percentage for each unique tree color of a previous tier planted nearby")
+                            .defineInRange("BonusTreePercentage", 33, 0, 200);
 
             builder.pop(); // potOfGold
         }
