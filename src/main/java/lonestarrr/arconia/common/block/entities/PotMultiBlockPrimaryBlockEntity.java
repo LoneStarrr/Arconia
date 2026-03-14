@@ -16,6 +16,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -41,6 +42,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     private static final String TAG_DETECTED_TIER = "detected_tier";
     private static final String TAG_STORAGE_FULL = "storage_full";
     private static final String TAG_STORAGE_BLOCKPOS = "storage_blockpos";
+    private static final String TAG_BONUS_TREE_COLORS = "bonus_tree_colors";
 
     private final int TREE_SEARCH_RADIUS = 10; // Radius of bounding box around pot
 
@@ -48,7 +50,8 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     private long lastResourceGenerateTime = 0;
     private long nextTreeScanTime = 0;
     private boolean storageFull = false;
-    private int numBonusTrees = 0; //
+    private int numBonusTrees = 0;
+    private Set<RainbowColor> bonusTreeColors = new HashSet<>();
 
     private RainbowColor detectedTier = null;
     private BlockPos storageBlockPos; // Location of naerby chest/storage
@@ -127,6 +130,10 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         return detectedTier;
     }
 
+    public Set<RainbowColor> getBonusTreeColors() {
+        return bonusTreeColors;
+    }
+
     public static void tick(Level level, BlockPos pos, BlockState state, PotMultiBlockPrimaryBlockEntity blockEntity) {
         blockEntity.processTick((ServerLevel)level, pos, state);
     }
@@ -171,15 +178,19 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
                 // planting down a higher tier tree at all times.
                 if (foundTier != null && (detectedTier == null || foundTier.getTier() > detectedTier.getTier())) {
                     setDetectedTier(foundTier);
-                    countAndUpdateBonusTrees(trees, foundTier);
                 }
             } else {
                 if (foundTier != null && (treeToEat == null || treeToEat.isEmpty())) {
                     // No remaining credits, tree's been eaten, new one's been found, let's eat the bastard
                     treeToEat = trees.get(foundTier).getFirst();
                     setDetectedTier(foundTier);
-                    countAndUpdateBonusTrees(trees, foundTier);
                 }
+            }
+
+            // We want to update bonus trees more frequently and not just at tier changes as they can be added and
+            // removed meanwhile.
+            if (detectedTier != null) {
+                countAndUpdateBonusTrees(trees, foundTier);
             }
         }
     }
@@ -192,14 +203,22 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
          * chance on another draw.
          */
         final int MIN_LEAVES_COUNT = 32; // minimum leaves count for a tree to be considered present for bonus reasons
-        this.numBonusTrees = (int) trees.entrySet().stream()
+        List<Map.Entry<RainbowColor, List<TreeLocator.Tree>>> bonusEntries = trees.entrySet().stream()
                 // Filter only those entries where the RainbowColor's tier is smaller than the threshold and the
                 // trees for that color have enough leaves to count as a "bonus tree"
                 .filter(
                         entry -> entry.getKey().getTier() < treeTier.getTier()
                                 && !entry.getValue().isEmpty()
                                 && entry.getValue().stream().mapToInt(ob -> ob.leaves.size()).sum() >= MIN_LEAVES_COUNT
-                ).count();
+                ).toList();
+        this.numBonusTrees = bonusEntries.size();
+        Set<RainbowColor> newBonusTreeColors = new HashSet<>(bonusEntries.stream().map(Map.Entry::getKey).toList());
+        if (!newBonusTreeColors.equals(this.bonusTreeColors)) {
+            this.bonusTreeColors = newBonusTreeColors;
+            // TODO is it bad to call these multiple times per tick? Or do I have to track changes and emit them once at the end of processTick?
+            setChanged();
+            updateClient();
+        }
     }
 
     private void displayTierParticles(ServerLevel level) {
@@ -405,6 +424,11 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         if (storageBlockPos != null) {
             tag.put(TAG_STORAGE_BLOCKPOS, NbtUtils.writeBlockPos(storageBlockPos));
         }
+        ListTag bonusTreeColorsTag = new ListTag();
+        for (RainbowColor color : bonusTreeColors) {
+            bonusTreeColorsTag.add(IntTag.valueOf(color.getTier()));
+        }
+        tag.put(TAG_BONUS_TREE_COLORS, bonusTreeColorsTag);
     }
 
     public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
@@ -422,6 +446,14 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         }
         this.storageFull = tag.getBoolean(TAG_STORAGE_FULL);
         this.storageBlockPos = NbtUtils.readBlockPos(tag, TAG_STORAGE_BLOCKPOS).orElse(null);
+        ListTag bonusTreeColorsTag = tag.getList(TAG_BONUS_TREE_COLORS, Tag.TAG_INT);
+        this.bonusTreeColors = new HashSet<>();
+        for (int i = 0; i < bonusTreeColorsTag.size(); i++) {
+            RainbowColor color = RainbowColor.byTier(bonusTreeColorsTag.getInt(i));
+            if (color != null) {
+                this.bonusTreeColors.add(color);
+            }
+        }
     }
 
     public enum LinkErrorCode { ALREADY_LINKED, TOO_MANY_HATS, HAT_NOT_FOUND, HAT_TOO_FAR, LINKED_TO_OTHER_POT }
