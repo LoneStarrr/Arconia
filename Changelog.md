@@ -12,7 +12,8 @@ This is a major release where item generation logic has been reworked. No longer
  - If there are also trees of lower tier colors present, they will increase the odds of pulling more treasure from the pot. This is visualized by rotating leaves around the pot for each color found.
  - The pot visualizes the reason why items aren't being extracted by showing a relevant item on top
  - The pot visualizes which tier it is by showing rainbow-shaped particles at its base of the detected color.
- - Configuration changed again, so existing config files will have to be updated (or removed) 
+ - Configuration changed, so existing config files will have to be updated (or removed) 
+ - Notebook updated and reworked some pages 
 
 # 0.2.1
 
