@@ -1,5 +1,5 @@
 {
-  "parent": "arconia:red_arconium_essence",
+  "parent": "arconia:red_tree_root",
   "criteria": {
     "touch_grass": {
       "trigger": "arconia:touch_grass"

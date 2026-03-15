@@ -6,6 +6,7 @@
     "#c:is_floral",
     "#c:is_plains",
     "#c:is_hill",
-    "#c:is_old_growth"
+    "#c:is_old_growth",
+    "#c:is_savanna"
   ]
 }

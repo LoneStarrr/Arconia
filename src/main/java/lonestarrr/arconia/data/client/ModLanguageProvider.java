@@ -104,7 +104,7 @@ public class ModLanguageProvider extends LanguageProvider {
                 { "advancement.arconia.main.purple_arconium_ingot.title", "ROYGBIV" },
                 { "advancement.arconia.main.purple_arconium_ingot.desc", "Craft the last, purple arconium ingot" },
                 { "advancement.arconia.main.touch_grass.title", "Touch Grass" },
-                { "advancement.arconia.main.touch_grass.desc", "Color some grass blocks with arconium essence" }
+                { "advancement.arconia.main.touch_grass.desc", "Color some grass blocks with tree roots" }
         }).forEach(adv -> add(adv[0], adv[1]));
     }
 

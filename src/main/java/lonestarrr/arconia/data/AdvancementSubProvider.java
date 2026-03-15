@@ -185,7 +185,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
 
         AdvancementHolder touchGrass = Advancement.Builder.advancement()
                 .addCriterion("touch_grass", ModCriteriaTriggers.TOUCH_GRASS_TRIGGER.get().createCriterion(new TouchGrassTrigger.TriggerInstance(Optional.empty())))
-                .parent(redEssence)
+                .parent(redRoot)
                 .display(
                         ModBlocks.getRainbowGrassBlock(RainbowColor.RED).asItem(),
                         Component.translatable("advancement.arconia.main.touch_grass.title"),
