@@ -29,30 +29,37 @@ public final class ConfigHandler {
     }
 
     public static class Common {
-        public final Map<Integer, ModConfigSpec.IntValue> potGenerationInterval = new HashMap<>(RainbowColor.values().length + 1);
-        public final Map<Integer, ModConfigSpec.IntValue> potGenerationCount = new HashMap<>(RainbowColor.values().length + 1);
+        public final Map<RainbowColor, ModConfigSpec.IntValue> potGenerationInterval = new HashMap<>(RainbowColor.values().length);
+        public final Map<RainbowColor, ModConfigSpec.IntValue> potGenerationCount = new HashMap<>(RainbowColor.values().length);
+        public final Map<RainbowColor, ModConfigSpec.IntValue> leavesItemCredits = new HashMap<>(RainbowColor.values().length);
         public final ModConfigSpec.IntValue bonusPerExtraTree;
 
         public Common(ModConfigSpec.Builder builder) {
             final int[] counts = {1, 1, 2, 2, 4, 4, 8}; // Counts per tier (rainbow color)
             final int[] intervalSeconds = {16, 8, 8, 4, 4, 2, 2}; // interval between item draws per tier
+            final int[] itemCreditsFromLeaves = {1, 2, 4, 8, 16, 32, 64}; // #items produced per consumed leaves block
             builder.push("potOfGold");
 
             // Each color of the rainbow represents a tier
             for (RainbowColor color: RainbowColor.values()) {
                 int tier = color.getTier(); // 1..7
-                String colorLabel = "tier" + tier;
+                String colorLabel = color.getTierName().toLowerCase();
                 int currentGenerationCount = counts[tier - 1];
                 int currentGenerationInterval = intervalSeconds[tier - 1] * 20;
                 ModConfigSpec.IntValue generationInterval = builder
                         .comment("Time between item generation attempts, in game ticks")
                         .defineInRange(colorLabel + "GenerationInterval", currentGenerationInterval, 5, 1200);
-                potGenerationInterval.put(tier, generationInterval);
+                potGenerationInterval.put(color, generationInterval);
 
                 ModConfigSpec.IntValue generationCount = builder
                         .comment("Maximum number of items to generate per attempt")
                         .defineInRange(colorLabel + "GenerationCount", currentGenerationCount, 1, 64);
-                potGenerationCount.put(tier, generationCount);
+                potGenerationCount.put(color, generationCount);
+
+                ModConfigSpec.IntValue itemCredits = builder
+                        .comment("Number of items extracted from the pot for each leaves block consumed")
+                        .defineInRange(colorLabel + "ItemCreditsFromLeaves", itemCreditsFromLeaves[tier -1], 1, 256);
+                leavesItemCredits.put(color, itemCredits);
             }
 
             bonusPerExtraTree = builder

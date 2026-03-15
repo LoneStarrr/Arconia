@@ -143,7 +143,12 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
             // This triggers eating a small part of a previously detected tree until it's all gone
             if (treeToEat != null && !treeToEat.isEmpty()) {
+                int itemCredits = this.itemGenerationCredits;
                 eatTree(level);
+                if (itemCredits <= 0 && this.itemGenerationCredits > 0) {
+                    // Update client to let it know we are no longer starved
+                    syncToClient = true;
+                }
             }
 
             displayTierParticles(level);
@@ -156,6 +161,9 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
                             this.storageFull = false;
                             syncToClient = true;
                         }
+                    }
+                    if (this.itemGenerationCredits <= 0) {
+                        syncToClient = true; // let the client know we ran out, so it can be visualized
                     }
                 } catch (StorageFullException e) {
                     if (!this.storageFull) {
@@ -273,12 +281,11 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
      * @return Number of items actually sent to storage
      */
     private int sendResources(Level level) throws StorageFullException, StorageMissingException {
-        if (storageBlockPos == null || generatedResources.isEmpty()) {
+        if (storageBlockPos == null || generatedResources.isEmpty() || detectedTier == null) {
             return 0;
         }
 
-        int tier = detectedTier == null ? 0 : detectedTier.getTier();
-        int interval = ConfigHandler.COMMON.potGenerationInterval.get(tier).get();
+        int interval = ConfigHandler.COMMON.potGenerationInterval.get(detectedTier).get();
 
         long now = level.getGameTime();
         if (now - lastResourceGenerateTime < interval) {
@@ -312,7 +319,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             if (itemGenerationCredits <= 0) {
                 break;
             }
-            int maxSendCount = Math.min(ConfigHandler.COMMON.potGenerationCount.get(tier).get(), itemGenerationCredits);
+            int maxSendCount = Math.min(ConfigHandler.COMMON.potGenerationCount.get(detectedTier).get(), itemGenerationCredits);
             ItemStack toGenerate = this.generatedResources.get(level.random.nextInt(generatedResources.size()));
 
             ItemStack toSend = toGenerate.copy();
@@ -380,7 +387,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         level.setBlockAndUpdate(toEatPos, Blocks.AIR.defaultBlockState());
         if (toEatBlock instanceof ArconiumTreeLeaves) {
             ArconiumTreeLeaves leavesBlock = (ArconiumTreeLeaves) toEatBlock;
-            this.itemGenerationCredits += (int)Math.pow(2, leavesBlock.getTier().getTier()); // TODO tune, from config
+            this.itemGenerationCredits += ConfigHandler.COMMON.leavesItemCredits.get(leavesBlock.getTier()).getAsInt();
             level.sendParticles(ModParticles.RAINBOW_PARTICLES.get(), toEatPos.getX() + 0.5, toEatPos.getY() + 1.5, toEatPos.getZ() + 0.5, 2, 0, 0.02, 0, 0.05);
             level.playSound(null, toEatPos, SoundEvents.AZALEA_LEAVES_BREAK, SoundSource.BLOCKS, 1, 1);
         }
@@ -416,6 +423,10 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
     public RainbowColor getDetectedTier() {
         return detectedTier;
+    }
+
+    public int getItemGenerationCredits() {
+        return itemGenerationCredits;
     }
 
     public void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {

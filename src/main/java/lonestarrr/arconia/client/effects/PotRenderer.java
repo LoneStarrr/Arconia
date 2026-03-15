@@ -83,6 +83,8 @@ public class PotRenderer implements BlockEntityRenderer<PotMultiBlockPrimaryBloc
             ItemProjector.projectItem(ModBlocks.getArconiumTreeLeaves(RainbowColor.RED).asItem().getDefaultInstance(), statePos, poseStack, buffer, combinedLight, combinedOverlay, true);
         } else if (potEntity.isStorageFull()) {
             ItemProjector.projectItem(Items.CHEST.getDefaultInstance(), statePos, poseStack, buffer, combinedLight, combinedOverlay, true);
+        } else if (potEntity.getItemGenerationCredits() <= 0) {
+            ItemProjector.projectItem(ModBlocks.getArconiumTreeLeaves(potEntity.getDetectedTier()).asItem().getDefaultInstance(), statePos, poseStack, buffer, combinedLight, combinedOverlay, true);
         }
     }
 }
