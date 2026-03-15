@@ -112,20 +112,6 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         return storageBlockPos;
     }
 
-    private void setStorageBlockPos(BlockPos pos) {
-        this.storageBlockPos = pos;
-        // Update Entity on client side so the Block Entity Renderer renders correctly
-        setChanged();
-        updateClient();
-    }
-
-    private void setStorageFull(boolean storageFull) {
-        this.storageFull = storageFull;
-        // Update Entity on client side so the Block Entity Renderer renders correctly
-        setChanged();
-        updateClient();
-    }
-
     public RainbowColor getTier() {
         return detectedTier;
     }
@@ -139,63 +125,95 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     }
 
     private void processTick(ServerLevel level, BlockPos pos, BlockState state) {
-        final long TREE_SCAN_INTERVAL_SECONDS = 5; // TODO config
-        final int STORAGE_SCAN_INTERVAL = 84; //move this to main tick()
+        final long TREE_SCAN_INTERVAL = 97;
+        final int STORAGE_SCAN_INTERVAL = 84;
+        boolean syncToClient = false;
 
         if (level.getGameTime() % STORAGE_SCAN_INTERVAL == 0) {
             if (storageBlockPos == null) {
-                setStorageBlockPos(locateNearbyStorage());
+                this.storageBlockPos = locateNearbyStorage();
+                if (this.storageBlockPos != null) {
+                    syncToClient = true;
+                }
             }
         }
 
-        if (storageBlockPos == null) {
-            return;
-        }
+        if (storageBlockPos != null) {
+            long now = level.getGameTime();
 
-        long now = level.getGameTime();
+            // This triggers eating a small part of a previously detected tree until it's all gone
+            if (treeToEat != null && !treeToEat.isEmpty()) {
+                eatTree(level);
+            }
 
-        // This triggers eating a small part of a previously detected tree until it's all gone
-        if (treeToEat != null && !treeToEat.isEmpty()) {
-            eatTree(level);
-        }
-
-        displayTierParticles(level);
-
-        if (itemGenerationCredits > 0) {
-            sendResources(level);
-        }
-
-        if (now >= nextTreeScanTime) {
-            nextTreeScanTime = now + TREE_SCAN_INTERVAL_SECONDS * (long) level.tickRateManager().tickrate();
-
-            Map<RainbowColor, List<TreeLocator.Tree>> trees = TreeLocator.locateTrees(new LevelBlockAccess(this.level), this.worldPosition);
-            RainbowColor foundTier = determineTierFromTrees(trees).orElse(null);
+            displayTierParticles(level);
 
             if (itemGenerationCredits > 0) {
-                // Still eating a previous tree. In that case, make sure we don't go down a tier because we may have
-                // eaten a tree of that tier and that should make the tier stick until we've exhausted the credits.
-                // However, if we find a higher tier tree, it's fine to go up because we want to reward the player for
-                // planting down a higher tier tree at all times.
-                if (foundTier != null && (detectedTier == null || foundTier.getTier() > detectedTier.getTier())) {
-                    setDetectedTier(foundTier);
-                }
-            } else {
-                if (foundTier != null && (treeToEat == null || treeToEat.isEmpty())) {
-                    // No remaining credits, tree's been eaten, new one's been found, let's eat the bastard
-                    treeToEat = trees.get(foundTier).getFirst();
-                    setDetectedTier(foundTier);
+                try {
+                    if (sendResources(level) > 0) {
+                        // Clearly we have recovered from a storage full situation
+                        if (this.storageFull) {
+                            this.storageFull = false;
+                            syncToClient = true;
+                        }
+                    }
+                } catch (StorageFullException e) {
+                    if (!this.storageFull) {
+                        this.storageFull = true;
+                        syncToClient = true;
+                    }
+                } catch (StorageMissingException e) {
+                    if (this.storageBlockPos != null) {
+                        this.storageBlockPos = null;
+                        syncToClient = true;
+                    }
+
                 }
             }
 
-            // We want to update bonus trees more frequently and not just at tier changes as they can be added and
-            // removed meanwhile.
-            if (detectedTier != null) {
-                countAndUpdateBonusTrees(trees, foundTier);
+            if (now >= nextTreeScanTime) {
+                nextTreeScanTime = now + TREE_SCAN_INTERVAL;
+
+                Map<RainbowColor, List<TreeLocator.Tree>> trees = TreeLocator.locateTrees(new LevelBlockAccess(this.level), this.worldPosition);
+                RainbowColor foundTier = determineTierFromTrees(trees).orElse(null);
+
+                if (itemGenerationCredits > 0) {
+                    // Still eating a previous tree. In that case, make sure we don't go down a tier because we may have
+                    // eaten a tree of that tier and that should make the tier stick until we've exhausted the credits.
+                    // However, if we find a higher tier tree, it's fine to go up because we want to reward the player for
+                    // planting down a higher tier tree at all times.
+                    if (foundTier != null && (detectedTier == null || foundTier.getTier() > detectedTier.getTier())) {
+                        this.detectedTier = foundTier;
+                        syncToClient = true;
+                    }
+                } else {
+                    if (foundTier != null && (treeToEat == null || treeToEat.isEmpty())) {
+                        // No remaining credits, tree's been eaten, new one's been found, let's eat the bastard
+                        treeToEat = trees.get(foundTier).getFirst();
+                        this.detectedTier = foundTier;
+                        syncToClient = true;
+                    }
+                }
+
+                // We want to update bonus trees more frequently and not just at tier changes as they can be added and
+                // removed meanwhile.
+                if (detectedTier != null) {
+                    Set<RainbowColor> newBonusTreeColors = findBonusTrees(trees, foundTier);
+                    if (!newBonusTreeColors.equals(this.bonusTreeColors)) {
+                        this.bonusTreeColors = newBonusTreeColors;
+                        syncToClient = true;
+                    }
+                }
             }
+        }
+
+        if (syncToClient) {
+            setChanged();
+            updateClient();
         }
     }
 
-    private void countAndUpdateBonusTrees(@Nonnull Map<RainbowColor, List<TreeLocator.Tree>> trees, @Nonnull RainbowColor treeTier) {
+    private Set<RainbowColor> findBonusTrees(@Nonnull Map<RainbowColor, List<TreeLocator.Tree>> trees, @Nonnull RainbowColor treeTier) {
         /* The bonus value: For each tier below the detected tier, check if there's a tree present (based on minimum
          * leaf count). If so, that adds one bonus multiplier. More trees for the same color do not add to it.
          * The total bonus is then a % from config to the power of the multiplier.
@@ -203,6 +221,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
          * chance on another draw.
          */
         final int MIN_LEAVES_COUNT = 32; // minimum leaves count for a tree to be considered present for bonus reasons
+
         List<Map.Entry<RainbowColor, List<TreeLocator.Tree>>> bonusEntries = trees.entrySet().stream()
                 // Filter only those entries where the RainbowColor's tier is smaller than the threshold and the
                 // trees for that color have enough leaves to count as a "bonus tree"
@@ -213,12 +232,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
                 ).toList();
         this.numBonusTrees = bonusEntries.size();
         Set<RainbowColor> newBonusTreeColors = new HashSet<>(bonusEntries.stream().map(Map.Entry::getKey).toList());
-        if (!newBonusTreeColors.equals(this.bonusTreeColors)) {
-            this.bonusTreeColors = newBonusTreeColors;
-            // TODO is it bad to call these multiple times per tick? Or do I have to track changes and emit them once at the end of processTick?
-            setChanged();
-            updateClient();
-        }
+        return newBonusTreeColors;
     }
 
     private void displayTierParticles(ServerLevel level) {
@@ -256,11 +270,11 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     /**
      * Attempts to send generated items to storage.
      * @param level
-     * @return The actual number of items sent to storage
+     * @return Number of items actually sent to storage
      */
-    private void sendResources(Level level) {
+    private int sendResources(Level level) throws StorageFullException, StorageMissingException {
         if (storageBlockPos == null || generatedResources.isEmpty()) {
-            return;
+            return 0;
         }
 
         int tier = detectedTier == null ? 0 : detectedTier.getTier();
@@ -268,14 +282,13 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
         long now = level.getGameTime();
         if (now - lastResourceGenerateTime < interval) {
-            return;
+            return 0;
         }
         lastResourceGenerateTime = now;
 
         IItemHandler inventory = InventoryHelper.getInventory(level, this.storageBlockPos, Direction.UP);
         if (inventory == null) {
-            setStorageBlockPos(null);
-            return;
+            throw new StorageMissingException();
         }
 
         int drawCount = 1;
@@ -293,6 +306,8 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         /**
          * Even is storage is full, continue looping, it may not be full for another item
          */
+        int totallySent = 0;
+
         for (int i = 0; i < drawCount; i++) {
             if (itemGenerationCredits <= 0) {
                 break;
@@ -312,13 +327,15 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             if (actuallySent == 0) {
                 BlockPos particlePos = worldPosition.above(2);
                 sLevel.sendParticles(ParticleTypes.SMOKE, particlePos.getX() + 0.5, particlePos.getY() + 0.5, particlePos.getZ() + 0.5, 3, 0, 0.5, 0, 0.05);
-                setStorageFull(true);
+                throw new StorageFullException();
             } else {
                 PotItemTransferPacket packet = new PotItemTransferPacket(storageBlockPos.above(), worldPosition.above(), toSend);
                 ModPackets.sendToNearby(sLevel, worldPosition, packet);
-                setStorageFull(false);
+                totallySent += actuallySent;
             }
         }
+
+        return totallySent;
     }
 
     /**
@@ -401,13 +418,6 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         return detectedTier;
     }
 
-    private void setDetectedTier(RainbowColor detectedTier) {
-        this.detectedTier = detectedTier;
-        // Update Entity on client side so the Block Entity Renderer renders correctly
-        setChanged();
-        updateClient();
-    }
-
     public void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
         ListTag resourceListTag = new ListTag();
         generatedResources.forEach(resource -> resourceListTag.add(resource.saveOptional(registries)));
@@ -454,6 +464,14 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
                 this.bonusTreeColors.add(color);
             }
         }
+    }
+
+    public static class StorageFullException extends Exception {
+        public StorageFullException() {}
+    }
+
+    public static class StorageMissingException extends Exception {
+        public StorageMissingException() {}
     }
 
     public enum LinkErrorCode { ALREADY_LINKED, TOO_MANY_HATS, HAT_NOT_FOUND, HAT_TOO_FAR, LINKED_TO_OTHER_POT }
