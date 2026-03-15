@@ -1,19 +1,27 @@
 {
-    "name": "Crop cirles?",
+    "name": "Gotta go fast",
     "icon": "arconia:red_rainbow_grass_block",
     "category": "arconia:pot_of_gold",
     "advancement": "arconia:red_arconium_essence",
     "pages": [
         {
             "type": "patchouli:text",
-            "text": "Gathering treasure from the pot may seem slow, but surrounding it with colorful grass realizes its full potential. By coloring grass red in a 5 by 5 square around the pot, it increases the loot quantity or speed. Each additional ring in the next color does the same, until all colors have been used. Arconium essence can be used to change the color of a grass block."
+            "text": "Gathering treasure from the pot may seem slow. As you progress, you will discover new tree colors (\"tiers\"). Surrounding the pot with trees of different colors releases its full potential. Each tree needs to be surrounded by grass of the same color as the tree. The pot will eat the tree with the highest tier color first. Later color trees increase the item extraction rate."
         },
         {
             "type": "patchouli:image",
-            "images": ["arconia:textures/gui/guide_book/potofgold_tiered.png","arconia:textures/gui/guide_book/potofgold_tiered2.png"],
+            "images": ["arconia:textures/gui/guide_book/potofgold_max_tier.png"],
             "title": "Maxed out pot",
             "border": true,
-            "text": "This pot has reached its full potential. The center 3 by 3 blocks can be any block."
+            "text": "This pot has reached its full potential with every tree color planted nearby."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "After consuming a tree, the pot will show its color through rainbow-shaped particles surrounding its base. Additionally, for each lower tier tree nearby, the pot will show leaves in that color rotating around slowly around itself. These increase the chance of extracting additional items."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "As the pot speeds up, you'll notice the trees don't last as long before the pot eats another one. If you leave it unattended, it will eat all of the colored trees. Automating the replanting and growing of trees should help here. The leprechauns did not have the know-how to do so, so you will have to rely on other clever mechanisms to achieve this."
         }
     ]
 }
