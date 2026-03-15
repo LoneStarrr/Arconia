@@ -37,7 +37,14 @@ public final class ConfigHandler {
         public Common(ModConfigSpec.Builder builder) {
             final int[] counts = {1, 1, 2, 2, 4, 4, 8}; // Counts per tier (rainbow color)
             final int[] intervalSeconds = {16, 8, 8, 4, 4, 2, 2}; // interval between item draws per tier
-            final int[] itemCreditsFromLeaves = {1, 2, 4, 8, 16, 32, 64}; // #items produced per consumed leaves block
+            // Each next tier doubles throughput. Keep credit increase below doubling so that player needs to replant
+            // trees faster with the later tiers. This will make earlier tiers feasible with manual tree planting,
+            // but higher tiers require automation to keep going indefinitely.
+            // Smaller trees have ~50 leaves, large ones ~100. So if a pot consumes a small purple tree, it produces
+            // 8 items per 2 seconds (4/s), with 12 credits per leaf makes it runs out in 50*12/4=150 seconds. Meaning
+            // one has to replant it every 2.5 minutes worst case.
+            // A small red tree producing 1 item every 16 seconds with 1 credit per leaf lasts 50*1/(1/16.) 800 seconds.
+            final int[] itemCreditsFromLeaves = {1, 2, 3, 5, 7, 9, 12}; // #items produced per consumed leaves block
             builder.push("potOfGold");
 
             // Each color of the rainbow represents a tier
