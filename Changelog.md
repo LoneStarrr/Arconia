@@ -1,3 +1,20 @@
+# 1.0.0
+
+This is a major release where item generation logic has been reworked. No longer is item generation infinite, now the pot consumes leaves as fuel. Implemented such that this can be automated using other mods, while manual planting of trees will initially be good enough.
+
+## Fixes
+
+ - Savannah biomes now also grow clovers again
+
+## Changes
+
+ - The pot of gold now needs to consume Arconium tree leaves as fuel to generate items. It will consume the leaves of the highest tier tree planted nearby. This also determines the tier at which the pot operates.
+ - If there are also trees of lower tier colors present, they will increase the odds of pulling more treasure from the pot. This is visualized by rotating leaves around the pot for each color found.
+ - The pot visualizes the reason why items aren't being extracted by showing a relevant item on top
+ - The pot visualizes which tier it is by showing rainbow-shaped particles at its base of the detected color.
+ - Configuration changed, so existing config files will have to be updated (or removed) 
+ - Notebook updated and reworked some pages 
+
 # 0.2.1
 
 ## Fixes

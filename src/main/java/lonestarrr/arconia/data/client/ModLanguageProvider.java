@@ -104,7 +104,7 @@ public class ModLanguageProvider extends LanguageProvider {
                 { "advancement.arconia.main.purple_arconium_ingot.title", "ROYGBIV" },
                 { "advancement.arconia.main.purple_arconium_ingot.desc", "Craft the last, purple arconium ingot" },
                 { "advancement.arconia.main.touch_grass.title", "Touch Grass" },
-                { "advancement.arconia.main.touch_grass.desc", "Color some grass blocks with arconium essence" }
+                { "advancement.arconia.main.touch_grass.desc", "Color some grass blocks with tree roots" }
         }).forEach(adv -> add(adv[0], adv[1]));
     }
 
@@ -117,7 +117,6 @@ public class ModLanguageProvider extends LanguageProvider {
         // pot treasure setting / unsetting messages
         add("arconia.block.pot_multiblock.set_resource_empty", "You either need to use an imbued root to extract new treasure, or use a plain root in your main hand and an item in your offhand matching the treasure you do not want the pot to extract anymore");
         add("arconia.block.pot_multiblock.set_resource_full", "The pot cannot extract any more treasure");
-        add("arconia.block.pot_multiblock.set_resource_success", "More riches will be collected by the pot");
         add("arconia.block.pot_multiblock.remove_resource_not_found", "The item in your offhand is not treasure currently being extracted by the pot");
         add("arconia.block.pot_multiblock.remove_resource_none_set", "The pot is not extracting any treasure. If you want to extract new treasure, you will need to imbue your root using the pedestal ritual");
         add("arconia.block.pot_multiblock.remove_resource_success", "The pot will no longer extract %s");

@@ -5,7 +5,7 @@
     "pages": [
         {
             "type": "patchouli:text",
-            "text": "There are colorful trees to be found in forests, with bright colored leaves with a gold sparkle. Harvesting these gets you colorful tree roots. The leprechauns imbued these to give them special abilities."
+            "text": "There are colorful trees to be found in forests, with bright colored leaves with a gold sparkle. Harvesting these gets you colorful tree roots. The leprechauns imbue these to give them special abilities. They can also be used on regular grass to turn the gras into the same color as the root. This will consume the root."
         }
     ]
 }

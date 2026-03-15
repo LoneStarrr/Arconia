@@ -28,6 +28,7 @@ public class ArconiaBiomeTagsProvider extends BiomeTagsProvider {
                 .addTag(net.neoforged.neoforge.common.Tags.Biomes.IS_PLAINS)
                 .addTag(net.neoforged.neoforge.common.Tags.Biomes.IS_HILL)
                 .addTag(net.neoforged.neoforge.common.Tags.Biomes.IS_OLD_GROWTH)
+                .addTag(net.neoforged.neoforge.common.Tags.Biomes.IS_SAVANNA)
         ;
         tag(Tags.Biomes.HAS_ARCONIUM_TREES)
                 .addTag(net.neoforged.neoforge.common.Tags.Biomes.IS_DECIDUOUS_TREE)

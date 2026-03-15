@@ -130,7 +130,6 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
                     return ItemInteractionResult.FAIL;
                 } else {
                     itemUsed.shrink(1);
-                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_success"));
                     return ItemInteractionResult.SUCCESS;
                 }
             }

@@ -29,30 +29,49 @@ public final class ConfigHandler {
     }
 
     public static class Common {
-        public final Map<Integer, ModConfigSpec.IntValue> potGenerationInterval = new HashMap<>(RainbowColor.values().length + 1);
-        public final Map<Integer, ModConfigSpec.IntValue> potGenerationCount = new HashMap<>(RainbowColor.values().length + 1);
+        public final Map<RainbowColor, ModConfigSpec.IntValue> potGenerationInterval = new HashMap<>(RainbowColor.values().length);
+        public final Map<RainbowColor, ModConfigSpec.IntValue> potGenerationCount = new HashMap<>(RainbowColor.values().length);
+        public final Map<RainbowColor, ModConfigSpec.IntValue> leavesItemCredits = new HashMap<>(RainbowColor.values().length);
+        public final ModConfigSpec.IntValue bonusPerExtraTree;
 
         public Common(ModConfigSpec.Builder builder) {
-            final int[] counts = {1, 1, 2, 2, 4, 4, 8, 8};
-            final int[] intervalSeconds = {16, 8, 8, 4, 4, 2, 2, 1};
+            final int[] counts = {1, 1, 2, 2, 4, 4, 8}; // Counts per tier (rainbow color)
+            final int[] intervalSeconds = {16, 8, 8, 4, 4, 2, 2}; // interval between item draws per tier
+            // Each next tier doubles throughput. Keep credit increase below doubling so that player needs to replant
+            // trees faster with the later tiers. This will make earlier tiers feasible with manual tree planting,
+            // but higher tiers require automation to keep going indefinitely.
+            // Smaller trees have ~50 leaves, large ones ~100. So if a pot consumes a small purple tree, it produces
+            // 8 items per 2 seconds (4/s), with 12 credits per leaf makes it runs out in 50*12/4=150 seconds. Meaning
+            // one has to replant it every 2.5 minutes worst case.
+            // A small red tree producing 1 item every 16 seconds with 1 credit per leaf lasts 50*1/(1/16.) 800 seconds.
+            final int[] itemCreditsFromLeaves = {1, 2, 3, 5, 7, 9, 12}; // #items produced per consumed leaves block
             builder.push("potOfGold");
 
-            // There is a tier per rainbow color, and an initial starter tier 0. This is because the tiers are built
-            // from items produced by the pot, which needs to be running at that point already.
-            for (int tier = 0; tier < RainbowColor.values().length + 1; tier++) {
-                String colorLabel = "tier" + tier;
-                int currentGenerationCount = counts[tier];
-                int currentGenerationInterval = intervalSeconds[tier] * 20;
+            // Each color of the rainbow represents a tier
+            for (RainbowColor color: RainbowColor.values()) {
+                int tier = color.getTier(); // 1..7
+                String colorLabel = color.getTierName().toLowerCase();
+                int currentGenerationCount = counts[tier - 1];
+                int currentGenerationInterval = intervalSeconds[tier - 1] * 20;
                 ModConfigSpec.IntValue generationInterval = builder
                         .comment("Time between item generation attempts, in game ticks")
                         .defineInRange(colorLabel + "GenerationInterval", currentGenerationInterval, 5, 1200);
-                potGenerationInterval.put(tier, generationInterval);
+                potGenerationInterval.put(color, generationInterval);
 
                 ModConfigSpec.IntValue generationCount = builder
                         .comment("Maximum number of items to generate per attempt")
                         .defineInRange(colorLabel + "GenerationCount", currentGenerationCount, 1, 64);
-                potGenerationCount.put(tier, generationCount);
+                potGenerationCount.put(color, generationCount);
+
+                ModConfigSpec.IntValue itemCredits = builder
+                        .comment("Number of items extracted from the pot for each leaves block consumed")
+                        .defineInRange(colorLabel + "ItemCreditsFromLeaves", itemCreditsFromLeaves[tier -1], 1, 256);
+                leavesItemCredits.put(color, itemCredits);
             }
+
+            bonusPerExtraTree = builder
+                    .comment("Extra item draw bonus chance percentage for each unique tree color of a previous tier planted nearby")
+                            .defineInRange("BonusTreePercentage", 33, 0, 200);
 
             builder.pop(); // potOfGold
         }
