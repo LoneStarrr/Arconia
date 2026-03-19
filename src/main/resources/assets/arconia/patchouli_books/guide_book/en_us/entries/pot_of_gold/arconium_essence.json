@@ -6,11 +6,11 @@
     "pages": [
         {
             "type": "patchouli:text",
-            "text": "I witnessed one of the leprechauns imbue these roots with magical abilities using the pedestal rituals. Once imbued, they show an item. If used on a pot of gold, it starts flinging this item into nearby storage, but it requires a few more steps to get there. The first step is to imbue a root to make red arconium essence."
+            "text": "I witnessed one of the leprechauns imbue these branches with magical abilities using the pedestal rituals. Once imbued, they show an item. If used on a pot of gold, it starts flinging this item into nearby storage, but it requires a few more steps to get there. The first step is to imbue a branch to make red arconium essence."
         },
         {
             "type": "patchouli:text",
-            "text": "If you look up the recipe for red arconium essence, you will see a custom crafting recipe that shows the pot of gold producing it with an imbued root in the center of the pot. Click this root to see the crafting recipe using an imbued root. It will show you how to make it using the pedestal ritual I wrote about on another page. Another way to find it is to look up what recipes use the red root, or the center pedestal."
+            "text": "If you look up the recipe for red arconium essence, you will see a custom crafting recipe that shows the pot of gold producing it with an imbued branch in the center of the pot. Click this branch to see the crafting recipe using an imbued branch. It will show you how to make it using the pedestal ritual I wrote about on another page. Another way to find it is to look up what recipes use the red branch, or the center pedestal."
         }
     ]
 }

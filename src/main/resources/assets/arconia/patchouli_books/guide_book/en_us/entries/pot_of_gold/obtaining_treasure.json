@@ -2,7 +2,7 @@
     "name": "Obtaining treasure",
     "icon": "minecraft:gold_block",
     "category": "arconia:pot_of_gold",
-    "advancement": "arconia:red_root_of_essence",
+    "advancement": "arconia:red_branch_of_essence",
     "pages": [
         {
             "type": "patchouli:text",
@@ -10,11 +10,11 @@
         },
         {
             "type": "patchouli:text",
-            "text": "First, you put a chest near the pot of gold. Then, use one or more imbued tree roots on the pot by right-clicking. Another entry in my notebook explains how to imbue it. Once you've done this, you should see an item appear over the pot. This is the item the pot will extract from the treasure pool. Quite a nifty trick if you ask me. Next, I'll explain how the pot turns nearby tree leaves into fuel."
+            "text": "First, you put a chest near the pot of gold. Then, use one or more imbued tree branches on the pot by right-clicking. Another entry in my notebook explains how to imbue it. Once you've done this, you should see an item appear over the pot. This is the item the pot will extract from the treasure pool. Quite a nifty trick if you ask me. Next, I'll explain how the pot turns nearby tree leaves into fuel."
         },
         {
             "type": "patchouli:text",
-            "text": "The pot will search for nearby trees. Not just any trees, they have to be one of the colorful trees that you have previously obtained the roots from. The trees need to be grown on very specific locations. I've included a picture that shows all eight possible locations in a 15 by 15 area around the pot. Each tree needs to be surrounded by colored grass, which you can make by using a tree root on regular grass. You only need one tree to start."
+            "text": "The pot will search for nearby trees. Not just any trees, they have to be one of the colorful trees that you have previously obtained the branches  from. The trees need to be grown on very specific locations. I've included a picture that shows all eight possible locations in a 15 by 15 area around the pot. Each tree needs to be surrounded by colored grass, which you can make by using a tree branch on regular grass. You only need one tree to start."
         },
         {
             "type": "patchouli:image",
@@ -36,7 +36,7 @@
         },
         {
             "type": "patchouli:text",
-            "text": "You can make the pot stop extracting any one of its items by clicking it with a non-imbued root and an empty offhand. If there are multiple items being extracted, you can remove a specific item by putting it in your offhand along with the non-imbued root in your main hand. In either case, you will get an imbued root back for that item."
+            "text": "You can make the pot stop extracting any one of its items by clicking it with a non-imbued branch and an empty offhand. If there are multiple items being extracted, you can remove a specific item by putting it in your offhand along with the non-imbued branch in your main hand. In either case, you will get an imbued branch back for that item."
         },
         {
             "type": "patchouli:text",

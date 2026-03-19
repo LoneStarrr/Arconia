@@ -536,7 +536,7 @@ public class ModRecipeProvider extends RecipeProvider {
     /**
      * @param tier         tier
      * @param resourceItem Item to be produced by imbued branch
-     * @return id for an enchanted branch item
+     * @return id for an imbued branch item
      */
     private static ResourceLocation imbuedBranchId(RainbowColor tier, ItemLike resourceItem) {
         Item branch = ModItems.getColoredBranch(tier).get();

@@ -44,7 +44,7 @@ public class ModLanguageProvider extends LanguageProvider {
             String colorName = color.getUnlocalizedName();
             add(ModItems.getArconiumEssence(color).get(), colorName + " Arconium Essence");
             add(ModItems.getArconiumIngot(color).get(), colorName + " Arconium Ingot");
-            add(ModItems.getColoredBranch(color).get(), colorName + " Tree Root");
+            add(ModItems.getColoredBranch(color).get(), colorName + " Tree Branch");
             add(ModItems.getArconiumSickle(color).get(), colorName + " Arconium Sickle");
         }
     }
@@ -67,12 +67,12 @@ public class ModLanguageProvider extends LanguageProvider {
 
     private void registerAdvancements() {
         Stream.of(new String[][] {
-                { "advancement.arconia.main.root.title", "Arconia" },
-                { "advancement.arconia.main.root.desc", "Dig up dirt and find some memoirs" },
+                { "advancement.arconia.main.branch.title", "Arconia" },
+                { "advancement.arconia.main.branch.desc", "Dig up dirt and find some memoirs" },
                 { "advancement.arconia.main.four_leaf_clover.title", "Get lucky" },
                 { "advancement.arconia.main.four_leaf_clover.desc", "Find a four-leaf clover" },
-                { "advancement.arconia.main.red_tree_root.title", "Arconium Tree Root" },
-                { "advancement.arconia.main.red_tree_root.desc", "Harvest arconium trees for some roots" },
+                { "advancement.arconia.main.red_tree_branch.title", "Arconium Tree Branch" },
+                { "advancement.arconia.main.red_tree_branch.desc", "Harvest arconium trees for some branches" },
                 { "advancement.arconia.main.clover_staff.title", "You're a wizard now" },
                 { "advancement.arconia.main.clover_staff.desc", "Make a clover staff" },
                 { "advancement.arconia.main.red_arconium_sickle.title", "Leaf breaker 9000" },
@@ -81,8 +81,8 @@ public class ModLanguageProvider extends LanguageProvider {
                 { "advancement.arconia.main.pedestal.desc", "Craft some pedestals" },
                 { "advancement.arconia.main.center_pedestal.title", "Let the rituals begin" },
                 { "advancement.arconia.main.center_pedestal.desc", "Craft a center pedestal to perform rituals" },
-                { "advancement.arconia.main.red_root_of_essence.title", "Arconium?" },
-                { "advancement.arconia.main.red_root_of_essence.desc", "Imbue magical properties onto a tree root" },
+                { "advancement.arconia.main.red_branch_of_essence.title", "Arconium?" },
+                { "advancement.arconia.main.red_branch_of_essence.desc", "Imbue magical properties onto a tree branch" },
                 { "advancement.arconia.main.pot_of_gold.title", "But, where's the rainbow?" },
                 { "advancement.arconia.main.pot_of_gold.desc", "Build a pot of gold" },
                 { "advancement.arconia.main.red_arconium_essence.title", "Arconium Essence" },
@@ -104,21 +104,21 @@ public class ModLanguageProvider extends LanguageProvider {
                 { "advancement.arconia.main.purple_arconium_ingot.title", "ROYGBIV" },
                 { "advancement.arconia.main.purple_arconium_ingot.desc", "Craft the last, purple arconium ingot" },
                 { "advancement.arconia.main.touch_grass.title", "Touch Grass" },
-                { "advancement.arconia.main.touch_grass.desc", "Color some grass blocks with tree roots" }
+                { "advancement.arconia.main.touch_grass.desc", "Color some grass blocks with tree branches" }
         }).forEach(adv -> add(adv[0], adv[1]));
     }
 
     private void registerMisc() {
         add("jei.arconia.recipe_category.altar", "Pedestal Ritual");
-        add("jei.arconia.recipe_category.enchanted_root", "Pot of Gold");
+        add("jei.arconia.recipe_category.imbued_branch", "Pot of Gold");
         // clover staff messages
         add("arconia.item.cloverstaff.selectpot.success", "Stored coordinate of the pot of gold at %s");
         add("arconia.item.cloverstaff.selectpot.failed", "Invalid pot of gold multi-block structure?");
         // pot treasure setting / unsetting messages
-        add("arconia.block.pot_multiblock.set_resource_empty", "You either need to use an imbued root to extract new treasure, or use a plain root in your main hand and an item in your offhand matching the treasure you do not want the pot to extract anymore");
+        add("arconia.block.pot_multiblock.set_resource_empty", "You either need to use an imbued branch to extract new treasure, or use a plain branch in your main hand and an item in your offhand matching the treasure you do not want the pot to extract anymore");
         add("arconia.block.pot_multiblock.set_resource_full", "The pot cannot extract any more treasure");
         add("arconia.block.pot_multiblock.remove_resource_not_found", "The item in your offhand is not treasure currently being extracted by the pot");
-        add("arconia.block.pot_multiblock.remove_resource_none_set", "The pot is not extracting any treasure. If you want to extract new treasure, you will need to imbue your root using the pedestal ritual");
+        add("arconia.block.pot_multiblock.remove_resource_none_set", "The pot is not extracting any treasure. If you want to extract new treasure, you will need to imbue your branch using the pedestal ritual");
         add("arconia.block.pot_multiblock.remove_resource_success", "The pot will no longer extract %s");
 
         // pedestal ritual messages

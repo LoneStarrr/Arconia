@@ -32,7 +32,7 @@ public class ImbuedBranchRecipeCategory implements IRecipeCategory<ImbuedBranchR
 
     public ImbuedBranchRecipeCategory(@Nonnull IGuiHelper guiHelper) {
         this.background = guiHelper.createBlankDrawable(144, 81);
-        this.overlay = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "textures/gui/jei/imbued_root_overlay.png"),
+        this.overlay = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "textures/gui/jei/imbued_branch_overlay.png"),
                 0, 0, 144, 81);
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, renderStack.copy());
     }
@@ -43,7 +43,7 @@ public class ImbuedBranchRecipeCategory implements IRecipeCategory<ImbuedBranchR
 
     @Override
     public Component getTitle() {
-        return Component.translatable("jei.arconia.recipe_category.enchanted_root");
+        return Component.translatable("jei.arconia.recipe_category.imbued_branch");
     }
 
     @Override
@@ -66,9 +66,9 @@ public class ImbuedBranchRecipeCategory implements IRecipeCategory<ImbuedBranchR
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, ImbuedBranchRecipe recipe, IFocusGroup focuses) {
-        ItemStack root = recipe.getColoredBranch();
+        ItemStack branch = recipe.getColoredBranch();
         ItemStack generated = recipe.getOutput();
-        builder.addSlot(RecipeIngredientRole.INPUT, 33, 33).addItemStack(root);
+        builder.addSlot(RecipeIngredientRole.INPUT, 33, 33).addItemStack(branch);
         builder.addSlot(RecipeIngredientRole.OUTPUT, 121, 33).addItemStack(generated);
     }
 }

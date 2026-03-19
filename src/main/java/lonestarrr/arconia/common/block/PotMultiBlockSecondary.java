@@ -92,7 +92,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
             ItemStack resource = ColoredBranch.getResourceItem(itemUsed);
 
             if (resource.isEmpty()) {
-                /* Players can remove treasure being extracted by using a single non-imbued root in their main hand.
+                /* Players can remove treasure being extracted by using a single non-imbued branch in their main hand.
                  * An item in the off-hand can be used to remove specific treasure.
                  */
                 ItemStack offhandItem = player.getOffhandItem();
@@ -113,16 +113,16 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
                     player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_not_found"));
                     return ItemInteractionResult.FAIL;
                 } else {
-                    ItemStack root = makeImbuedRootFromItem((ColoredBranch)itemUsed.getItem(), removedResource);
+                    ItemStack branch = makeImbuedBranchFromItem((ColoredBranch)itemUsed.getItem(), removedResource);
                     itemUsed.shrink(1);
-                    if (!player.getInventory().add(root)) {
-                        player.drop(root, false);
+                    if (!player.getInventory().add(branch)) {
+                        player.drop(branch, false);
                     }
                     player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_success", removedResource.getItem().getDescription()));
                     return ItemInteractionResult.SUCCESS;
                 }
             } else {
-                // Using an imbued root on the pot tells it to extract treasure
+                // Using an imbued branch on the pot tells it to extract treasure
                 if (!primaryBE.addResourceGenerated(resource)) {
                     player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_full"));
                     return ItemInteractionResult.FAIL;
@@ -137,14 +137,14 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
-    private ItemStack makeImbuedRootFromItem(ColoredBranch root, ItemStack resource) {
-        /* This allows treasure to be set on any color root, but that is ok. The difficulty lies in imbuing the root
+    private ItemStack makeImbuedBranchFromItem(ColoredBranch branch, ItemStack resource) {
+        /* This allows treasure to be set on any color branch, but that is ok. The difficulty lies in imbuing the branch
          * for the first time, which is what gates the more difficult treasure.
          */
         RainbowColor tier = RainbowColor.RED;
-        ItemStack rootStack = new ItemStack(root);
-        ColoredBranch.setResourceItem(rootStack, resource);
-        return rootStack;
+        ItemStack branchStack = new ItemStack(branch);
+        ColoredBranch.setResourceItem(branchStack, resource);
+        return branchStack;
     }
 
     @Override

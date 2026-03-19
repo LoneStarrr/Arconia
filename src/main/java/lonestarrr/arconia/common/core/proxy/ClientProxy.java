@@ -3,7 +3,7 @@ package lonestarrr.arconia.common.core.proxy;
 import lonestarrr.arconia.client.core.handler.BlockEntityRendererHandler;
 import lonestarrr.arconia.client.core.handler.ColorHandler;
 import lonestarrr.arconia.client.effects.PotItemTransfers;
-import lonestarrr.arconia.client.gui.render.RootItemRenderer;
+import lonestarrr.arconia.client.gui.render.BranchItemRenderer;
 import lonestarrr.arconia.client.particle.ModParticles;
 import lonestarrr.arconia.client.particle.custom.RainbowParticles;
 import lonestarrr.arconia.common.Arconia;
@@ -54,18 +54,18 @@ public class ClientProxy implements IProxy {
     }
 
     private void loadAdditionalModels(ModelEvent.RegisterAdditional event) {
-        // Tree roots are dynamically rendered, and need a baked (item) model, not associated with any item object, to
-        // represent the actual tree root.
+        // Tree branches are dynamically rendered, and need a baked (item) model, not associated with any item object, to
+        // represent the actual tree branch.
         // Alternatively, one could use a dummy item as well and forego the custom baked model route.
-        event.register(RootItemRenderer.TREE_ROOT_BASE_MODEL);
+        event.register(BranchItemRenderer.TREE_BRANCH_BASE_MODEL);
     }
 
     private void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        // Custom renderer for imbued tree roots
+        // Custom renderer for imbued tree branches
         event.registerItem(
                 new IClientItemExtensions() {
 
-                    private final BlockEntityWithoutLevelRenderer renderer = new RootItemRenderer();
+                    private final BlockEntityWithoutLevelRenderer renderer = new BranchItemRenderer();
 
                     @NotNull
                     @Override
