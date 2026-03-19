@@ -1,17 +1,14 @@
 package lonestarrr.arconia.data.loot;
 
-import com.mojang.datafixers.kinds.Const;
 import lonestarrr.arconia.common.block.ArconiumTreeLeaves;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
@@ -120,7 +117,7 @@ public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
                                 .setRolls(ConstantValue.exactly(1.0F))
                                 .when(HAS_SHEARS.or(this.hasSilkTouch()).invert())
                                 .add(
-                                        ((LootPoolSingletonContainer.Builder)this.applyExplosionCondition(pLeaves, LootItem.lootTableItem(ModItems.getColoredRoot(leaves.getTier()))))
+                                        ((LootPoolSingletonContainer.Builder)this.applyExplosionCondition(pLeaves, LootItem.lootTableItem(ModItems.getColoredBranch(leaves.getTier()))))
                                                 .when(BonusLevelTableCondition.bonusLevelFlatChance(registrylookup.getOrThrow(Enchantments.FORTUNE), COLORED_STICK_CHANCES))
                                 )
                 );

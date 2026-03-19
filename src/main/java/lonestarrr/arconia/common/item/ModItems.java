@@ -24,7 +24,7 @@ public final class ModItems {
     public static final DeferredItem<Item> magicInABottle = ITEMS.register(ItemNames.MAGIC_IN_A_BOTTLE, () -> new MagicInABottle(defaultBuilder()));
 
     private static final Map<RainbowColor, DeferredItem<ArconiumEssence>> arconiumEssences = new HashMap<>();
-    private static final Map<RainbowColor, DeferredItem<ColoredRoot>> coloredRoots = new HashMap<>();
+    private static final Map<RainbowColor, DeferredItem<ColoredBranch>> coloredBranches = new HashMap<>();
     private static final Map<RainbowColor, DeferredItem<Item>> arconiumIngots = new HashMap<>();
 
     private static final Map<RainbowColor, DeferredItem<Item>> arconiumSickles = new HashMap<>();
@@ -39,7 +39,7 @@ public final class ModItems {
 
         for (RainbowColor tier: RainbowColor.values()) {
             arconiumEssences.put(tier, ITEMS.register(tier.getTierName() + ItemNames.ARCONIUM_ESSENCE_SUFFIX, () -> new ArconiumEssence(builder, tier)));
-            coloredRoots.put(tier, ITEMS.register(tier.getTierName() + ItemNames.COLORED_TREE_ROOT_SUFFIX, () -> new ColoredRoot(builder, tier)));
+            coloredBranches.put(tier, ITEMS.register(tier.getTierName() + ItemNames.COLORED_TREE_BRANCH_SUFFIX, () -> new ColoredBranch(builder, tier)));
             arconiumIngots.put(tier, ITEMS.registerSimpleItem(tier.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX));
         }
 
@@ -66,7 +66,7 @@ public final class ModItems {
             event.accept(threeLeafClover.get());
             for (RainbowColor color : RainbowColor.values()) {
                 event.accept(arconiumEssences.get(color).get());
-                event.accept(coloredRoots.get(color).get());
+                event.accept(coloredBranches.get(color).get());
                 event.accept(arconiumIngots.get(color).get());
             }
         }
@@ -85,7 +85,7 @@ public final class ModItems {
 
     public static DeferredItem<Item> getArconiumSickle(RainbowColor tier) { return arconiumSickles.get(tier); }
 
-    public static DeferredItem<ColoredRoot> getColoredRoot(RainbowColor tier) {
-        return coloredRoots.get(tier);
+    public static DeferredItem<ColoredBranch> getColoredBranch(RainbowColor tier) {
+        return coloredBranches.get(tier);
     }
 }

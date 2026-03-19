@@ -6,8 +6,7 @@ import lonestarrr.arconia.common.block.entities.ModBlockEntities;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockSecondaryBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.item.ColoredRoot;
-import lonestarrr.arconia.common.item.ModItems;
+import lonestarrr.arconia.common.item.ColoredBranch;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -127,7 +126,7 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
 
         // Drop the resources set on the pot as enchanted roots
         for(ItemStack stack: primaryBlockEntity.getGeneratedResources()) {
-            ItemStack root = ColoredRoot.getColoredRootWithResource(RainbowColor.RED, stack);
+            ItemStack root = ColoredBranch.getColoredBranchWithResource(RainbowColor.RED, stack);
             Block.popResource(world, primaryPos.above(2), root);
         }
 

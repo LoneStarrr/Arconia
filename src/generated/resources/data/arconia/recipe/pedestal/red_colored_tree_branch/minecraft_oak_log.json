@@ -1,0 +1,45 @@
+{
+  "type": "arconia:pedestal",
+  "durationTicks": 60,
+  "ingredients": [
+    {
+      "item": "arconia:red_arconium_ingot"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "minecraft:oak_log"
+    },
+    {
+      "item": "minecraft:oak_log"
+    },
+    {
+      "item": "minecraft:oak_log"
+    },
+    {
+      "item": "minecraft:oak_sapling"
+    },
+    {
+      "item": "minecraft:stone_axe"
+    },
+    {
+      "item": "arconia:red_colored_tree_branch"
+    }
+  ],
+  "output": {
+    "components": {
+      "minecraft:container": [
+        {
+          "item": {
+            "count": 1,
+            "id": "minecraft:oak_log"
+          },
+          "slot": 0
+        }
+      ]
+    },
+    "count": 1,
+    "id": "arconia:red_colored_tree_branch"
+  }
+}

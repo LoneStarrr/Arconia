@@ -1,0 +1,45 @@
+{
+  "type": "arconia:pedestal",
+  "durationTicks": 60,
+  "ingredients": [
+    {
+      "item": "arconia:yellow_arconium_ingot"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "minecraft:beetroot"
+    },
+    {
+      "item": "minecraft:beetroot"
+    },
+    {
+      "item": "minecraft:beetroot"
+    },
+    {
+      "item": "minecraft:iron_hoe"
+    },
+    {
+      "item": "minecraft:water_bucket"
+    },
+    {
+      "item": "arconia:yellow_colored_tree_branch"
+    }
+  ],
+  "output": {
+    "components": {
+      "minecraft:container": [
+        {
+          "item": {
+            "count": 1,
+            "id": "minecraft:beetroot"
+          },
+          "slot": 0
+        }
+      ]
+    },
+    "count": 1,
+    "id": "arconia:yellow_colored_tree_branch"
+  }
+}

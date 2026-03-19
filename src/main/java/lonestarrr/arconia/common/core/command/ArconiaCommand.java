@@ -4,7 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import lonestarrr.arconia.common.item.ColoredRoot;
+import lonestarrr.arconia.common.item.ColoredBranch;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -25,9 +25,9 @@ public class ArconiaCommand {
         //   /arconia <subcommand> <subcommand args>
         dispatcher.register(
                 Commands.literal("arconia").then(
-                        Commands.literal("imbue_root").then(
+                        Commands.literal("imbue_branch").then(
                                 Commands.argument("item_id", ItemArgument.item(context))
-                                            .executes(ctx -> enchantRoot(
+                                            .executes(ctx -> imbueBranch(
                                                             ctx,
                                                             ItemArgument.getItem(ctx, "item_id")
                                                     )
@@ -37,20 +37,20 @@ public class ArconiaCommand {
         );
     }
 
-    private static int enchantRoot(
+    private static int imbueBranch(
             CommandContext<CommandSourceStack> ctx, ItemInput itemInput) throws CommandSyntaxException {
         Player player = ctx.getSource().getPlayerOrException();
         Item resourceItem = itemInput.getItem();
 
         // Enchant resourceItem in player's hand
-        ItemStack rootItem = player.getInventory().getSelected();
-        if (rootItem.isEmpty() || !(rootItem.getItem() instanceof ColoredRoot)) {
-            player.sendSystemMessage(Component.literal("A colored root is expected in your active hotbar slot for this to work"));
+        ItemStack branchItem = player.getInventory().getSelected();
+        if (branchItem.isEmpty() || !(branchItem.getItem() instanceof ColoredBranch)) {
+            player.sendSystemMessage(Component.literal("A colored branch is expected in your active hotbar slot for this to work"));
             return Command.SINGLE_SUCCESS;
         }
 
-        ColoredRoot.setResourceItem(rootItem, new ItemStack(resourceItem));
-        player.sendSystemMessage(Component.literal("Imbued the colored root with resourceItem " + BuiltInRegistries.ITEM.getKey(resourceItem).toString()));
+        ColoredBranch.setResourceItem(branchItem, new ItemStack(resourceItem));
+        player.sendSystemMessage(Component.literal("Imbued the colored branch with resourceItem " + BuiltInRegistries.ITEM.getKey(resourceItem).toString()));
         return Command.SINGLE_SUCCESS;
     }
 }

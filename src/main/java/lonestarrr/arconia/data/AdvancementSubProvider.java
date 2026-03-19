@@ -1,15 +1,13 @@
 package lonestarrr.arconia.data;
 
-import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.advancements.ModCriteriaTriggers;
 import lonestarrr.arconia.common.advancements.PotOfGoldTrigger;
 import lonestarrr.arconia.common.advancements.TouchGrassTrigger;
 import lonestarrr.arconia.common.block.ModBlocks;
-import lonestarrr.arconia.common.components.ModDataComponents;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.PatchouliHelper;
 import lonestarrr.arconia.common.core.helper.ResourceLocationHelper;
-import lonestarrr.arconia.common.item.ColoredRoot;
+import lonestarrr.arconia.common.item.ColoredBranch;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
@@ -19,16 +17,12 @@ import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.common.util.FakePlayer;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -60,19 +54,19 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                 )
                 .save(saver, ResourceLocationHelper.prefix("root"), existingFileHelper);
 
-        AdvancementHolder redRoot = Advancement.Builder.advancement()
-                .addCriterion("red_tree_root", InventoryChangeTrigger.TriggerInstance
-                        .hasItems(ModItems.getColoredRoot(RainbowColor.RED)))
+        AdvancementHolder redBranch = Advancement.Builder.advancement()
+                .addCriterion("red_tree_branch", InventoryChangeTrigger.TriggerInstance
+                        .hasItems(ModItems.getColoredBranch(RainbowColor.RED)))
                 .parent(root)
                 .display(
-                        ModItems.getColoredRoot(RainbowColor.RED),
-                        Component.translatable("advancement.arconia.main.red_tree_root.title"),
-                        Component.translatable("advancement.arconia.main.red_tree_root.desc"),
+                        ModItems.getColoredBranch(RainbowColor.RED),
+                        Component.translatable("advancement.arconia.main.red_tree_branch.title"),
+                        Component.translatable("advancement.arconia.main.red_tree_branch.desc"),
                         null,
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("red_tree_root"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("red_tree_branch"), existingFileHelper);
 
         AdvancementHolder pedestal = Advancement.Builder.advancement()
                 .addCriterion("pedestal", InventoryChangeTrigger.TriggerInstance
@@ -130,36 +124,34 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                 )
                 .save(saver, ResourceLocationHelper.prefix("clover_staff"), existingFileHelper);
 
-
-        // This can't be the best way to get an item with a single component, CAN IT?
-        ItemStack coloredRoot = ColoredRoot.getColoredRootWithResource(RainbowColor.RED, new ItemStack(ModItems.getArconiumEssence(RainbowColor.RED).asItem()));
-        AdvancementHolder redRootOfEssence = Advancement.Builder.advancement()
-                .addCriterion("red_root_of_essence", InventoryChangeTrigger.TriggerInstance
+        ItemStack colordBranch = ColoredBranch.getColoredBranchWithResource(RainbowColor.RED, new ItemStack(ModItems.getArconiumEssence(RainbowColor.RED).asItem()));
+        AdvancementHolder redBranchOfEssence = Advancement.Builder.advancement()
+                .addCriterion("red_branch_of_essence", InventoryChangeTrigger.TriggerInstance
                         .hasItems(
                                 ItemPredicate.Builder.item()
-                                        .of(coloredRoot.getItem())
+                                        .of(colordBranch.getItem())
                                         .hasComponents(
                                                 DataComponentPredicate.allOf(
-                                                        (coloredRoot.getComponents().filter(ct -> ct.equals(DataComponents.CONTAINER)))
+                                                        (colordBranch.getComponents().filter(ct -> ct.equals(DataComponents.CONTAINER)))
                                                 )
                                         )
                         )
                 )
                 .parent(centerPedestal)
                 .display(
-                        coloredRoot,
-                        Component.translatable("advancement.arconia.main.red_root_of_essence.title"),
-                        Component.translatable("advancement.arconia.main.red_root_of_essence.desc"),
+                        colordBranch,
+                        Component.translatable("advancement.arconia.main.red_branch_of_essence.title"),
+                        Component.translatable("advancement.arconia.main.red_branch_of_essence.desc"),
                         null,
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("red_root_of_essence"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("red_branch_of_essence"), existingFileHelper);
 
         AdvancementHolder redEssence = Advancement.Builder.advancement()
                 .addCriterion("red_arconium_essence", InventoryChangeTrigger.TriggerInstance
                         .hasItems(ModItems.getArconiumEssence(RainbowColor.RED)))
-                .parent(redRootOfEssence)
+                .parent(redBranchOfEssence)
                 .display(
                         ModItems.getArconiumEssence(RainbowColor.RED),
                         Component.translatable("advancement.arconia.main.red_arconium_essence.title"),
@@ -185,7 +177,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
 
         AdvancementHolder touchGrass = Advancement.Builder.advancement()
                 .addCriterion("touch_grass", ModCriteriaTriggers.TOUCH_GRASS_TRIGGER.get().createCriterion(new TouchGrassTrigger.TriggerInstance(Optional.empty())))
-                .parent(redRoot)
+                .parent(redBranch)
                 .display(
                         ModBlocks.getRainbowGrassBlock(RainbowColor.RED).asItem(),
                         Component.translatable("advancement.arconia.main.touch_grass.title"),

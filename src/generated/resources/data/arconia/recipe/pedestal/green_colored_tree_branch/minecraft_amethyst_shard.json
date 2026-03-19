@@ -1,0 +1,42 @@
+{
+  "type": "arconia:pedestal",
+  "durationTicks": 60,
+  "ingredients": [
+    {
+      "item": "arconia:green_arconium_ingot"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "minecraft:amethyst_block"
+    },
+    {
+      "item": "minecraft:amethyst_block"
+    },
+    {
+      "item": "minecraft:amethyst_block"
+    },
+    {
+      "item": "minecraft:iron_pickaxe"
+    },
+    {
+      "item": "arconia:green_colored_tree_branch"
+    }
+  ],
+  "output": {
+    "components": {
+      "minecraft:container": [
+        {
+          "item": {
+            "count": 1,
+            "id": "minecraft:amethyst_shard"
+          },
+          "slot": 0
+        }
+      ]
+    },
+    "count": 1,
+    "id": "arconia:green_colored_tree_branch"
+  }
+}

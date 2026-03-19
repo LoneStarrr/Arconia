@@ -74,13 +74,13 @@ public class ClientProxy implements IProxy {
                     }
 
                 },
-                ModItems.getColoredRoot(RainbowColor.RED).get(),
-                ModItems.getColoredRoot(RainbowColor.ORANGE).get(),
-                ModItems.getColoredRoot(RainbowColor.YELLOW).get(),
-                ModItems.getColoredRoot(RainbowColor.GREEN).get(),
-                ModItems.getColoredRoot(RainbowColor.LIGHT_BLUE).get(),
-                ModItems.getColoredRoot(RainbowColor.BLUE).get(),
-                ModItems.getColoredRoot(RainbowColor.PURPLE).get()
+                ModItems.getColoredBranch(RainbowColor.RED).get(),
+                ModItems.getColoredBranch(RainbowColor.ORANGE).get(),
+                ModItems.getColoredBranch(RainbowColor.YELLOW).get(),
+                ModItems.getColoredBranch(RainbowColor.GREEN).get(),
+                ModItems.getColoredBranch(RainbowColor.LIGHT_BLUE).get(),
+                ModItems.getColoredBranch(RainbowColor.BLUE).get(),
+                ModItems.getColoredBranch(RainbowColor.PURPLE).get()
         );
     }
 

@@ -44,7 +44,7 @@ public class ModLanguageProvider extends LanguageProvider {
             String colorName = color.getUnlocalizedName();
             add(ModItems.getArconiumEssence(color).get(), colorName + " Arconium Essence");
             add(ModItems.getArconiumIngot(color).get(), colorName + " Arconium Ingot");
-            add(ModItems.getColoredRoot(color).get(), colorName + " Tree Root");
+            add(ModItems.getColoredBranch(color).get(), colorName + " Tree Root");
             add(ModItems.getArconiumSickle(color).get(), colorName + " Arconium Sickle");
         }
     }

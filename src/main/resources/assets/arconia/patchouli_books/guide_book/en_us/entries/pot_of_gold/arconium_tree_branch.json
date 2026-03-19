@@ -1,0 +1,12 @@
+{
+    "name": "Tree branches",
+    "icon": "arconia:red_colored_tree_branch",
+    "category": "arconia:pot_of_gold",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "text": "There are colorful trees to be found in forests, with bright colored leaves with a gold sparkle. Harvesting these gets you colorful tree branches. The leprechauns imbue these to give them special abilities. They can also be used on regular grass to turn the gras into the same color as the branch. This will consume the branch."
+        }
+    ]
+}
+

@@ -1,0 +1,36 @@
+{
+  "type": "arconia:pedestal",
+  "durationTicks": 60,
+  "ingredients": [
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "arconia:four_leaf_clover"
+    },
+    {
+      "item": "arconia:blue_arconium_tree_sapling"
+    },
+    {
+      "item": "minecraft:blue_wool"
+    },
+    {
+      "item": "arconia:blue_colored_tree_branch"
+    }
+  ],
+  "output": {
+    "components": {
+      "minecraft:container": [
+        {
+          "item": {
+            "count": 1,
+            "id": "arconia:blue_arconium_essence"
+          },
+          "slot": 0
+        }
+      ]
+    },
+    "count": 1,
+    "id": "arconia:blue_colored_tree_branch"
+  }
+}
