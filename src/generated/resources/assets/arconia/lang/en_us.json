@@ -1,8 +1,6 @@
 {
   "advancement.arconia.main.blue_arconium_ingot.desc": "Craft a blue arconium ingot",
   "advancement.arconia.main.blue_arconium_ingot.title": "Da Ba Dee",
-  "advancement.arconia.main.branch.desc": "Dig up dirt and find some memoirs",
-  "advancement.arconia.main.branch.title": "Arconia",
   "advancement.arconia.main.center_pedestal.desc": "Craft a center pedestal to perform rituals",
   "advancement.arconia.main.center_pedestal.title": "Let the rituals begin",
   "advancement.arconia.main.clover_staff.desc": "Make a clover staff",
@@ -33,6 +31,8 @@
   "advancement.arconia.main.red_branch_of_essence.title": "Arconium?",
   "advancement.arconia.main.red_tree_branch.desc": "Harvest arconium trees for some branches",
   "advancement.arconia.main.red_tree_branch.title": "Arconium Tree Branch",
+  "advancement.arconia.main.root.desc": "Dig up dirt and find some memoirs",
+  "advancement.arconia.main.root.title": "Arconia",
   "advancement.arconia.main.touch_grass.desc": "Color some grass blocks with tree branches",
   "advancement.arconia.main.touch_grass.title": "Touch Grass",
   "advancement.arconia.main.yellow_arconium_ingot.desc": "Craft a yellow arconium ingot",

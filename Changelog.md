@@ -1,3 +1,15 @@
+# 2.0.0
+
+A 'major' release because item ids for roots (now: branches) has changed.
+
+## Changes
+
+ - Renamed tree roots to tree branches, because that makes a lot more sense given that it's dropping from breaking leaves
+
+## Fixes
+
+ - The /arconia command is now no longer accessible to survival players (oops)
+
 # 1.0.0
 
 This is a major release where item generation logic has been reworked. No longer is item generation infinite, now the pot consumes leaves as fuel. Implemented such that this can be automated using other mods, while manual planting of trees will initially be good enough.

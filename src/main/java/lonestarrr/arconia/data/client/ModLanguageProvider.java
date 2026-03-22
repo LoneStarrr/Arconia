@@ -67,8 +67,8 @@ public class ModLanguageProvider extends LanguageProvider {
 
     private void registerAdvancements() {
         Stream.of(new String[][] {
-                { "advancement.arconia.main.branch.title", "Arconia" },
-                { "advancement.arconia.main.branch.desc", "Dig up dirt and find some memoirs" },
+                { "advancement.arconia.main.root.title", "Arconia" },
+                { "advancement.arconia.main.root.desc", "Dig up dirt and find some memoirs" },
                 { "advancement.arconia.main.four_leaf_clover.title", "Get lucky" },
                 { "advancement.arconia.main.four_leaf_clover.desc", "Find a four-leaf clover" },
                 { "advancement.arconia.main.red_tree_branch.title", "Arconium Tree Branch" },
