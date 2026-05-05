@@ -2,23 +2,45 @@
     "name": "Obtaining treasure",
     "icon": "minecraft:gold_block",
     "category": "arconia:pot_of_gold",
-    "advancement": "arconia:red_root_of_essence",
+    "advancement": "arconia:red_branch_of_essence",
     "pages": [
         {
             "type": "patchouli:text",
-            "text": "If you recall from my diary notes, the pot of gold at the end of the rainbow is not a mere fantasy. I observed leprechauns use it to retrieve bounty that they no doubt stole from unsuspecting travellers, and I think I know how they did this."
+            "text": "If you recall from my diary notes, the pot of gold at the end of the rainbow is not a mere fantasy. I observed leprechauns use it to retrieve bounty that they no doubt stole from unsuspecting travellers, and I figured out exactly how they accomplished this. I will explain how you can do this yourself."
         },
         {
             "type": "patchouli:text",
-            "text": "First, they put a chest near the pot of gold. Then, they would use one or more imbued tree roots on the pot. I wrote an entry about how to imbue those on another page. The root makes the pot dispense a specific desired item. Doing so will visualize that item over the pot, a nifty trick if you ask me."
+            "text": "First, you put a chest near the pot of gold. Then, use one or more imbued tree branches on the pot by right-clicking. Another entry in my notebook explains how to imbue it. Once you've done this, you should see an item appear over the pot. This is the item the pot will extract from the treasure pool. Quite a nifty trick if you ask me. Next, I'll explain how the pot turns nearby tree leaves into fuel."
         },
         {
             "type": "patchouli:text",
-            "text": "You can make the pot stop extracting any one of its items by clicking it with a non-imbued root and an empty offhand. If there are multiple items being extracted, you can remove a specific item by putting it in your offhand along with the non-imbued root in your main hand. In either case, you will get an imbued root back for that item."
+            "text": "The pot will search for nearby trees. Not just any trees, they have to be one of the colorful trees that you have previously obtained the branches  from. The trees need to be grown on very specific locations. I've included a picture that shows all eight possible locations in a 15 by 15 area around the pot. Each tree needs to be surrounded by colored grass, which you can make by using a tree branch on regular grass. You only need one tree to start."
+        },
+        {
+            "type": "patchouli:image",
+            "images": ["arconia:textures/gui/guide_book/potofgold_redtrees.png"],
+            "title": "All 8 tree locations",
+            "border": true,
+            "text": "Trees can be placed where podzol is shown."
+        },
+        {
+            "type": "patchouli:image",
+            "images": ["arconia:textures/gui/guide_book/potofgold_redtrees2.png"],
+            "title": "Pot with red trees",
+            "border": true,
+            "text": "Four of the eight possible positions are occupied by trees here."
         },
         {
             "type": "patchouli:text",
-            "text": "I also noticed that if the greedy little critters pulled too much treasure, and the chest would fill up, black smoke particles would show above the pot. The lack of a nearby chest seemed to have the same effect."
+            "text": "If you placed the tree correctly and surrounded it with 8 grass blocks of the same color, the pot will eat all the leaves rapidly, including the trunk. You can now replant a sapling in the same spot. The red trees will last a while as the pot only slowly produces items initially. You can place more trees in the other 7 spots, and they will be consumed once the pot runs out of fuel. The trees can be planted at the same height of the pot, or one level lower or higher."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "You can make the pot stop extracting any one of its items by clicking it with a non-imbued branch and an empty offhand. If there are multiple items being extracted, you can remove a specific item by putting it in your offhand along with the non-imbued branch in your main hand. In either case, you will get an imbued branch back for that item."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "If items can't be stored in the chest, you will see a chest over the pot. If no chest is nearby, a chest with a red cross will be shown. If the pot ran out of fuel, it will display a leaves block, urging you to replant a tree."
         }
     ]
 }

@@ -1,7 +1,6 @@
 package lonestarrr.arconia.common.block;
 
 import lonestarrr.arconia.common.core.RainbowColor;
-import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.GrassBlock;
@@ -12,7 +11,7 @@ import net.minecraft.world.level.material.MapColor;
 
 import javax.annotation.Nullable;
 
-public class RainbowGrassBlock extends GrassBlock implements BlockColor {
+public class RainbowGrassBlock extends GrassBlock {
     private RainbowColor tier;
 
     public RainbowGrassBlock(RainbowColor color) {
@@ -23,13 +22,4 @@ public class RainbowGrassBlock extends GrassBlock implements BlockColor {
     public RainbowColor getTier() {
         return tier;
     }
-
-
-    @Override
-    public int getColor(
-            BlockState blockState, @Nullable BlockAndTintGetter iBlockDisplayReader, @Nullable BlockPos blockPos, int tintIndex) {
-        // Colors are not dependent on tint index, but on rainbow tier (though may use tintIndex later for less saturated versions)
-        return tier.getColorValue();
-    }
-
 }

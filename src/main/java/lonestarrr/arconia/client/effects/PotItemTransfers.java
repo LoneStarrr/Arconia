@@ -21,8 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Renders animations of items being flung out of a pot of gold into hats collecting the item
- * TODO This is a straight up copy of OrbLasers - do I want to get rid of that, or keep it and abstract out the shared logic?
+ * Renders animation of items being flung
  */
 public class PotItemTransfers {
     private static final Set<ItemTransfer> transfers = new HashSet<>();

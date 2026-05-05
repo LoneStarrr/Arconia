@@ -1,14 +1,8 @@
 {
   "values": [
-    "minecraft:forest",
-    "minecraft:flower_forest",
-    "minecraft:birch_forest",
-    "minecraft:old_growth_birch_forest",
-    "minecraft:old_growth_pine_taiga",
-    "minecraft:old_growth_spruce_taiga",
-    "minecraft:taiga",
-    "minecraft:jungle",
-    "minecraft:savanna",
-    "minecraft:windswept_forest"
+    "#c:is_tree/deciduous",
+    "#c:is_tree/coniferous",
+    "#c:is_tree/jungle",
+    "#c:is_old_growth"
   ]
 }

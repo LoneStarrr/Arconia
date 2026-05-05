@@ -6,12 +6,12 @@
     "pages": [
         {
             "type": "patchouli:text",
-            "text": "I witnessed the Leprechauns use the clover staff for various different purposes. Most interestingly, they would break clover with it to get more of the four-leaf clovers."
+            "text": "The clover staff is used for various functions in Arconia. Most importantly, using it to break clovers increases your odds of getting four-leaf clovers. Enchanting it with fortune even more so."
         },
         {
             "type": "patchouli:crafting",
             "recipe": "arconia:clover_staff",
-            "text": "The staff is used for various purposes that I have detailed in other notes. I definitely need to make one of these."
+            "text": "I definitely need to make one of these. Did I mention the increased four-leaf clover drop chance?"
         }
     ]
 }

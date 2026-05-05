@@ -4,14 +4,12 @@ import com.mojang.serialization.MapCodec;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockPrimaryBlockEntity;
 import lonestarrr.arconia.common.block.entities.PotMultiBlockSecondaryBlockEntity;
 import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.item.ColoredRoot;
-import lonestarrr.arconia.common.item.ModItems;
+import lonestarrr.arconia.common.item.ColoredBranch;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -90,11 +88,11 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
                 player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.show_tier", potTier.getTierName()));
             }
             return ItemInteractionResult.SUCCESS;
-        } else if (itemUsed.getItem() instanceof ColoredRoot) {
-            ItemStack resource = ColoredRoot.getResourceItem(itemUsed);
+        } else if (itemUsed.getItem() instanceof ColoredBranch) {
+            ItemStack resource = ColoredBranch.getResourceItem(itemUsed);
 
             if (resource.isEmpty()) {
-                /* Players can remove treasure being extracted by using a single non-imbued root in their main hand.
+                /* Players can remove treasure being extracted by using a single non-imbued branch in their main hand.
                  * An item in the off-hand can be used to remove specific treasure.
                  */
                 ItemStack offhandItem = player.getOffhandItem();
@@ -115,22 +113,21 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
                     player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_not_found"));
                     return ItemInteractionResult.FAIL;
                 } else {
-                    ItemStack root = makeImbuedRootFromItem((ColoredRoot)itemUsed.getItem(), removedResource);
+                    ItemStack branch = makeImbuedBranchFromItem((ColoredBranch)itemUsed.getItem(), removedResource);
                     itemUsed.shrink(1);
-                    if (!player.getInventory().add(root)) {
-                        player.drop(root, false);
+                    if (!player.getInventory().add(branch)) {
+                        player.drop(branch, false);
                     }
                     player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_success", removedResource.getItem().getDescription()));
                     return ItemInteractionResult.SUCCESS;
                 }
             } else {
-                // Using an imbued root on the pot tells it to extract treasure
+                // Using an imbued branch on the pot tells it to extract treasure
                 if (!primaryBE.addResourceGenerated(resource)) {
                     player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_full"));
                     return ItemInteractionResult.FAIL;
                 } else {
                     itemUsed.shrink(1);
-                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_success"));
                     return ItemInteractionResult.SUCCESS;
                 }
             }
@@ -140,14 +137,14 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
-    private ItemStack makeImbuedRootFromItem(ColoredRoot root, ItemStack resource) {
-        /* This allows treasure to be set on any color root, but that is ok. The difficulty lies in imbuing the root
+    private ItemStack makeImbuedBranchFromItem(ColoredBranch branch, ItemStack resource) {
+        /* This allows treasure to be set on any color branch, but that is ok. The difficulty lies in imbuing the branch
          * for the first time, which is what gates the more difficult treasure.
          */
         RainbowColor tier = RainbowColor.RED;
-        ItemStack rootStack = new ItemStack(root);
-        ColoredRoot.setResourceItem(rootStack, resource);
-        return rootStack;
+        ItemStack branchStack = new ItemStack(branch);
+        ColoredBranch.setResourceItem(branchStack, resource);
+        return branchStack;
     }
 
     @Override

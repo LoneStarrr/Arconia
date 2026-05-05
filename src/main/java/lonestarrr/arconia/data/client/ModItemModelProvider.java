@@ -3,7 +3,7 @@ package lonestarrr.arconia.data.client;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ArconiumEssence;
-import lonestarrr.arconia.common.item.ColoredRoot;
+import lonestarrr.arconia.common.item.ColoredBranch;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
@@ -28,7 +28,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         registerArconiumIngots();
         registerArconiumEssence();
         registerArconiumSickles();
-        registerTreeRoots();
+        registerTreeBranches();
     }
 
     private void registerArconiumIngots() {
@@ -71,14 +71,21 @@ public class ModItemModelProvider extends ItemModelProvider {
         }
     }
 
-    private void registerTreeRoots() {
-        // All tree roots share a single model. Layer0 is dynamically colored based on tier.
-        final String modelName = "item/colored_tree_root";
-        withExistingParent(modelName, GENERATED)
-                .texture("layer0", prefix("item/colored_tree_root"));
+    private void registerTreeBranches() {
+        // Tree Branches are dynamically rendered because they display the item they are imbued with, which needs to be
+        // done dynamically. The dynamic renderer makes use of an item model that is separately defined to render the
+        // base 'branch' object
+        final String baseBranchModelName = "item/tree_branch_base";
+        withExistingParent(baseBranchModelName, GENERATED)
+            .texture("layer0", prefix("item/colored_tree_branch"));
+
+        // The tree branches themselves share a single dynamic model.
+        // This is defined in a static json file because it uses builtin/entity as the "model" which can't be
+        // data-generated.
+        final String modelName = "item/colored_tree_branch";
 
         for (RainbowColor color: RainbowColor.values()) {
-            Supplier<ColoredRoot> item = ModItems.getColoredRoot(color);
+            Supplier<ColoredBranch> item = ModItems.getColoredBranch(color);
             String name = BuiltInRegistries.ITEM.getKey(item.get()).getPath();
 
             withExistingParent(name, prefix(modelName));

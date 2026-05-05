@@ -3,7 +3,7 @@ package lonestarrr.arconia.client.core.handler;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.*;
 import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.item.ColoredRoot;
+import lonestarrr.arconia.common.item.ColoredBranch;
 import lonestarrr.arconia.common.item.MagicInABottle;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.client.color.block.BlockColors;
@@ -23,25 +23,32 @@ public class ColorHandler {
 
     public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
         Arconia.logger.info("***** registerBlockColors");
-
         BlockColors colorBlocks = event.getBlockColors();
 
         // Gleaned from minecraft's ItemColors
         for (RainbowColor tier : RainbowColor.values()) {
             // Tree leaves
             ArconiumTreeLeaves treeLeaf = ModBlocks.getArconiumTreeLeaves(tier).get();
-            event.register(treeLeaf, treeLeaf);
+            colorBlocks.register((state, level, pos, tintIndex) -> {
+                return tier.getColorValue();
+            }, treeLeaf);
 
             // Tree saplings
             ArconiumTreeSapling treeSapling = ModBlocks.getArconiumTreeSapling(tier).get();
-            colorBlocks.register(treeSapling, treeSapling);
+            colorBlocks.register((state, level, pos, tintIndex) -> {
+                return tier.getColorValue();
+            }, treeSapling);
 
             // Arconium blocks
             ArconiumBlock arconiumBlock = ModBlocks.getArconiumBlock(tier).get();
-            colorBlocks.register(arconiumBlock, arconiumBlock);
+            colorBlocks.register((state, level, pos, tintIndex) -> {
+                return tier.getColorValue();
+            }, arconiumBlock);
 
             RainbowGrassBlock grassBlock = ModBlocks.getRainbowGrassBlock(tier).get();
-            colorBlocks.register(grassBlock, grassBlock);
+            colorBlocks.register((state, level, pos, tintIndex) -> {
+                return tier.getColorValue();
+            }, grassBlock);
         }
     }
 
@@ -97,10 +104,11 @@ public class ColorHandler {
                 return blockColors.getColor(blockstate, (BlockAndTintGetter) null, (BlockPos) null, layer);
             }, Item.byBlock(arconiumBlock));
 
-            // Colored tree roots
+            // Colored tree branches
+            // Surprisingly, this still works after adding a custom renderer
             itemColors.register((stack, layer) -> {
-                return ((ColoredRoot) (stack.getItem())).getTier().getColorValue();
-            }, ModItems.getColoredRoot(tier).get());
+                return ((ColoredBranch) (stack.getItem())).getTier().getColorValue();
+            }, ModItems.getColoredBranch(tier).get());
 
             // Colored arconium essence
             itemColors.register((stack, layer) -> {

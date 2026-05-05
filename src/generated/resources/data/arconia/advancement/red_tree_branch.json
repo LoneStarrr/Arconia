@@ -1,0 +1,33 @@
+{
+  "parent": "arconia:root",
+  "criteria": {
+    "red_tree_branch": {
+      "conditions": {
+        "items": [
+          {
+            "items": "arconia:red_colored_tree_branch"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.arconia.main.red_tree_branch.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "arconia:red_colored_tree_branch"
+    },
+    "title": {
+      "translate": "advancement.arconia.main.red_tree_branch.title"
+    }
+  },
+  "requirements": [
+    [
+      "red_tree_branch"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

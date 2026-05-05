@@ -1,3 +1,53 @@
+# 2.0.0
+
+A 'major' release because item ids for roots (now: branches) has changed.
+
+## Changes
+
+ - Renamed tree roots to tree branches, because that makes a lot more sense given that it's dropping from breaking leaves
+
+## Fixes
+
+ - The /arconia command is now no longer accessible to survival players (oops)
+
+# 1.0.0
+
+This is a major release where item generation logic has been reworked. No longer is item generation infinite, now the pot consumes leaves as fuel. Implemented such that this can be automated using other mods, while manual planting of trees will initially be good enough.
+
+## Fixes
+
+ - Savannah biomes now also grow clovers again
+
+## Changes
+
+ - The pot of gold now needs to consume Arconium tree leaves as fuel to generate items. It will consume the leaves of the highest tier tree planted nearby. This also determines the tier at which the pot operates.
+ - If there are also trees of lower tier colors present, they will increase the odds of pulling more treasure from the pot. This is visualized by rotating leaves around the pot for each color found.
+ - The pot visualizes the reason why items aren't being extracted by showing a relevant item on top
+ - The pot visualizes which tier it is by showing rainbow-shaped particles at its base of the detected color.
+ - Configuration changed, so existing config files will have to be updated (or removed) 
+ - Notebook updated and reworked some pages 
+
+# 0.2.1
+
+## Fixes
+
+ - Removed dependencies on client side when running on a server
+
+## Changes
+
+ - Switch from NeoGradle to ModDevGradle plugin
+
+# 0.2.0
+
+## Fixes
+
+ - Use neoforge tag sets to determine biomes in which to place clovers and trees, which should also cover modded biomes
+
+## Changes
+
+ - Imbued tree roots now visually show the item they are imbued with
+ - The clover staff can now be enchanted with fortune for increased four-leaf clover drops. With fortune level 3, you will get a four-leaf clover every time
+
 # 0.1.0
 
 ## Fixes

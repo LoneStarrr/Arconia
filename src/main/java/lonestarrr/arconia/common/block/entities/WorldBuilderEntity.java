@@ -8,14 +8,12 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import lonestarrr.arconia.common.Arconia;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -35,6 +33,8 @@ import java.util.*;
 public class WorldBuilderEntity extends BaseBlockEntity {
     private static DistributionTable distributionTable;
 
+    // TODO this is very much not the way to do this, rather use AddReloadListenerEvent ?
+    private static final InputStream stream = WorldBuilderEntity.class.getResourceAsStream("/data/arconia/world_builder/world_builder.json");
     private int blocksPerTick = 2; // How many blocks may be converted per game tick?
     private int blockRadiusHorizontal = 3;
     private int blockLevels = 7; // This many vertical levels to convert, starting with the level directly below the builder
@@ -183,9 +183,7 @@ public class WorldBuilderEntity extends BaseBlockEntity {
      */
     public static void loadDistributionTables() throws IOException {
         Arconia.logger.info("***** Loading distribution tables for world builder");
-        ResourceLocation tableResource = prefix("world_builder/world_builder.json");
-        InputStream in = Minecraft.getInstance().getResourceManager().getResource(tableResource).get().open();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         // Apparently you can't tell gson to throw an exception if it encounters an unknown field. wtf.
         Gson gson = new Gson();
         distributionTable = gson.fromJson(reader, DistributionTable.class);

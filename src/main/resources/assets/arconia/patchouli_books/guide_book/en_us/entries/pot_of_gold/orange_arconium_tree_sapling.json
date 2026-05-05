@@ -4,7 +4,14 @@
     "category": "arconia:pot_of_gold",
     "advancement": "arconia:red_arconium_sickle",
     "pages": [
-	"Harvesting leaves with a sickle of the same color seems to occasionally produce tree saplings of a different color. Planting and growing those should prove to be useful for obtaining further resources."
+        {
+            "type": "patchouli:text",
+            "text": "Items pulled from the pot of gold using red tree branches are rather plain. Your keen eye may have noticed that more advanced items require branches with a different color. However, only red trees naturally grow in the wild. Upon observing the leprechauns, I have learned that they were able to obtain tree saplings with a different color."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "By harvesting tree leaves with a sickle made from arconium ingots of the same color as the leaves, sometimes the leaves will drop saplings of a different color."
+        }
     ]
 }
 
