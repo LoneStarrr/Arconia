@@ -14,45 +14,47 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.common.data.AdvancementProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class AdvancementSubProvider implements AdvancementProvider.AdvancementGenerator {
+public class AdvancementSubProvider implements net.minecraft.data.advancements.AdvancementSubProvider {
     @Override
-    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver) {
+        HolderGetter<Item> items = registries.lookupOrThrow(Registries.ITEM);
         ItemStack guideBook = PatchouliHelper.createGuideBook();
-        // This can't be the best way to get an item with a single component, CAN IT?
+        // When Patchouli isn't on the classpath the guide book stack is empty (its Item resolves to
+        // air). 1.21.4's advancement validation rejects air-icon advancements outright, so fall back
+        // to the four-leaf clover as the visible icon and as the inventory-change criterion's match
+        // — players will still be able to "discover" the root advancement via that item.
+        ItemStack rootIcon = guideBook.isEmpty() ? new ItemStack(ModItems.fourLeafClover.get()) : guideBook;
+        ItemPredicate.Builder rootCriterion = guideBook.isEmpty()
+                ? ItemPredicate.Builder.item().of(items, ModItems.fourLeafClover.get())
+                : ItemPredicate.Builder.item()
+                        .of(items, guideBook.getItem())
+                        .hasComponents(DataComponentPredicate.allOf(
+                                guideBook.getComponents().filter(ct -> ct.equals(PatchouliHelper.patchouliGuideBookComponent()))));
         AdvancementHolder root = Advancement.Builder.advancement()
-                .addCriterion("guide_book", InventoryChangeTrigger.TriggerInstance
-                        .hasItems(
-                                ItemPredicate.Builder.item()
-                                        .of(guideBook.getItem())
-                                        .hasComponents(
-                                                DataComponentPredicate.allOf(
-                                                        (guideBook.getComponents().filter(ct -> ct.equals(PatchouliHelper.patchouliGuideBookComponent())))
-                                                )
-                                        )
-                        )
-                )
+                .addCriterion("guide_book", InventoryChangeTrigger.TriggerInstance.hasItems(rootCriterion))
                 .display(
-                        guideBook,
+                        rootIcon,
                         Component.translatable("advancement.arconia.main.root.title"),
                         Component.translatable("advancement.arconia.main.root.desc"),
                         ResourceLocation.withDefaultNamespace("textures/block/stripped_oak_log.png"),
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("root"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("root"));
 
         AdvancementHolder redBranch = Advancement.Builder.advancement()
                 .addCriterion("red_tree_branch", InventoryChangeTrigger.TriggerInstance
@@ -66,7 +68,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("red_tree_branch"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("red_tree_branch"));
 
         AdvancementHolder pedestal = Advancement.Builder.advancement()
                 .addCriterion("pedestal", InventoryChangeTrigger.TriggerInstance
@@ -80,7 +82,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("pedestal"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("pedestal"));
 
         AdvancementHolder centerPedestal = Advancement.Builder.advancement()
                 .addCriterion("center_pedestal", InventoryChangeTrigger.TriggerInstance
@@ -94,7 +96,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("center_pedestal"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("center_pedestal"));
 
         AdvancementHolder fourLeafClover = Advancement.Builder.advancement()
                 .addCriterion("four_leaf_clover", InventoryChangeTrigger.TriggerInstance
@@ -108,7 +110,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("four_leaf_clover"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("four_leaf_clover"));
 
         AdvancementHolder cloverStaff = Advancement.Builder.advancement()
                 .addCriterion("clover_staff", InventoryChangeTrigger.TriggerInstance
@@ -122,14 +124,14 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("clover_staff"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("clover_staff"));
 
         ItemStack colordBranch = ColoredBranch.getColoredBranchWithResource(RainbowColor.RED, new ItemStack(ModItems.getArconiumEssence(RainbowColor.RED).asItem()));
         AdvancementHolder redBranchOfEssence = Advancement.Builder.advancement()
                 .addCriterion("red_branch_of_essence", InventoryChangeTrigger.TriggerInstance
                         .hasItems(
                                 ItemPredicate.Builder.item()
-                                        .of(colordBranch.getItem())
+                                        .of(items, colordBranch.getItem())
                                         .hasComponents(
                                                 DataComponentPredicate.allOf(
                                                         (colordBranch.getComponents().filter(ct -> ct.equals(DataComponents.CONTAINER)))
@@ -146,7 +148,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("red_branch_of_essence"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("red_branch_of_essence"));
 
         AdvancementHolder redEssence = Advancement.Builder.advancement()
                 .addCriterion("red_arconium_essence", InventoryChangeTrigger.TriggerInstance
@@ -160,7 +162,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("red_arconium_essence"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("red_arconium_essence"));
 
         AdvancementHolder potOfGold = Advancement.Builder.advancement()
                 .addCriterion("pot_of_gold", ModCriteriaTriggers.CREATE_POT_OF_GOLD_TRIGGER.get().createCriterion(new PotOfGoldTrigger.TriggerInstance(Optional.empty())))
@@ -173,7 +175,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("pot_of_gold"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("pot_of_gold"));
 
         AdvancementHolder touchGrass = Advancement.Builder.advancement()
                 .addCriterion("touch_grass", ModCriteriaTriggers.TOUCH_GRASS_TRIGGER.get().createCriterion(new TouchGrassTrigger.TriggerInstance(Optional.empty())))
@@ -186,7 +188,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("touch_grass"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("touch_grass"));
 
         AdvancementHolder redIngot = Advancement.Builder.advancement()
                 .addCriterion("red_arconium_ingot", InventoryChangeTrigger.TriggerInstance
@@ -200,7 +202,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.GOAL,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("red_arconium_ingot"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("red_arconium_ingot"));
 
         AdvancementHolder redSickle = Advancement.Builder.advancement()
                 .addCriterion("red_arconium_sickle", InventoryChangeTrigger.TriggerInstance
@@ -214,7 +216,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("red_arconium_sickle"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("red_arconium_sickle"));
 
         AdvancementHolder orangeSapling = Advancement.Builder.advancement()
                 .addCriterion("orange_arconium_tree_sapling", InventoryChangeTrigger.TriggerInstance
@@ -228,7 +230,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("orange_arconium_tree_sapling"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("orange_arconium_tree_sapling"));
 
         AdvancementHolder orangeIngot = Advancement.Builder.advancement()
                 .addCriterion("orange_arconium_ingot", InventoryChangeTrigger.TriggerInstance
@@ -242,7 +244,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("orange_arconium_ingot"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("orange_arconium_ingot"));
 
         AdvancementHolder yellowIngot = Advancement.Builder.advancement()
                 .addCriterion("yellow_arconium_ingot", InventoryChangeTrigger.TriggerInstance
@@ -256,7 +258,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("yellow_arconium_ingot"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("yellow_arconium_ingot"));
 
         AdvancementHolder greenIngot = Advancement.Builder.advancement()
                 .addCriterion("green_arconium_ingot", InventoryChangeTrigger.TriggerInstance
@@ -270,7 +272,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("green_arconium_ingot"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("green_arconium_ingot"));
 
         AdvancementHolder lightBlueIngot = Advancement.Builder.advancement()
                 .addCriterion("light_blue_arconium_ingot", InventoryChangeTrigger.TriggerInstance
@@ -284,7 +286,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("light_blue_arconium_ingot"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("light_blue_arconium_ingot"));
 
         AdvancementHolder blueIngot = Advancement.Builder.advancement()
                 .addCriterion("blue_arconium_ingot", InventoryChangeTrigger.TriggerInstance
@@ -298,7 +300,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.TASK,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("blue_arconium_ingot"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("blue_arconium_ingot"));
 
         AdvancementHolder purpleIngot = Advancement.Builder.advancement()
                 .addCriterion("purple_arconium_ingot", InventoryChangeTrigger.TriggerInstance
@@ -312,7 +314,7 @@ public class AdvancementSubProvider implements AdvancementProvider.AdvancementGe
                         AdvancementType.CHALLENGE,
                         true,true,false
                 )
-                .save(saver, ResourceLocationHelper.prefix("purple_arconium_ingot"), existingFileHelper);
+                .save(saver, ResourceLocationHelper.prefix("purple_arconium_ingot"));
 
     }
 }

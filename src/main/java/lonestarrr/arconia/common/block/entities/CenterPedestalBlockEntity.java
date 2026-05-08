@@ -4,11 +4,11 @@ import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.crafting.ModRecipeTypes;
 import lonestarrr.arconia.common.crafting.PedestalInput;
 import lonestarrr.arconia.common.crafting.PedestalRecipe;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -35,8 +35,11 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     public long ritualStartTime = 0; // not persisted, used only client side to track animation
     public long lastParticleDisplayTime = 0; // not persisted, purely client side
     private ResourceLocation currentRecipeID; // persisted
+    // Cached so the client renderer doesn't need a server-only RecipeManager lookup to compute progress.
+    private int currentRecipeDuration = 0; // persisted
     private long lastTickTime = 0; // Time since last invocation of tick - not persisted
     private final static String TAG_RECIPE = "currentRecipe";
+    private static final String TAG_RECIPE_DURATION = "currentRecipeDuration";
     private static final String TAG_ONGOING = "ritualOngoing";
     private static final String TAG_ELAPSED = "ritualTicksElapsed";
     private static final String TAG_RITUAL_START_TIME = "ritualStartTime";
@@ -73,7 +76,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         if (currentRecipeID == null) {
             return null;
         }
-        Optional<RecipeHolder<?>> recipe = level.getRecipeManager().byKey(currentRecipeID);
+        Optional<RecipeHolder<?>> recipe = level.getServer().getRecipeManager().byKey(ResourceKey.create(Registries.RECIPE, currentRecipeID));
         if (recipe.isPresent() && recipe.get().value() instanceof PedestalRecipe) {
             return (PedestalRecipe)recipe.get().value();
         }
@@ -86,6 +89,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         if (currentRecipeID != null) {
             tag.putString(TAG_RECIPE, currentRecipeID.toString());
         }
+        tag.putInt(TAG_RECIPE_DURATION, currentRecipeDuration);
         tag.putBoolean(TAG_ONGOING, ritualOngoing);
         tag.putFloat(TAG_ELAPSED, ritualTicksElapsed);
     }
@@ -95,6 +99,9 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         super.readPacketNBT(tag, registries);
         if (tag.contains(TAG_RECIPE)) {
             currentRecipeID = ResourceLocation.parse(tag.getString(TAG_RECIPE));
+        }
+        if (tag.contains(TAG_RECIPE_DURATION)) {
+            currentRecipeDuration = tag.getInt(TAG_RECIPE_DURATION);
         }
         if (tag.contains(TAG_ONGOING)) {
             ritualOngoing = tag.getBoolean(TAG_ONGOING);
@@ -134,6 +141,12 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         }
 
         currentRecipeID = recipeId;
+        PedestalRecipe recipe = getCurrentRecipe();
+        if (recipe == null) {
+            currentRecipeID = null;
+            return false;
+        }
+        currentRecipeDuration = recipe.getDurationTicks();
         ritualOngoing = true;
         ritualTicksElapsed = 0;
         setChanged();
@@ -142,18 +155,18 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     }
 
     /**
-     * Cient-side only method (TODO should mark it as such?)
+     * Client-side method used by the renderer. Reads from the synced duration cache rather than
+     * the RecipeManager (which is server-only).
      * @return A non-precise elapsed % of the ongoing ritual
      */
     public float getRitualProgressPercentage() {
-        PedestalRecipe recipe = getCurrentRecipe();
-        if (!isRitualOngoing() || recipe == null) {
+        if (!isRitualOngoing() || currentRecipeDuration <= 0) {
             return 0;
         }
 
         // TODO this also won't work across game restarts
-        return (this.level.getGameTime() - this.ritualStartTime) / (float)recipe.getDurationTicks() * 100f;
-        //return Math.min(100f, this.ritualTicksElapsed / (float)recipe.getDurationTicks() * 100f);
+        return (this.level.getGameTime() - this.ritualStartTime) / (float) currentRecipeDuration * 100f;
+        //return Math.min(100f, this.ritualTicksElapsed / (float) currentRecipeDuration * 100f);
     }
 
     public void completeRitual() {
@@ -189,12 +202,13 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
             return;
         }
 
-        ItemStack output = currentRecipe.getResultItem(Minecraft.getInstance().level.registryAccess()).copy();
+        ItemStack output = currentRecipe.getResultItem(level.registryAccess()).copy();
         this.putItem(output);
     }
 
     private void resetRitual() {
         currentRecipeID = null;
+        currentRecipeDuration = 0;
         ritualOngoing = false;
         ritualTicksElapsed = 0;
         ritualStartTime = 0;
@@ -235,9 +249,8 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     }
 
     private ResourceLocation findRecipe(PedestalInput inv) {
-        Optional<RecipeHolder<PedestalRecipe>> hasRecipe = level.getRecipeManager().getRecipeFor(ModRecipeTypes.PEDESTAL_TYPE.get(), inv, level);
-        return hasRecipe.map(RecipeHolder::id).orElse(null);
-
+        Optional<RecipeHolder<PedestalRecipe>> hasRecipe = level.getServer().getRecipeManager().getRecipeFor(ModRecipeTypes.PEDESTAL_TYPE.get(), inv, level);
+        return hasRecipe.map(h -> h.id().location()).orElse(null);
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, CenterPedestalBlockEntity blockEntity) {

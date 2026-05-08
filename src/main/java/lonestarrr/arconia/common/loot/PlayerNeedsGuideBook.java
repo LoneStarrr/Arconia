@@ -13,8 +13,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
@@ -37,7 +37,7 @@ public class PlayerNeedsGuideBook implements LootItemCondition {
 
     @Override
     public boolean test(LootContext lootContext) {
-        Entity looter = lootContext.getParamOrNull(LootContextParams.THIS_ENTITY);
+        Entity looter = lootContext.getOptionalParameter(LootContextParams.THIS_ENTITY);
         if (!(looter instanceof ServerPlayer) || looter instanceof FakePlayer) {
             return false;
         }
@@ -72,7 +72,7 @@ public class PlayerNeedsGuideBook implements LootItemCondition {
     }
 
     @Override
-    public @NotNull Set<LootContextParam<?>> getReferencedContextParams() {
+    public @NotNull Set<ContextKey<?>> getReferencedContextParams() {
         return ImmutableSet.of(LootContextParams.THIS_ENTITY);
     }
 

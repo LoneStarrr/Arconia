@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -54,8 +54,8 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
 
     public static EnumProperty<PotPosition> POT_POSITION = EnumProperty.create("pot_position", PotPosition.class);
 
-    public PotMultiBlockSecondary() {
-        super(Block.Properties.of().mapColor(MapColor.METAL).strength(4.0F).noOcclusion());
+    public PotMultiBlockSecondary(Block.Properties props) {
+        super(props.mapColor(MapColor.METAL).strength(4.0F).noOcclusion());
         registerDefaultState(this.getStateDefinition().any().setValue(POT_POSITION, PotPosition.CENTER));
     }
 
@@ -65,29 +65,29 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull ItemInteractionResult useItemOn(
+    protected @NotNull InteractionResult useItemOn(
             ItemStack itemUsed, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (world.isClientSide || hand != InteractionHand.MAIN_HAND) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         if (!(player instanceof ServerPlayer) || player instanceof FakePlayer) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         PotMultiBlockPrimaryBlockEntity primaryBE = getPrimaryBlockEntity(world, pos);
         if (primaryBE == null) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         if (itemUsed.isEmpty()) {
             RainbowColor potTier = primaryBE.getTier();
             if (potTier == null) {
-                player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.no_tier"));
+                player.displayClientMessage(Component.translatable("arconia.block.pot_multiblock.no_tier"), false);
             } else {
-                player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.show_tier", potTier.getTierName()));
+                player.displayClientMessage(Component.translatable("arconia.block.pot_multiblock.show_tier", potTier.getTierName()), false);
             }
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         } else if (itemUsed.getItem() instanceof ColoredBranch) {
             ItemStack resource = ColoredBranch.getResourceItem(itemUsed);
 
@@ -101,8 +101,8 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
                     // no offhand item -> pop off the last treasure
                     removedResource = primaryBE.removeResourceGenerated(ItemStack.EMPTY);
                     if (removedResource.isEmpty()) {
-                        player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_none_set"));
-                        return ItemInteractionResult.FAIL;
+                        player.displayClientMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_none_set"), false);
+                        return InteractionResult.FAIL;
                     }
                 } else {
                     // pop off matching treasure if offhand item matches
@@ -110,31 +110,31 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
                 }
 
                 if (removedResource.isEmpty()) {
-                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_not_found"));
-                    return ItemInteractionResult.FAIL;
+                    player.displayClientMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_not_found"), false);
+                    return InteractionResult.FAIL;
                 } else {
                     ItemStack branch = makeImbuedBranchFromItem((ColoredBranch)itemUsed.getItem(), removedResource);
                     itemUsed.shrink(1);
                     if (!player.getInventory().add(branch)) {
                         player.drop(branch, false);
                     }
-                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_success", removedResource.getItem().getDescription()));
-                    return ItemInteractionResult.SUCCESS;
+                    player.displayClientMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_success", removedResource.getHoverName()), false);
+                    return InteractionResult.SUCCESS;
                 }
             } else {
                 // Using an imbued branch on the pot tells it to extract treasure
                 if (!primaryBE.addResourceGenerated(resource)) {
-                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_full"));
-                    return ItemInteractionResult.FAIL;
+                    player.displayClientMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_full"), false);
+                    return InteractionResult.FAIL;
                 } else {
                     itemUsed.shrink(1);
-                    return ItemInteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             }
 
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     private ItemStack makeImbuedBranchFromItem(ColoredBranch branch, ItemStack resource) {
@@ -152,7 +152,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
 
         // inspired by Barrier block
     @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
+    protected boolean propagatesSkylightDown(BlockState state) {
         return true;
     }
 

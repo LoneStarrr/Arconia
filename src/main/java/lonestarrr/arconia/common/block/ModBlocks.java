@@ -23,21 +23,21 @@ public class ModBlocks {
     private static final Map<RainbowColor, DeferredBlock<ArconiumBlock>> arconiumBlocks = new HashMap<>();
     private static final Map<RainbowColor, DeferredBlock<RainbowGrassBlock>> rainbowGrassBlocks = new HashMap<>();
 
-    public static final DeferredBlock<CloverBlock> clover = BLOCKS.register(BlockNames.CLOVER, CloverBlock::new);
-    public static DeferredBlock<Pedestal> pedestal = BLOCKS.register(BlockNames.PEDESTAL, Pedestal::new);
-    public static DeferredBlock<CenterPedestal> centerPedestal = BLOCKS.register(BlockNames.CENTER_PEDESTAL, CenterPedestal::new);
-    public static DeferredBlock<Hat> hat = BLOCKS.register(BlockNames.HAT, Hat::new);
-    public static DeferredBlock<WorldBuilder> worldBuilder = BLOCKS.register(BlockNames.WORLD_BUILDER, WorldBuilder::new);
-    public static DeferredBlock<PotMultiBlockPrimary> potMultiBlockPrimary = BLOCKS.register(BlockNames.POT_MULTIBLOCK_PRIMARY, PotMultiBlockPrimary::new);
-    public static DeferredBlock<PotMultiBlockSecondary> potMultiBlockSecondary = BLOCKS.register(BlockNames.POT_MULTIBLOCK_SECONDARY, PotMultiBlockSecondary::new); //no associated item
+    public static final DeferredBlock<CloverBlock> clover = BLOCKS.registerBlock(BlockNames.CLOVER, CloverBlock::new);
+    public static DeferredBlock<Pedestal> pedestal = BLOCKS.registerBlock(BlockNames.PEDESTAL, Pedestal::new);
+    public static DeferredBlock<CenterPedestal> centerPedestal = BLOCKS.registerBlock(BlockNames.CENTER_PEDESTAL, CenterPedestal::new);
+    public static DeferredBlock<Hat> hat = BLOCKS.registerBlock(BlockNames.HAT, Hat::new);
+    public static DeferredBlock<WorldBuilder> worldBuilder = BLOCKS.registerBlock(BlockNames.WORLD_BUILDER, WorldBuilder::new);
+    public static DeferredBlock<PotMultiBlockPrimary> potMultiBlockPrimary = BLOCKS.registerBlock(BlockNames.POT_MULTIBLOCK_PRIMARY, PotMultiBlockPrimary::new);
+    public static DeferredBlock<PotMultiBlockSecondary> potMultiBlockSecondary = BLOCKS.registerBlock(BlockNames.POT_MULTIBLOCK_SECONDARY, PotMultiBlockSecondary::new); //no associated item
 
     static {
         // RainbowColor tiered colorBlocks
         for (RainbowColor color: RainbowColor.values()) {
-            arconiumTreeLeaves.put(color, BLOCKS.register(color.getTierName() + BlockNames.LEAVES_SUFFIX, () -> new ArconiumTreeLeaves(color)));
-            arconiumTreeSaplings.put(color, BLOCKS.register(color.getTierName() + BlockNames.SAPLING_SUFFIX, () -> new ArconiumTreeSapling(color)));
-            arconiumBlocks.put(color, BLOCKS.register(color.getTierName() + BlockNames.ARCONIUM_BLOCK_SUFFIX, () -> new ArconiumBlock(color)));
-            rainbowGrassBlocks.put(color, BLOCKS.register(color.getTierName() + BlockNames.RAINBOW_GRASS_BLOCK_SUFFIX, () -> new RainbowGrassBlock(color)));
+            arconiumTreeLeaves.put(color, BLOCKS.registerBlock(color.getTierName() + BlockNames.LEAVES_SUFFIX, props -> new ArconiumTreeLeaves(props, color)));
+            arconiumTreeSaplings.put(color, BLOCKS.registerBlock(color.getTierName() + BlockNames.SAPLING_SUFFIX, props -> new ArconiumTreeSapling(props, color)));
+            arconiumBlocks.put(color, BLOCKS.registerBlock(color.getTierName() + BlockNames.ARCONIUM_BLOCK_SUFFIX, props -> new ArconiumBlock(props, color)));
+            rainbowGrassBlocks.put(color, BLOCKS.registerBlock(color.getTierName() + BlockNames.RAINBOW_GRASS_BLOCK_SUFFIX, props -> new RainbowGrassBlock(props, color)));
         }
 
         registerBlockItems();

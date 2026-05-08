@@ -12,7 +12,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -33,6 +32,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.redstone.Orientation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,8 +56,8 @@ public class CenterPedestal extends BaseEntityBlock {
 
     }
 
-    public CenterPedestal() {
-        super(Properties.of().mapColor(MapColor.STONE).strength(1.5F).sound(SoundType.STONE));
+    public CenterPedestal(Properties props) {
+        super(props.mapColor(MapColor.STONE).strength(1.5F).sound(SoundType.STONE));
     }
 
     @Nonnull
@@ -91,11 +91,11 @@ public class CenterPedestal extends BaseEntityBlock {
 
 
     @Override
-    public ItemInteractionResult useItemOn(
+    protected InteractionResult useItemOn(
             ItemStack playerStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult traceResult) {
         CenterPedestalBlockEntity cbe = getBlockEntity(level, pos);
         if (cbe == null) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         if (!cbe.getItemOnDisplay().isEmpty()) {
@@ -103,11 +103,11 @@ public class CenterPedestal extends BaseEntityBlock {
             if (player.addItem(displayedItem)) {
                 cbe.removeItem();
             }
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (playerStack.isEmpty() || playerStack.getItem() != ModItems.cloverStaff.get()) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         if (!level.isClientSide()) {
@@ -115,11 +115,11 @@ public class CenterPedestal extends BaseEntityBlock {
                 if (cbe.startRitual()) {
                     startRitualEffect(level, pos);
                 } else {
-                    player.sendSystemMessage(Component.translatable(LANG_PREFIX + ".ritual_start_failed"));
+                    player.displayClientMessage(Component.translatable(LANG_PREFIX + ".ritual_start_failed"), false);
                 }
             }
         }
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     private static void startRitualEffect(Level level, BlockPos pos) {
@@ -135,7 +135,7 @@ public class CenterPedestal extends BaseEntityBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState blockState, Level level, BlockPos pos, Block block, BlockPos neighbor, boolean p_60514_) {
+    protected void neighborChanged(BlockState blockState, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
         if (!level.isClientSide) {
             // Redstone signal? Let's gooo
             if (level.hasNeighborSignal(pos)) {
@@ -147,6 +147,6 @@ public class CenterPedestal extends BaseEntityBlock {
                 }
             }
         }
-        super.neighborChanged(blockState, level, pos, block, neighbor, p_60514_);
+        super.neighborChanged(blockState, level, pos, block, orientation, movedByPiston);
     }
 }

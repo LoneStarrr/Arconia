@@ -161,7 +161,7 @@ public abstract class LibBlockPattern {
             throw new BlockPatternException("Unknown block: " + blockByName);
         }
 
-        Block block = BuiltInRegistries.BLOCK.get(resourceLocation);
+        Block block = BuiltInRegistries.BLOCK.getValue(resourceLocation);
 
         BlockState blockState = block.defaultBlockState();
         return blockState;

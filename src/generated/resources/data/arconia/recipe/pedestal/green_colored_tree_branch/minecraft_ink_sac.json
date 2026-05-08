@@ -2,27 +2,13 @@
   "type": "arconia:pedestal",
   "durationTicks": 60,
   "ingredients": [
-    {
-      "item": "arconia:green_arconium_ingot"
-    },
-    {
-      "item": "arconia:four_leaf_clover"
-    },
-    {
-      "item": "minecraft:ink_sac"
-    },
-    {
-      "item": "minecraft:ink_sac"
-    },
-    {
-      "item": "minecraft:ink_sac"
-    },
-    {
-      "item": "minecraft:iron_sword"
-    },
-    {
-      "item": "arconia:green_colored_tree_branch"
-    }
+    "arconia:green_arconium_ingot",
+    "arconia:four_leaf_clover",
+    "minecraft:ink_sac",
+    "minecraft:ink_sac",
+    "minecraft:ink_sac",
+    "minecraft:iron_sword",
+    "arconia:green_colored_tree_branch"
   ],
   "output": {
     "components": {

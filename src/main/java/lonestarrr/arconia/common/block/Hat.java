@@ -17,8 +17,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class Hat extends Block {
     private static final VoxelShape shape = box(0, 0, 0, 16, 10, 16);
 
-    public Hat() {
-        super(Block.Properties.of().mapColor(MapColor.COLOR_GREEN).ignitedByLava().strength(1.0F).noOcclusion());
+    public Hat(Block.Properties props) {
+        super(props.mapColor(MapColor.COLOR_GREEN).ignitedByLava().strength(1.0F).noOcclusion());
     }
 
     @Override

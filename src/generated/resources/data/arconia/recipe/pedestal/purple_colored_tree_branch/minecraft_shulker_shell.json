@@ -2,24 +2,12 @@
   "type": "arconia:pedestal",
   "durationTicks": 60,
   "ingredients": [
-    {
-      "item": "arconia:purple_arconium_ingot"
-    },
-    {
-      "item": "arconia:four_leaf_clover"
-    },
-    {
-      "item": "minecraft:shulker_shell"
-    },
-    {
-      "item": "minecraft:purple_shulker_box"
-    },
-    {
-      "item": "minecraft:netherite_sword"
-    },
-    {
-      "item": "arconia:purple_colored_tree_branch"
-    }
+    "arconia:purple_arconium_ingot",
+    "arconia:four_leaf_clover",
+    "minecraft:shulker_shell",
+    "minecraft:purple_shulker_box",
+    "minecraft:netherite_sword",
+    "arconia:purple_colored_tree_branch"
   ],
   "output": {
     "components": {

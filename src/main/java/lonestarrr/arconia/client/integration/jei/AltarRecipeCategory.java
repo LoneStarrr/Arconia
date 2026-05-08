@@ -13,8 +13,8 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -30,22 +30,20 @@ import java.util.List;
  * Custom altar recipe integration for JEI
  */
 public class AltarRecipeCategory implements IRecipeCategory<PedestalRecipe> {
-    public static final RecipeType<PedestalRecipe> TYPE =
-            RecipeType.create(Arconia.MOD_ID, "pedestal", PedestalRecipe.class);
-    private final IDrawable background;
+    public static final IRecipeType<PedestalRecipe> TYPE =
+            IRecipeType.create(Arconia.MOD_ID, "pedestal", PedestalRecipe.class);
     private final IDrawable overlay;
     private final IDrawable icon;
     private final ItemStack renderStack = new ItemStack(ModBlocks.centerPedestal.get().asItem());
 
     public AltarRecipeCategory(@Nonnull IGuiHelper guiHelper) {
-        this.background = guiHelper.createBlankDrawable(144, 81);
         this.overlay = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "textures/gui/jei/altar_overlay.png"),
                 0, 0, 144, 81);
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, renderStack.copy());
     }
 
     @Override
-    public RecipeType<PedestalRecipe> getRecipeType() {
+    public IRecipeType<PedestalRecipe> getRecipeType() {
         return TYPE;
     }
 
@@ -55,8 +53,13 @@ public class AltarRecipeCategory implements IRecipeCategory<PedestalRecipe> {
     }
 
     @Override
-    public IDrawable getBackground() {
-        return background;
+    public int getWidth() {
+        return 144;
+    }
+
+    @Override
+    public int getHeight() {
+        return 81;
     }
 
     @Override
@@ -84,9 +87,9 @@ public class AltarRecipeCategory implements IRecipeCategory<PedestalRecipe> {
         inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 7, 59));
         inputSlots.add(builder.addSlot(RecipeIngredientRole.INPUT, 3, 33));
         for (int i = 0; i < inputs.size(); i++) {
-            inputSlots.get(i).addIngredients(inputs.get(i));
+            inputSlots.get(i).addItemStacks(inputs.get(i).items().map(holder -> new ItemStack(holder)).toList());
         }
         builder.addSlot(RecipeIngredientRole.OUTPUT, 121, 33)
-                .addItemStack(recipe.getResultItem(Minecraft.getInstance().level.registryAccess()));
+                .add(recipe.getResultItem(Minecraft.getInstance().level.registryAccess()));
     }
 }

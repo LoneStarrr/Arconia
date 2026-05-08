@@ -10,7 +10,10 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -40,16 +43,20 @@ PedestalRecipe implements Recipe<PedestalInput> {
 
     @Nonnull
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<? extends Recipe<PedestalInput>> getType() {
         return ModRecipeTypes.PEDESTAL_TYPE.get();
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return false;
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
     }
 
     @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
+    }
+
     public @NotNull ItemStack getResultItem(HolderLookup.Provider pRegistries) {
         return output;
     }
@@ -60,7 +67,6 @@ PedestalRecipe implements Recipe<PedestalInput> {
         return durationTicks;
     }
 
-    @Override
     public @NotNull NonNullList<Ingredient> getIngredients() {
         return NonNullList.copyOf(ingredients);
     }
@@ -106,7 +112,7 @@ PedestalRecipe implements Recipe<PedestalInput> {
     }
 
     @Override
-    public @NotNull RecipeSerializer<?> getSerializer() {
+    public @NotNull RecipeSerializer<? extends Recipe<PedestalInput>> getSerializer() {
         return ModRecipeTypes.PEDESTAL_SERIALIZER.get();
     }
 
@@ -123,7 +129,7 @@ PedestalRecipe implements Recipe<PedestalInput> {
                 codec = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     ItemStack.CODEC.fieldOf("output").forGetter(PedestalRecipe::getOutput),
                         Codec.INT.fieldOf("durationTicks").forGetter(PedestalRecipe::getDurationTicks),
-                        Ingredient.LIST_CODEC.fieldOf("ingredients").forGetter(PedestalRecipe::getIngredients)
+                        Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(PedestalRecipe::getIngredients)
                 ).apply(instance, PedestalRecipe::new));
             }
             return codec;

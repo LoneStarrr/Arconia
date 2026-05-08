@@ -14,13 +14,13 @@ public class PatchouliHelper {
     public static final String TAG_PATCHOULI_BOOK = "patchouli:book";
 
     public static ItemStack createGuideBook() {
-        Item bookItem = BuiltInRegistries.ITEM.get(PATCHOULI_GUIDE_BOOK);
+        Item bookItem = BuiltInRegistries.ITEM.getValue(PATCHOULI_GUIDE_BOOK);
         ItemStack bookStack = new ItemStack(bookItem);
         CompoundTag tag = new CompoundTag();
         tag.putString(TAG_PATCHOULI_BOOK, GUIDE_BOOK_ID);
         // TODO finish/rewrite this if this somehow magically works
         // TODO at least check for class cast exceptions!
-        DataComponentType<?> dct = BuiltInRegistries.DATA_COMPONENT_TYPE.get(ResourceLocation.fromNamespaceAndPath("patchouli", "book"));
+        DataComponentType<?> dct = BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(ResourceLocation.fromNamespaceAndPath("patchouli", "book"));
         if (dct != null) {
             DataComponentType<ResourceLocation> dctRloc = (DataComponentType<ResourceLocation>)dct;
             bookStack.set(dctRloc, ResourceLocationHelper.prefix("guide_book"));
@@ -29,7 +29,7 @@ public class PatchouliHelper {
     }
 
     public static DataComponentType<ResourceLocation> patchouliGuideBookComponent() {
-        DataComponentType<?> dct = BuiltInRegistries.DATA_COMPONENT_TYPE.get(ResourceLocation.fromNamespaceAndPath("patchouli", "book"));
+        DataComponentType<?> dct = BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(ResourceLocation.fromNamespaceAndPath("patchouli", "book"));
         return (DataComponentType<ResourceLocation>) dct;
     }
 
@@ -38,7 +38,7 @@ public class PatchouliHelper {
         if (!itemResLoc.equals(PATCHOULI_GUIDE_BOOK)) {
             return false;
         }
-        DataComponentType dct = BuiltInRegistries.DATA_COMPONENT_TYPE.get(ResourceLocation.fromNamespaceAndPath("patchouli", "book"));
+        DataComponentType dct = BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(ResourceLocation.fromNamespaceAndPath("patchouli", "book"));
         Object ob = itemStack.get(dct);
         if (ob != null) {
             ResourceLocation rloc = (ResourceLocation) ob;

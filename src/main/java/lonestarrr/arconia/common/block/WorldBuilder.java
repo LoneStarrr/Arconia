@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -22,9 +21,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class WorldBuilder extends BaseEntityBlock {
-    public WorldBuilder() {
+    public WorldBuilder(Block.Properties props) {
         // tools that can mine it are defined by setting tags, in datagen
-        super(Block.Properties.of().mapColor(MapColor.WOOD).ignitedByLava().requiresCorrectToolForDrops().strength(3.0F).sound(SoundType.WOOD));
+        super(props.mapColor(MapColor.WOOD).ignitedByLava().requiresCorrectToolForDrops().strength(3.0F).sound(SoundType.WOOD));
     }
 
     @Override
@@ -64,7 +63,7 @@ public class WorldBuilder extends BaseEntityBlock {
 
         WorldBuilderEntity wbe = (WorldBuilderEntity) be;
         if (wbe.isConverting()) {
-            player.sendSystemMessage(Component.translatable("arconia.block.world_builder.in_progress"));
+            player.displayClientMessage(Component.translatable("arconia.block.world_builder.in_progress"), false);
             return InteractionResult.FAIL;
         }
 
@@ -75,9 +74,9 @@ public class WorldBuilder extends BaseEntityBlock {
         }
         boolean willConvertBlocks = wbe.startBuild(toMatch, boostFactor);
         if (willConvertBlocks) {
-            player.sendSystemMessage(Component.translatable("arconia.block.world_builder.start_build"));
+            player.displayClientMessage(Component.translatable("arconia.block.world_builder.start_build"), false);
         } else {
-            player.sendSystemMessage(Component.translatable("arconia.block.world_builder.no_blocks_found"));
+            player.displayClientMessage(Component.translatable("arconia.block.world_builder.no_blocks_found"), false);
         }
         return InteractionResult.SUCCESS;
     }

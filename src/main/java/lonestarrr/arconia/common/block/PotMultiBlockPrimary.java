@@ -34,8 +34,8 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
     public static final Block INSIDE_BLOCK = Blocks.GOLD_BLOCK;
     public static final Block OUTSIDE_BLOCK = Blocks.CAULDRON;
 
-    public PotMultiBlockPrimary() {
-        super(Block.Properties.of().mapColor(MapColor.METAL).strength(4.0F));
+    public PotMultiBlockPrimary(Block.Properties props) {
+        super(props.mapColor(MapColor.METAL).strength(4.0F));
     }
 
     @Override

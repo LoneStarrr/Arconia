@@ -3,46 +3,43 @@
   "durationTicks": 60,
   "ingredients": [
     {
-      "type": "neoforge:components",
+      "neoforge:ingredient_type": "neoforge:components",
       "components": {
         "minecraft:attribute_modifiers": {
           "modifiers": []
         },
+        "minecraft:consumable": {
+          "animation": "drink",
+          "has_consume_particles": false,
+          "sound": "minecraft:entity.generic.drink"
+        },
         "minecraft:enchantments": {
           "levels": {}
         },
+        "minecraft:item_model": "minecraft:potion",
+        "minecraft:item_name": "{\"translate\":\"item.minecraft.potion\"}",
         "minecraft:lore": [],
         "minecraft:max_stack_size": 1,
         "minecraft:potion_contents": {
           "potion": "minecraft:awkward"
         },
         "minecraft:rarity": "common",
-        "minecraft:repair_cost": 0
+        "minecraft:repair_cost": 0,
+        "minecraft:use_remainder": {
+          "count": 1,
+          "id": "minecraft:glass_bottle"
+        }
       },
       "items": "minecraft:potion",
       "strict": true
     },
-    {
-      "item": "minecraft:tube_coral_block"
-    },
-    {
-      "item": "minecraft:netherite_ingot"
-    },
-    {
-      "item": "minecraft:nether_star"
-    },
-    {
-      "item": "arconia:blue_arconium_essence"
-    },
-    {
-      "item": "arconia:blue_arconium_essence"
-    },
-    {
-      "item": "arconia:blue_arconium_essence"
-    },
-    {
-      "item": "arconia:four_leaf_clover"
-    }
+    "minecraft:tube_coral_block",
+    "minecraft:netherite_ingot",
+    "minecraft:nether_star",
+    "arconia:blue_arconium_essence",
+    "arconia:blue_arconium_essence",
+    "arconia:blue_arconium_essence",
+    "arconia:four_leaf_clover"
   ],
   "output": {
     "count": 1,

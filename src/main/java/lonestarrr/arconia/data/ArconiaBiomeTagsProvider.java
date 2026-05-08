@@ -6,16 +6,14 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.world.level.biome.Biomes;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
 public class ArconiaBiomeTagsProvider extends BiomeTagsProvider {
 
-    public ArconiaBiomeTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, provider, Arconia.MOD_ID, existingFileHelper);
+    public ArconiaBiomeTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, provider, Arconia.MOD_ID);
     }
 
     @Override

@@ -17,7 +17,7 @@ import lonestarrr.arconia.common.crafting.ModRecipeTypes;
 import lonestarrr.arconia.common.item.ModItems;
 import lonestarrr.arconia.common.loot.ModLootModifiers;
 import lonestarrr.arconia.common.network.ModPackets;
-import lonestarrr.arconia.compat.theoneprobe.TheOneProbe;
+import lonestarrr.arconia.common.network.PedestalRecipeSync;
 import lonestarrr.arconia.data.DataGenerators;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
@@ -57,7 +57,7 @@ public class Arconia {
         }
 
         modBus.addListener(this::commonSetup);
-        modBus.addListener(DataGenerators::gatherData);
+        modBus.addListener(DataGenerators::gatherClientData);
 
         ModBlocks.BLOCKS.register(modBus);
         ModItems.ITEMS.register(modBus);
@@ -80,15 +80,13 @@ public class Arconia {
 
         IEventBus eventBus = NeoForge.EVENT_BUS;
         eventBus.addListener(EventPriority.HIGH, this::registerCommands);
+        eventBus.addListener(PedestalRecipeSync::onDatapackSync);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
         Arconia.logger.info("Running commonSetup");
 
         // !! This mod life cycle event is called in parallel with any other mods - use event.enqueueWork() for things that are not thread-safe.
-
-        // The One Probe - optional, checks for mod presence
-        TheOneProbe.init();
 
         try {
             WorldBuilderEntity.loadDistributionTables();

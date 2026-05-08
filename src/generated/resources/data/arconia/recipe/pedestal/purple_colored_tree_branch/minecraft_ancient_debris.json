@@ -2,24 +2,12 @@
   "type": "arconia:pedestal",
   "durationTicks": 60,
   "ingredients": [
-    {
-      "item": "arconia:purple_arconium_ingot"
-    },
-    {
-      "item": "arconia:four_leaf_clover"
-    },
-    {
-      "item": "minecraft:ancient_debris"
-    },
-    {
-      "item": "minecraft:netherite_ingot"
-    },
-    {
-      "item": "minecraft:netherite_hoe"
-    },
-    {
-      "item": "arconia:purple_colored_tree_branch"
-    }
+    "arconia:purple_arconium_ingot",
+    "arconia:four_leaf_clover",
+    "minecraft:ancient_debris",
+    "minecraft:netherite_ingot",
+    "minecraft:netherite_hoe",
+    "arconia:purple_colored_tree_branch"
   ],
   "output": {
     "components": {

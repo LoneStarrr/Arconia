@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "arconia:block/sapling_white",
-    "layer1": "arconia:block/sapling_speckles"
-  }
-}

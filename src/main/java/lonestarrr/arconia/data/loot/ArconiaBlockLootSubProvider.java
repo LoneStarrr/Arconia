@@ -5,10 +5,12 @@ import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
@@ -28,7 +30,11 @@ import java.util.Set;
 
 public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
     private static final float[] COLORED_STICK_CHANCES = new float[]{0.02F, 0.022222223F, 0.025F, 0.033333335F, 0.1F};
-    private static final LootItemCondition.Builder HAS_CLOVER_STAFF = MatchTool.toolMatches(ItemPredicate.Builder.item().of(ModItems.cloverStaff.value()));
+
+    private LootItemCondition.Builder hasCloverStaff() {
+        HolderGetter<Item> items = this.registries.lookupOrThrow(Registries.ITEM);
+        return MatchTool.toolMatches(ItemPredicate.Builder.item().of(items, ModItems.cloverStaff.value()));
+    }
 
     public ArconiaBlockLootSubProvider(HolderLookup.Provider registries) {
         // The first parameter is a set of blocks we are creating loot tables for. Instead of hardcoding,
@@ -76,7 +82,7 @@ public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
                 LootTable.lootTable()
                         .withPool(
                                 LootPool.lootPool().setRolls(ConstantValue.exactly(1F))
-                                        .when(HAS_CLOVER_STAFF)
+                                        .when(hasCloverStaff())
                                         .add(
                                                 LootItem.lootTableItem(ModItems.fourLeafClover)
                                                     .when(BonusLevelTableCondition.bonusLevelFlatChance(registrylookup.getOrThrow(Enchantments.FORTUNE), 0.3F, 0.6F, 0.8F, 1F))
@@ -84,7 +90,7 @@ public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
                                         )
                         ).withPool(
                                 LootPool.lootPool().setRolls(ConstantValue.exactly(1F))
-                                        .when(HAS_CLOVER_STAFF.invert())
+                                        .when(hasCloverStaff().invert())
                                         .add(
                                                 LootItem.lootTableItem(ModItems.fourLeafClover)
                                                         .when(LootItemRandomChanceCondition.randomChance(0.15F))
@@ -115,7 +121,7 @@ public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
                 .withPool(
                         LootPool.lootPool()
                                 .setRolls(ConstantValue.exactly(1.0F))
-                                .when(HAS_SHEARS.or(this.hasSilkTouch()).invert())
+                                .when(this.hasShears().or(this.hasSilkTouch()).invert())
                                 .add(
                                         ((LootPoolSingletonContainer.Builder)this.applyExplosionCondition(pLeaves, LootItem.lootTableItem(ModItems.getColoredBranch(leaves.getTier()))))
                                                 .when(BonusLevelTableCondition.bonusLevelFlatChance(registrylookup.getOrThrow(Enchantments.FORTUNE), COLORED_STICK_CHANCES))
@@ -124,6 +130,7 @@ public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
     }
 
     private LootItemCondition.Builder hasSickle(RainbowColor color) {
-        return MatchTool.toolMatches(ItemPredicate.Builder.item().of(ModItems.getArconiumSickle(color)));
+        HolderGetter<Item> items = this.registries.lookupOrThrow(Registries.ITEM);
+        return MatchTool.toolMatches(ItemPredicate.Builder.item().of(items, ModItems.getArconiumSickle(color).get()));
     }
 }

@@ -2,30 +2,14 @@
   "type": "arconia:pedestal",
   "durationTicks": 60,
   "ingredients": [
-    {
-      "item": "minecraft:orange_dye"
-    },
-    {
-      "item": "minecraft:raw_copper"
-    },
-    {
-      "item": "minecraft:stripped_acacia_log"
-    },
-    {
-      "item": "minecraft:pumpkin"
-    },
-    {
-      "item": "arconia:orange_arconium_essence"
-    },
-    {
-      "item": "arconia:orange_arconium_essence"
-    },
-    {
-      "item": "arconia:orange_arconium_essence"
-    },
-    {
-      "item": "arconia:four_leaf_clover"
-    }
+    "minecraft:orange_dye",
+    "minecraft:raw_copper",
+    "minecraft:stripped_acacia_log",
+    "minecraft:pumpkin",
+    "arconia:orange_arconium_essence",
+    "arconia:orange_arconium_essence",
+    "arconia:orange_arconium_essence",
+    "arconia:four_leaf_clover"
   ],
   "output": {
     "count": 1,

@@ -2,27 +2,13 @@
   "type": "arconia:pedestal",
   "durationTicks": 60,
   "ingredients": [
-    {
-      "item": "arconia:light_blue_arconium_ingot"
-    },
-    {
-      "item": "arconia:four_leaf_clover"
-    },
-    {
-      "item": "minecraft:prismarine_crystals"
-    },
-    {
-      "item": "minecraft:sea_lantern"
-    },
-    {
-      "item": "minecraft:sponge"
-    },
-    {
-      "item": "minecraft:diamond_sword"
-    },
-    {
-      "item": "arconia:light_blue_colored_tree_branch"
-    }
+    "arconia:light_blue_arconium_ingot",
+    "arconia:four_leaf_clover",
+    "minecraft:prismarine_crystals",
+    "minecraft:sea_lantern",
+    "minecraft:sponge",
+    "minecraft:diamond_sword",
+    "arconia:light_blue_colored_tree_branch"
   ],
   "output": {
     "components": {

@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "arconia:item/arconium_essence",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -16711936
+      }
+    ]
+  }
+}

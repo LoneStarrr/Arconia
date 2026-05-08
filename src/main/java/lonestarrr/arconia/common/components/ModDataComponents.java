@@ -3,13 +3,14 @@ package lonestarrr.arconia.common.components;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.item.MagicInABottle;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
 public class ModDataComponents {
-    public static final DeferredRegister.DataComponents DATA_COMPONENTS = DeferredRegister.createDataComponents(Arconia.MOD_ID);
+    public static final DeferredRegister.DataComponents DATA_COMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, Arconia.MOD_ID);
 
     public static final Supplier<DataComponentType<MagicInABottle.MagicInABottleData>> MAGIC_IN_A_BOTTLE_DATA =
             DATA_COMPONENTS.registerComponentType("magic_in_a_bottle_data",

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "arconia:red_arconium_block"
-    }
+    "arconia:red_arconium_block"
   ],
   "result": {
     "count": 9,

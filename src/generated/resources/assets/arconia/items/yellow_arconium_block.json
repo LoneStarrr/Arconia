@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "arconia:block/arconium_block",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -256
+      }
+    ]
+  }
+}

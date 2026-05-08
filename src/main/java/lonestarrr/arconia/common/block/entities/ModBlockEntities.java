@@ -13,15 +13,15 @@ public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, Arconia.MOD_ID);
 
     public static final Supplier<BlockEntityType<WorldBuilderEntity>> WORLD_BUILDER = BLOCK_ENTITIES.register(BlockNames.WORLD_BUILDER,
-            () -> BlockEntityType.Builder.of(WorldBuilderEntity::new, ModBlocks.worldBuilder.get()).build(null));
+            () -> new BlockEntityType<>(WorldBuilderEntity::new, ModBlocks.worldBuilder.get()));
     public static final Supplier<BlockEntityType<PedestalBlockEntity>> PEDESTAL = BLOCK_ENTITIES.register(BlockNames.PEDESTAL,
-            () -> BlockEntityType.Builder.of(PedestalBlockEntity::new, ModBlocks.pedestal.get()).build(null));
+            () -> new BlockEntityType<>(PedestalBlockEntity::new, ModBlocks.pedestal.get()));
     public static final Supplier<BlockEntityType<CenterPedestalBlockEntity>> CENTER_PEDESTAL = BLOCK_ENTITIES.register(BlockNames.CENTER_PEDESTAL,
-            () -> BlockEntityType.Builder.of(CenterPedestalBlockEntity::new, ModBlocks.centerPedestal.get()).build(null));
+            () -> new BlockEntityType<>(CenterPedestalBlockEntity::new, ModBlocks.centerPedestal.get()));
     public static final Supplier<BlockEntityType<PotMultiBlockPrimaryBlockEntity>> POT_MULTIBLOCK_PRIMARY = BLOCK_ENTITIES.register(
             BlockNames.POT_MULTIBLOCK_PRIMARY,
-            () -> BlockEntityType.Builder.of(PotMultiBlockPrimaryBlockEntity::new, ModBlocks.potMultiBlockPrimary.get()).build(null));
+            () -> new BlockEntityType<>(PotMultiBlockPrimaryBlockEntity::new, ModBlocks.potMultiBlockPrimary.get()));
     public static final Supplier<BlockEntityType<PotMultiBlockSecondaryBlockEntity>> POT_MULTIBLOCK_SECONDARY = BLOCK_ENTITIES.register(
             BlockNames.POT_MULTIBLOCK_SECONDARY,
-            () -> BlockEntityType.Builder.of(PotMultiBlockSecondaryBlockEntity::new, ModBlocks.potMultiBlockSecondary.get()).build(null));
+            () -> new BlockEntityType<>(PotMultiBlockSecondaryBlockEntity::new, ModBlocks.potMultiBlockSecondary.get()));
 }

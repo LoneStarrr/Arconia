@@ -1,0 +1,149 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "entries": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "arconia:item/magic_in_a_bottle_filled1",
+          "tints": [
+            {
+              "type": "minecraft:constant",
+              "value": -1
+            },
+            {
+              "type": "arconia:magic_in_a_bottle_tier"
+            }
+          ]
+        },
+        "threshold": 0.12
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "arconia:item/magic_in_a_bottle_filled2",
+          "tints": [
+            {
+              "type": "minecraft:constant",
+              "value": -1
+            },
+            {
+              "type": "arconia:magic_in_a_bottle_tier"
+            }
+          ]
+        },
+        "threshold": 0.25
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "arconia:item/magic_in_a_bottle_filled3",
+          "tints": [
+            {
+              "type": "minecraft:constant",
+              "value": -1
+            },
+            {
+              "type": "arconia:magic_in_a_bottle_tier"
+            }
+          ]
+        },
+        "threshold": 0.37
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "arconia:item/magic_in_a_bottle_filled4",
+          "tints": [
+            {
+              "type": "minecraft:constant",
+              "value": -1
+            },
+            {
+              "type": "arconia:magic_in_a_bottle_tier"
+            }
+          ]
+        },
+        "threshold": 0.5
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "arconia:item/magic_in_a_bottle_filled5",
+          "tints": [
+            {
+              "type": "minecraft:constant",
+              "value": -1
+            },
+            {
+              "type": "arconia:magic_in_a_bottle_tier"
+            }
+          ]
+        },
+        "threshold": 0.62
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "arconia:item/magic_in_a_bottle_filled6",
+          "tints": [
+            {
+              "type": "minecraft:constant",
+              "value": -1
+            },
+            {
+              "type": "arconia:magic_in_a_bottle_tier"
+            }
+          ]
+        },
+        "threshold": 0.75
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "arconia:item/magic_in_a_bottle_filled7",
+          "tints": [
+            {
+              "type": "minecraft:constant",
+              "value": -1
+            },
+            {
+              "type": "arconia:magic_in_a_bottle_tier"
+            }
+          ]
+        },
+        "threshold": 0.87
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "arconia:item/magic_in_a_bottle_filled8",
+          "tints": [
+            {
+              "type": "minecraft:constant",
+              "value": -1
+            },
+            {
+              "type": "arconia:magic_in_a_bottle_tier"
+            }
+          ]
+        },
+        "threshold": 1.0
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "arconia:item/magic_in_a_bottle",
+      "tints": [
+        {
+          "type": "minecraft:constant",
+          "value": -1
+        },
+        {
+          "type": "arconia:magic_in_a_bottle_tier"
+        }
+      ]
+    },
+    "property": "arconia:filled"
+  }
+}

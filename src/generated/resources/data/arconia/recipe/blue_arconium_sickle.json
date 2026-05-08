@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "I": {
-      "item": "arconia:blue_arconium_ingot"
-    },
-    "S": {
-      "item": "minecraft:stick"
-    }
+    "I": "arconia:blue_arconium_ingot",
+    "S": "minecraft:stick"
   },
   "pattern": [
     "III",

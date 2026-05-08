@@ -2,27 +2,13 @@
   "type": "arconia:pedestal",
   "durationTicks": 60,
   "ingredients": [
-    {
-      "item": "arconia:orange_arconium_ingot"
-    },
-    {
-      "item": "arconia:four_leaf_clover"
-    },
-    {
-      "item": "minecraft:melon"
-    },
-    {
-      "item": "minecraft:melon"
-    },
-    {
-      "item": "minecraft:melon"
-    },
-    {
-      "item": "minecraft:stone_hoe"
-    },
-    {
-      "item": "arconia:orange_colored_tree_branch"
-    }
+    "arconia:orange_arconium_ingot",
+    "arconia:four_leaf_clover",
+    "minecraft:melon",
+    "minecraft:melon",
+    "minecraft:melon",
+    "minecraft:stone_hoe",
+    "arconia:orange_colored_tree_branch"
   ],
   "output": {
     "components": {

@@ -11,8 +11,8 @@ import net.minecraft.world.level.material.PushReaction;
  * A clover weed that grows in the overworld
  */
 public class CloverBlock extends BushBlock {
-    public CloverBlock() {
-        super(Block.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).noCollission().strength(0f).sound(SoundType.GRASS));
+    public CloverBlock(Block.Properties props) {
+        super(props.mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).noCollission().strength(0f).sound(SoundType.GRASS));
     }
 
     @Override

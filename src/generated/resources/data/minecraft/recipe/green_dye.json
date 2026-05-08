@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "arconia:three_leaf_clover"
-    }
+    "arconia:three_leaf_clover"
   ],
   "result": {
     "count": 1,

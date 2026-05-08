@@ -314,7 +314,7 @@ class BlockJsonAdapter extends TypeAdapter<Block> {
         if (!BuiltInRegistries.BLOCK.containsKey(blockLoc)) {
             throw new RuntimeException("Unknown block " + blockStr + " in world builder configuration");
         }
-        Block block = BuiltInRegistries.BLOCK.get(blockLoc);
+        Block block = BuiltInRegistries.BLOCK.getValue(blockLoc);
         return block;
     }
 }

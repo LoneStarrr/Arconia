@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "item": "arconia:yellow_arconium_ingot"
-    }
+    "I": "arconia:yellow_arconium_ingot"
   },
   "pattern": [
     "III",

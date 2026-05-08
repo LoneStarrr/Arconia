@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "minecraft:mossy_cobblestone"
-    },
-    "S": {
-      "item": "minecraft:stone_slab"
-    }
+    "B": "minecraft:mossy_cobblestone",
+    "S": "minecraft:stone_slab"
   },
   "pattern": [
     " S ",

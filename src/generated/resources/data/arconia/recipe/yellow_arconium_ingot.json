@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "arconia:yellow_arconium_block"
-    }
+    "arconia:yellow_arconium_block"
   ],
   "result": {
     "count": 9,

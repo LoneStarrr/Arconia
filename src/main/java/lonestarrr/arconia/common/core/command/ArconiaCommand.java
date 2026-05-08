@@ -50,12 +50,12 @@ public class ArconiaCommand {
         // Enchant resourceItem in player's hand
         ItemStack branchItem = player.getInventory().getSelected();
         if (branchItem.isEmpty() || !(branchItem.getItem() instanceof ColoredBranch)) {
-            player.sendSystemMessage(Component.literal("A colored branch is expected in your active hotbar slot for this to work"));
+            player.displayClientMessage(Component.literal("A colored branch is expected in your active hotbar slot for this to work"), false);
             return Command.SINGLE_SUCCESS;
         }
 
         ColoredBranch.setResourceItem(branchItem, new ItemStack(resourceItem));
-        player.sendSystemMessage(Component.literal("Imbued the colored branch with resourceItem " + BuiltInRegistries.ITEM.getKey(resourceItem).toString()));
+        player.displayClientMessage(Component.literal("Imbued the colored branch with resourceItem " + BuiltInRegistries.ITEM.getKey(resourceItem).toString()), false);
         return Command.SINGLE_SUCCESS;
     }
 }

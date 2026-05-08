@@ -2,27 +2,13 @@
   "type": "arconia:pedestal",
   "durationTicks": 60,
   "ingredients": [
-    {
-      "item": "arconia:green_arconium_ingot"
-    },
-    {
-      "item": "arconia:four_leaf_clover"
-    },
-    {
-      "item": "minecraft:lapis_block"
-    },
-    {
-      "item": "minecraft:lapis_block"
-    },
-    {
-      "item": "minecraft:lapis_block"
-    },
-    {
-      "item": "minecraft:iron_pickaxe"
-    },
-    {
-      "item": "arconia:green_colored_tree_branch"
-    }
+    "arconia:green_arconium_ingot",
+    "arconia:four_leaf_clover",
+    "minecraft:lapis_block",
+    "minecraft:lapis_block",
+    "minecraft:lapis_block",
+    "minecraft:iron_pickaxe",
+    "arconia:green_colored_tree_branch"
   ],
   "output": {
     "components": {

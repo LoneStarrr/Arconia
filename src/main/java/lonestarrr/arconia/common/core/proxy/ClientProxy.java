@@ -3,27 +3,22 @@ package lonestarrr.arconia.common.core.proxy;
 import lonestarrr.arconia.client.core.handler.BlockEntityRendererHandler;
 import lonestarrr.arconia.client.core.handler.ColorHandler;
 import lonestarrr.arconia.client.effects.PotItemTransfers;
+import lonestarrr.arconia.client.integration.jei.ClientPedestalRecipes;
 import lonestarrr.arconia.client.gui.render.BranchItemRenderer;
+import lonestarrr.arconia.client.item.MagicInABottleFilledProperty;
+import lonestarrr.arconia.client.item.MagicInABottleTintSource;
 import lonestarrr.arconia.client.particle.ModParticles;
 import lonestarrr.arconia.client.particle.custom.RainbowParticles;
 import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.item.MagicInABottle;
-import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
+import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Proxy code inspired by: http://jabelarminecraft.blogspot.com/p/minecraft-modding-organizing-your-proxy.html
@@ -34,59 +29,23 @@ public class ClientProxy implements IProxy {
         modBus.addListener(this::clientSetup);
         modBus.addListener(this::loadComplete);
         modBus.addListener(this::registerBlockColors);
-        modBus.addListener(this::registerItemColors);
+        modBus.addListener(this::registerItemTintSources);
+        modBus.addListener(this::registerSpecialModelRenderers);
+        modBus.addListener(this::registerRangeSelectItemModelProperties);
         modBus.addListener(BlockEntityRendererHandler::registerBlockEntityRenderers);
         modBus.addListener(this::registerParticleFactories);
-        modBus.addListener(this::registerClientExtensions);
-        modBus.addListener(this::loadAdditionalModels);
 
         IEventBus forgeBus = NeoForge.EVENT_BUS;
         forgeBus.addListener(PotItemTransfers::render);
+        forgeBus.addListener(ClientPedestalRecipes::onRecipesReceived);
+        forgeBus.addListener(ClientPedestalRecipes::onLoggingOut);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
         Arconia.logger.info("********************* client-side proxy init");
-
-        event.enqueueWork(ClientProxy::registerItemProperties);
     }
 
     private void loadComplete(FMLLoadCompleteEvent event) {
-    }
-
-    private void loadAdditionalModels(ModelEvent.RegisterAdditional event) {
-        // Tree branches are dynamically rendered, and need a baked (item) model, not associated with any item object, to
-        // represent the actual tree branch.
-        // Alternatively, one could use a dummy item as well and forego the custom baked model route.
-        event.register(BranchItemRenderer.TREE_BRANCH_BASE_MODEL);
-    }
-
-    private void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        // Custom renderer for imbued tree branches
-        event.registerItem(
-                new IClientItemExtensions() {
-
-                    private final BlockEntityWithoutLevelRenderer renderer = new BranchItemRenderer();
-
-                    @NotNull
-                    @Override
-                    public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                        return renderer;
-                    }
-
-                },
-                ModItems.getColoredBranch(RainbowColor.RED).get(),
-                ModItems.getColoredBranch(RainbowColor.ORANGE).get(),
-                ModItems.getColoredBranch(RainbowColor.YELLOW).get(),
-                ModItems.getColoredBranch(RainbowColor.GREEN).get(),
-                ModItems.getColoredBranch(RainbowColor.LIGHT_BLUE).get(),
-                ModItems.getColoredBranch(RainbowColor.BLUE).get(),
-                ModItems.getColoredBranch(RainbowColor.PURPLE).get()
-        );
-    }
-
-    private void registerItemColors(RegisterColorHandlersEvent.Item event) {
-        // Register dynamically colored blocks
-        ColorHandler.registerItemColors(event);
     }
 
     private void registerBlockColors(RegisterColorHandlersEvent.Block event) {
@@ -94,8 +53,16 @@ public class ClientProxy implements IProxy {
         ColorHandler.registerBlockColors(event);
     }
 
-    private static void registerItemProperties() {
-        ItemProperties.register(ModItems.magicInABottle.get(), ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "filled"), MagicInABottle::getFilledPercentage);
+    private void registerItemTintSources(RegisterColorHandlersEvent.ItemTintSources event) {
+        event.register(MagicInABottleTintSource.ID, MagicInABottleTintSource.MAP_CODEC);
+    }
+
+    private void registerSpecialModelRenderers(RegisterSpecialModelRendererEvent event) {
+        event.register(BranchItemRenderer.ID, BranchItemRenderer.Unbaked.MAP_CODEC);
+    }
+
+    private void registerRangeSelectItemModelProperties(RegisterRangeSelectItemModelPropertyEvent event) {
+        event.register(MagicInABottleFilledProperty.ID, MagicInABottleFilledProperty.MAP_CODEC);
     }
 
     private void registerParticleFactories(RegisterParticleProvidersEvent event) {

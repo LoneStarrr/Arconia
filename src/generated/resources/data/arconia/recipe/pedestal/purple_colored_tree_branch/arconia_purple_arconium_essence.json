@@ -2,21 +2,11 @@
   "type": "arconia:pedestal",
   "durationTicks": 60,
   "ingredients": [
-    {
-      "item": "arconia:four_leaf_clover"
-    },
-    {
-      "item": "arconia:four_leaf_clover"
-    },
-    {
-      "item": "arconia:purple_arconium_tree_sapling"
-    },
-    {
-      "item": "minecraft:purple_wool"
-    },
-    {
-      "item": "arconia:purple_colored_tree_branch"
-    }
+    "arconia:four_leaf_clover",
+    "arconia:four_leaf_clover",
+    "arconia:purple_arconium_tree_sapling",
+    "minecraft:purple_wool",
+    "arconia:purple_colored_tree_branch"
   ],
   "output": {
     "components": {

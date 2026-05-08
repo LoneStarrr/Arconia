@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "arconia:block/pot_multiblock_primary"
+    }
+  }
+}

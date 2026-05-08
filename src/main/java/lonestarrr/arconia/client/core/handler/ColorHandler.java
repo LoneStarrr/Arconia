@@ -3,16 +3,7 @@ package lonestarrr.arconia.client.core.handler;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.*;
 import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.item.ColoredBranch;
-import lonestarrr.arconia.common.item.MagicInABottle;
-import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.color.item.ItemColors;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 
 /**
@@ -52,84 +43,8 @@ public class ColorHandler {
         }
     }
 
-    // This one is fired after registering blocks, hence blockColors can be used
-    public static void registerItemColors(RegisterColorHandlersEvent.Item event){
-        ItemColors itemColors = event.getItemColors();
-        BlockColors blockColors = event.getBlockColors();
-
-        //magic in a bottle is colored differently based on ItemStack NBT data
-        //'color' corresponds to the layer in the model (layer0 -> color 0, etc)
-        //layer 0 is not dynamically colored, only layer1 is
-        itemColors.register((stack, tint) -> {
-            // only the overlay is colored - each layer is a tint index
-            if (tint == 0) {
-                return -1;
-            }
-            MagicInABottle bottle = (MagicInABottle) stack.getItem();
-            return MagicInABottle.getTier(stack).getColorValue();
-        }, ModItems.magicInABottle.get());
-
-        for (RainbowColor tier : RainbowColor.values()) {
-            // Tree leaves
-            ArconiumTreeLeaves treeLeaf = ModBlocks.getArconiumTreeLeaves(tier).get();
-            // Taken from minecraft's ItemColors
-            itemColors.register((stack, tint) -> {
-                BlockState blockstate = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
-                return blockColors.getColor(blockstate, (BlockAndTintGetter) null, (BlockPos) null, tint);
-            }, Item.byBlock(treeLeaf));
-
-            // Tree saplings
-            ArconiumTreeSapling treeSapling = ModBlocks.getArconiumTreeSapling(tier).get();
-            // Taken from minecraft's ItemColors - for saplings, only layer0 is dynamically colored
-            itemColors.register((stack, tint) -> {
-                if (tint != 0) {
-                    return -1;
-                }
-                BlockState blockstate = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
-                return blockColors.getColor(blockstate, (BlockAndTintGetter) null, (BlockPos) null, tint);
-            }, Item.byBlock(treeSapling));
-
-
-            RainbowGrassBlock grassBlock = ModBlocks.getRainbowGrassBlock(tier).get();
-            itemColors.register((stack, tint) -> {
-                BlockState blockstate = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
-                return blockColors.getColor(blockstate, (BlockAndTintGetter) null, (BlockPos) null, tint);
-            }, Item.byBlock(grassBlock));
-
-            // Arconium blocks
-            ArconiumBlock arconiumBlock = ModBlocks.getArconiumBlock(tier).get();
-            // Taken from minecraft's ItemColors
-            itemColors.register((stack, layer) -> {
-                BlockState blockstate = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
-                return blockColors.getColor(blockstate, (BlockAndTintGetter) null, (BlockPos) null, layer);
-            }, Item.byBlock(arconiumBlock));
-
-            // Colored tree branches
-            // Surprisingly, this still works after adding a custom renderer
-            itemColors.register((stack, layer) -> {
-                return ((ColoredBranch) (stack.getItem())).getTier().getColorValue();
-            }, ModItems.getColoredBranch(tier).get());
-
-            // Colored arconium essence
-            itemColors.register((stack, layer) -> {
-                return tier.getColorValue();
-            }, ModItems.getArconiumEssence(tier).get());
-
-            // Colored arconium ingots
-            itemColors.register((stack, layer) -> {
-                return tier.getColorValue();
-            }, ModItems.getArconiumIngot(tier).get());
-
-            // Colored arconium sickles.
-            // 'color' corresponds to the layer in the model (layer0 -> color 0, etc)
-            // layer 0 is not dynamically colored, only layer1 is
-            itemColors.register((stack, layer) -> {
-                // only the overlay is colored - each layer is a tint index
-                if (layer == 0) {
-                    return -1;
-                }
-                return tier.getColorValue();
-            }, ModItems.getArconiumSickle(tier).get());
-        }
-    }
+    // Pass 2 step C: registerItemColors removed — RegisterColorHandlersEvent.Item is gone in 1.21.4 and item tinting is now data-driven via
+    // ItemTintSource references in ClientItem JSON. The old logic (per-tier tints for branches/essences/ingots/sickles, plus the per-stack
+    // MagicInABottle filled-state coloring) needs to be re-expressed either as `minecraft:constant` tints in the per-item ClientItem JSON
+    // emitted by the new data generators, or as a custom registered ItemTintSource for the dynamic cases.
 }

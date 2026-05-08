@@ -6,51 +6,48 @@ import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.ToolMaterial;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 public final class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Arconia.MOD_ID);
 
-    public static final DeferredItem<Item> cloverStaff = ITEMS.register(ItemNames.CLOVER_STAFF, () -> new CloverStaff(defaultBuilder().stacksTo(1)));
+    public static final DeferredItem<CloverStaff> cloverStaff = ITEMS.registerItem(ItemNames.CLOVER_STAFF, props -> new CloverStaff(props.stacksTo(1)));
     public static final DeferredItem<Item> fourLeafClover = ITEMS.registerSimpleItem(ItemNames.FOUR_LEAF_CLOVER);
     public static final DeferredItem<Item> threeLeafClover = ITEMS.registerSimpleItem(ItemNames.THREE_LEAF_CLOVER);
-    public static final DeferredItem<Item> magicInABottle = ITEMS.register(ItemNames.MAGIC_IN_A_BOTTLE, () -> new MagicInABottle(defaultBuilder()));
+    public static final DeferredItem<MagicInABottle> magicInABottle = ITEMS.registerItem(ItemNames.MAGIC_IN_A_BOTTLE, MagicInABottle::new);
 
     private static final Map<RainbowColor, DeferredItem<ArconiumEssence>> arconiumEssences = new HashMap<>();
     private static final Map<RainbowColor, DeferredItem<ColoredBranch>> coloredBranches = new HashMap<>();
     private static final Map<RainbowColor, DeferredItem<Item>> arconiumIngots = new HashMap<>();
 
-    private static final Map<RainbowColor, DeferredItem<Item>> arconiumSickles = new HashMap<>();
+    private static final Map<RainbowColor, DeferredItem<HoeItem>> arconiumSickles = new HashMap<>();
 
     public static Item.Properties defaultBuilder() {
         return new Item.Properties();
     }
 
     static {
-        // Register stand-alone items, not associated with a block - those go into ModBlocks
-        final Item.Properties builder = defaultBuilder();
-
         for (RainbowColor tier: RainbowColor.values()) {
-            arconiumEssences.put(tier, ITEMS.register(tier.getTierName() + ItemNames.ARCONIUM_ESSENCE_SUFFIX, () -> new ArconiumEssence(builder, tier)));
-            coloredBranches.put(tier, ITEMS.register(tier.getTierName() + ItemNames.COLORED_TREE_BRANCH_SUFFIX, () -> new ColoredBranch(builder, tier)));
+            arconiumEssences.put(tier, ITEMS.registerItem(tier.getTierName() + ItemNames.ARCONIUM_ESSENCE_SUFFIX, props -> new ArconiumEssence(props, tier)));
+            coloredBranches.put(tier, ITEMS.registerItem(tier.getTierName() + ItemNames.COLORED_TREE_BRANCH_SUFFIX, props -> new ColoredBranch(props, tier)));
             arconiumIngots.put(tier, ITEMS.registerSimpleItem(tier.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX));
         }
 
         // Arconium sickles. Numerical values: base attack modifier, attack speed modifier.
-        registerSickle(RainbowColor.RED, () -> new HoeItem(Tiers.WOOD, new Item.Properties().attributes(HoeItem.createAttributes(Tiers.WOOD, 4, -2.1F))));
-        registerSickle(RainbowColor.ORANGE, () -> new HoeItem(Tiers.STONE, new Item.Properties().attributes(HoeItem.createAttributes(Tiers.WOOD, 4, -2.1F))));
-        registerSickle(RainbowColor.YELLOW, () -> new HoeItem(Tiers.IRON, new Item.Properties().attributes(HoeItem.createAttributes(Tiers.WOOD, 4, -2.1F))));
-        registerSickle(RainbowColor.GREEN, () -> new HoeItem(Tiers.GOLD, new Item.Properties().attributes(HoeItem.createAttributes(Tiers.WOOD, 7, -2.1F))));
-        registerSickle(RainbowColor.LIGHT_BLUE, () -> new HoeItem(Tiers.DIAMOND, new Item.Properties().attributes(HoeItem.createAttributes(Tiers.WOOD, 5, -2.1F))));
-        registerSickle(RainbowColor.BLUE, () -> new HoeItem(Tiers.NETHERITE, new Item.Properties().fireResistant().attributes(HoeItem.createAttributes(Tiers.WOOD, 5, -2.1F))));
-        registerSickle(RainbowColor.PURPLE, () -> new HoeItem(Tiers.NETHERITE, new Item.Properties().fireResistant().attributes(HoeItem.createAttributes(Tiers.WOOD, 6, -2.1F))));
+        registerSickle(RainbowColor.RED, props -> new HoeItem(ToolMaterial.WOOD, 4F, -2.1F, props));
+        registerSickle(RainbowColor.ORANGE, props -> new HoeItem(ToolMaterial.STONE, 4F, -2.1F, props));
+        registerSickle(RainbowColor.YELLOW, props -> new HoeItem(ToolMaterial.IRON, 4F, -2.1F, props));
+        registerSickle(RainbowColor.GREEN, props -> new HoeItem(ToolMaterial.GOLD, 7F, -2.1F, props));
+        registerSickle(RainbowColor.LIGHT_BLUE, props -> new HoeItem(ToolMaterial.DIAMOND, 5F, -2.1F, props));
+        registerSickle(RainbowColor.BLUE, props -> new HoeItem(ToolMaterial.NETHERITE, 5F, -2.1F, props.fireResistant()));
+        registerSickle(RainbowColor.PURPLE, props -> new HoeItem(ToolMaterial.NETHERITE, 6F, -2.1F, props.fireResistant()));
     }
 
     public static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
@@ -58,7 +55,6 @@ public final class ModItems {
             event.accept(cloverStaff.get());
             event.accept(magicInABottle.get());
             for (RainbowColor color: RainbowColor.values()) {
-                // TODO acceptAll values()?
                 event.accept(arconiumSickles.get(color).get());
             }
         } else if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
@@ -71,8 +67,9 @@ public final class ModItems {
             }
         }
     }
-        private static void registerSickle(RainbowColor tier, Supplier<HoeItem> hoe) {
-        arconiumSickles.put(tier, ITEMS.register(tier.getTierName() + ItemNames.SICKLE_SUFFIX, hoe));
+
+    private static void registerSickle(RainbowColor tier, Function<Item.Properties, HoeItem> factory) {
+        arconiumSickles.put(tier, ITEMS.registerItem(tier.getTierName() + ItemNames.SICKLE_SUFFIX, factory));
     }
 
     public static DeferredItem<ArconiumEssence> getArconiumEssence(RainbowColor tier) {
@@ -83,7 +80,7 @@ public final class ModItems {
         return arconiumIngots.get(tier);
     }
 
-    public static DeferredItem<Item> getArconiumSickle(RainbowColor tier) { return arconiumSickles.get(tier); }
+    public static DeferredItem<HoeItem> getArconiumSickle(RainbowColor tier) { return arconiumSickles.get(tier); }
 
     public static DeferredItem<ColoredBranch> getColoredBranch(RainbowColor tier) {
         return coloredBranches.get(tier);

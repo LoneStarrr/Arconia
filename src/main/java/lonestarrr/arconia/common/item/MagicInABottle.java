@@ -21,7 +21,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -91,7 +90,7 @@ public class MagicInABottle extends Item {
         long ticksElapsed = getTicksElapsed(stack);
         int ticksBetweenLoot = getTicksBetweenLoot(stack);
         int pct = (int)Math.min(100, (int)(ticksElapsed * 100d / ticksBetweenLoot));
-        toolTips.add(Component.translatable(stack.getDescriptionId() + ".tooltip", pct).withStyle(ChatFormatting.AQUA, ChatFormatting.ITALIC));
+        toolTips.add(Component.translatable(stack.getItem().getDescriptionId() + ".tooltip", pct).withStyle(ChatFormatting.AQUA, ChatFormatting.ITALIC));
     }
 
     public static long getTicksElapsed(ItemStack stack) {
@@ -151,20 +150,20 @@ public class MagicInABottle extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player playerEntity, InteractionHand hand) {
+    public InteractionResult use(Level world, Player playerEntity, InteractionHand hand) {
         ItemStack stack = playerEntity.getItemInHand(hand);
         if (stack.isEmpty() || stack.getItem() != this) {
-            return InteractionResultHolder.pass(stack);
+            return InteractionResult.PASS;
         }
 
         // Without syncing ticks to client, can't really know on the client when time has elapsed because it will desync. So just consume the click.
         if (world.isClientSide()) {
-            return InteractionResultHolder.consume(stack);
+            return InteractionResult.CONSUME;
         }
 
         long ticks = getTicksElapsed(stack);
         if (ticks < getTicksBetweenLoot(stack)) {
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
         }
 
         List<ItemStack> lootCollection = getLoot(stack, world);
@@ -182,7 +181,7 @@ public class MagicInABottle extends Item {
         }
 
         setTicksElapsed(stack, 0);
-        return InteractionResultHolder.success(stack);
+        return InteractionResult.SUCCESS;
     }
 
     public static int getTicksBetweenLoot(ItemStack stack) {

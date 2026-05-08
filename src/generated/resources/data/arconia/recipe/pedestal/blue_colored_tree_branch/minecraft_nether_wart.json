@@ -2,24 +2,12 @@
   "type": "arconia:pedestal",
   "durationTicks": 60,
   "ingredients": [
-    {
-      "item": "arconia:blue_arconium_ingot"
-    },
-    {
-      "item": "arconia:four_leaf_clover"
-    },
-    {
-      "item": "minecraft:nether_wart"
-    },
-    {
-      "item": "minecraft:red_nether_bricks"
-    },
-    {
-      "item": "minecraft:nether_wart_block"
-    },
-    {
-      "item": "arconia:blue_colored_tree_branch"
-    }
+    "arconia:blue_arconium_ingot",
+    "arconia:four_leaf_clover",
+    "minecraft:nether_wart",
+    "minecraft:red_nether_bricks",
+    "minecraft:nether_wart_block",
+    "arconia:blue_colored_tree_branch"
   ],
   "output": {
     "components": {

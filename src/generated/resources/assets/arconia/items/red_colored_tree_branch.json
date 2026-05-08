@@ -1,0 +1,24 @@
+{
+  "model": {
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:model",
+        "model": "arconia:item/tree_branch_base",
+        "tints": [
+          {
+            "type": "minecraft:constant",
+            "value": -65536
+          }
+        ]
+      },
+      {
+        "type": "minecraft:special",
+        "base": "arconia:item/tree_branch_base",
+        "model": {
+          "type": "arconia:branch_overlay"
+        }
+      }
+    ]
+  }
+}

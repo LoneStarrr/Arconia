@@ -5,7 +5,7 @@ import lonestarrr.arconia.common.block.entities.PedestalBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -42,8 +42,8 @@ public class Pedestal extends BaseEntityBlock {
         SHAPE = Shapes.or(base0, base1, center, top0, top1);
     }
 
-    public Pedestal() {
-        super(Block.Properties.of().mapColor(MapColor.WOOD).ignitedByLava().strength(2.0F).sound(SoundType.WOOD));
+    public Pedestal(Block.Properties props) {
+        super(props.mapColor(MapColor.WOOD).ignitedByLava().strength(2.0F).sound(SoundType.WOOD));
     }
 
     @Nonnull
@@ -68,19 +68,19 @@ public class Pedestal extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull ItemInteractionResult useItemOn(
+    protected @NotNull InteractionResult useItemOn(
             @NotNull ItemStack playerStack, @NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult traceResult) {
 
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (!(blockEntity instanceof PedestalBlockEntity)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         ItemStack currentItem = ((PedestalBlockEntity) blockEntity).getItemOnDisplay();
 
         if (currentItem.isEmpty()) {
             if (playerStack.isEmpty()) {
-                return ItemInteractionResult.FAIL;
+                return InteractionResult.FAIL;
             }
             ((PedestalBlockEntity) blockEntity).putItem(playerStack);
             if (playerStack.getCount() > 1) {
@@ -88,13 +88,13 @@ public class Pedestal extends BaseEntityBlock {
             } else {
                 player.setItemInHand(hand, ItemStack.EMPTY);
             }
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         } else {
             if (player.addItem(currentItem)) {
                 ((PedestalBlockEntity) blockEntity).removeItem();
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
     }
 }

@@ -2,30 +2,14 @@
   "type": "arconia:pedestal",
   "durationTicks": 60,
   "ingredients": [
-    {
-      "item": "minecraft:lime_candle"
-    },
-    {
-      "item": "minecraft:emerald_block"
-    },
-    {
-      "item": "minecraft:waxed_weathered_copper"
-    },
-    {
-      "item": "minecraft:melon"
-    },
-    {
-      "item": "arconia:green_arconium_essence"
-    },
-    {
-      "item": "arconia:green_arconium_essence"
-    },
-    {
-      "item": "arconia:green_arconium_essence"
-    },
-    {
-      "item": "arconia:four_leaf_clover"
-    }
+    "minecraft:lime_candle",
+    "minecraft:emerald_block",
+    "minecraft:waxed_weathered_copper",
+    "minecraft:melon",
+    "arconia:green_arconium_essence",
+    "arconia:green_arconium_essence",
+    "arconia:green_arconium_essence",
+    "arconia:four_leaf_clover"
   ],
   "output": {
     "count": 1,

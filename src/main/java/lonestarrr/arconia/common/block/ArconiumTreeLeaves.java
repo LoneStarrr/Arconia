@@ -14,8 +14,8 @@ import javax.annotation.Nonnull;
 public class ArconiumTreeLeaves extends LeavesBlock {
     private final RainbowColor tier;
 
-    public ArconiumTreeLeaves(RainbowColor tier) {
-        super(Block.Properties.of().mapColor(RainbowColor.getMapColor(tier)).ignitedByLava().pushReaction(PushReaction.DESTROY).strength(0.2F).randomTicks().sound(SoundType.GRASS).noOcclusion());
+    public ArconiumTreeLeaves(Block.Properties props, RainbowColor tier) {
+        super(props.mapColor(RainbowColor.getMapColor(tier)).ignitedByLava().pushReaction(PushReaction.DESTROY).strength(0.2F).randomTicks().sound(SoundType.GRASS).noOcclusion());
         this.tier = tier;
     }
 

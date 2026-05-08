@@ -2,27 +2,13 @@
   "type": "arconia:pedestal",
   "durationTicks": 60,
   "ingredients": [
-    {
-      "item": "arconia:light_blue_arconium_ingot"
-    },
-    {
-      "item": "arconia:four_leaf_clover"
-    },
-    {
-      "item": "minecraft:emerald_block"
-    },
-    {
-      "item": "minecraft:emerald_block"
-    },
-    {
-      "item": "minecraft:emerald_block"
-    },
-    {
-      "item": "minecraft:fletching_table"
-    },
-    {
-      "item": "arconia:light_blue_colored_tree_branch"
-    }
+    "arconia:light_blue_arconium_ingot",
+    "arconia:four_leaf_clover",
+    "minecraft:emerald_block",
+    "minecraft:emerald_block",
+    "minecraft:emerald_block",
+    "minecraft:fletching_table",
+    "arconia:light_blue_colored_tree_branch"
   ],
   "output": {
     "components": {

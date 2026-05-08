@@ -2,27 +2,13 @@
   "type": "arconia:pedestal",
   "durationTicks": 60,
   "ingredients": [
-    {
-      "item": "arconia:red_arconium_ingot"
-    },
-    {
-      "item": "arconia:four_leaf_clover"
-    },
-    {
-      "item": "minecraft:sand"
-    },
-    {
-      "item": "minecraft:sandstone"
-    },
-    {
-      "item": "minecraft:sandstone"
-    },
-    {
-      "item": "minecraft:stone_shovel"
-    },
-    {
-      "item": "arconia:red_colored_tree_branch"
-    }
+    "arconia:red_arconium_ingot",
+    "arconia:four_leaf_clover",
+    "minecraft:sand",
+    "minecraft:sandstone",
+    "minecraft:sandstone",
+    "minecraft:stone_shovel",
+    "arconia:red_colored_tree_branch"
   ],
   "output": {
     "components": {
