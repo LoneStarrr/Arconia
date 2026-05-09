@@ -7,7 +7,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.handlers.ClientPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class ModPackets {

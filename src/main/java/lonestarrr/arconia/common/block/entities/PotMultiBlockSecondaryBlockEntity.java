@@ -31,7 +31,7 @@ public class PotMultiBlockSecondaryBlockEntity extends BaseBlockEntity {
     }
 
     public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-        this.primaryPos = BlockPos.of(tag.getLong("primaryPos"));
+        this.primaryPos = BlockPos.of(tag.getLongOr("primaryPos", 0L));
     }
 
 }

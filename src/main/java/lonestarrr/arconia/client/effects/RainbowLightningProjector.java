@@ -1,19 +1,22 @@
 package lonestarrr.arconia.client.effects;
 
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import lonestarrr.arconia.common.Arconia;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -21,6 +24,32 @@ import java.util.List;
 import java.util.Random;
 
 public class RainbowLightningProjector {
+
+    /**
+     * Mirrors the legacy {@code RENDERTYPE_LIGHTNING_SHADER + LIGHTNING_TRANSPARENCY + NO_CULL + COLOR_WRITE}
+     * combo. Same shader as vanilla {@link RenderPipelines#LIGHTNING}, but with cull disabled and
+     * {@code TRIANGLES} mode for the sword-blade beam geometry. Registered via
+     * {@code RegisterRenderPipelinesEvent} in {@code ClientProxy}.
+     */
+    public static final RenderPipeline BEAM_TRIANGLE_PIPELINE = RenderPipeline.builder(RenderPipelines.MATRICES_COLOR_FOG_SNIPPET)
+            .withLocation(ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "pipeline/beam_triangle"))
+            .withVertexShader("core/rendertype_lightning")
+            .withFragmentShader("core/rendertype_lightning")
+            .withBlend(BlendFunction.LIGHTNING)
+            .withCull(false)
+            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES)
+            .build();
+
+    public static final RenderType BEAM_TRIANGLE = RenderType.create(
+            "beam_triangle",
+            32768,
+            BEAM_TRIANGLE_PIPELINE,
+            RenderType.CompositeState.builder()
+                    .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
+                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
+                    .setTextureState(RenderStateShard.NO_TEXTURE)
+                    .createCompositeState(false)
+    );
 
     /**
      * Render a lightning effect with a given block position at the center. Similar to end dragon death effect, but with cycling rainbow colors.
@@ -57,7 +86,7 @@ public class RainbowLightningProjector {
         // Vertices for a single  beam - w is used for alpha
         List<Vector4f> vertices = new ArrayList<>(10);
 
-        VertexConsumer builder = buffer.getBuffer(LightningRenderType.BEAM_TRIANGLE);
+        VertexConsumer builder = buffer.getBuffer(BEAM_TRIANGLE);
         long ticks = Minecraft.getInstance().level.getGameTime();
         Color color = fixedColor;
 
@@ -115,29 +144,4 @@ public class RainbowLightningProjector {
         poseStack.popPose();
 
     }
-}
-
-/**
- * Render types for rendering the beam between tree and crate - inspiration gleaned from desht's ModularRouters
- */
-@OnlyIn(Dist.CLIENT)
-class LightningRenderType extends RenderType {
-    public LightningRenderType(
-            String p_173178_, VertexFormat p_173179_, VertexFormat.Mode p_173180_, int p_173181_, boolean p_173182_, boolean p_173183_,
-            Runnable p_173184_, Runnable p_173185_) {
-        super(p_173178_, p_173179_, p_173180_, p_173181_, p_173182_, p_173183_, p_173184_, p_173185_);
-    }
-
-    public static final RenderType BEAM_TRIANGLE = create("beam_triangle",
-            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES, 32768, false, false,
-            RenderType.CompositeState.builder()
-                    .setShaderState(RenderStateShard.RENDERTYPE_LIGHTNING_SHADER)
-                    .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
-                    .setTransparencyState(TransparencyStateShard.LIGHTNING_TRANSPARENCY)
-                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
-                    .setTextureState(RenderStateShard.NO_TEXTURE)
-                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-                    .setCullState(RenderStateShard.NO_CULL)
-                    .createCompositeState(false)
-    );
 }

@@ -3,6 +3,8 @@ package lonestarrr.arconia.common.core.proxy;
 import lonestarrr.arconia.client.core.handler.BlockEntityRendererHandler;
 import lonestarrr.arconia.client.core.handler.ColorHandler;
 import lonestarrr.arconia.client.effects.PotItemTransfers;
+import lonestarrr.arconia.client.effects.RainbowLightningProjector;
+import lonestarrr.arconia.client.effects.RainbowRenderer;
 import lonestarrr.arconia.client.integration.jei.ClientPedestalRecipes;
 import lonestarrr.arconia.client.gui.render.BranchItemRenderer;
 import lonestarrr.arconia.client.item.MagicInABottleFilledProperty;
@@ -17,6 +19,7 @@ import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
+import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
@@ -32,6 +35,7 @@ public class ClientProxy implements IProxy {
         modBus.addListener(this::registerItemTintSources);
         modBus.addListener(this::registerSpecialModelRenderers);
         modBus.addListener(this::registerRangeSelectItemModelProperties);
+        modBus.addListener(this::registerRenderPipelines);
         modBus.addListener(BlockEntityRendererHandler::registerBlockEntityRenderers);
         modBus.addListener(this::registerParticleFactories);
 
@@ -63,6 +67,11 @@ public class ClientProxy implements IProxy {
 
     private void registerRangeSelectItemModelProperties(RegisterRangeSelectItemModelPropertyEvent event) {
         event.register(MagicInABottleFilledProperty.ID, MagicInABottleFilledProperty.MAP_CODEC);
+    }
+
+    private void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
+        event.registerPipeline(RainbowRenderer.RAINBOW_SEGMENT_PIPELINE);
+        event.registerPipeline(RainbowLightningProjector.BEAM_TRIANGLE_PIPELINE);
     }
 
     private void registerParticleFactories(RegisterParticleProvidersEvent event) {

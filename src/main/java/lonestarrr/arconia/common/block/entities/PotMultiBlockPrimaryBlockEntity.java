@@ -18,8 +18,7 @@ import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -431,7 +430,10 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
 
     public void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
         ListTag resourceListTag = new ListTag();
-        generatedResources.forEach(resource -> resourceListTag.add(resource.saveOptional(registries)));
+        generatedResources.forEach(resource -> resourceListTag.add(
+                ItemStack.OPTIONAL_CODEC
+                        .encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), resource)
+                        .getOrThrow()));
         tag.put(TAG_RESOURCES, resourceListTag);
         tag.putInt(TAG_ITEM_GEN_CREDITS, itemGenerationCredits);
         // This needs to be stored as, while the presence of trees determines the tier, the highest tier tree might have
@@ -442,9 +444,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         // This is required for the block entity renderer
         tag.putBoolean(TAG_STORAGE_FULL, storageFull);
         // As is this
-        if (storageBlockPos != null) {
-            tag.put(TAG_STORAGE_BLOCKPOS, NbtUtils.writeBlockPos(storageBlockPos));
-        }
+        tag.storeNullable(TAG_STORAGE_BLOCKPOS, BlockPos.CODEC, storageBlockPos);
         ListTag bonusTreeColorsTag = new ListTag();
         for (RainbowColor color : bonusTreeColors) {
             bonusTreeColorsTag.add(IntTag.valueOf(color.getTier()));
@@ -453,24 +453,27 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
     }
 
     public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-        ListTag resourceListTag = tag.getList(TAG_RESOURCES, Tag.TAG_COMPOUND);
+        ListTag resourceListTag = tag.getListOrEmpty(TAG_RESOURCES);
         generatedResources.clear();
         for (int idx = 0; idx < resourceListTag.size(); idx++) {
             if (generatedResources.size() < maxResources) {
-                generatedResources.add(ItemStack.parseOptional(registries, resourceListTag.getCompound(idx)));
+                generatedResources.add(ItemStack.OPTIONAL_CODEC
+                        .parse(registries.createSerializationContext(NbtOps.INSTANCE), resourceListTag.getCompoundOrEmpty(idx))
+                        .resultOrPartial(err -> {})
+                        .orElse(ItemStack.EMPTY));
             }
         }
-        this.itemGenerationCredits = tag.getInt(TAG_ITEM_GEN_CREDITS);
-        int detectedTierInt = tag.getInt(TAG_DETECTED_TIER);
+        this.itemGenerationCredits = tag.getIntOr(TAG_ITEM_GEN_CREDITS, 0);
+        int detectedTierInt = tag.getIntOr(TAG_DETECTED_TIER, 0);
         if (detectedTierInt > 0) {
             this.detectedTier = RainbowColor.byTier(detectedTierInt);
         }
-        this.storageFull = tag.getBoolean(TAG_STORAGE_FULL);
-        this.storageBlockPos = NbtUtils.readBlockPos(tag, TAG_STORAGE_BLOCKPOS).orElse(null);
-        ListTag bonusTreeColorsTag = tag.getList(TAG_BONUS_TREE_COLORS, Tag.TAG_INT);
+        this.storageFull = tag.getBooleanOr(TAG_STORAGE_FULL, false);
+        this.storageBlockPos = tag.read(TAG_STORAGE_BLOCKPOS, BlockPos.CODEC).orElse(null);
+        ListTag bonusTreeColorsTag = tag.getListOrEmpty(TAG_BONUS_TREE_COLORS);
         this.bonusTreeColors = new HashSet<>();
         for (int i = 0; i < bonusTreeColorsTag.size(); i++) {
-            RainbowColor color = RainbowColor.byTier(bonusTreeColorsTag.getInt(i));
+            RainbowColor color = RainbowColor.byTier(bonusTreeColorsTag.getIntOr(i, 0));
             if (color != null) {
                 this.bonusTreeColors.add(color);
             }

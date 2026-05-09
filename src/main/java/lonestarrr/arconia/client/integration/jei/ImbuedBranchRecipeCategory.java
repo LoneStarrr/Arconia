@@ -1,6 +1,5 @@
 package lonestarrr.arconia.client.integration.jei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
 import mezz.jei.api.constants.VanillaTypes;
@@ -61,9 +60,7 @@ public class ImbuedBranchRecipeCategory implements IRecipeCategory<ImbuedBranchR
 
     @Override
     public void draw(ImbuedBranchRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics gui, double mouseX, double mouseY) {
-        RenderSystem.enableBlend();
         overlay.draw(gui, 0, 0);
-        RenderSystem.disableBlend();
 
     }
 

@@ -1,6 +1,5 @@
 package lonestarrr.arconia.client.integration.jei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.ModBlocks;
@@ -69,9 +68,7 @@ public class AltarRecipeCategory implements IRecipeCategory<PedestalRecipe> {
 
     @Override
     public void draw(PedestalRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics gui, double mouseX, double mouseY) {
-        RenderSystem.enableBlend();
         overlay.draw(gui, 0, 0);
-        RenderSystem.disableBlend();
     }
 
     @Override

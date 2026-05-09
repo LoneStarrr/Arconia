@@ -97,22 +97,16 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     @Override
     public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
         super.readPacketNBT(tag, registries);
-        if (tag.contains(TAG_RECIPE)) {
-            currentRecipeID = ResourceLocation.parse(tag.getString(TAG_RECIPE));
-        }
-        if (tag.contains(TAG_RECIPE_DURATION)) {
-            currentRecipeDuration = tag.getInt(TAG_RECIPE_DURATION);
-        }
-        if (tag.contains(TAG_ONGOING)) {
-            ritualOngoing = tag.getBoolean(TAG_ONGOING);
-        }
-        if (tag.contains(TAG_ELAPSED)) {
-            ritualTicksElapsed = tag.getFloat(TAG_ELAPSED);
+        tag.getString(TAG_RECIPE).ifPresent(s -> currentRecipeID = ResourceLocation.parse(s));
+        tag.getInt(TAG_RECIPE_DURATION).ifPresent(v -> currentRecipeDuration = v);
+        tag.getBoolean(TAG_ONGOING).ifPresent(v -> ritualOngoing = v);
+        tag.getFloat(TAG_ELAPSED).ifPresent(v -> {
+            ritualTicksElapsed = v;
             if (this.level != null && this.level.isClientSide) {
                 // Track this for animating the ritual client side
                 ritualStartTime = this.level.getGameTime() - (long) ritualTicksElapsed;
             }
-        }
+        });
     }
 
     public boolean isRitualOngoing() { return ritualOngoing; }

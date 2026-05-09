@@ -27,7 +27,7 @@ public class PotRenderer implements BlockEntityRenderer<PotMultiBlockPrimaryBloc
     @Override
     public void render(
             @NotNull PotMultiBlockPrimaryBlockEntity potEntity, float partialTicks, @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, int combinedLight,
-            int combinedOverlay) {
+            int combinedOverlay, net.minecraft.world.phys.Vec3 cameraPos) {
         Level level = Minecraft.getInstance().level;
 
         if (level == null) {

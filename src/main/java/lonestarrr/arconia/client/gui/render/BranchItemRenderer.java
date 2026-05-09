@@ -44,7 +44,7 @@ public class BranchItemRenderer implements SpecialModelRenderer<ItemStack> {
         // across calls would clash with concurrent (or nested) renders. Reset/repopulate per call.
         Minecraft minecraft = Minecraft.getInstance();
         ItemStackRenderState state = new ItemStackRenderState();
-        minecraft.getItemModelResolver().updateForTopItem(state, contained, ItemDisplayContext.GROUND, false, minecraft.level, null, 0);
+        minecraft.getItemModelResolver().updateForTopItem(state, contained, ItemDisplayContext.GROUND, minecraft.level, null, 0);
         poseStack.pushPose();
         // The composite's first model already has applied the GUI/in-hand item transform for the
         // branch — we just position the contained-item overlay relative to that and let the inner

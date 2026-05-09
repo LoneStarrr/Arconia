@@ -16,7 +16,8 @@ import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.advancements.critereon.DataComponentMatchers;
+import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -42,8 +43,10 @@ public class AdvancementSubProvider implements net.minecraft.data.advancements.A
                 ? ItemPredicate.Builder.item().of(items, ModItems.fourLeafClover.get())
                 : ItemPredicate.Builder.item()
                         .of(items, guideBook.getItem())
-                        .hasComponents(DataComponentPredicate.allOf(
-                                guideBook.getComponents().filter(ct -> ct.equals(PatchouliHelper.patchouliGuideBookComponent()))));
+                        .withComponents(DataComponentMatchers.Builder.components()
+                                .exact(DataComponentExactPredicate.allOf(
+                                        guideBook.getComponents().filter(ct -> ct.equals(PatchouliHelper.patchouliGuideBookComponent()))))
+                                .build());
         AdvancementHolder root = Advancement.Builder.advancement()
                 .addCriterion("guide_book", InventoryChangeTrigger.TriggerInstance.hasItems(rootCriterion))
                 .display(
@@ -132,11 +135,10 @@ public class AdvancementSubProvider implements net.minecraft.data.advancements.A
                         .hasItems(
                                 ItemPredicate.Builder.item()
                                         .of(items, colordBranch.getItem())
-                                        .hasComponents(
-                                                DataComponentPredicate.allOf(
-                                                        (colordBranch.getComponents().filter(ct -> ct.equals(DataComponents.CONTAINER)))
-                                                )
-                                        )
+                                        .withComponents(DataComponentMatchers.Builder.components()
+                                                .exact(DataComponentExactPredicate.allOf(
+                                                        colordBranch.getComponents().filter(ct -> ct.equals(DataComponents.CONTAINER))))
+                                                .build())
                         )
                 )
                 .parent(centerPedestal)

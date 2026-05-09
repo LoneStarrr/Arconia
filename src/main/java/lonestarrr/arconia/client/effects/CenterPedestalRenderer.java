@@ -25,7 +25,7 @@ public class CenterPedestalRenderer implements BlockEntityRenderer<CenterPedesta
     @Override
     public void render(
             CenterPedestalBlockEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
-            int combinedOverlay) {
+            int combinedOverlay, Vec3 cameraPos) {
         ItemStack stack = tileEntity.getItemOnDisplay();
         if (stack.isEmpty()) {
             if (tileEntity.getRitualProgressPercentage() > 0) {

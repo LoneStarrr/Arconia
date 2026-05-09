@@ -12,9 +12,6 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ItemModelOutput;
 import net.minecraft.client.data.models.ModelProvider;
-import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
-import net.minecraft.client.data.models.blockstates.Variant;
-import net.minecraft.client.data.models.blockstates.VariantProperties;
 import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
@@ -179,7 +176,7 @@ public class ArconiaModelProvider extends ModelProvider {
     // ---------- helpers ----------
 
     private void simpleBlockState(BlockModelGenerators blockModels, Block block, ResourceLocation modelLocation) {
-        blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block, Variant.variant().with(VariantProperties.MODEL, modelLocation)));
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, BlockModelGenerators.plainVariant(modelLocation)));
     }
 
     /** Constant per-layer tint for a flat (sprite-based) item model living at {@code modelLocation}. */

@@ -48,7 +48,7 @@ public class ArconiaCommand {
         Item resourceItem = itemInput.getItem();
 
         // Enchant resourceItem in player's hand
-        ItemStack branchItem = player.getInventory().getSelected();
+        ItemStack branchItem = player.getInventory().getSelectedItem();
         if (branchItem.isEmpty() || !(branchItem.getItem() instanceof ColoredBranch)) {
             player.displayClientMessage(Component.literal("A colored branch is expected in your active hotbar slot for this to work"), false);
             return Command.SINGLE_SUCCESS;

@@ -22,6 +22,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -41,6 +42,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 /**
  * Time in a bottle? What's that? Never heard of that. No, this is *magic* in a bottle. It generates a random resource from a loot table at a slow rate.
@@ -85,12 +88,12 @@ public class MagicInABottle extends Item {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(
-            @NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> toolTips, @NotNull TooltipFlag flag) {
-        super.appendHoverText(stack, context, toolTips, flag);
+            @NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, display, tooltipAdder, flag);
         long ticksElapsed = getTicksElapsed(stack);
         int ticksBetweenLoot = getTicksBetweenLoot(stack);
         int pct = (int)Math.min(100, (int)(ticksElapsed * 100d / ticksBetweenLoot));
-        toolTips.add(Component.translatable(stack.getItem().getDescriptionId() + ".tooltip", pct).withStyle(ChatFormatting.AQUA, ChatFormatting.ITALIC));
+        tooltipAdder.accept(Component.translatable(stack.getItem().getDescriptionId() + ".tooltip", pct).withStyle(ChatFormatting.AQUA, ChatFormatting.ITALIC));
     }
 
     public static long getTicksElapsed(ItemStack stack) {
@@ -112,13 +115,13 @@ public class MagicInABottle extends Item {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level world, Entity entity, int slotIn, boolean selected) {
-        if (world.isClientSide() || !(entity instanceof ServerPlayer)) {
+    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot equipmentSlot) {
+        if (!(entity instanceof ServerPlayer)) {
             return;
         }
         final int tickEvalInterval = 20;
 
-        long gameTime = world.getGameTime();
+        long gameTime = level.getGameTime();
 
         if (gameTime % tickEvalInterval == 0) {
             long ticksElapsed = getTicksElapsed(stack);
@@ -127,7 +130,7 @@ public class MagicInABottle extends Item {
                 ticksElapsed += tickEvalInterval;
                 setTicksElapsed(stack, ticksElapsed);
                 if (ticksElapsed >= ticksNextLoot) {
-                    world.playSound(null, entity.blockPosition(), SoundEvents.BREWING_STAND_BREW, SoundSource.PLAYERS, 1, 1);
+                    level.playSound(null, entity.blockPosition(), SoundEvents.BREWING_STAND_BREW, SoundSource.PLAYERS, 1, 1);
                 }
             }
 

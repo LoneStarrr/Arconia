@@ -27,6 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 public class ColoredBranch extends Item {
     private RainbowColor tier;
@@ -77,11 +79,11 @@ public class ColoredBranch extends Item {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext ctx, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, ctx, tooltipComponents, tooltipFlag);
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext ctx, @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, ctx, display, tooltipAdder, tooltipFlag);
         ItemStack resource = getResourceItem(stack);
         if (!resource.isEmpty()) {
-            tooltipComponents.add(resource.getItem().getName(resource));
+            tooltipAdder.accept(resource.getItem().getName(resource));
         }
     }
 

@@ -1,24 +1,53 @@
 package lonestarrr.arconia.client.effects;
 
-import com.mojang.blaze3d.vertex.*;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import lonestarrr.arconia.common.Arconia;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.renderer.RenderStateShard.TransparencyStateShard;
-
 /**
  * Render a rainbow between two points, with 1 or more colors
  */
 public class RainbowRenderer {
+    /**
+     * Replaces the legacy {@code POSITION_COLOR_SHADER + LIGHTNING_TRANSPARENCY + NO_CULL + COLOR_WRITE}
+     * combo from 1.21.4. The pipeline is registered via {@code RegisterRenderPipelinesEvent} in
+     * {@code ClientProxy}; without that registration its shader files would never get loaded.
+     */
+    public static final RenderPipeline RAINBOW_SEGMENT_PIPELINE = RenderPipeline.builder(RenderPipelines.MATRICES_COLOR_SNIPPET)
+            .withLocation(ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "pipeline/rainbow_segment"))
+            .withVertexShader("core/position_color")
+            .withFragmentShader("core/position_color")
+            .withBlend(BlendFunction.LIGHTNING)
+            .withCull(false)
+            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
+            .build();
+
+    public static final RenderType RAINBOW_SEGMENT = RenderType.create(
+            "rainbow_segment",
+            32768,
+            RAINBOW_SEGMENT_PIPELINE,
+            RenderType.CompositeState.builder()
+                    .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
+                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
+                    .setTextureState(RenderStateShard.NO_TEXTURE)
+                    .createCompositeState(false)
+    );
+
     public static void renderRainbow(float diameter, PoseStack poseStack, MultiBufferSource buffer) {
         float radiusOuter = diameter / 2;
         float radiusInner = radiusOuter * 0.8f;
@@ -30,7 +59,7 @@ public class RainbowRenderer {
 
         poseStack.pushPose();
 
-        VertexConsumer builder = buffer.getBuffer(RainbowSegmentRenderType.RAINBOW_SEGMENT);
+        VertexConsumer builder = buffer.getBuffer(RAINBOW_SEGMENT);
         Matrix4f positionMatrix = poseStack.last().pose();
 
 
@@ -84,30 +113,4 @@ public class RainbowRenderer {
         result.add(new Vector3f(x + xOffset, 0, z));
         return result;
     }
-}
-
-/**
- * Render type for rendering the rainbow in quad segments
- */
-@OnlyIn(Dist.CLIENT)
-class RainbowSegmentRenderType extends RenderType {
-    // Default constructor to satisfy compiler
-    public RainbowSegmentRenderType(
-            String p_173178_, VertexFormat p_173179_, VertexFormat.Mode p_173180_, int p_173181_, boolean p_173182_, boolean p_173183_,
-            Runnable p_173184_, Runnable p_173185_) {
-        super(p_173178_, p_173179_, p_173180_, p_173181_, p_173182_, p_173183_, p_173184_, p_173185_);
-    }
-
-    public static final RenderType RAINBOW_SEGMENT = create("rainbow_segment",
-           DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 32768, false, false,
-           RenderType.CompositeState.builder()
-                    .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
-                    .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
-                    .setTransparencyState(TransparencyStateShard.LIGHTNING_TRANSPARENCY)
-                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
-                    .setTextureState(RenderStateShard.NO_TEXTURE)
-                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-                    .setCullState(RenderStateShard.NO_CULL)
-                    .createCompositeState(false)
-    );
 }

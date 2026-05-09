@@ -76,7 +76,7 @@ public class CloverStaff extends Item {
             return null;
         }
 
-        return BlockPos.of(tag.getLong(TAG_POT_POS));
+        return BlockPos.of(tag.getLongOr(TAG_POT_POS, 0L));
     }
 
     private static BlockPos storePotCoordinate(Level world, BlockPos pos, ItemStack staff) {

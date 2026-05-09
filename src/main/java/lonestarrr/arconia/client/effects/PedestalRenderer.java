@@ -14,7 +14,7 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalBlockEntity
     @Override
     public void render(
             PedestalBlockEntity blockEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
-            int combinedOverlay) {
+            int combinedOverlay, net.minecraft.world.phys.Vec3 cameraPos) {
         // TODO Duplicate logic w/ResourceGenRenderer - separate out into shared code
         ItemStack stack = blockEntity.getItemOnDisplay();
         if (stack == ItemStack.EMPTY) {
