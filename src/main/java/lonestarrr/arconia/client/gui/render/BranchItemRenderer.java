@@ -14,6 +14,10 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Set;
+
+import org.joml.Vector3f;
+
 /**
  * Renders the small "imbued" item perched on top of a colored tree branch — the per-stack overlay
  * that distinguishes a plain branch from an imbued one. The base branch model is rendered by the
@@ -22,6 +26,12 @@ import org.jetbrains.annotations.Nullable;
  */
 public class BranchItemRenderer implements SpecialModelRenderer<ItemStack> {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "branch_overlay");
+
+    @Override
+    public void getExtents(Set<Vector3f> set) {
+        set.add(new Vector3f(0.8f, 0.65f, 0.6f));
+        set.add(new Vector3f(0.8f + 0.45f, 0.65f + 0.45f, 0.6f + 0.45f));
+    }
 
     @Nullable
     @Override

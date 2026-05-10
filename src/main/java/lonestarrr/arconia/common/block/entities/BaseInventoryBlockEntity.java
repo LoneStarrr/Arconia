@@ -1,12 +1,10 @@
 package lonestarrr.arconia.common.block.entities;
 
-import lonestarrr.arconia.common.block.entities.BaseBlockEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -27,12 +25,12 @@ public abstract class BaseInventoryBlockEntity extends BaseBlockEntity {
     protected abstract ItemStackHandler getInventory();
 
     @Override
-    public void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-        tag.merge(getInventory().serializeNBT(registries));
+    public void writePacketNBT(@NotNull ValueOutput output) {
+        getInventory().serialize(output);
     }
 
     @Override
-    public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-        getInventory().deserializeNBT(registries, tag);
+    public void readPacketNBT(@NotNull ValueInput input) {
+        getInventory().deserialize(input);
     }
 }

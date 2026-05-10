@@ -40,10 +40,7 @@ public class PotItemTransfers {
         transfers.add(transfer);
     }
 
-    public static void render(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
-            return;
-        }
+    public static void render(RenderLevelStageEvent.AfterParticles event) {
         Level world = Minecraft.getInstance().level;
 
         long now = world.getGameTime();

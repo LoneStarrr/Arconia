@@ -1,9 +1,9 @@
 package lonestarrr.arconia.common.block.entities;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -24,14 +24,14 @@ public class PotMultiBlockSecondaryBlockEntity extends BaseBlockEntity {
         return primaryPos;
     }
 
-    public void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+    public void writePacketNBT(@NotNull ValueOutput output) {
         if (this.primaryPos != null) {
-            tag.putLong("primaryPos", primaryPos.asLong());
+            output.putLong("primaryPos", primaryPos.asLong());
         }
     }
 
-    public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-        this.primaryPos = BlockPos.of(tag.getLongOr("primaryPos", 0L));
+    public void readPacketNBT(@NotNull ValueInput input) {
+        this.primaryPos = BlockPos.of(input.getLongOr("primaryPos", 0L));
     }
 
 }

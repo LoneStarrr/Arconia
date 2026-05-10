@@ -28,7 +28,7 @@ public class RainbowRenderer {
      * combo from 1.21.4. The pipeline is registered via {@code RegisterRenderPipelinesEvent} in
      * {@code ClientProxy}; without that registration its shader files would never get loaded.
      */
-    public static final RenderPipeline RAINBOW_SEGMENT_PIPELINE = RenderPipeline.builder(RenderPipelines.MATRICES_COLOR_SNIPPET)
+    public static final RenderPipeline RAINBOW_SEGMENT_PIPELINE = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
             .withLocation(ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "pipeline/rainbow_segment"))
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")

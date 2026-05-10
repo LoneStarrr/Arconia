@@ -5,9 +5,7 @@ import lonestarrr.arconia.common.crafting.ModRecipeTypes;
 import lonestarrr.arconia.common.crafting.PedestalInput;
 import lonestarrr.arconia.common.crafting.PedestalRecipe;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -19,6 +17,8 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -84,29 +84,27 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     }
 
     @Override
-    public void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-        super.writePacketNBT(tag, registries);
+    public void writePacketNBT(@NotNull ValueOutput output) {
+        super.writePacketNBT(output);
         if (currentRecipeID != null) {
-            tag.putString(TAG_RECIPE, currentRecipeID.toString());
+            output.putString(TAG_RECIPE, currentRecipeID.toString());
         }
-        tag.putInt(TAG_RECIPE_DURATION, currentRecipeDuration);
-        tag.putBoolean(TAG_ONGOING, ritualOngoing);
-        tag.putFloat(TAG_ELAPSED, ritualTicksElapsed);
+        output.putInt(TAG_RECIPE_DURATION, currentRecipeDuration);
+        output.putBoolean(TAG_ONGOING, ritualOngoing);
+        output.putFloat(TAG_ELAPSED, ritualTicksElapsed);
     }
 
     @Override
-    public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-        super.readPacketNBT(tag, registries);
-        tag.getString(TAG_RECIPE).ifPresent(s -> currentRecipeID = ResourceLocation.parse(s));
-        tag.getInt(TAG_RECIPE_DURATION).ifPresent(v -> currentRecipeDuration = v);
-        tag.getBoolean(TAG_ONGOING).ifPresent(v -> ritualOngoing = v);
-        tag.getFloat(TAG_ELAPSED).ifPresent(v -> {
-            ritualTicksElapsed = v;
-            if (this.level != null && this.level.isClientSide) {
-                // Track this for animating the ritual client side
-                ritualStartTime = this.level.getGameTime() - (long) ritualTicksElapsed;
-            }
-        });
+    public void readPacketNBT(@NotNull ValueInput input) {
+        super.readPacketNBT(input);
+        input.getString(TAG_RECIPE).ifPresent(s -> currentRecipeID = ResourceLocation.parse(s));
+        input.getInt(TAG_RECIPE_DURATION).ifPresent(v -> currentRecipeDuration = v);
+        ritualOngoing = input.getBooleanOr(TAG_ONGOING, false);
+        ritualTicksElapsed = input.getFloatOr(TAG_ELAPSED, 0f);
+        if (ritualTicksElapsed > 0 && this.level != null && this.level.isClientSide) {
+            // Track this for animating the ritual client side
+            ritualStartTime = this.level.getGameTime() - (long) ritualTicksElapsed;
+        }
     }
 
     public boolean isRitualOngoing() { return ritualOngoing; }

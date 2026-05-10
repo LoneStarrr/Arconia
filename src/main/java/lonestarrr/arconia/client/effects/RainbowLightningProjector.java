@@ -31,7 +31,7 @@ public class RainbowLightningProjector {
      * {@code TRIANGLES} mode for the sword-blade beam geometry. Registered via
      * {@code RegisterRenderPipelinesEvent} in {@code ClientProxy}.
      */
-    public static final RenderPipeline BEAM_TRIANGLE_PIPELINE = RenderPipeline.builder(RenderPipelines.MATRICES_COLOR_FOG_SNIPPET)
+    public static final RenderPipeline BEAM_TRIANGLE_PIPELINE = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
             .withLocation(ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "pipeline/beam_triangle"))
             .withVertexShader("core/rendertype_lightning")
             .withFragmentShader("core/rendertype_lightning")

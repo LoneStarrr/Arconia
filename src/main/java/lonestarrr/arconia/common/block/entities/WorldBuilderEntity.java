@@ -9,10 +9,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import lonestarrr.arconia.common.Arconia;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -20,6 +18,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 import static lonestarrr.arconia.common.core.helper.ResourceLocationHelper.prefix;
@@ -53,12 +53,12 @@ public class WorldBuilderEntity extends BaseBlockEntity {
     }
 
     @Override
-    public void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+    public void writePacketNBT(@NotNull ValueOutput output) {
 
     }
 
     @Override
-    public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+    public void readPacketNBT(@NotNull ValueInput input) {
 
     }
 

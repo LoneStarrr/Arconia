@@ -10,15 +10,11 @@ import lonestarrr.arconia.common.core.handler.ConfigHandler;
 import lonestarrr.arconia.common.core.helper.InventoryHelper;
 import lonestarrr.arconia.common.network.ModPackets;
 import lonestarrr.arconia.common.network.PotItemTransferPacket;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -27,6 +23,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -428,56 +426,44 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         return itemGenerationCredits;
     }
 
-    public void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-        ListTag resourceListTag = new ListTag();
-        generatedResources.forEach(resource -> resourceListTag.add(
-                ItemStack.OPTIONAL_CODEC
-                        .encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), resource)
-                        .getOrThrow()));
-        tag.put(TAG_RESOURCES, resourceListTag);
-        tag.putInt(TAG_ITEM_GEN_CREDITS, itemGenerationCredits);
+    public void writePacketNBT(@NotNull ValueOutput output) {
+        ValueOutput.TypedOutputList<ItemStack> resourceList = output.list(TAG_RESOURCES, ItemStack.OPTIONAL_CODEC);
+        generatedResources.forEach(resourceList::add);
+        output.putInt(TAG_ITEM_GEN_CREDITS, itemGenerationCredits);
         // This needs to be stored as, while the presence of trees determines the tier, the highest tier tree might have
         // been eaten. It still counts towards the highest tier.
         if (this.detectedTier != null) {
-            tag.putInt(TAG_DETECTED_TIER, detectedTier.getTier());
+            output.putInt(TAG_DETECTED_TIER, detectedTier.getTier());
         }
         // This is required for the block entity renderer
-        tag.putBoolean(TAG_STORAGE_FULL, storageFull);
+        output.putBoolean(TAG_STORAGE_FULL, storageFull);
         // As is this
-        tag.storeNullable(TAG_STORAGE_BLOCKPOS, BlockPos.CODEC, storageBlockPos);
-        ListTag bonusTreeColorsTag = new ListTag();
+        output.storeNullable(TAG_STORAGE_BLOCKPOS, BlockPos.CODEC, storageBlockPos);
+        ValueOutput.TypedOutputList<Integer> bonusColors = output.list(TAG_BONUS_TREE_COLORS, Codec.INT);
         for (RainbowColor color : bonusTreeColors) {
-            bonusTreeColorsTag.add(IntTag.valueOf(color.getTier()));
+            bonusColors.add(color.getTier());
         }
-        tag.put(TAG_BONUS_TREE_COLORS, bonusTreeColorsTag);
     }
 
-    public void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-        ListTag resourceListTag = tag.getListOrEmpty(TAG_RESOURCES);
+    public void readPacketNBT(@NotNull ValueInput input) {
         generatedResources.clear();
-        for (int idx = 0; idx < resourceListTag.size(); idx++) {
-            if (generatedResources.size() < maxResources) {
-                generatedResources.add(ItemStack.OPTIONAL_CODEC
-                        .parse(registries.createSerializationContext(NbtOps.INSTANCE), resourceListTag.getCompoundOrEmpty(idx))
-                        .resultOrPartial(err -> {})
-                        .orElse(ItemStack.EMPTY));
-            }
-        }
-        this.itemGenerationCredits = tag.getIntOr(TAG_ITEM_GEN_CREDITS, 0);
-        int detectedTierInt = tag.getIntOr(TAG_DETECTED_TIER, 0);
+        input.listOrEmpty(TAG_RESOURCES, ItemStack.OPTIONAL_CODEC).stream()
+                .limit(maxResources)
+                .forEach(generatedResources::add);
+        this.itemGenerationCredits = input.getIntOr(TAG_ITEM_GEN_CREDITS, 0);
+        int detectedTierInt = input.getIntOr(TAG_DETECTED_TIER, 0);
         if (detectedTierInt > 0) {
             this.detectedTier = RainbowColor.byTier(detectedTierInt);
         }
-        this.storageFull = tag.getBooleanOr(TAG_STORAGE_FULL, false);
-        this.storageBlockPos = tag.read(TAG_STORAGE_BLOCKPOS, BlockPos.CODEC).orElse(null);
-        ListTag bonusTreeColorsTag = tag.getListOrEmpty(TAG_BONUS_TREE_COLORS);
+        this.storageFull = input.getBooleanOr(TAG_STORAGE_FULL, false);
+        this.storageBlockPos = input.read(TAG_STORAGE_BLOCKPOS, BlockPos.CODEC).orElse(null);
         this.bonusTreeColors = new HashSet<>();
-        for (int i = 0; i < bonusTreeColorsTag.size(); i++) {
-            RainbowColor color = RainbowColor.byTier(bonusTreeColorsTag.getIntOr(i, 0));
+        input.listOrEmpty(TAG_BONUS_TREE_COLORS, Codec.INT).stream().forEach(tier -> {
+            RainbowColor color = RainbowColor.byTier(tier);
             if (color != null) {
                 this.bonusTreeColors.add(color);
             }
-        }
+        });
     }
 
     public static class StorageFullException extends Exception {

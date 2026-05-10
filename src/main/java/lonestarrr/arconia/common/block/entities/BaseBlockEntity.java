@@ -1,8 +1,6 @@
 package lonestarrr.arconia.common.block.entities;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -10,6 +8,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 /** Base class for block entities that implement the standard data syncing
@@ -20,20 +20,20 @@ public abstract class BaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-        super.saveAdditional(tag, registries);
-        writePacketNBT(tag, registries);
+    protected void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
+        writePacketNBT(output);
     }
 
     @Override
-    protected void loadAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-        super.loadAdditional(tag, registries);
-        readPacketNBT(tag, registries);
+    protected void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
+        readPacketNBT(input);
     }
 
-    public abstract void writePacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries);
+    public abstract void writePacketNBT(@NotNull ValueOutput output);
 
-    public abstract void readPacketNBT(CompoundTag tag, HolderLookup.@NotNull Provider registries);
+    public abstract void readPacketNBT(@NotNull ValueInput input);
 
     /**
      * Updates client on block updates
@@ -45,15 +45,8 @@ public abstract class BaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider registries) {
-        CompoundTag result = new CompoundTag();
-        saveAdditional(result, registries);
-        return result;
-    }
-
-    @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider lookupProvider) {
-        loadAdditional(tag, lookupProvider);
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        loadAdditional(input);
     }
 
     /**

@@ -168,7 +168,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
     }
 
     // inspired by Barrier block
-    @OnlyIn(Dist.CLIENT)
+    @Override
     public float getShadeBrightness(BlockState state, BlockGetter worldIn, BlockPos pos) {
         return 1.0F;
     }

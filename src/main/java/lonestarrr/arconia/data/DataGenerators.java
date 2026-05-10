@@ -7,11 +7,9 @@ import lonestarrr.arconia.data.loot.ArconiaLootTableProvider;
 import lonestarrr.arconia.data.recipes.ModRecipeProvider;
 import lonestarrr.arconia.data.world.BiomeModifiers;
 import net.minecraft.data.advancements.AdvancementProvider;
-import net.minecraft.data.tags.TagsProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Executed as part of the {@code runData} gradle task — run this once on a fresh checkout (and
@@ -37,7 +35,7 @@ public class DataGenerators {
         event.createProvider(BiomeModifiers::new);
         event.createProvider(ArconiaLootTableProvider::create);
         event.createProvider(ArconiaBiomeTagsProvider::new);
-        event.createProvider((output, lookupProvider) -> new ModItemTagsProvider(output, lookupProvider, CompletableFuture.completedFuture(TagsProvider.TagLookup.empty())));
+        event.createProvider(ModItemTagsProvider::new);
         event.createProvider((output, lookupProvider) -> new AdvancementProvider(output, lookupProvider, List.of(new AdvancementSubProvider())));
         Arconia.logger.info("**** DataGenerators executed (event class: {})", event.getClass().getSimpleName());
     }
