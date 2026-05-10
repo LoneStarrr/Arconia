@@ -11,18 +11,7 @@
     "arconia:light_blue_colored_tree_branch"
   ],
   "output": {
-    "components": {
-      "minecraft:container": [
-        {
-          "item": {
-            "count": 1,
-            "id": "minecraft:slime_ball"
-          },
-          "slot": 0
-        }
-      ]
-    },
-    "count": 1,
     "id": "arconia:light_blue_colored_tree_branch"
-  }
+  },
+  "resourceItem": "minecraft:slime_ball"
 }

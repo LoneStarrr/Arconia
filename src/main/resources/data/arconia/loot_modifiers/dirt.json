@@ -8,5 +8,6 @@
       "condition": "arconia:player_needs_guidebook"
     }
   ],
+  "priority": 1000,
   "type": "arconia:dirt"
 }

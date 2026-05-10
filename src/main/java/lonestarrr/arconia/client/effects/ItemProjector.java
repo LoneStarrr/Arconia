@@ -48,7 +48,7 @@ public class ItemProjector {
         poseStack.translate(itemPos.getX(), itemPos.getY(), itemPos.getZ());
         poseStack.translate(0.5, 0.1, 0.5);
         Vector3f rotationVector = new Vector3f(0, 1, 0);
-        int light = LevelRenderer.getLightColor(level, itemPos);
+        int light = LevelRenderer.getLightCoords(level, itemPos);
         long ticks = level.getGameTime();
 
         // rotation animation

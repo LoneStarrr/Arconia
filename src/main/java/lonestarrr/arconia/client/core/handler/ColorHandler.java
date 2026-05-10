@@ -1,9 +1,10 @@
 package lonestarrr.arconia.client.core.handler;
 
+import java.util.List;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.block.*;
 import lonestarrr.arconia.common.core.RainbowColor;
-import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.color.block.BlockTintSources;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 
 /**
@@ -12,34 +13,25 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
  */
 public class ColorHandler {
 
-    public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
+    public static void registerBlockColors(RegisterColorHandlersEvent.BlockTintSources event) {
         Arconia.logger.info("***** registerBlockColors");
-        BlockColors colorBlocks = event.getBlockColors();
 
         // Gleaned from minecraft's ItemColors
         for (RainbowColor tier : RainbowColor.values()) {
             // Tree leaves
             ArconiumTreeLeaves treeLeaf = ModBlocks.getArconiumTreeLeaves(tier).get();
-            colorBlocks.register((state, level, pos, tintIndex) -> {
-                return tier.getColorValue();
-            }, treeLeaf);
+            event.register(List.of(BlockTintSources.constant(tier.getColorValue())), treeLeaf);
 
             // Tree saplings
             ArconiumTreeSapling treeSapling = ModBlocks.getArconiumTreeSapling(tier).get();
-            colorBlocks.register((state, level, pos, tintIndex) -> {
-                return tier.getColorValue();
-            }, treeSapling);
+            event.register(List.of(BlockTintSources.constant(tier.getColorValue())), treeSapling);
 
             // Arconium blocks
             ArconiumBlock arconiumBlock = ModBlocks.getArconiumBlock(tier).get();
-            colorBlocks.register((state, level, pos, tintIndex) -> {
-                return tier.getColorValue();
-            }, arconiumBlock);
+            event.register(List.of(BlockTintSources.constant(tier.getColorValue())), arconiumBlock);
 
             RainbowGrassBlock grassBlock = ModBlocks.getRainbowGrassBlock(tier).get();
-            colorBlocks.register((state, level, pos, tintIndex) -> {
-                return tier.getColorValue();
-            }, grassBlock);
+            event.register(List.of(BlockTintSources.constant(tier.getColorValue())), grassBlock);
         }
     }
 

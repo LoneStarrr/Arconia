@@ -9,18 +9,7 @@
     "arconia:orange_colored_tree_branch"
   ],
   "output": {
-    "components": {
-      "minecraft:container": [
-        {
-          "item": {
-            "count": 1,
-            "id": "arconia:orange_arconium_essence"
-          },
-          "slot": 0
-        }
-      ]
-    },
-    "count": 1,
     "id": "arconia:orange_colored_tree_branch"
-  }
+  },
+  "resourceItem": "arconia:orange_arconium_essence"
 }

@@ -63,7 +63,7 @@ public class WorldBuilder extends BaseEntityBlock {
 
         WorldBuilderEntity wbe = (WorldBuilderEntity) be;
         if (wbe.isConverting()) {
-            player.displayClientMessage(Component.translatable("arconia.block.world_builder.in_progress"), false);
+            player.sendSystemMessage(Component.translatable("arconia.block.world_builder.in_progress"));
             return InteractionResult.FAIL;
         }
 
@@ -74,9 +74,9 @@ public class WorldBuilder extends BaseEntityBlock {
         }
         boolean willConvertBlocks = wbe.startBuild(toMatch, boostFactor);
         if (willConvertBlocks) {
-            player.displayClientMessage(Component.translatable("arconia.block.world_builder.start_build"), false);
+            player.sendSystemMessage(Component.translatable("arconia.block.world_builder.start_build"));
         } else {
-            player.displayClientMessage(Component.translatable("arconia.block.world_builder.no_blocks_found"), false);
+            player.sendSystemMessage(Component.translatable("arconia.block.world_builder.no_blocks_found"));
         }
         return InteractionResult.SUCCESS;
     }

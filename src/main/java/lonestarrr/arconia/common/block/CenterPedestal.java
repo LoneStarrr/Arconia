@@ -115,7 +115,7 @@ public class CenterPedestal extends BaseEntityBlock {
                 if (cbe.startRitual()) {
                     startRitualEffect(level, pos);
                 } else {
-                    player.displayClientMessage(Component.translatable(LANG_PREFIX + ".ritual_start_failed"), false);
+                    player.sendSystemMessage(Component.translatable(LANG_PREFIX + ".ritual_start_failed"));
                 }
             }
         }

@@ -139,8 +139,8 @@ public class FractalTreeCommand {
             count = count + 1;
             if (stopAt >= 0 && count >= stopAt) {
                 String treeRendered = ltree.substring(0, count);
-                player.displayClientMessage(Component.literal("Position = " + s.pos + ", rotation = " + s.rotationX + "," + s.rotationZ + ", " +
-                        " String drawn = " + treeRendered), false);
+                player.sendSystemMessage(Component.literal("Position = " + s.pos + ", rotation = " + s.rotationX + "," + s.rotationZ + ", " +
+                        " String drawn = " + treeRendered));
                 break;
             }
         }

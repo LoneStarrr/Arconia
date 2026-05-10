@@ -17,8 +17,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class DirtLootModifier extends LootModifier {
     public static final MapCodec<DirtLootModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> codecStart(instance).apply(instance, DirtLootModifier::new));
-    protected DirtLootModifier(LootItemCondition[] conditionsIn) {
-        super(conditionsIn);
+    protected DirtLootModifier(LootItemCondition[] conditionsIn, int priority) {
+        super(conditionsIn, priority);
     }
 
     @Override

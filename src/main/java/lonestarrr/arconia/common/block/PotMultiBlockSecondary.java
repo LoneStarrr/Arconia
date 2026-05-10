@@ -83,9 +83,9 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
         if (itemUsed.isEmpty()) {
             RainbowColor potTier = primaryBE.getTier();
             if (potTier == null) {
-                player.displayClientMessage(Component.translatable("arconia.block.pot_multiblock.no_tier"), false);
+                player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.no_tier"));
             } else {
-                player.displayClientMessage(Component.translatable("arconia.block.pot_multiblock.show_tier", potTier.getTierName()), false);
+                player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.show_tier", potTier.getTierName()));
             }
             return InteractionResult.SUCCESS;
         } else if (itemUsed.getItem() instanceof ColoredBranch) {
@@ -101,7 +101,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
                     // no offhand item -> pop off the last treasure
                     removedResource = primaryBE.removeResourceGenerated(ItemStack.EMPTY);
                     if (removedResource.isEmpty()) {
-                        player.displayClientMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_none_set"), false);
+                        player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_none_set"));
                         return InteractionResult.FAIL;
                     }
                 } else {
@@ -110,7 +110,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
                 }
 
                 if (removedResource.isEmpty()) {
-                    player.displayClientMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_not_found"), false);
+                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_not_found"));
                     return InteractionResult.FAIL;
                 } else {
                     ItemStack branch = makeImbuedBranchFromItem((ColoredBranch)itemUsed.getItem(), removedResource);
@@ -118,13 +118,13 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
                     if (!player.getInventory().add(branch)) {
                         player.drop(branch, false);
                     }
-                    player.displayClientMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_success", removedResource.getHoverName()), false);
+                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.remove_resource_success", removedResource.getHoverName()));
                     return InteractionResult.SUCCESS;
                 }
             } else {
                 // Using an imbued branch on the pot tells it to extract treasure
                 if (!primaryBE.addResourceGenerated(resource)) {
-                    player.displayClientMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_full"), false);
+                    player.sendSystemMessage(Component.translatable("arconia.block.pot_multiblock.set_resource_full"));
                     return InteractionResult.FAIL;
                 } else {
                     itemUsed.shrink(1);

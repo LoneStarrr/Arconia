@@ -52,7 +52,7 @@ public class ClientProxy implements IProxy {
     private void loadComplete(FMLLoadCompleteEvent event) {
     }
 
-    private void registerBlockColors(RegisterColorHandlersEvent.Block event) {
+    private void registerBlockColors(RegisterColorHandlersEvent.BlockTintSources event) {
         // Register dynamically colored blocks
         ColorHandler.registerBlockColors(event);
     }

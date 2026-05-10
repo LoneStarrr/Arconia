@@ -7,6 +7,7 @@ import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.ResourceLocationHelper;
 import lonestarrr.arconia.common.world.ModFeatures;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistrySetBuilder;
@@ -24,19 +25,25 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.BlobFoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.StraightTrunkPlacer;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter;
+import net.minecraft.world.level.levelgen.placement.BiomeFilter;
+import net.minecraft.world.level.levelgen.placement.CountPlacement;
+import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
+import net.minecraft.world.level.levelgen.placement.RandomOffsetPlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -69,11 +76,8 @@ public class BiomeModifiers extends DatapackBuiltinEntriesProvider {
             bootstrap.register(
                     ModFeatures.CLOVER_PATCH_CONFIGURED,
                     new ConfiguredFeature<>(
-                            Feature.RANDOM_PATCH,
-                            new RandomPatchConfiguration(3, 6, 3,
-                                    PlacementUtils.onlyWhenEmpty(
-                                            Feature.SIMPLE_BLOCK,
-                                            new SimpleBlockConfiguration(BlockStateProvider.simple(ModBlocks.clover.get()))))));
+                            Feature.SIMPLE_BLOCK,
+                            new SimpleBlockConfiguration(BlockStateProvider.simple(ModBlocks.clover.get()))));
 
         });
 
@@ -92,7 +96,17 @@ public class BiomeModifiers extends DatapackBuiltinEntriesProvider {
                     ModFeatures.CLOVER_PATCH,
                     new PlacedFeature(
                             bootstrap.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModFeatures.CLOVER_PATCH_CONFIGURED),
-                            VegetationPlacements.worldSurfaceSquaredWithCount(1)));
+                            List.of(
+                                    CountPlacement.of(3),
+                                    InSquarePlacement.spread(),
+                                    RandomOffsetPlacement.of(
+                                            UniformInt.of(-6, 6),
+                                            UniformInt.of(-3, 3)),
+                                    PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+                                    BiomeFilter.biome(),
+                                    BlockPredicateFilter.forPredicate(
+                                            BlockPredicate.matchesBlocks(Direction.DOWN.getUnitVec3i(), Blocks.GRASS_BLOCK))
+                            )));
         });
 
         // Biome modifiers - these define where the placed features are to be placed

@@ -10,7 +10,6 @@
       "translate": "advancement.arconia.main.pot_of_gold.desc"
     },
     "icon": {
-      "count": 1,
       "id": "minecraft:gold_block"
     },
     "title": {

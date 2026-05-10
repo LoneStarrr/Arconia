@@ -14,6 +14,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.context.UseOnContext;
@@ -73,6 +74,16 @@ public class ColoredBranch extends Item {
         ItemStack coloredBranch = new ItemStack(branch);
         setResourceItem(coloredBranch, resource.copy());
         return coloredBranch;
+    }
+
+    /**
+     * Create a base ItemStackTemplate for a colored branch.
+     * Safe to call during datagen when registries aren't fully loaded.
+     * The resource item is set separately via PedestalRecipe's resourceItem field.
+     */
+    public static ItemStackTemplate getColoredBranchTemplate(RainbowColor color) {
+        Item branch = ModItems.getColoredBranch(color).get();
+        return new ItemStackTemplate(branch);
     }
 
     @Override

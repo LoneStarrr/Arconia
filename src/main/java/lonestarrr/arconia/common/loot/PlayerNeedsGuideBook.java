@@ -17,7 +17,6 @@ import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,8 +29,7 @@ import java.util.Set;
  */
 public class PlayerNeedsGuideBook implements LootItemCondition {
     public static final PlayerNeedsGuideBook INSTANCE = new PlayerNeedsGuideBook();
-    public static MapCodec<PlayerNeedsGuideBook> CODEC = MapCodec.of(Encoder.empty(), Decoder.unit(PlayerNeedsGuideBook.INSTANCE));
-    public static final LootItemConditionType NEEDS_GUIDEBOOK = new LootItemConditionType(CODEC);
+    public static final MapCodec<PlayerNeedsGuideBook> CODEC = MapCodec.of(Encoder.empty(), Decoder.unit(PlayerNeedsGuideBook.INSTANCE));
 
     private PlayerNeedsGuideBook() {}
 
@@ -77,7 +75,7 @@ public class PlayerNeedsGuideBook implements LootItemCondition {
     }
 
     @Override
-    public @NotNull LootItemConditionType getType() {
-        return NEEDS_GUIDEBOOK;
+    public @NotNull MapCodec<? extends LootItemCondition> codec() {
+        return CODEC;
     }
 }

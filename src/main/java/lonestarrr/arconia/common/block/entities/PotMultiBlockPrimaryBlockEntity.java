@@ -251,7 +251,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
                     }
                 }
             }
-            BlockPos pos = ring.get(level.random.nextInt(ring.size()));
+            BlockPos pos = ring.get(level.getRandom().nextInt(ring.size()));
             SimpleParticleType pType = ModParticles.RAINBOW_PARTICLES.get();
             switch(this.detectedTier) {
                 case RED -> pType = ModParticles.RAINBOW_PARTICLES_RED.get();
@@ -303,7 +303,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
             int bonusChance = numBonusTrees * bonusChancePerTree;
             drawCount += bonusChance / 100;
             int extraDrawChancePct = bonusChance % 100;
-            if (level.random.nextInt(100) < extraDrawChancePct) {
+            if (level.getRandom().nextInt(100) < extraDrawChancePct) {
                 drawCount++;
             }
         }
@@ -318,7 +318,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
                 break;
             }
             int maxSendCount = Math.min(ConfigHandler.COMMON.potGenerationCount.get(detectedTier).get(), itemGenerationCredits);
-            ItemStack toGenerate = this.generatedResources.get(level.random.nextInt(generatedResources.size()));
+            ItemStack toGenerate = this.generatedResources.get(level.getRandom().nextInt(generatedResources.size()));
 
             ItemStack toSend = toGenerate.copy();
             int sendCount = Math.min(maxSendCount, toSend.getMaxStackSize());

@@ -46,17 +46,17 @@ public class ArconiaCommand {
     private static int imbueBranch(
             CommandContext<CommandSourceStack> ctx, ItemInput itemInput) throws CommandSyntaxException {
         Player player = ctx.getSource().getPlayerOrException();
-        Item resourceItem = itemInput.getItem();
+        Item resourceItem = itemInput.item().value();
 
         // Enchant resourceItem in player's hand
         ItemStack branchItem = player.getInventory().getSelectedItem();
         if (branchItem.isEmpty() || !(branchItem.getItem() instanceof ColoredBranch)) {
-            player.displayClientMessage(Component.literal("A colored branch is expected in your active hotbar slot for this to work"), false);
+            player.sendSystemMessage(Component.literal("A colored branch is expected in your active hotbar slot for this to work"));
             return Command.SINGLE_SUCCESS;
         }
 
         ColoredBranch.setResourceItem(branchItem, new ItemStack(resourceItem));
-        player.displayClientMessage(Component.literal("Imbued the colored branch with resourceItem " + BuiltInRegistries.ITEM.getKey(resourceItem).toString()), false);
+        player.sendSystemMessage(Component.literal("Imbued the colored branch with resourceItem " + BuiltInRegistries.ITEM.getKey(resourceItem).toString()));
         return Command.SINGLE_SUCCESS;
     }
 }

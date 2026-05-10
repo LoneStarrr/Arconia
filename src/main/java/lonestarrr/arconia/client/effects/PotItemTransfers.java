@@ -39,7 +39,7 @@ public class PotItemTransfers {
         transfers.add(transfer);
     }
 
-    public static void render(RenderLevelStageEvent.AfterParticles event) {
+    public static void render(RenderLevelStageEvent.AfterTranslucentParticles event) {
         Level world = Minecraft.getInstance().level;
         if (world == null) {
             return;
@@ -103,8 +103,8 @@ class ItemTransfer {
         this.itemStack = itemStack.copy();
         this.startTick = startTick;
         // Vary gravity and speed a little for visual effect
-        this.gravity = GRAVITY * (0.9 + Minecraft.getInstance().level.random.nextFloat() / 10f);
-        this.displayTicks = DISPLAY_TICKS * (0.6 + 0.4 * Minecraft.getInstance().level.random.nextFloat());
+        this.gravity = GRAVITY * (0.9 + Minecraft.getInstance().level.getRandom().nextFloat() / 10f);
+        this.displayTicks = DISPLAY_TICKS * (0.6 + 0.4 * Minecraft.getInstance().level.getRandom().nextFloat());
     }
 
     public boolean isComplete(float partialTicks) {

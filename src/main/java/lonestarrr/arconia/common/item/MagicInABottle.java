@@ -78,7 +78,7 @@ public class MagicInABottle extends Item {
                 newTier = RainbowColor.RED; // Cycle around
             }
             setTier(itemStack, newTier);
-            player.displayClientMessage(Component.literal("Taste the " + newTier.getTierName() + " rainbow!"), true);
+            ((ServerPlayer) player).sendSystemMessage(Component.literal("Taste the " + newTier.getTierName() + " rainbow!"), true);
         }
         return InteractionResult.SUCCESS;
     }

@@ -9,18 +9,7 @@
     "arconia:green_colored_tree_branch"
   ],
   "output": {
-    "components": {
-      "minecraft:container": [
-        {
-          "item": {
-            "count": 1,
-            "id": "arconia:green_arconium_essence"
-          },
-          "slot": 0
-        }
-      ]
-    },
-    "count": 1,
     "id": "arconia:green_colored_tree_branch"
-  }
+  },
+  "resourceItem": "arconia:green_arconium_essence"
 }

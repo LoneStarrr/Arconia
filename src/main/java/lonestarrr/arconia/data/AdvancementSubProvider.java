@@ -18,12 +18,14 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.advancements.criterion.DataComponentMatchers;
 import net.minecraft.core.component.DataComponentExactPredicate;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 
 import java.util.Optional;
@@ -33,24 +35,25 @@ public class AdvancementSubProvider implements net.minecraft.data.advancements.A
     @Override
     public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver) {
         HolderGetter<Item> items = registries.lookupOrThrow(Registries.ITEM);
-        ItemStack guideBook = PatchouliHelper.createGuideBook();
+        ItemStackTemplate guideBookTemplate = PatchouliHelper.createGuideBookTemplate();
         // When Patchouli isn't on the classpath the guide book stack is empty (its Item resolves to
         // air). 1.21.4's advancement validation rejects air-icon advancements outright, so fall back
         // to the four-leaf clover as the visible icon and as the inventory-change criterion's match
         // — players will still be able to "discover" the root advancement via that item.
-        ItemStack rootIcon = guideBook.isEmpty() ? new ItemStack(ModItems.fourLeafClover.get()) : guideBook;
-        ItemPredicate.Builder rootCriterion = guideBook.isEmpty()
+        boolean guideBookEmpty = guideBookTemplate == null;
+        ItemStackTemplate rootIconTemplate = guideBookEmpty ? new ItemStackTemplate(ModItems.fourLeafClover.get(), 1) : guideBookTemplate;
+        ItemPredicate.Builder rootCriterion = guideBookEmpty
                 ? ItemPredicate.Builder.item().of(items, ModItems.fourLeafClover.get())
                 : ItemPredicate.Builder.item()
-                        .of(items, guideBook.getItem())
+                        .of(items, guideBookTemplate.item().value())
                         .withComponents(DataComponentMatchers.Builder.components()
                                 .exact(DataComponentExactPredicate.allOf(
-                                        guideBook.getComponents().filter(ct -> ct.equals(PatchouliHelper.patchouliGuideBookComponent()))))
+                                        DataComponentMap.builder().set(PatchouliHelper.patchouliGuideBookComponent(), ResourceLocationHelper.prefix("guide_book")).build()))
                                 .build());
         AdvancementHolder root = Advancement.Builder.advancement()
                 .addCriterion("guide_book", InventoryChangeTrigger.TriggerInstance.hasItems(rootCriterion))
                 .display(
-                        rootIcon,
+                        rootIconTemplate,
                         Component.translatable("advancement.arconia.main.root.title"),
                         Component.translatable("advancement.arconia.main.root.desc"),
                         Identifier.withDefaultNamespace("gui/advancements/backgrounds/stone"),
@@ -129,17 +132,10 @@ public class AdvancementSubProvider implements net.minecraft.data.advancements.A
                 )
                 .save(saver, ResourceLocationHelper.prefix("clover_staff"));
 
-        ItemStack colordBranch = ColoredBranch.getColoredBranchWithResource(RainbowColor.RED, new ItemStack(ModItems.getArconiumEssence(RainbowColor.RED).asItem()));
+        ItemStackTemplate colordBranch = ColoredBranch.getColoredBranchTemplate(RainbowColor.RED);
         AdvancementHolder redBranchOfEssence = Advancement.Builder.advancement()
                 .addCriterion("red_branch_of_essence", InventoryChangeTrigger.TriggerInstance
-                        .hasItems(
-                                ItemPredicate.Builder.item()
-                                        .of(items, colordBranch.getItem())
-                                        .withComponents(DataComponentMatchers.Builder.components()
-                                                .exact(DataComponentExactPredicate.allOf(
-                                                        colordBranch.getComponents().filter(ct -> ct.equals(DataComponents.CONTAINER))))
-                                                .build())
-                        )
+                        .hasItems(ModItems.getColoredBranch(RainbowColor.RED))
                 )
                 .parent(centerPedestal)
                 .display(

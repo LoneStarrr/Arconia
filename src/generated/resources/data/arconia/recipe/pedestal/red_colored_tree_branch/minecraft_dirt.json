@@ -11,18 +11,7 @@
     "arconia:red_colored_tree_branch"
   ],
   "output": {
-    "components": {
-      "minecraft:container": [
-        {
-          "item": {
-            "count": 1,
-            "id": "minecraft:dirt"
-          },
-          "slot": 0
-        }
-      ]
-    },
-    "count": 1,
     "id": "arconia:red_colored_tree_branch"
-  }
+  },
+  "resourceItem": "minecraft:dirt"
 }

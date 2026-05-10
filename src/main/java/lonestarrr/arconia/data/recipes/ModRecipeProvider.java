@@ -8,6 +8,8 @@ import lonestarrr.arconia.common.crafting.PedestalRecipe;
 import lonestarrr.arconia.common.item.ColoredBranch;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -16,6 +18,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
@@ -309,7 +312,7 @@ public class ModRecipeProvider extends RecipeProvider {
 
         this.output.accept(ResourceKey.create(Registries.RECIPE, id(color.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX)),
                 new PedestalRecipe(
-                        new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
+                        new ItemStackTemplate(ModItems.getArconiumIngot(color).get().asItem()),
                         60,
                         Ingredient.of(Items.RED_DYE),
                         Ingredient.of(Items.POPPY),
@@ -327,7 +330,7 @@ public class ModRecipeProvider extends RecipeProvider {
         essence = Ingredient.of(ModItems.getArconiumEssence(color).get());
         this.output.accept(ResourceKey.create(Registries.RECIPE, id(color.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX)),
                 new PedestalRecipe(
-                        new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
+                        new ItemStackTemplate(ModItems.getArconiumIngot(color).get().asItem()),
                         60,
                         Ingredient.of(Items.ORANGE_DYE),
                         Ingredient.of(Items.RAW_COPPER),
@@ -345,7 +348,7 @@ public class ModRecipeProvider extends RecipeProvider {
         essence = Ingredient.of(ModItems.getArconiumEssence(color).get());
         this.output.accept(ResourceKey.create(Registries.RECIPE, id(color.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX)),
                 new PedestalRecipe(
-                        new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
+                        new ItemStackTemplate(ModItems.getArconiumIngot(color).get().asItem()),
                         60,
                         Ingredient.of(Items.RAW_GOLD),
                         Ingredient.of(Items.DANDELION),
@@ -363,7 +366,7 @@ public class ModRecipeProvider extends RecipeProvider {
         essence = Ingredient.of(ModItems.getArconiumEssence(color).get());
         this.output.accept(ResourceKey.create(Registries.RECIPE, id(color.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX)),
                 new PedestalRecipe(
-                        new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
+                        new ItemStackTemplate(ModItems.getArconiumIngot(color).get().asItem()),
                         60,
                         Ingredient.of(Items.LIME_CANDLE),
                         Ingredient.of(Items.EMERALD_BLOCK),
@@ -381,7 +384,7 @@ public class ModRecipeProvider extends RecipeProvider {
         essence = Ingredient.of(ModItems.getArconiumEssence(color).get());
         this.output.accept(ResourceKey.create(Registries.RECIPE, id(color.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX)),
                 new PedestalRecipe(
-                        new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
+                        new ItemStackTemplate(ModItems.getArconiumIngot(color).get().asItem()),
                         60,
                         Ingredient.of(Items.SOUL_CAMPFIRE),
                         Ingredient.of(Items.DIAMOND_BLOCK),
@@ -399,10 +402,9 @@ public class ModRecipeProvider extends RecipeProvider {
         essence = Ingredient.of(ModItems.getArconiumEssence(color).get());
         this.output.accept(ResourceKey.create(Registries.RECIPE, id(color.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX)),
                 new PedestalRecipe(
-                        new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
+                        new ItemStackTemplate(ModItems.getArconiumIngot(color).get().asItem()),
                         60,
-                        // TODO check if potions are correctly in the recipe with the 1.20.6 changes
-                        DataComponentIngredient.of(true, (PotionContents.createItemStack(Items.POTION, Potions.AWKWARD))),
+                        DataComponentIngredient.of(true, DataComponentPatch.builder().set(DataComponents.POTION_CONTENTS, new PotionContents(Potions.AWKWARD)).build(), Items.POTION),
                         Ingredient.of(Items.TUBE_CORAL_BLOCK),
                         Ingredient.of(Items.NETHERITE_INGOT),
                         Ingredient.of(Items.NETHER_STAR),
@@ -419,12 +421,12 @@ public class ModRecipeProvider extends RecipeProvider {
 
         this.output.accept(ResourceKey.create(Registries.RECIPE, id(color.getTierName() + ItemNames.ARCONIUM_INGOT_SUFFIX)),
                 new PedestalRecipe(
-                        new ItemStack(ModItems.getArconiumIngot(color).get().asItem()),
+                        new ItemStackTemplate(ModItems.getArconiumIngot(color).get().asItem()),
                         60,
                         Ingredient.of(Items.SHULKER_SHELL),
                         Ingredient.of(Items.DRAGON_BREATH),
                         Ingredient.of(Items.PURPUR_BLOCK),
-                        DataComponentIngredient.of(true, (PotionContents.createItemStack(Items.LINGERING_POTION, Potions.REGENERATION))),
+                        DataComponentIngredient.of(true, DataComponentPatch.builder().set(DataComponents.POTION_CONTENTS, new PotionContents(Potions.REGENERATION)).build(), Items.LINGERING_POTION),
                         essence,
                         essence,
                         essence,
@@ -537,12 +539,12 @@ public class ModRecipeProvider extends RecipeProvider {
      * @param durationTicks time the crafting recipe will take to make the branch
      * @param ingredients
      */
-    private void makeImbuedColoredBranch(
-            RainbowColor tier, ItemLike resourceItem, int durationTicks, Ingredient... ingredients) {
-        ItemStack coloredBranch = ColoredBranch.getColoredBranchWithResource(tier, new ItemStack(resourceItem));
+   private void makeImbuedColoredBranch(
+             RainbowColor tier, ItemLike resourceItem, int durationTicks, Ingredient... ingredients) {
+        ItemStackTemplate coloredBranch = ColoredBranch.getColoredBranchTemplate(tier);
         Ingredient[] newIngredients = Arrays.copyOf(ingredients, ingredients.length + 1);
         newIngredients[ingredients.length] = Ingredient.of(ModItems.getColoredBranch(tier));
-        acceptPedestal(imbuedBranchId(tier, resourceItem), new PedestalRecipe(coloredBranch, durationTicks, newIngredients));
+        acceptPedestal(imbuedBranchId(tier, resourceItem), new PedestalRecipe(coloredBranch, durationTicks, newIngredients, resourceItem.asItem()));
     }
 
     /**

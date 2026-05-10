@@ -51,12 +51,12 @@ public class CloverStaff extends Item {
             BlockPos potPos = storePotCoordinate(level, pos, staff);
             if (potPos != null) {
                 if (!level.isClientSide()) {
-                    player.displayClientMessage(Component.translatable(LANG_PREFIX + ".selectpot.success", potPos.toShortString()), false);
+                    player.sendSystemMessage(Component.translatable(LANG_PREFIX + ".selectpot.success", potPos.toShortString()));
                 }
                 return InteractionResult.SUCCESS;
             } else {
                 if (!level.isClientSide()) {
-                    player.displayClientMessage(Component.translatable(LANG_PREFIX + ".selectpot.failed"), false);
+                    player.sendSystemMessage(Component.translatable(LANG_PREFIX + ".selectpot.failed"));
                 }
             }
             return InteractionResult.PASS;

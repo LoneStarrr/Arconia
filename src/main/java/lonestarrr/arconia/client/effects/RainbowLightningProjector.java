@@ -1,6 +1,7 @@
 package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -36,7 +37,7 @@ public class RainbowLightningProjector {
             .withLocation(Identifier.fromNamespaceAndPath(Arconia.MOD_ID, "pipeline/beam_triangle"))
             .withVertexShader("core/rendertype_lightning")
             .withFragmentShader("core/rendertype_lightning")
-            .withBlend(BlendFunction.LIGHTNING)
+            .withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
             .withCull(false)
             .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES)
             .build();

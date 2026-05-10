@@ -17,6 +17,7 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.RangeSelectItemModel;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -59,21 +60,21 @@ public class ArconiaModelProvider extends ModelProvider {
         // ClientItem's tints array. These used to be authored by the legacy ItemModelProvider — emit
         // them here so the per-tier ClientItem JSONs find their parent model.
         ModelTemplates.FLAT_ITEM.create(prefix("item/arconium_essence"),
-                TextureMapping.layer0(prefix("item/arconium_essence")),
+                TextureMapping.layer0(new Material(prefix("item/arconium_essence"))),
                 itemModels.modelOutput);
         ModelTemplates.FLAT_ITEM.create(prefix("item/arconium_ingot"),
-                TextureMapping.layer0(prefix("item/arconium_ingot_white")),
+                TextureMapping.layer0(new Material(prefix("item/arconium_ingot_white"))),
                 itemModels.modelOutput);
         ModelTemplates.TWO_LAYERED_ITEM.create(prefix("item/arconium_sickle"),
-                TextureMapping.layered(prefix("item/sickle_handle"), prefix("item/sickle_head")),
+                TextureMapping.layered(new Material(prefix("item/sickle_handle")), new Material(prefix("item/sickle_head"))),
                 itemModels.modelOutput);
         ModelTemplates.FLAT_ITEM.create(prefix("item/tree_branch_base"),
-                TextureMapping.layer0(prefix("item/colored_tree_branch")),
+                TextureMapping.layer0(new Material(prefix("item/colored_tree_branch"))),
                 itemModels.modelOutput);
         // Saplings use a flat item model (not the 3D cross block) — layer0 is the white sapling,
         // layer1 the un-tinted speckle overlay, both pulled from the existing block/ textures.
         ModelTemplates.TWO_LAYERED_ITEM.create(prefix("item/arconium_tree_sapling"),
-                TextureMapping.layered(prefix("block/sapling_white"), prefix("block/sapling_speckles")),
+                TextureMapping.layered(new Material(prefix("block/sapling_white")), new Material(prefix("block/sapling_speckles"))),
                 itemModels.modelOutput);
     }
 
@@ -82,8 +83,8 @@ public class ArconiaModelProvider extends ModelProvider {
         // a 3-textured cube whose top is the world_builder texture and whose sides+bottom are
         // vanilla oak planks. Emitted here because no hand-authored block/world_builder.json exists.
         TextureMapping mapping = new TextureMapping()
-                .put(net.minecraft.client.data.models.model.TextureSlot.SIDE, Identifier.withDefaultNamespace("block/oak_planks"))
-                .put(net.minecraft.client.data.models.model.TextureSlot.TOP, prefix("block/world_builder"));
+                .put(net.minecraft.client.data.models.model.TextureSlot.SIDE, new Material(Identifier.withDefaultNamespace("block/oak_planks")))
+                .put(net.minecraft.client.data.models.model.TextureSlot.TOP, new Material(prefix("block/world_builder")));
         ModelTemplates.CUBE_TOP.create(prefix("block/world_builder"), mapping, blockModels.modelOutput);
     }
 

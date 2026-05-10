@@ -195,7 +195,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
             return;
         }
 
-        ItemStack output = currentRecipe.getResultItem(level.registryAccess()).copy();
+        ItemStack output = currentRecipe.getOutput().copy();
         this.putItem(output);
     }
 

@@ -14,8 +14,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.recipe.types.IRecipeType;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -67,7 +66,7 @@ public class AltarRecipeCategory implements IRecipeCategory<PedestalRecipe> {
     }
 
     @Override
-    public void draw(PedestalRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics gui, double mouseX, double mouseY) {
+    public void draw(PedestalRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor gui, double mouseX, double mouseY) {
         overlay.draw(gui, 0, 0);
     }
 
@@ -87,6 +86,6 @@ public class AltarRecipeCategory implements IRecipeCategory<PedestalRecipe> {
             inputSlots.get(i).addItemStacks(inputs.get(i).items().map(holder -> new ItemStack(holder)).toList());
         }
         builder.addSlot(RecipeIngredientRole.OUTPUT, 121, 33)
-                .add(recipe.getResultItem(Minecraft.getInstance().level.registryAccess()));
+                .add(recipe.getOutput());
     }
 }

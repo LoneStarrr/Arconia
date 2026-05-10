@@ -12,18 +12,7 @@
     "arconia:purple_colored_tree_branch"
   ],
   "output": {
-    "components": {
-      "minecraft:container": [
-        {
-          "item": {
-            "count": 1,
-            "id": "minecraft:nether_star"
-          },
-          "slot": 0
-        }
-      ]
-    },
-    "count": 1,
     "id": "arconia:purple_colored_tree_branch"
-  }
+  },
+  "resourceItem": "minecraft:nether_star"
 }

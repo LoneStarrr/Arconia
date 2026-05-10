@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -49,8 +49,8 @@ public class PotRenderer implements BlockEntityRenderer<PotMultiBlockPrimaryBloc
         Level level = blockEntity.getLevel();
         if (level != null) {
             BlockPos potPos = renderState.blockPos;
-            renderState.itemsLight = LevelRenderer.getLightColor(level, potPos.above(2));
-            renderState.leavesLight = LevelRenderer.getLightColor(level, potPos.above(1));
+            renderState.itemsLight = LevelRenderer.getLightCoords(level, potPos.above(2));
+            renderState.leavesLight = LevelRenderer.getLightCoords(level, potPos.above(1));
         }
     }
 

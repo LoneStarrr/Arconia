@@ -46,7 +46,7 @@ public class BranchItemRenderer implements SpecialModelRenderer<ItemStack> {
 
     @Override
     public void submit(
-            @Nullable ItemStack contained, ItemDisplayContext displayContext, PoseStack poseStack,
+            @Nullable ItemStack contained, PoseStack poseStack,
             SubmitNodeCollector nodeCollector, int packedLight, int packedOverlay, boolean hasFoil, int outlineColor) {
         if (contained == null || contained.isEmpty()) {
             return;
@@ -67,7 +67,7 @@ public class BranchItemRenderer implements SpecialModelRenderer<ItemStack> {
         poseStack.popPose();
     }
 
-    public record Unbaked() implements SpecialModelRenderer.Unbaked {
+    public record Unbaked() implements SpecialModelRenderer.Unbaked<ItemStack> {
         public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(new Unbaked());
 
         @Override
@@ -76,7 +76,7 @@ public class BranchItemRenderer implements SpecialModelRenderer<ItemStack> {
         }
 
         @Override
-        public SpecialModelRenderer<?> bake(SpecialModelRenderer.BakingContext context) {
+        public SpecialModelRenderer<ItemStack> bake(SpecialModelRenderer.BakingContext context) {
             return new BranchItemRenderer();
         }
     }

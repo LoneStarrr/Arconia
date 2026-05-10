@@ -76,7 +76,7 @@ public class JEIArconiaPlugin implements IModPlugin {
     private List<ImbuedBranchRecipe> findImbuedBranchRecipes(List<PedestalRecipe> recipes, HolderLookup.Provider registries) {
         List<ImbuedBranchRecipe> result = new ArrayList<>(recipes.size());
         for (PedestalRecipe recipe : recipes) {
-            ItemStack stack = recipe.getResultItem(registries);
+            ItemStack stack = recipe.getOutput();
             if (stack.getItem() instanceof ColoredBranch) {
                 ItemStack generated = ColoredBranch.getResourceItem(stack);
                 if (!generated.isEmpty()) {

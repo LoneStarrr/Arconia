@@ -86,7 +86,7 @@ public class WorldBuilderEntity extends BaseBlockEntity {
 
             BlockPos convertPos = blocksToConvert.get(currentBlockIndex);
             if (currentDistribution == null || convertPos.getY() != currentDistribution.yLevel) {
-                currentDistribution = new ComputedDistribution(distributionTable.distributions.get("overworld"), convertPos.getY(), this.boostFactor, level.random);
+                currentDistribution = new ComputedDistribution(distributionTable.distributions.get("overworld"), convertPos.getY(), this.boostFactor, level.getRandom());
                 if (Arconia.logger.isDebugEnabled()) {
                     Arconia.logger.debug("Calculating new distribution for y=" + convertPos.getY() + ": " + currentDistribution);
                 }
