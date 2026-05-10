@@ -4,13 +4,12 @@ import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import lonestarrr.arconia.common.Arconia;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -48,40 +47,35 @@ public class RainbowRenderer {
                     .createCompositeState(false)
     );
 
-    public static void renderRainbow(float diameter, PoseStack poseStack, MultiBufferSource buffer) {
+    public static void renderRainbow(float diameter, PoseStack poseStack, SubmitNodeCollector nodeCollector) {
         float radiusOuter = diameter / 2;
         float radiusInner = radiusOuter * 0.8f;
-        float alpha = 0.5f;
+        final float alpha = 0.5f;
         Color color = Color.RED;
-        float colorR = color.getRed() / 255f;
-        float colorG = color.getGreen() / 255f;
-        float colorB = color.getBlue() / 255f;
+        final float colorR = color.getRed() / 255f;
+        final float colorG = color.getGreen() / 255f;
+        final float colorB = color.getBlue() / 255f;
 
         poseStack.pushPose();
-
-        VertexConsumer builder = buffer.getBuffer(RAINBOW_SEGMENT);
-        Matrix4f positionMatrix = poseStack.last().pose();
-
 
         // TODO this should obviously be calculated only once per rendered rainbow
         int numEdges = 50;
         float z = 0;
         float innerXOffset = radiusOuter - radiusInner;
-        List<Vector3f> outerArch = getRainbowArchVertices(radiusOuter, numEdges, z, -radiusOuter);
-        List<Vector3f> innerArch = getRainbowArchVertices(radiusInner, numEdges, z, -radiusOuter + innerXOffset);
-        // Draw the rainbow in quad segments, as making a single large polygon would make it a concave (complex) polygon that cannot be rendered as-is
+        final List<Vector3f> outerArch = getRainbowArchVertices(radiusOuter, numEdges, z, -radiusOuter);
+        final List<Vector3f> innerArch = getRainbowArchVertices(radiusInner, numEdges, z, -radiusOuter + innerXOffset);
 
-        for (int i = 0; i < numEdges - 1; i++) {
-            Vector3f[] corners = {outerArch.get(i), outerArch.get(i + 1), innerArch.get(i +1), innerArch.get(i)};
-            for (Vector3f v: corners) {
-                builder.addVertex(positionMatrix, v.x(), v.y(), v.z()).setColor(colorR, colorG, colorB, alpha);
+        final int finalNumEdges = numEdges;
+        nodeCollector.submitCustomGeometry(poseStack, RAINBOW_SEGMENT, (pose, builder) -> {
+            Matrix4f positionMatrix = pose.pose();
+            // Draw the rainbow in quad segments, as making a single large polygon would make it a concave (complex) polygon that cannot be rendered as-is
+            for (int i = 0; i < finalNumEdges - 1; i++) {
+                Vector3f[] corners = {outerArch.get(i), outerArch.get(i + 1), innerArch.get(i +1), innerArch.get(i)};
+                for (Vector3f v: corners) {
+                    builder.addVertex(positionMatrix, v.x(), v.y(), v.z()).setColor(colorR, colorG, colorB, alpha);
+                }
             }
-        }
-
-        // FIXME How am I supposed to indicate that I'm done drawing? Closing the polygon? Nope. This here works, but something
-        // tells me I am not supposed to be doing this this way.
-//        RainbowSegmentRenderType.RAINBOW_SEGMENT.end((BufferBuilder)builder, VertexSorting.DISTANCE_TO_ORIGIN);
-//        ((BufferBuilder)builder).begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        });
 
         poseStack.popPose();
     }

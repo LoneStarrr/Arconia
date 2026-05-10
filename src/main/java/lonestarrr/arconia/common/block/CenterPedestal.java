@@ -83,7 +83,7 @@ public class CenterPedestal extends BaseEntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> type) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             return createTickerHelper(type, ModBlockEntities.CENTER_PEDESTAL.get(), CenterPedestalBlockEntity::tick);
         }
         return null;
@@ -136,7 +136,7 @@ public class CenterPedestal extends BaseEntityBlock {
 
     @Override
     protected void neighborChanged(BlockState blockState, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             // Redstone signal? Let's gooo
             if (level.hasNeighborSignal(pos)) {
                 CenterPedestalBlockEntity entity = getBlockEntity(level, pos);

@@ -99,7 +99,7 @@ public class ColoredBranch extends Item {
         }
         // Attempt to change the block being touched to a rainbow grass block of the same color as the branch
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             BlockState bs = level.getBlockState(pos);
             boolean canChangeBlock = false;
             if (bs.getBlock() instanceof RainbowGrassBlock grassBlock) {

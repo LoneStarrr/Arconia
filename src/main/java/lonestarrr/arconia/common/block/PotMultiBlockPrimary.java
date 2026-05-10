@@ -55,7 +55,7 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> type) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             return createTickerHelper(type, ModBlockEntities.POT_MULTIBLOCK_PRIMARY.get(), PotMultiBlockPrimaryBlockEntity::tick);
         }
         return null;
@@ -76,7 +76,7 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
      *     True on successful formation
      */
     public static boolean formMultiBlock(Level world, BlockPos goldPos) {
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return false;
         }
 
@@ -113,7 +113,7 @@ public class PotMultiBlockPrimary extends BaseEntityBlock {
     }
 
     public static void breakMultiBlock(Level world, BlockPos primaryPos) {
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return;
         }
 

@@ -214,7 +214,7 @@ public class MagicInABottle extends Item {
         return lootTable.getRandomItems(params);
     }
 
-    public static float getFilledPercentage(ItemStack stack, ClientLevel world, LivingEntity entity, int seed) {
+    public static float getFilledPercentage(ItemStack stack, ClientLevel world, net.minecraft.world.entity.ItemOwner owner, int seed) {
         // Used to register ItemProperty, used to render model based on filled %
         return Math.min(100f, (float)getTicksElapsed(stack) / getTicksBetweenLoot(stack));
     }

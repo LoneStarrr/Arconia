@@ -6,23 +6,24 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Base BlockEntity that has an inventory
  */
 public abstract class BaseInventoryBlockEntity extends BaseBlockEntity {
-    private final Lazy<IItemHandler> itemHandler = Lazy.of(this::getInventory);
+    private final Lazy<ResourceHandler<ItemResource>> itemHandler = Lazy.of(this::getInventory);
 
     public BaseInventoryBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
-    public IItemHandler getItemHandler() { return itemHandler.get(); }
+    public ResourceHandler<ItemResource> getItemHandler() { return itemHandler.get(); }
 
-    protected abstract ItemStackHandler getInventory();
+    protected abstract ItemStacksResourceHandler getInventory();
 
     @Override
     public void writePacketNBT(@NotNull ValueOutput output) {

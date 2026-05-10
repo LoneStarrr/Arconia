@@ -4,7 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 
 public abstract class BasePedestalBlockEntity extends BaseInventoryBlockEntity {
 
@@ -13,7 +14,7 @@ public abstract class BasePedestalBlockEntity extends BaseInventoryBlockEntity {
     }
 
     @Override
-    protected abstract ItemStackHandler getInventory();
+    protected abstract ItemStacksResourceHandler getInventory();
 
     /**
      * Sets an item on display. At most 1 item from the stack will be added.
@@ -25,9 +26,7 @@ public abstract class BasePedestalBlockEntity extends BaseInventoryBlockEntity {
         if (!current.isEmpty()) {
             return false;
         }
-        ItemStack toPlace = stack.copy();
-        toPlace.setCount(1);
-        getInventory().setStackInSlot(0, toPlace);
+        getInventory().set(0, ItemResource.of(stack), 1);
         setChanged();
         updateClient();
         return true;
@@ -39,18 +38,18 @@ public abstract class BasePedestalBlockEntity extends BaseInventoryBlockEntity {
             return ItemStack.EMPTY;
         }
 
-        getInventory().setStackInSlot(0, ItemStack.EMPTY);
+        getInventory().set(0, ItemResource.EMPTY, 0);
         setChanged();
         updateClient();
         return current;
     }
 
     public ItemStack getItemOnDisplay() {
-        ItemStack onDisplay = getInventory().getStackInSlot(0);
-        if (onDisplay.isEmpty()) {
+        ItemStacksResourceHandler inv = getInventory();
+        ItemResource resource = inv.getResource(0);
+        if (resource.isEmpty()) {
             return ItemStack.EMPTY;
-        } else {
-            return onDisplay.copy();
         }
+        return resource.toStack((int) inv.getAmountAsLong(0));
     }
 }

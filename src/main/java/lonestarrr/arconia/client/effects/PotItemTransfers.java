@@ -1,16 +1,9 @@
 package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
@@ -21,7 +14,13 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Renders animation of items being flung
+ * Renders animation of items being flung between blocks.
+ *
+ * <p>TODO 1.21.9 port: rendering disabled. The legacy implementation rendered ItemStacks via
+ * {@code ItemRenderer.renderStatic} during a {@code RenderLevelStageEvent.AfterParticles} hook,
+ * but that API is gone — items now render via the deferred submit pipeline (see
+ * {@code SubmitNodeCollector}), which is not exposed during this event. The transfer state is
+ * still tracked so that a future renderer rewrite can resume drawing without touching callers.
  */
 public class PotItemTransfers {
     private static final Set<ItemTransfer> transfers = new HashSet<>();
@@ -29,7 +28,7 @@ public class PotItemTransfers {
     public static void addItemTransfer(BlockPos startPos, BlockPos endPos, ItemStack itemStack) {
         Level world = Minecraft.getInstance().level;
 
-        if (!world.isClientSide()) {
+        if (world == null || !world.isClientSide()) {
             return;
         }
 
@@ -42,29 +41,15 @@ public class PotItemTransfers {
 
     public static void render(RenderLevelStageEvent.AfterParticles event) {
         Level world = Minecraft.getInstance().level;
+        if (world == null) {
+            return;
+        }
 
-        long now = world.getGameTime();
+        float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
         List<ItemTransfer> toRemove = new ArrayList<>();
 
-        PoseStack matrix = event.getPoseStack();
-        matrix.pushPose();
-
-        // Correct for player projection view
-        Vec3 projected = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition();
-        matrix.translate(-projected.x(), -projected.y(), -projected.z());
-
-        // 2021-11-14 XXX This code crashes when a nether star is being transferred. I think it's because it has a glint.
-        // I attempted to use my own buffer to no avail, it might be a bug in the mojang code?
-//        BufferBuilder bufferBuilder = new BufferBuilder(2097152); // taken from Tesselator
-//        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(bufferBuilder);
-//        MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-        // 2023-10-08 Traced buffer used in block entity renderer's buffer, which had a large fixedBuffers list, while mine had none. Traced to where those
-        // were set and found this. This should prevent crashes on special render types
-        MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-
-        // Probably also add a random delay and don't fire them all at the same tick
-        for (ItemTransfer transfer: transfers) {
-            if (transfer.isComplete(event.getPartialTick().getGameTimeDeltaPartialTick(false))) {
+        for (ItemTransfer transfer : transfers) {
+            if (transfer.isComplete(partialTick)) {
                 toRemove.add(transfer);
                 continue;
             }
@@ -73,18 +58,19 @@ public class PotItemTransfers {
             if (playerPos.distToCenterSqr(transfer.startPos.x, transfer.startPos.y, transfer.startPos.z) > 64 * 64) {
                 continue;
             }
-
-            renderItemTransfer(transfer, event.getPoseStack(), buffer, event.getPartialTick().getGameTimeDeltaPartialTick(false));
+            // TODO 1.21.9: re-implement item rendering for in-flight transfers. The new submit-based
+            // render pipeline (SubmitNodeCollector) is not directly accessible during the
+            // RenderLevelStageEvent. Options: migrate the effect to a particle, or render via a
+            // BlockEntityRenderer that has access to a SubmitNodeCollector.
+            // renderItemTransfer(transfer, event.getPoseStack(), buffer, event.getPartialTick().getGameTimeDeltaPartialTick(false));
         }
-        buffer.endBatch();
 
-        for (ItemTransfer transfer: toRemove) {
+        for (ItemTransfer transfer : toRemove) {
             transfers.remove(transfer);
         }
-
-        matrix.popPose();
     }
 
+    /*
     private static void renderItemTransfer(ItemTransfer transfer, PoseStack poseStack, MultiBufferSource buffer, float partialTicks) {
         double elapsedTicks = transfer.getTicksElapsed() + partialTicks;
         Vec3 itemPos = transfer.getPosition(elapsedTicks);
@@ -93,9 +79,11 @@ public class PotItemTransfers {
         poseStack.translate(itemPos.x, itemPos.y, itemPos.z);
         ItemStack toRender = transfer.itemStack;
         Minecraft.getInstance().getItemRenderer()
-                .renderStatic(toRender, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, Minecraft.getInstance().level, 0);
+                .renderStatic(toRender, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, Minecraft.getInstance().level,
+                        0);
         poseStack.popPose();
     }
+    */
 }
 
 class ItemTransfer {
@@ -125,12 +113,10 @@ class ItemTransfer {
 
     /**
      * @param elapsedTicks Ticks elapsed since start of transfer. Must include any partial ticks.
-     * @return
-     *  Item location in transfer animation
+     * @return Item location in transfer animation
      */
     public Vec3 getPosition(double elapsedTicks) {
         Vec3 velocity = getVelocity();
-        // TODO move code below into ItemTransfer
         double itemX = endPos.x + velocity.x * elapsedTicks;
         double itemY = endPos.y + velocity.y * elapsedTicks - (ItemTransfer.GRAVITY * elapsedTicks * elapsedTicks) / 2d;
         double itemZ = endPos.z + velocity.z * elapsedTicks;
@@ -138,8 +124,7 @@ class ItemTransfer {
     }
 
     /**
-     * @return
-     *     A velocity vector V for a parabolic animation of an item being flung at the hat where the fling time is constant.
+     * @return A velocity vector V for a parabolic animation of an item being flung at the hat where the fling time is constant.
      */
     public Vec3 getVelocity() {
         final double vx = (startPos.x - endPos.x) / displayTicks;
@@ -152,7 +137,6 @@ class ItemTransfer {
      */
     public float getTimeElapsedPct() {
         return Math.min(1f, (Minecraft.getInstance().level.getGameTime() - startTick) / (float) DISPLAY_TICKS);
-
     }
 
     public long getTicksElapsed() {

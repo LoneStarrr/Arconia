@@ -1,70 +1,82 @@
 package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import lonestarrr.arconia.client.particle.ModParticles;
 import lonestarrr.arconia.common.block.entities.CenterPedestalBlockEntity;
-import lonestarrr.arconia.common.item.MagicInABottle;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
-public class CenterPedestalRenderer implements BlockEntityRenderer<CenterPedestalBlockEntity> {
+public class CenterPedestalRenderer implements BlockEntityRenderer<CenterPedestalBlockEntity, CenterPedestalRenderer.CenterPedestalRenderState> {
     public CenterPedestalRenderer(BlockEntityRendererProvider.Context ctx) {}
 
     @Override
-    public void render(
-            CenterPedestalBlockEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
-            int combinedOverlay, Vec3 cameraPos) {
-        ItemStack stack = tileEntity.getItemOnDisplay();
+    public CenterPedestalRenderState createRenderState() {
+        return new CenterPedestalRenderState();
+    }
+
+    @Override
+    public void extractRenderState(
+            CenterPedestalBlockEntity blockEntity, CenterPedestalRenderState renderState, float partialTick, Vec3 cameraPosition,
+            @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPosition, breakProgress);
+        renderState.itemOnDisplay = blockEntity.getItemOnDisplay();
+        renderState.ritualProgressPercentage = blockEntity.getRitualProgressPercentage();
+
+        // Spawn particles during state extraction since the live block entity is available here
+        Level level = blockEntity.getLevel();
+        if (level != null && renderState.itemOnDisplay.isEmpty() && renderState.ritualProgressPercentage > 0) {
+            float particleInterval = 3;
+            if (blockEntity.lastParticleDisplayTime == 0 || level.getGameTime() - blockEntity.lastParticleDisplayTime >= particleInterval) {
+                blockEntity.lastParticleDisplayTime = level.getGameTime();
+                spawnParticlesRandomPositions(blockEntity);
+            }
+        }
+    }
+
+    @Override
+    public void submit(CenterPedestalRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState) {
+        ItemStack stack = state.itemOnDisplay;
         if (stack.isEmpty()) {
-            if (tileEntity.getRitualProgressPercentage() > 0) {
-                renderRitualProgress(tileEntity, matrixStack, buffer, combinedLight, combinedOverlay, partialTicks);
+            if (state.ritualProgressPercentage > 0) {
+                renderRitualProgress(state, poseStack, nodeCollector);
             }
             return;
         }
 
-        BlockPos bePos = tileEntity.getBlockPos();
+        BlockPos bePos = state.blockPos;
         BlockPos itemPos = bePos.above();
-        matrixStack.pushPose();
+        poseStack.pushPose();
         // BERs have the block entity at (0, 0, 0), compensate
-        matrixStack.translate(-bePos.getX(), -bePos.getY(), -bePos.getZ());
-        ItemProjector.projectItem(stack, itemPos, matrixStack, buffer, combinedLight, combinedOverlay, false);
-
-        matrixStack.popPose();
+        poseStack.translate(-bePos.getX(), -bePos.getY(), -bePos.getZ());
+        ItemProjector.projectItem(stack, itemPos, poseStack, nodeCollector, state.lightCoords, 0, false);
+        poseStack.popPose();
     }
 
-    private void renderRitualProgress(
-            CenterPedestalBlockEntity blockEntity, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight,
-            int combinedOverlay, float partialTicks) {
-        Level level = blockEntity.getLevel();
-        BlockPos bePos = blockEntity.getBlockPos();
-        matrixStack.pushPose();
+    private void renderRitualProgress(CenterPedestalRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector) {
+        BlockPos bePos = state.blockPos;
+        poseStack.pushPose();
 
-        matrixStack.translate(0.5, 0.5, 0.5);
+        poseStack.translate(0.5, 0.5, 0.5);
         // TODO Animation is choppy because % is updated every few ticks only, should track start time on client side probably
-        float progressPct = blockEntity.getRitualProgressPercentage();
+        float progressPct = state.ritualProgressPercentage;
         float beamLength = 0.1f + (((float)progressPct / 100f) * 1.2f);
         int beamCount = Math.round(10 + (progressPct / 5));
         Random random = new Random(bePos.asLong());
-        RainbowLightningProjector.renderRainbowLighting(random, beamLength, beamCount, matrixStack, buffer);
-        //renderRainbow(bePos, progressPct, matrixStack, buffer)
-        matrixStack.popPose();
-        float particleInterval = 3;
-        if (blockEntity.lastParticleDisplayTime == 0 || level.getGameTime() - blockEntity.lastParticleDisplayTime >= particleInterval) {
-            blockEntity.lastParticleDisplayTime = level.getGameTime();
-            spawnParticlesRandomPositions(blockEntity);
-        }
+        RainbowLightningProjector.renderRainbowLighting(random, beamLength, beamCount, poseStack, nodeCollector);
+        poseStack.popPose();
     }
 
     private void spawnParticlesRandomPositions(CenterPedestalBlockEntity blockEntity) {
@@ -74,29 +86,19 @@ public class CenterPedestalRenderer implements BlockEntityRenderer<CenterPedesta
         RandomSource rnd = level.getRandom();
         int spawnCount = 1;
         for (int i = 0; i < spawnCount; i++) {
-            //double speedX = blockEntity.getLevel().random.nextGaussian() * Math.cos(i) * 0.2d;
             double speedX = 0;
             double speedY = 0.02;
             double speedZ = 0;
             // spawn particles AROUND the pedestal, but avoid the pedestal itself
             double posX = bePos.getX() + 0.5 + (rnd.nextFloat() * 0.5 + 0.4) * (rnd.nextInt(2) == 1 ? -1 : 1);
             double posY = bePos.getY() + 1 + rnd.nextFloat() * 0.5;
-            double posZ = bePos.getZ() + 0.5 + (rnd.nextFloat() * 0.5 + 0.4) * (rnd.nextInt(2) == 1 ? -1 : 1);;
+            double posZ = bePos.getZ() + 0.5 + (rnd.nextFloat() * 0.5 + 0.4) * (rnd.nextInt(2) == 1 ? -1 : 1);
             level.addParticle(ModParticles.RAINBOW_PARTICLES.get(), posX, posY, posZ, speedX, speedY, speedZ);
         }
-
     }
 
-    /* renders a rainbow in segments - just playing around. Probably won't use this for anything, ever */
-    private void renderRainbow(BlockPos pos, float progressPct, PoseStack poseStack, MultiBufferSource buffer) {
-        final float diameter = 2 + (progressPct / 100 * 2.5f);
-        poseStack.pushPose();
-        poseStack.translate(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-        // Rotate along Y axis
-        float angle = progressPct / 100 * 720;
-        poseStack.mulPose(new Quaternionf().fromAxisAngleDeg(0, 1, 0, angle));
-
-        RainbowRenderer.renderRainbow(diameter, poseStack, buffer);
-        poseStack.popPose();
+    public static class CenterPedestalRenderState extends BlockEntityRenderState {
+        public ItemStack itemOnDisplay = ItemStack.EMPTY;
+        public float ritualProgressPercentage = 0;
     }
 }

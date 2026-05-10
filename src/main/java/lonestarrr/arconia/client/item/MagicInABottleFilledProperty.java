@@ -6,7 +6,7 @@ import lonestarrr.arconia.common.item.MagicInABottle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,8 +20,8 @@ public record MagicInABottleFilledProperty() implements RangeSelectItemModelProp
     public static final MapCodec<MagicInABottleFilledProperty> MAP_CODEC = MapCodec.unit(MagicInABottleFilledProperty::new);
 
     @Override
-    public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
-        return MagicInABottle.getFilledPercentage(stack, level, entity, seed);
+    public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
+        return MagicInABottle.getFilledPercentage(stack, level, owner, seed);
     }
 
     @Override

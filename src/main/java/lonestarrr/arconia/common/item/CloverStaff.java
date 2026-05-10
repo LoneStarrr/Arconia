@@ -50,12 +50,12 @@ public class CloverStaff extends Item {
         } else if (bs.getBlock() == ModBlocks.potMultiBlockSecondary.get()) {
             BlockPos potPos = storePotCoordinate(level, pos, staff);
             if (potPos != null) {
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     player.displayClientMessage(Component.translatable(LANG_PREFIX + ".selectpot.success", potPos.toShortString()), false);
                 }
                 return InteractionResult.SUCCESS;
             } else {
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     player.displayClientMessage(Component.translatable(LANG_PREFIX + ".selectpot.failed"), false);
                 }
             }
@@ -102,7 +102,7 @@ public class CloverStaff extends Item {
 
     private static boolean attemptFormMultiblock(Player player, Level world, BlockPos pos) {
         // Might be an attempt to form a pot of gold multiblock
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return PotMultiBlockPrimary.canFormMultiBlock(world, pos);
         } else {
             boolean formed = PotMultiBlockPrimary.formMultiBlock(world, pos);

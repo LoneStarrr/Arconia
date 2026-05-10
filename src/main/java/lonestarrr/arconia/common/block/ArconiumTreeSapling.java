@@ -36,7 +36,7 @@ public class ArconiumTreeSapling extends SaplingBlock {
 
     public ArconiumTreeSapling(BlockBehaviour.Properties props, @Nonnull RainbowColor tier) {
         super(trees.get(tier),
-                props.mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.DESTROY).noCollission().randomTicks().strength(0F).sound(SoundType.GRASS));
+                props.mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.DESTROY).noCollision().randomTicks().strength(0F).sound(SoundType.GRASS));
         this.tier = tier;
     }
 }

@@ -19,7 +19,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -45,20 +46,20 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     private static final String TAG_RITUAL_START_TIME = "ritualStartTime";
     private static final long TICK_UPDATE_INTERVAL = 4; // How often to do work in tick()
 
-    private final ItemStackHandler inventory = new ItemStackHandler(1) {
+    private final ItemStacksResourceHandler inventory = new ItemStacksResourceHandler(1) {
         @Override
-        protected void onContentsChanged(int slot) {
+        protected void onContentsChanged(int index, ItemStack previousContents) {
             setChanged();
             updateClient();
         }
 
         @Override
-        public int getSlotLimit(int slot) {
+        protected int getCapacity(int index, ItemResource resource) {
             return 1;
         }
 
         @Override
-        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+        public boolean isValid(int index, ItemResource resource) {
             return false; // Output only - this blocks insertion
         }
     };
@@ -68,7 +69,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     }
 
     @Override
-    protected ItemStackHandler getInventory() {
+    protected ItemStacksResourceHandler getInventory() {
         return inventory;
     }
 
@@ -100,7 +101,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         input.getString(TAG_RECIPE).ifPresent(s -> currentRecipeID = ResourceLocation.parse(s));
         input.getInt(TAG_RECIPE_DURATION).ifPresent(v -> currentRecipeDuration = v);
         ritualTicksElapsed = input.getFloatOr(TAG_ELAPSED, 0f);
-        if (ritualTicksElapsed >= 0 && this.level != null && this.level.isClientSide) {
+        if (ritualTicksElapsed >= 0 && this.level != null && this.level.isClientSide()) {
             // Track this for animating the ritual client side
             ritualStartTime = this.level.getGameTime() - (long) ritualTicksElapsed;
         }

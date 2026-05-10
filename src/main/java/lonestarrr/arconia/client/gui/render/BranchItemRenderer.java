@@ -4,8 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
 import lonestarrr.arconia.common.Arconia;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.core.component.DataComponents;
@@ -46,11 +45,13 @@ public class BranchItemRenderer implements SpecialModelRenderer<ItemStack> {
     }
 
     @Override
-    public void render(@Nullable ItemStack contained, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, boolean hasFoilType) {
+    public void submit(
+            @Nullable ItemStack contained, ItemDisplayContext displayContext, PoseStack poseStack,
+            SubmitNodeCollector nodeCollector, int packedLight, int packedOverlay, boolean hasFoil, int outlineColor) {
         if (contained == null || contained.isEmpty()) {
             return;
         }
-        // Resolve the contained item's render state on every call. SpecialModelRenderer.render is
+        // Resolve the contained item's render state on every call. SpecialModelRenderer.submit is
         // invoked from inside another item's render pipeline, so re-using a cached ItemStackRenderState
         // across calls would clash with concurrent (or nested) renders. Reset/repopulate per call.
         Minecraft minecraft = Minecraft.getInstance();
@@ -59,10 +60,10 @@ public class BranchItemRenderer implements SpecialModelRenderer<ItemStack> {
         poseStack.pushPose();
         // The composite's first model already has applied the GUI/in-hand item transform for the
         // branch — we just position the contained-item overlay relative to that and let the inner
-        // ItemStackRenderState.render apply its own transforms again.
+        // ItemStackRenderState.submit apply its own transforms again.
         poseStack.translate(0.7f, 0.60f, 0.6f);
         poseStack.scale(0.55f, 0.55f, 0.55f);
-        state.render(poseStack, buffer, packedLight, packedOverlay);
+        state.submit(poseStack, nodeCollector, packedLight, packedOverlay, outlineColor);
         poseStack.popPose();
     }
 
@@ -75,7 +76,7 @@ public class BranchItemRenderer implements SpecialModelRenderer<ItemStack> {
         }
 
         @Override
-        public SpecialModelRenderer<?> bake(EntityModelSet modelSet) {
+        public SpecialModelRenderer<?> bake(SpecialModelRenderer.BakingContext context) {
             return new BranchItemRenderer();
         }
     }

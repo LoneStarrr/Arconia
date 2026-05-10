@@ -133,7 +133,7 @@ public class WorldBuilderEntity extends BaseBlockEntity {
     }
 
     public boolean startBuild(BlockState blockToMatch, float boostFactor) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return false;
         }
 

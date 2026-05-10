@@ -1,17 +1,21 @@
 package lonestarrr.arconia.client.particle.custom;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
-public class RainbowParticles extends TextureSheetParticle {
+public class RainbowParticles extends SingleQuadParticle {
 
     protected RainbowParticles(
             ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, double xd, double yd,
             double zd) {
-        super(level, xCoord, yCoord, zCoord, xd, yd, zd);
+        super(level, xCoord, yCoord, zCoord, xd, yd, zd, null);
 
         // Reduces speed if <1
         this.friction = 1f;
@@ -43,8 +47,8 @@ public class RainbowParticles extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    protected Layer getLayer() {
+        return Layer.TRANSLUCENT;
     }
 
     public static class Provider implements ParticleProvider<SimpleParticleType> {
@@ -58,7 +62,7 @@ public class RainbowParticles extends TextureSheetParticle {
         @Override
         public Particle createParticle(
                 SimpleParticleType particleType, ClientLevel level, double x, double y, double z, double dx, double dy,
-                double dz) {
+                double dz, RandomSource random) {
             return new RainbowParticles(level, x, y, z, this.sprites, dx, dy, dz);
         }
     }

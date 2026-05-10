@@ -8,10 +8,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import lonestarrr.arconia.common.Arconia;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -53,28 +53,18 @@ public class RainbowLightningProjector {
 
     /**
      * Render a lightning effect with a given block position at the center. Similar to end dragon death effect, but with cycling rainbow colors.
-     *
-     * @param random
-     * @param beamLength
-     * @param beamCount
-     * @param poseStack
-     * @param buffer
      */
-    public static void renderRainbowLighting(Random random, float beamLength, int beamCount, PoseStack poseStack, MultiBufferSource buffer) {
-        renderRainbowLighting(random, beamLength, beamCount, poseStack, buffer, null);
+    public static void renderRainbowLighting(Random random, float beamLength, int beamCount, PoseStack poseStack, SubmitNodeCollector nodeCollector) {
+        renderRainbowLighting(random, beamLength, beamCount, poseStack, nodeCollector, null);
     }
 
     /**
      * Render a lightning effect
      *
      * @param rand Random number generator. Successive calls for the same animation should pass in a new Random with identical seed
-     * @param beamLength
-     * @param beamCount
-     * @param poseStack
-     * @param buffer
      * @param fixedColor The color to use, or null if it should cycle through all rainbow colors
      */
-    public static void renderRainbowLighting(Random rand, float beamLength, int beamCount, PoseStack poseStack, MultiBufferSource buffer, Color fixedColor) {
+    public static void renderRainbowLighting(Random rand, float beamLength, int beamCount, PoseStack poseStack, SubmitNodeCollector nodeCollector, Color fixedColor) {
         poseStack.pushPose();
 
         final Vector3f[] rotationVectors = new Vector3f[] {
@@ -86,9 +76,7 @@ public class RainbowLightningProjector {
         // Vertices for a single  beam - w is used for alpha
         List<Vector4f> vertices = new ArrayList<>(10);
 
-        VertexConsumer builder = buffer.getBuffer(BEAM_TRIANGLE);
         long ticks = Minecraft.getInstance().level.getGameTime();
-        Color color = fixedColor;
 
         for (int i = 0; i < beamCount; i++) {
             vertices.clear();
@@ -107,9 +95,6 @@ public class RainbowLightningProjector {
             float a = 0.5f; // alpha
 
             // Draw three triangles, together forming 1 'sword blade' like shape
-            // We start with the 'tip' of the blade, this leads to the widest section, then back to near the center of the
-            // blade but not quite. The blade is cut, length wise, in 3 segments (triangles) because this render type makes
-            // us (there's probably something smarter out there, but I wanted to get something working!)
             float bl1 = 0.2f * bl; //length of first segment of the blade
             float bl2 = 1.0f * bl; //length of second segment of the blade
             float bw1 = 0.05f * bl; //width of first segment of the blade at its widest point
@@ -125,20 +110,26 @@ public class RainbowLightningProjector {
             vertices.add(new Vector4f(0f, -bw2, bl2, a));
             vertices.add(new Vector4f(0, 0, 0, a));
 
-                        // Every beam cycles through the colors of the rainbow, with some random offset
+            // Every beam cycles through the colors of the rainbow, with some random offset
+            final Color beamColor;
             if (fixedColor == null) {
                 float hue = rand.nextFloat() + (ticks % 100) / 100f;
-                color = Color.getHSBColor(hue % 1f, 1f, 1f);
+                beamColor = Color.getHSBColor(hue % 1f, 1f, 1f);
+            } else {
+                beamColor = fixedColor;
             }
-            float colorR = color.getRed() / 255f;
-            float colorG = color.getGreen() / 255f;
-            float colorB = color.getBlue() / 255f;
+            final float colorR = beamColor.getRed() / 255f;
+            final float colorG = beamColor.getGreen() / 255f;
+            final float colorB = beamColor.getBlue() / 255f;
 
-            Matrix4f positionMatrix = poseStack.last().pose();
-            for (Vector4f vertex: vertices) {
-                float alpha = vertex.w();
-                builder.addVertex(positionMatrix, vertex.x(), vertex.y(), vertex.z()).setColor(colorR, colorG, colorB, alpha);
-            }
+            final List<Vector4f> beamVertices = new ArrayList<>(vertices);
+            nodeCollector.submitCustomGeometry(poseStack, BEAM_TRIANGLE, (pose, builder) -> {
+                Matrix4f positionMatrix = pose.pose();
+                for (Vector4f vertex : beamVertices) {
+                    float alpha = vertex.w();
+                    builder.addVertex(positionMatrix, vertex.x(), vertex.y(), vertex.z()).setColor(colorR, colorG, colorB, alpha);
+                }
+            });
             poseStack.popPose();
         }
 

@@ -14,7 +14,7 @@ public class CloverBlock extends BushBlock {
     public static final MapCodec<CloverBlock> CODEC = simpleCodec(CloverBlock::new);
 
     public CloverBlock(Block.Properties props) {
-        super(props.mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).noCollission().strength(0f).sound(SoundType.GRASS));
+        super(props.mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).noCollision().strength(0f).sound(SoundType.GRASS));
     }
 
     @SuppressWarnings("unchecked")

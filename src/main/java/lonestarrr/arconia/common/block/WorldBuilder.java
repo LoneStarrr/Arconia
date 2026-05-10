@@ -44,7 +44,7 @@ public class WorldBuilder extends BaseEntityBlock {
 
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> type) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             return createTickerHelper(type, ModBlockEntities.WORLD_BUILDER.get(), WorldBuilderEntity::tick);
         }
         return null;
@@ -57,7 +57,7 @@ public class WorldBuilder extends BaseEntityBlock {
             return InteractionResult.PASS;
         }
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
 

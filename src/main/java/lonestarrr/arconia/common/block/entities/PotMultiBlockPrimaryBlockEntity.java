@@ -26,7 +26,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -290,7 +291,7 @@ public class PotMultiBlockPrimaryBlockEntity extends BaseBlockEntity {
         }
         lastResourceGenerateTime = now;
 
-        IItemHandler inventory = InventoryHelper.getInventory(level, this.storageBlockPos, Direction.UP);
+        ResourceHandler<ItemResource> inventory = InventoryHelper.getInventory(level, this.storageBlockPos, Direction.UP);
         if (inventory == null) {
             throw new StorageMissingException();
         }

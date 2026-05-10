@@ -67,7 +67,7 @@ public class PotMultiBlockSecondary extends BaseEntityBlock {
     @Override
     protected @NotNull InteractionResult useItemOn(
             ItemStack itemUsed, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (world.isClientSide || hand != InteractionHand.MAIN_HAND) {
+        if (world.isClientSide() || hand != InteractionHand.MAIN_HAND) {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
