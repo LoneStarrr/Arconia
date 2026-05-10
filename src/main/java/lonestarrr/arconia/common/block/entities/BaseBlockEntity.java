@@ -1,6 +1,8 @@
 package lonestarrr.arconia.common.block.entities;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -45,8 +47,8 @@ public abstract class BaseBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
-        loadAdditional(input);
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider registries) {
+        return this.saveWithoutMetadata(registries);
     }
 
     /**

@@ -53,7 +53,7 @@ public class AdvancementSubProvider implements net.minecraft.data.advancements.A
                         rootIcon,
                         Component.translatable("advancement.arconia.main.root.title"),
                         Component.translatable("advancement.arconia.main.root.desc"),
-                        ResourceLocation.withDefaultNamespace("textures/block/stripped_oak_log.png"),
+                        ResourceLocation.withDefaultNamespace("gui/advancements/backgrounds/stone"),
                         AdvancementType.TASK,
                         true,true,false
                 )

@@ -12,7 +12,7 @@
     }
   },
   "display": {
-    "background": "minecraft:textures/block/stripped_oak_log.png",
+    "background": "minecraft:gui/advancements/backgrounds/stone",
     "description": {
       "translate": "advancement.arconia.main.root.desc"
     },

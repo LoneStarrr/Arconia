@@ -47,7 +47,7 @@ public abstract class BasePedestalBlockEntity extends BaseInventoryBlockEntity {
 
     public ItemStack getItemOnDisplay() {
         ItemStack onDisplay = getInventory().getStackInSlot(0);
-        if (onDisplay == null || onDisplay.isEmpty()) {
+        if (onDisplay.isEmpty()) {
             return ItemStack.EMPTY;
         } else {
             return onDisplay.copy();

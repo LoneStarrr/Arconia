@@ -17,7 +17,7 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalBlockEntity
             int combinedOverlay, net.minecraft.world.phys.Vec3 cameraPos) {
         // TODO Duplicate logic w/ResourceGenRenderer - separate out into shared code
         ItemStack stack = blockEntity.getItemOnDisplay();
-        if (stack == ItemStack.EMPTY) {
+        if (stack.isEmpty()) {
             return;
         }
 

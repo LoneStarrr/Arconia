@@ -84,7 +84,7 @@ public class Pedestal extends BaseEntityBlock {
             }
             ((PedestalBlockEntity) blockEntity).putItem(playerStack);
             if (playerStack.getCount() > 1) {
-                playerStack.setCount(playerStack.getCount() - 1);
+                playerStack.shrink(1);
             } else {
                 player.setItemInHand(hand, ItemStack.EMPTY);
             }
