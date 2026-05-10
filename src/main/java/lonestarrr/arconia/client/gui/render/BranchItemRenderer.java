@@ -29,6 +29,7 @@ public class BranchItemRenderer implements SpecialModelRenderer<ItemStack> {
 
     @Override
     public void getExtents(Set<Vector3f> set) {
+        // Not sure how to compute these sanely
         set.add(new Vector3f(0.8f, 0.65f, 0.6f));
         set.add(new Vector3f(0.8f + 0.45f, 0.65f + 0.45f, 0.6f + 0.45f));
     }
@@ -54,13 +55,13 @@ public class BranchItemRenderer implements SpecialModelRenderer<ItemStack> {
         // across calls would clash with concurrent (or nested) renders. Reset/repopulate per call.
         Minecraft minecraft = Minecraft.getInstance();
         ItemStackRenderState state = new ItemStackRenderState();
-        minecraft.getItemModelResolver().updateForTopItem(state, contained, ItemDisplayContext.GROUND, minecraft.level, null, 0);
+        minecraft.getItemModelResolver().updateForTopItem(state, contained, ItemDisplayContext.GUI, minecraft.level, null, 0);
         poseStack.pushPose();
         // The composite's first model already has applied the GUI/in-hand item transform for the
         // branch — we just position the contained-item overlay relative to that and let the inner
         // ItemStackRenderState.render apply its own transforms again.
-        poseStack.translate(0.8f, 0.65f, 0.6f);
-        poseStack.scale(0.45f, 0.45f, 0.45f);
+        poseStack.translate(0.7f, 0.60f, 0.6f);
+        poseStack.scale(0.55f, 0.55f, 0.55f);
         state.render(poseStack, buffer, packedLight, packedOverlay);
         poseStack.popPose();
     }
