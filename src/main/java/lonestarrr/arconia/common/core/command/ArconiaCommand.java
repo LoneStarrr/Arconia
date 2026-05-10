@@ -25,10 +25,11 @@ public class ArconiaCommand {
         //   /arconia <subcommand> <subcommand args>
         dispatcher.register(
                 Commands.literal("arconia")
-                        .requires(source ->
-                                source.hasPermission(Commands.LEVEL_ADMINS) || // op level 4 bypasses
-                                        (source.isPlayer() && source.getPlayer() != null && source.getPlayer().gameMode.isCreative())
-                        )
+                        .requires(source -> {
+                            var result = Commands.hasPermission(Commands.LEVEL_ADMINS);
+                            return result.test(source) ||
+                                   (source.isPlayer() && source.getPlayer() != null && source.getPlayer().gameMode.isCreative());
+                        })
                         .then(
                         Commands.literal("imbue_branch").then(
                                 Commands.argument("item_id", ItemArgument.item(context))
