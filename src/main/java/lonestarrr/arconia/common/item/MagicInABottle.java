@@ -35,8 +35,6 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -86,7 +84,6 @@ public class MagicInABottle extends Item {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(
             @NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, display, tooltipAdder, flag);
@@ -217,7 +214,6 @@ public class MagicInABottle extends Item {
         return lootTable.getRandomItems(params);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static float getFilledPercentage(ItemStack stack, ClientLevel world, LivingEntity entity, int seed) {
         // Used to register ItemProperty, used to render model based on filled %
         return Math.min(100f, (float)getTicksElapsed(stack) / getTicksBetweenLoot(stack));
