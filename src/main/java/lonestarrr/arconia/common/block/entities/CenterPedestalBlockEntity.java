@@ -243,7 +243,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
 
     private Identifier findRecipe(PedestalInput inv) {
         Optional<RecipeHolder<PedestalRecipe>> hasRecipe = level.getServer().getRecipeManager().getRecipeFor(ModRecipeTypes.PEDESTAL_TYPE.get(), inv, level);
-        return hasRecipe.map(h -> h.id().location()).orElse(null);
+        return hasRecipe.map(h -> h.id().identifier()).orElse(null);
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, CenterPedestalBlockEntity blockEntity) {

@@ -27,10 +27,10 @@ public class BranchItemRenderer implements SpecialModelRenderer<ItemStack> {
     public static final Identifier ID = Identifier.fromNamespaceAndPath(Arconia.MOD_ID, "branch_overlay");
 
     @Override
-    public void getExtents(Set<Vector3f> set) {
+    public void getExtents(java.util.function.Consumer<org.joml.Vector3fc> consumer) {
         // Not sure how to compute these sanely
-        set.add(new Vector3f(0.8f, 0.65f, 0.6f));
-        set.add(new Vector3f(0.8f + 0.45f, 0.65f + 0.45f, 0.6f + 0.45f));
+        consumer.accept(new Vector3f(0.8f, 0.65f, 0.6f));
+        consumer.accept(new Vector3f(0.8f + 0.45f, 0.65f + 0.45f, 0.6f + 0.45f));
     }
 
     @Nullable
