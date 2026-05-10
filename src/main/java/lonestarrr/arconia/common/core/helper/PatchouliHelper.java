@@ -4,13 +4,13 @@ import lonestarrr.arconia.common.Arconia;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class PatchouliHelper {
-    public static final String GUIDE_BOOK_ID = ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "guide_book").toString(); //Also hardcoded in advancement icon
-    public static final ResourceLocation PATCHOULI_GUIDE_BOOK = ResourceLocation.fromNamespaceAndPath("patchouli", "guide_book");
+    public static final String GUIDE_BOOK_ID = Identifier.fromNamespaceAndPath(Arconia.MOD_ID, "guide_book").toString(); //Also hardcoded in advancement icon
+    public static final Identifier PATCHOULI_GUIDE_BOOK = Identifier.fromNamespaceAndPath("patchouli", "guide_book");
     public static final String TAG_PATCHOULI_BOOK = "patchouli:book";
 
     public static ItemStack createGuideBook() {
@@ -20,29 +20,29 @@ public class PatchouliHelper {
         tag.putString(TAG_PATCHOULI_BOOK, GUIDE_BOOK_ID);
         // TODO finish/rewrite this if this somehow magically works
         // TODO at least check for class cast exceptions!
-        DataComponentType<?> dct = BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(ResourceLocation.fromNamespaceAndPath("patchouli", "book"));
+        DataComponentType<?> dct = BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(Identifier.fromNamespaceAndPath("patchouli", "book"));
         if (dct != null) {
-            DataComponentType<ResourceLocation> dctRloc = (DataComponentType<ResourceLocation>)dct;
+            DataComponentType<Identifier> dctRloc = (DataComponentType<Identifier>)dct;
             bookStack.set(dctRloc, ResourceLocationHelper.prefix("guide_book"));
         }
         return bookStack;
     }
 
-    public static DataComponentType<ResourceLocation> patchouliGuideBookComponent() {
-        DataComponentType<?> dct = BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(ResourceLocation.fromNamespaceAndPath("patchouli", "book"));
-        return (DataComponentType<ResourceLocation>) dct;
+    public static DataComponentType<Identifier> patchouliGuideBookComponent() {
+        DataComponentType<?> dct = BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(Identifier.fromNamespaceAndPath("patchouli", "book"));
+        return (DataComponentType<Identifier>) dct;
     }
 
     public static boolean isGuideBook(ItemStack itemStack) {
-        ResourceLocation itemResLoc = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
+        Identifier itemResLoc = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
         if (!itemResLoc.equals(PATCHOULI_GUIDE_BOOK)) {
             return false;
         }
-        DataComponentType dct = BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(ResourceLocation.fromNamespaceAndPath("patchouli", "book"));
+        DataComponentType dct = BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(Identifier.fromNamespaceAndPath("patchouli", "book"));
         Object ob = itemStack.get(dct);
         if (ob != null) {
-            ResourceLocation rloc = (ResourceLocation) ob;
-            return rloc.equals(ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "guide_book"));
+            Identifier rloc = (Identifier) ob;
+            return rloc.equals(Identifier.fromNamespaceAndPath(Arconia.MOD_ID, "guide_book"));
         }
         return false;
     }

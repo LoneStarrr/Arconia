@@ -5,7 +5,7 @@ import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.item.MagicInABottle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
  * pick a sub-model per filled threshold.
  */
 public record MagicInABottleFilledProperty() implements RangeSelectItemModelProperty {
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "filled");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(Arconia.MOD_ID, "filled");
     public static final MapCodec<MagicInABottleFilledProperty> MAP_CODEC = MapCodec.unit(MagicInABottleFilledProperty::new);
 
     @Override

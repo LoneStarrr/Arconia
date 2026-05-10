@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -32,7 +32,7 @@ public class RainbowLightningProjector {
      * {@code RegisterRenderPipelinesEvent} in {@code ClientProxy}.
      */
     public static final RenderPipeline BEAM_TRIANGLE_PIPELINE = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
-            .withLocation(ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "pipeline/beam_triangle"))
+            .withLocation(Identifier.fromNamespaceAndPath(Arconia.MOD_ID, "pipeline/beam_triangle"))
             .withVertexShader("core/rendertype_lightning")
             .withFragmentShader("core/rendertype_lightning")
             .withBlend(BlendFunction.LIGHTNING)

@@ -14,7 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -207,7 +207,7 @@ public class MagicInABottle extends Item {
     protected List<ItemStack> getLoot(ItemStack stack, Level world) {
         RainbowColor tier = getTier(stack);
 
-        final ResourceLocation lootResource = ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "magic_in_a_bottle_" + tier.getTierName());
+        final Identifier lootResource = Identifier.fromNamespaceAndPath(Arconia.MOD_ID, "magic_in_a_bottle_" + tier.getTierName());
 
         LootTable lootTable = ((ServerLevel) world).getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, lootResource));
         LootParams params = (new LootParams.Builder((ServerLevel)world)).create(LootContextParamSets.EMPTY);

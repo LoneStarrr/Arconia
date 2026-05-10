@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +24,7 @@ import org.joml.Vector3f;
  * dynamic overlay (the contained ItemStack from the {@link DataComponents#CONTAINER} component).
  */
 public class BranchItemRenderer implements SpecialModelRenderer<ItemStack> {
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "branch_overlay");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(Arconia.MOD_ID, "branch_overlay");
 
     @Override
     public void getExtents(Set<Vector3f> set) {

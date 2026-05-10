@@ -8,7 +8,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -47,7 +47,7 @@ class BlockDefinition {
  * Abstract class containing methods to read a JSON-formatted file containing a 2D matrix of blocks.
  */
 public abstract class LibBlockPattern {
-    public static List<List<BlockState>> readBlockPattern(ResourceLocation location) throws IOException,
+    public static List<List<BlockState>> readBlockPattern(Identifier location) throws IOException,
             BlockPatternException {
         /*
          * Example file:
@@ -155,7 +155,7 @@ public abstract class LibBlockPattern {
         String[] blockNameParts = blockByName.split(":");
         String namespace = blockNameParts[0];
         String blockId = blockNameParts[1];
-        ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(namespace, blockId);
+        Identifier resourceLocation = Identifier.fromNamespaceAndPath(namespace, blockId);
 
         if (!BuiltInRegistries.BLOCK.containsKey(resourceLocation)) {
             throw new BlockPatternException("Unknown block: " + blockByName);

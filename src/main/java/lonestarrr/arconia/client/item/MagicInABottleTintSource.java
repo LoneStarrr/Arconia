@@ -6,7 +6,7 @@ import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.item.MagicInABottle;
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
  * the bottle is currently set to.
  */
 public record MagicInABottleTintSource() implements ItemTintSource {
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "magic_in_a_bottle_tier");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(Arconia.MOD_ID, "magic_in_a_bottle_tier");
     public static final MapCodec<MagicInABottleTintSource> MAP_CODEC = MapCodec.unit(MagicInABottleTintSource::new);
 
     @Override

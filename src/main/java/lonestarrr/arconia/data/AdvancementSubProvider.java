@@ -12,16 +12,16 @@ import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.advancements.critereon.DataComponentMatchers;
+import net.minecraft.advancements.criterion.DataComponentMatchers;
 import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -53,7 +53,7 @@ public class AdvancementSubProvider implements net.minecraft.data.advancements.A
                         rootIcon,
                         Component.translatable("advancement.arconia.main.root.title"),
                         Component.translatable("advancement.arconia.main.root.desc"),
-                        ResourceLocation.withDefaultNamespace("gui/advancements/backgrounds/stone"),
+                        Identifier.withDefaultNamespace("gui/advancements/backgrounds/stone"),
                         AdvancementType.TASK,
                         true,true,false
                 )

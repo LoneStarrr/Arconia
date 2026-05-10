@@ -7,7 +7,7 @@ import lonestarrr.arconia.common.crafting.PedestalRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.SimpleContainer;
@@ -35,7 +35,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     private float ritualTicksElapsed = 0; // persisted
     public long ritualStartTime = 0; // not persisted, used only client side to track animation
     public long lastParticleDisplayTime = 0; // not persisted, purely client side
-    private ResourceLocation currentRecipeID; // persisted
+    private Identifier currentRecipeID; // persisted
     // Cached so the client renderer doesn't need a server-only RecipeManager lookup to compute progress.
     private int currentRecipeDuration = 0; // persisted
     private long lastTickTime = 0; // Time since last invocation of tick - not persisted
@@ -98,7 +98,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     @Override
     public void readPacketNBT(@NotNull ValueInput input) {
         super.readPacketNBT(input);
-        input.getString(TAG_RECIPE).ifPresent(s -> currentRecipeID = ResourceLocation.parse(s));
+        input.getString(TAG_RECIPE).ifPresent(s -> currentRecipeID = Identifier.parse(s));
         input.getInt(TAG_RECIPE_DURATION).ifPresent(v -> currentRecipeDuration = v);
         ritualTicksElapsed = input.getFloatOr(TAG_ELAPSED, 0f);
         if (ritualTicksElapsed >= 0 && this.level != null && this.level.isClientSide()) {
@@ -127,7 +127,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
             return false;
         }
 
-        ResourceLocation recipeId = findRecipe(inv);
+        Identifier recipeId = findRecipe(inv);
 
         if (recipeId == null) {
             return false;
@@ -241,7 +241,7 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         return new PedestalInput(stacks);
     }
 
-    private ResourceLocation findRecipe(PedestalInput inv) {
+    private Identifier findRecipe(PedestalInput inv) {
         Optional<RecipeHolder<PedestalRecipe>> hasRecipe = level.getServer().getRecipeManager().getRecipeFor(ModRecipeTypes.PEDESTAL_TYPE.get(), inv, level);
         return hasRecipe.map(h -> h.id().location()).orElse(null);
     }

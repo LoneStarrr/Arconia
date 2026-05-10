@@ -13,7 +13,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -65,7 +65,7 @@ public class ModRecipeProvider extends RecipeProvider {
         }
     }
 
-    private void acceptPedestal(ResourceLocation id, PedestalRecipe recipe) {
+    private void acceptPedestal(Identifier id, PedestalRecipe recipe) {
         this.output.accept(ResourceKey.create(Registries.RECIPE, id), recipe, null);
     }
 
@@ -550,14 +550,14 @@ public class ModRecipeProvider extends RecipeProvider {
      * @param resourceItem Item to be produced by imbued branch
      * @return id for an imbued branch item
      */
-    private static ResourceLocation imbuedBranchId(RainbowColor tier, ItemLike resourceItem) {
+    private static Identifier imbuedBranchId(RainbowColor tier, ItemLike resourceItem) {
         Item branch = ModItems.getColoredBranch(tier).get();
-        ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(resourceItem.asItem());
-        ResourceLocation branchId = BuiltInRegistries.ITEM.getKey(branch);
+        Identifier itemId = BuiltInRegistries.ITEM.getKey(resourceItem.asItem());
+        Identifier branchId = BuiltInRegistries.ITEM.getKey(branch);
         return id(branchId.getPath() + "/" + itemId.getNamespace() + "_" + itemId.getPath());
     }
 
-    private static ResourceLocation id(String s) {
+    private static Identifier id(String s) {
         return ResourceLocationHelper.prefix("pedestal/" + s);
     }
 }

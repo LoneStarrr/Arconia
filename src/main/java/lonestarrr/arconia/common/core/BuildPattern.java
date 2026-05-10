@@ -7,7 +7,7 @@ import lonestarrr.arconia.common.core.helper.Matrix;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -29,12 +29,12 @@ public class BuildPattern {
     /**
      * Instantiates a pattern.
      * @param res
-     *   ResourceLocation of the pattern
+     *   Identifier of the pattern
      * @return Instance of this class
      * @throws IOException
      * @throws BlockPatternException
      */
-    public static BuildPattern loadPattern(final ResourceLocation res) throws IOException,
+    public static BuildPattern loadPattern(final Identifier res) throws IOException,
             BlockPatternException {
         List<List<BlockState>> pattern = LibBlockPattern.readBlockPattern(res);
         Map<Direction, BlockState[][]> rotations = createRotations(pattern);

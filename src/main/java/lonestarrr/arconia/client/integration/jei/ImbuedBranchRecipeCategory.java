@@ -13,7 +13,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -29,7 +29,7 @@ public class ImbuedBranchRecipeCategory implements IRecipeCategory<ImbuedBranchR
             IRecipeType.create(Arconia.MOD_ID, "imbued_branch", ImbuedBranchRecipe.class);
 
     public ImbuedBranchRecipeCategory(@Nonnull IGuiHelper guiHelper) {
-        this.overlay = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "textures/gui/jei/imbued_branch_overlay.png"),
+        this.overlay = guiHelper.createDrawable(Identifier.fromNamespaceAndPath(Arconia.MOD_ID, "textures/gui/jei/imbued_branch_overlay.png"),
                 0, 0, 144, 81);
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, renderStack.copy());
     }

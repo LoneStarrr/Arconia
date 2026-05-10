@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -28,7 +28,7 @@ public class RainbowRenderer {
      * {@code ClientProxy}; without that registration its shader files would never get loaded.
      */
     public static final RenderPipeline RAINBOW_SEGMENT_PIPELINE = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
-            .withLocation(ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "pipeline/rainbow_segment"))
+            .withLocation(Identifier.fromNamespaceAndPath(Arconia.MOD_ID, "pipeline/rainbow_segment"))
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")
             .withBlend(BlendFunction.LIGHTNING)

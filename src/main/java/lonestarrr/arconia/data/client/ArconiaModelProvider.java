@@ -18,7 +18,7 @@ import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.RangeSelectItemModel;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -82,7 +82,7 @@ public class ArconiaModelProvider extends ModelProvider {
         // a 3-textured cube whose top is the world_builder texture and whose sides+bottom are
         // vanilla oak planks. Emitted here because no hand-authored block/world_builder.json exists.
         TextureMapping mapping = new TextureMapping()
-                .put(net.minecraft.client.data.models.model.TextureSlot.SIDE, ResourceLocation.withDefaultNamespace("block/oak_planks"))
+                .put(net.minecraft.client.data.models.model.TextureSlot.SIDE, Identifier.withDefaultNamespace("block/oak_planks"))
                 .put(net.minecraft.client.data.models.model.TextureSlot.TOP, prefix("block/world_builder"));
         ModelTemplates.CUBE_TOP.create(prefix("block/world_builder"), mapping, blockModels.modelOutput);
     }
@@ -163,7 +163,7 @@ public class ArconiaModelProvider extends ModelProvider {
     private void registerColoredBranches(ItemModelGenerators itemModels) {
         // The colored branch ClientItem is a composite: a tinted base item-model plus the special
         // renderer that draws the contained item overlay on top.
-        ResourceLocation base = prefix("item/tree_branch_base");
+        Identifier base = prefix("item/tree_branch_base");
         for (RainbowColor color : RainbowColor.values()) {
             ItemTintSource tint = ItemModelUtils.constantTint(color.getColorValue());
             ItemModel.Unbaked baseModel = ItemModelUtils.tintedModel(base, tint);
@@ -175,12 +175,12 @@ public class ArconiaModelProvider extends ModelProvider {
 
     // ---------- helpers ----------
 
-    private void simpleBlockState(BlockModelGenerators blockModels, Block block, ResourceLocation modelLocation) {
+    private void simpleBlockState(BlockModelGenerators blockModels, Block block, Identifier modelLocation) {
         blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, BlockModelGenerators.plainVariant(modelLocation)));
     }
 
     /** Constant per-layer tint for a flat (sprite-based) item model living at {@code modelLocation}. */
-    private void tintedFlatItem(ItemModelOutput output, Item item, ResourceLocation modelLocation, ItemTintSource... tints) {
+    private void tintedFlatItem(ItemModelOutput output, Item item, Identifier modelLocation, ItemTintSource... tints) {
         output.accept(item, ItemModelUtils.tintedModel(modelLocation, tints));
     }
 
@@ -205,21 +205,21 @@ public class ArconiaModelProvider extends ModelProvider {
 
         // For block items the in-inventory icon is a flat 3D render of the block model itself,
         // tinted per-tier — no separate per-color item model needed.
-        ResourceLocation itemModelLeaves() {
+        Identifier itemModelLeaves() {
             return prefix("block/arconium_tree_leaves");
         }
 
         // Saplings are an exception — they render as flat sprites (not the 3D cross), so they
         // reference the shared flat item template emitted by registerSharedItemModels().
-        ResourceLocation itemModelSapling() {
+        Identifier itemModelSapling() {
             return prefix("item/arconium_tree_sapling");
         }
 
-        ResourceLocation itemModelArconiumBlock() {
+        Identifier itemModelArconiumBlock() {
             return prefix("block/arconium_block");
         }
 
-        ResourceLocation itemModelGrassBlock() {
+        Identifier itemModelGrassBlock() {
             return prefix("block/rainbow_grass_block");
         }
     }

@@ -2,7 +2,7 @@ package lonestarrr.arconia.compat.theoneprobe;
 
 import lonestarrr.arconia.common.Arconia;
 import mcjty.theoneprobe.api.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -43,8 +43,8 @@ public class TheOneProbe {
             // classes. The abstractions confused me greatly!
             theOneProbe.registerProvider(new IProbeInfoProvider() {
                 @Override
-                public ResourceLocation getID() {
-                    return ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "default");
+                public Identifier getID() {
+                    return Identifier.fromNamespaceAndPath(Arconia.MOD_ID, "default");
                 }
 
                 @Override

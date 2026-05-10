@@ -7,7 +7,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -16,7 +16,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
  * Packet containing data for visualisation of item transfer between pot of gold and hats
  */
 public record PotItemTransferPacket(BlockPos startPos, BlockPos endPos, ItemStack itemStack) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<PotItemTransferPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Arconia.MOD_ID, "pot_item_transfer"));
+    public static final CustomPacketPayload.Type<PotItemTransferPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(Arconia.MOD_ID, "pot_item_transfer"));
     // composite: convenient instance method to build a StreamCodec with pairs of stream codecs and getters + constructor
     public static final StreamCodec<RegistryFriendlyByteBuf, PotItemTransferPacket> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC, PotItemTransferPacket::startPos,

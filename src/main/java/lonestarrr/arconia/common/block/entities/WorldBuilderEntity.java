@@ -11,7 +11,7 @@ import lonestarrr.arconia.common.Arconia;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -310,7 +310,7 @@ class BlockJsonAdapter extends TypeAdapter<Block> {
     @Override
     public Block read(JsonReader in) throws IOException {
         String blockStr = in.nextString();
-        ResourceLocation blockLoc = ResourceLocation.parse(blockStr);
+        Identifier blockLoc = Identifier.parse(blockStr);
         if (!BuiltInRegistries.BLOCK.containsKey(blockLoc)) {
             throw new RuntimeException("Unknown block " + blockStr + " in world builder configuration");
         }
