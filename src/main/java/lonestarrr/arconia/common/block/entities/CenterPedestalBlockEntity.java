@@ -99,12 +99,12 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
         super.readPacketNBT(input);
         input.getString(TAG_RECIPE).ifPresent(s -> currentRecipeID = ResourceLocation.parse(s));
         input.getInt(TAG_RECIPE_DURATION).ifPresent(v -> currentRecipeDuration = v);
-        ritualOngoing = input.getBooleanOr(TAG_ONGOING, false);
         ritualTicksElapsed = input.getFloatOr(TAG_ELAPSED, 0f);
-        if (ritualTicksElapsed > 0 && this.level != null && this.level.isClientSide) {
+        if (ritualTicksElapsed >= 0 && this.level != null && this.level.isClientSide) {
             // Track this for animating the ritual client side
             ritualStartTime = this.level.getGameTime() - (long) ritualTicksElapsed;
         }
+        ritualOngoing = input.getBooleanOr(TAG_ONGOING, false);
     }
 
     public boolean isRitualOngoing() { return ritualOngoing; }
@@ -199,9 +199,9 @@ public class CenterPedestalBlockEntity extends BasePedestalBlockEntity {
     }
 
     private void resetRitual() {
+        ritualOngoing = false;
         currentRecipeID = null;
         currentRecipeDuration = 0;
-        ritualOngoing = false;
         ritualTicksElapsed = 0;
         ritualStartTime = 0;
         lastTickTime = 0;

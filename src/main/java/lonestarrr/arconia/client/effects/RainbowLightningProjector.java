@@ -91,6 +91,7 @@ public class RainbowLightningProjector {
         Color color = fixedColor;
 
         for (int i = 0; i < beamCount; i++) {
+            vertices.clear();
             poseStack.pushPose();
             for (Vector3f vec : rotationVectors) {
                 // Rotate every beam along every cardinal axis - note the use of a random generated with a fixed seed makes sure these initial angles are
