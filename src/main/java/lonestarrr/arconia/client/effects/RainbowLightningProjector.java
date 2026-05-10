@@ -9,9 +9,10 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import lonestarrr.arconia.common.Arconia;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.LayeringTransform;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -42,13 +43,10 @@ public class RainbowLightningProjector {
 
     public static final RenderType BEAM_TRIANGLE = RenderType.create(
             "beam_triangle",
-            32768,
-            BEAM_TRIANGLE_PIPELINE,
-            RenderType.CompositeState.builder()
-                    .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
-                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
-                    .setTextureState(RenderStateShard.NO_TEXTURE)
-                    .createCompositeState(false)
+            RenderSetup.builder(BEAM_TRIANGLE_PIPELINE)
+                    .bufferSize(32768)
+                    .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
+                    .createRenderSetup()
     );
 
     /**
