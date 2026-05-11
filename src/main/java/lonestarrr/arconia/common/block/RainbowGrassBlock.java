@@ -1,24 +1,20 @@
 package lonestarrr.arconia.common.block;
 
 import lonestarrr.arconia.common.core.RainbowColor;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 
-import javax.annotation.Nullable;
-
 public class RainbowGrassBlock extends GrassBlock {
-    private RainbowColor tier;
+  private RainbowColor tier;
 
-    public RainbowGrassBlock(BlockBehaviour.Properties props, RainbowColor color) {
-        super(props.mapColor(MapColor.GRASS).strength(0.6F).sound(SoundType.GRASS));
-        this.tier = color;
-    }
+  public RainbowGrassBlock(BlockBehaviour.Properties props, RainbowColor color) {
+    super(props.mapColor(MapColor.GRASS).strength(0.6F).sound(SoundType.GRASS));
+    this.tier = color;
+  }
 
-    public RainbowColor getTier() {
-        return tier;
-    }
+  public RainbowColor getTier() {
+    return tier;
+  }
 }

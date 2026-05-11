@@ -5,8 +5,14 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 public class ModCapabilities {
-    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.CENTER_PEDESTAL.get(), (o, direction) -> o.getItemHandler());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.PEDESTAL.get(), (o, direction) -> o.getItemHandler());
-    }
+  public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+    event.registerBlockEntity(
+        Capabilities.Item.BLOCK,
+        ModBlockEntities.CENTER_PEDESTAL.get(),
+        (o, direction) -> o.getItemHandler());
+    event.registerBlockEntity(
+        Capabilities.Item.BLOCK,
+        ModBlockEntities.PEDESTAL.get(),
+        (o, direction) -> o.getItemHandler());
+  }
 }

@@ -12,24 +12,29 @@ import net.neoforged.neoforge.common.loot.LootModifier;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * When a player harvests a dirt block, add this mod's guide to the loot table under the condition that they haven't received one through this method
- * before. To be used in conjunction with this mod's loot condition that checks whether this player has already received/mined the book.
+ * When a player harvests a dirt block, add this mod's guide to the loot table under the condition
+ * that they haven't received one through this method before. To be used in conjunction with this
+ * mod's loot condition that checks whether this player has already received/mined the book.
  */
 public class DirtLootModifier extends LootModifier {
-    public static final MapCodec<DirtLootModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> codecStart(instance).apply(instance, DirtLootModifier::new));
-    protected DirtLootModifier(LootItemCondition[] conditionsIn, int priority) {
-        super(conditionsIn, priority);
-    }
+  public static final MapCodec<DirtLootModifier> CODEC =
+      RecordCodecBuilder.mapCodec(
+          instance -> codecStart(instance).apply(instance, DirtLootModifier::new));
 
-    @Override
-    protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-        ItemStack bookStack = PatchouliHelper.createGuideBook();
-        generatedLoot.add(bookStack);
-        return generatedLoot;
-    }
+  protected DirtLootModifier(LootItemCondition[] conditionsIn, int priority) {
+    super(conditionsIn, priority);
+  }
 
-    @Override
-    public @NotNull MapCodec<? extends IGlobalLootModifier> codec() {
-        return ModLootModifiers.DIRT_MODIFIER.get();
-    }
+  @Override
+  protected @NotNull ObjectArrayList<ItemStack> doApply(
+      ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
+    ItemStack bookStack = PatchouliHelper.createGuideBook();
+    generatedLoot.add(bookStack);
+    return generatedLoot;
+  }
+
+  @Override
+  public @NotNull MapCodec<? extends IGlobalLootModifier> codec() {
+    return ModLootModifiers.DIRT_MODIFIER.get();
+  }
 }

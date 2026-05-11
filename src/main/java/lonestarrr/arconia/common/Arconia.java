@@ -1,5 +1,6 @@
 package lonestarrr.arconia.common;
 
+import java.io.IOException;
 import lonestarrr.arconia.client.particle.ModParticles;
 import lonestarrr.arconia.common.advancements.ModCriteriaTriggers;
 import lonestarrr.arconia.common.block.ModBlocks;
@@ -31,73 +32,72 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-
 @Mod(Arconia.MOD_ID)
 public class Arconia {
-    // mod_id must also be updated in build.gradle
-    public static final String MOD_ID = "arconia";
+  // mod_id must also be updated in build.gradle
+  public static final String MOD_ID = "arconia";
 
-    public static volatile boolean configLoaded = false;
+  public static volatile boolean configLoaded = false;
 
-    public static final Logger logger = LogManager.getLogger(Arconia.MOD_ID);
+  public static final Logger logger = LogManager.getLogger(Arconia.MOD_ID);
 
-    public static IProxy proxy;
+  public static IProxy proxy;
 
-    public Arconia(IEventBus modBus, ModContainer modContainer, Dist dist) {
-        modContainer.registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
-        modContainer.registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_SPEC);
+  public Arconia(IEventBus modBus, ModContainer modContainer, Dist dist) {
+    modContainer.registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
+    modContainer.registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_SPEC);
 
-        if (dist.isClient()) {
-            new ClientProxy().registerHandlers(modBus);
-        }
-
-        if (dist.isDedicatedServer()) {
-            new ServerProxy().registerHandlers(modBus);
-        }
-
-        modBus.addListener(this::commonSetup);
-        modBus.addListener(DataGenerators::gatherClientData);
-
-        ModBlocks.BLOCKS.register(modBus);
-        ModItems.ITEMS.register(modBus);
-        ModBlockEntities.BLOCK_ENTITIES.register(modBus);
-        ModRecipeTypes.RECIPE_TYPES.register(modBus);
-        ModRecipeTypes.RECIPE_SERIALIZERS.register(modBus);
-        ModLootModifiers.CODECS.register(modBus);
-        ModLootModifiers.LOOT_CONDITION_TYPES.register(modBus);
-        ModParticles.PARTICLE_TYPES.register(modBus);
-        ModCriteriaTriggers.CRITERIA_TRIGGERS.register(modBus);
-        ModDataComponents.DATA_COMPONENTS.register(modBus);
-
-        modBus.addListener(ConfigHandler::onConfigLoad);
-        modBus.addListener(ConfigHandler::onConfigReload);
-
-        modBus.addListener(ModBlocks::addToCreativeTabs);
-        modBus.addListener(ModItems::addToCreativeTabs);
-        modBus.addListener(ModCapabilities::registerCapabilities);
-        modBus.addListener(ModPackets::registerPackets);
-
-        IEventBus eventBus = NeoForge.EVENT_BUS;
-        eventBus.addListener(EventPriority.HIGH, this::registerCommands);
-        eventBus.addListener(PedestalRecipeSync::onDatapackSync);
+    if (dist.isClient()) {
+      new ClientProxy().registerHandlers(modBus);
     }
 
-    public void commonSetup(FMLCommonSetupEvent event) {
-        Arconia.logger.info("Running commonSetup");
-
-        // !! This mod life cycle event is called in parallel with any other mods - use event.enqueueWork() for things that are not thread-safe.
-
-        try {
-            WorldBuilderEntity.loadDistributionTables();
-        } catch (IOException e) {
-            throw new RuntimeException("Error loading world builder distribution tables", e);
-        }
+    if (dist.isDedicatedServer()) {
+      new ServerProxy().registerHandlers(modBus);
     }
 
-    private void registerCommands(RegisterCommandsEvent event) {
-        FractalTreeCommand.register(event.getDispatcher());
-        ArconiaCommand.register(event.getDispatcher(), event.getBuildContext());
-        logger.info("Registered commands");
+    modBus.addListener(this::commonSetup);
+    modBus.addListener(DataGenerators::gatherClientData);
+
+    ModBlocks.BLOCKS.register(modBus);
+    ModItems.ITEMS.register(modBus);
+    ModBlockEntities.BLOCK_ENTITIES.register(modBus);
+    ModRecipeTypes.RECIPE_TYPES.register(modBus);
+    ModRecipeTypes.RECIPE_SERIALIZERS.register(modBus);
+    ModLootModifiers.CODECS.register(modBus);
+    ModLootModifiers.LOOT_CONDITION_TYPES.register(modBus);
+    ModParticles.PARTICLE_TYPES.register(modBus);
+    ModCriteriaTriggers.CRITERIA_TRIGGERS.register(modBus);
+    ModDataComponents.DATA_COMPONENTS.register(modBus);
+
+    modBus.addListener(ConfigHandler::onConfigLoad);
+    modBus.addListener(ConfigHandler::onConfigReload);
+
+    modBus.addListener(ModBlocks::addToCreativeTabs);
+    modBus.addListener(ModItems::addToCreativeTabs);
+    modBus.addListener(ModCapabilities::registerCapabilities);
+    modBus.addListener(ModPackets::registerPackets);
+
+    IEventBus eventBus = NeoForge.EVENT_BUS;
+    eventBus.addListener(EventPriority.HIGH, this::registerCommands);
+    eventBus.addListener(PedestalRecipeSync::onDatapackSync);
+  }
+
+  public void commonSetup(FMLCommonSetupEvent event) {
+    Arconia.logger.info("Running commonSetup");
+
+    // !! This mod life cycle event is called in parallel with any other mods - use
+    // event.enqueueWork() for things that are not thread-safe.
+
+    try {
+      WorldBuilderEntity.loadDistributionTables();
+    } catch (IOException e) {
+      throw new RuntimeException("Error loading world builder distribution tables", e);
     }
+  }
+
+  private void registerCommands(RegisterCommandsEvent event) {
+    FractalTreeCommand.register(event.getDispatcher());
+    ArconiaCommand.register(event.getDispatcher(), event.getBuildContext());
+    logger.info("Registered commands");
+  }
 }

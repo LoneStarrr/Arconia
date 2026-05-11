@@ -1,8 +1,11 @@
 package lonestarrr.arconia.common.block;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import javax.annotation.Nonnull;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.world.ModFeatures;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.grower.TreeGrower;
@@ -10,32 +13,35 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
-import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-/**
- * Sapling that sprouts an arconium tree
- */
+/** Sapling that sprouts an arconium tree */
 public class ArconiumTreeSapling extends SaplingBlock {
-    private final RainbowColor tier;
-    private static final Map<RainbowColor, TreeGrower> trees = new HashMap<>(RainbowColor.values().length);
+  private final RainbowColor tier;
+  private static final Map<RainbowColor, TreeGrower> trees =
+      new HashMap<>(RainbowColor.values().length);
 
-    static {
-        for (RainbowColor tier: RainbowColor.values()) {
-            trees.put(tier, new TreeGrower(
-                    tier.getTierName() + "_arconium_tree",
-                    Optional.empty(),
-                    Optional.of(ModFeatures.getArconiumTreeConfigured(tier)),
-                    Optional.empty()
-            ));
-        }
+  static {
+    for (RainbowColor tier : RainbowColor.values()) {
+      trees.put(
+          tier,
+          new TreeGrower(
+              tier.getTierName() + "_arconium_tree",
+              Optional.empty(),
+              Optional.of(ModFeatures.getArconiumTreeConfigured(tier)),
+              Optional.empty()));
     }
+  }
 
-    public ArconiumTreeSapling(BlockBehaviour.Properties props, @Nonnull RainbowColor tier) {
-        super(trees.get(tier),
-                props.mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.DESTROY).noCollision().randomTicks().strength(0F).sound(SoundType.GRASS));
-        this.tier = tier;
-    }
+  public ArconiumTreeSapling(BlockBehaviour.Properties props, @Nonnull RainbowColor tier) {
+    super(
+        trees.get(tier),
+        props
+            .mapColor(MapColor.PLANT)
+            .ignitedByLava()
+            .pushReaction(PushReaction.DESTROY)
+            .noCollision()
+            .randomTicks()
+            .strength(0F)
+            .sound(SoundType.GRASS));
+    this.tier = tier;
+  }
 }

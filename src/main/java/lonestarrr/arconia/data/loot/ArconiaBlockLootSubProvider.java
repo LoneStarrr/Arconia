@@ -1,5 +1,6 @@
 package lonestarrr.arconia.data.loot;
 
+import java.util.Set;
 import lonestarrr.arconia.common.block.ArconiumTreeLeaves;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
@@ -26,111 +27,140 @@ import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Set;
-
 public class ArconiaBlockLootSubProvider extends BlockLootSubProvider {
-    private static final float[] COLORED_STICK_CHANCES = new float[]{0.02F, 0.022222223F, 0.025F, 0.033333335F, 0.1F};
+  private static final float[] COLORED_STICK_CHANCES =
+      new float[] {0.02F, 0.022222223F, 0.025F, 0.033333335F, 0.1F};
 
-    private LootItemCondition.Builder hasCloverStaff() {
-        HolderGetter<Item> items = this.registries.lookupOrThrow(Registries.ITEM);
-        return MatchTool.toolMatches(ItemPredicate.Builder.item().of(items, ModItems.cloverStaff.value()));
+  private LootItemCondition.Builder hasCloverStaff() {
+    HolderGetter<Item> items = this.registries.lookupOrThrow(Registries.ITEM);
+    return MatchTool.toolMatches(
+        ItemPredicate.Builder.item().of(items, ModItems.cloverStaff.value()));
+  }
+
+  public ArconiaBlockLootSubProvider(HolderLookup.Provider registries) {
+    // The first parameter is a set of blocks we are creating loot tables for. Instead of
+    // hardcoding,
+    // we use our block registry and just pass an empty set here.
+    // The second parameter is the feature flag set, this will be the default flags
+    // unless you are adding custom flags (which is beyond the scope of this article).
+    super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
+  }
+
+  @Override
+  protected @NotNull Iterable<Block> getKnownBlocks() {
+    // Add all of this mod's blocks here.
+    return ModBlocks.BLOCKS.getEntries().stream().map(e -> (Block) e.value()).toList();
+  }
+
+  @Override
+  protected void generate() {
+    // See VanillaBlockLoot.java as an example. This will fail if not all known blocks from our mod
+    // are covered.
+    HolderLookup.RegistryLookup<Enchantment> registrylookup =
+        this.registries.lookupOrThrow(Registries.ENCHANTMENT);
+
+    // No drops
+    this.add(ModBlocks.potMultiBlockPrimary.value(), noDrop());
+    this.add(ModBlocks.potMultiBlockSecondary.value(), noDrop());
+
+    // Basic blocks
+    this.dropSelf(ModBlocks.pedestal.value());
+    this.dropSelf(ModBlocks.centerPedestal.value());
+    this.dropSelf(ModBlocks.hat.value());
+    this.dropSelf(ModBlocks.worldBuilder.value());
+
+    // Colored blocks
+    for (RainbowColor color : RainbowColor.values()) {
+      // Basic self droppers
+      this.dropSelf(ModBlocks.getArconiumTreeSapling(color).value());
+      this.dropSelf(ModBlocks.getArconiumBlock(color).value());
+
+      this.add(
+          ModBlocks.getRainbowGrassBlock(color).value(),
+          b -> this.createSingleItemTableWithSilkTouch(b, Blocks.DIRT));
+
+      this.add(ModBlocks.getArconiumTreeLeaves(color).value(), this::createArconiumLeavesDrops);
     }
 
-    public ArconiaBlockLootSubProvider(HolderLookup.Provider registries) {
-        // The first parameter is a set of blocks we are creating loot tables for. Instead of hardcoding,
-        // we use our block registry and just pass an empty set here.
-        // The second parameter is the feature flag set, this will be the default flags
-        // unless you are adding custom flags (which is beyond the scope of this article).
-        super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
-    }
-    @Override
-    protected @NotNull Iterable<Block> getKnownBlocks() {
-        // Add all of this mod's blocks here.
-        return ModBlocks.BLOCKS.getEntries().stream()
-                .map(e -> (Block)e.value()).toList();
-    }
-
-    @Override
-    protected void generate() {
-        // See VanillaBlockLoot.java as an example. This will fail if not all known blocks from our mod are covered.
-        HolderLookup.RegistryLookup<Enchantment> registrylookup = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
-
-
-        // No drops
-        this.add(ModBlocks.potMultiBlockPrimary.value(), noDrop());
-        this.add(ModBlocks.potMultiBlockSecondary.value(), noDrop());
-
-        // Basic blocks
-        this.dropSelf(ModBlocks.pedestal.value());
-        this.dropSelf(ModBlocks.centerPedestal.value());
-        this.dropSelf(ModBlocks.hat.value());
-        this.dropSelf(ModBlocks.worldBuilder.value());
-
-        // Colored blocks
-        for (RainbowColor color: RainbowColor.values()) {
-            // Basic self droppers
-            this.dropSelf(ModBlocks.getArconiumTreeSapling(color).value());
-            this.dropSelf(ModBlocks.getArconiumBlock(color).value());
-
-            this.add(ModBlocks.getRainbowGrassBlock(color).value(), b -> this.createSingleItemTableWithSilkTouch(b, Blocks.DIRT));
-
-            this.add(ModBlocks.getArconiumTreeLeaves(color).value(), this::createArconiumLeavesDrops);
-        }
-
-        // Clover, which gets four leaf clover drops when hit with a staff
-        this.add(ModBlocks.clover.value(), b ->
-                LootTable.lootTable()
-                        .withPool(
-                                LootPool.lootPool().setRolls(ConstantValue.exactly(1F))
-                                        .when(hasCloverStaff())
-                                        .add(
-                                                LootItem.lootTableItem(ModItems.fourLeafClover)
-                                                    .when(BonusLevelTableCondition.bonusLevelFlatChance(registrylookup.getOrThrow(Enchantments.FORTUNE), 0.3F, 0.6F, 0.8F, 1F))
-                                                    .otherwise(LootItem.lootTableItem(ModItems.threeLeafClover))
-                                        )
-                        ).withPool(
-                                LootPool.lootPool().setRolls(ConstantValue.exactly(1F))
-                                        .when(hasCloverStaff().invert())
-                                        .add(
-                                                LootItem.lootTableItem(ModItems.fourLeafClover)
-                                                        .when(LootItemRandomChanceCondition.randomChance(0.15F))
-                                                        .otherwise(LootItem.lootTableItem(ModItems.threeLeafClover))
-                                        )
-                        )
-        );
-    }
-
-    private LootTable.Builder createArconiumLeavesDrops(Block pLeaves) {
-        HolderLookup.RegistryLookup<Enchantment> registrylookup = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
-
-        ArconiumTreeLeaves leaves = (ArconiumTreeLeaves) pLeaves;
-        RainbowColor nextTier = leaves.getTier().getNextTier();
-        if (nextTier == null) nextTier = RainbowColor.PURPLE; // Maybe add some cool super special drop when mining the last tier tree?
-
-        //  Arconium leaves have a chance to drop leaves of the next tier's tree, IF mined with an appropriately colored sickle
-        return this.createLeavesDrops(leaves, ModBlocks.getArconiumTreeSapling(leaves.getTier()).value(), NORMAL_LEAVES_SAPLING_CHANCES)
+    // Clover, which gets four leaf clover drops when hit with a staff
+    this.add(
+        ModBlocks.clover.value(),
+        b ->
+            LootTable.lootTable()
                 .withPool(
-                        LootPool.lootPool()
-                                .setRolls(ConstantValue.exactly(1.0F))
-                                .when(hasSickle((leaves.getTier())))
-                                .add(
-                                        ((LootPoolSingletonContainer.Builder)this.applyExplosionCondition(pLeaves, LootItem.lootTableItem(ModBlocks.getArconiumTreeSapling(nextTier).asItem())))
-                                                .when(BonusLevelTableCondition.bonusLevelFlatChance(registrylookup.getOrThrow(Enchantments.FORTUNE), NORMAL_LEAVES_SAPLING_CHANCES))
-                                )
-                )
+                    LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1F))
+                        .when(hasCloverStaff())
+                        .add(
+                            LootItem.lootTableItem(ModItems.fourLeafClover)
+                                .when(
+                                    BonusLevelTableCondition.bonusLevelFlatChance(
+                                        registrylookup.getOrThrow(Enchantments.FORTUNE),
+                                        0.3F,
+                                        0.6F,
+                                        0.8F,
+                                        1F))
+                                .otherwise(LootItem.lootTableItem(ModItems.threeLeafClover))))
                 .withPool(
-                        LootPool.lootPool()
-                                .setRolls(ConstantValue.exactly(1.0F))
-                                .when(this.hasShears().or(this.hasSilkTouch()).invert())
-                                .add(
-                                        ((LootPoolSingletonContainer.Builder)this.applyExplosionCondition(pLeaves, LootItem.lootTableItem(ModItems.getColoredBranch(leaves.getTier()))))
-                                                .when(BonusLevelTableCondition.bonusLevelFlatChance(registrylookup.getOrThrow(Enchantments.FORTUNE), COLORED_STICK_CHANCES))
-                                )
-                );
-    }
+                    LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1F))
+                        .when(hasCloverStaff().invert())
+                        .add(
+                            LootItem.lootTableItem(ModItems.fourLeafClover)
+                                .when(LootItemRandomChanceCondition.randomChance(0.15F))
+                                .otherwise(LootItem.lootTableItem(ModItems.threeLeafClover)))));
+  }
 
-    private LootItemCondition.Builder hasSickle(RainbowColor color) {
-        HolderGetter<Item> items = this.registries.lookupOrThrow(Registries.ITEM);
-        return MatchTool.toolMatches(ItemPredicate.Builder.item().of(items, ModItems.getArconiumSickle(color).get()));
-    }
+  private LootTable.Builder createArconiumLeavesDrops(Block pLeaves) {
+    HolderLookup.RegistryLookup<Enchantment> registrylookup =
+        this.registries.lookupOrThrow(Registries.ENCHANTMENT);
+
+    ArconiumTreeLeaves leaves = (ArconiumTreeLeaves) pLeaves;
+    RainbowColor nextTier = leaves.getTier().getNextTier();
+    if (nextTier == null)
+      nextTier =
+          RainbowColor
+              .PURPLE; // Maybe add some cool super special drop when mining the last tier tree?
+
+    //  Arconium leaves have a chance to drop leaves of the next tier's tree, IF mined with an
+    // appropriately colored sickle
+    return this.createLeavesDrops(
+            leaves,
+            ModBlocks.getArconiumTreeSapling(leaves.getTier()).value(),
+            NORMAL_LEAVES_SAPLING_CHANCES)
+        .withPool(
+            LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1.0F))
+                .when(hasSickle((leaves.getTier())))
+                .add(
+                    ((LootPoolSingletonContainer.Builder)
+                            this.applyExplosionCondition(
+                                pLeaves,
+                                LootItem.lootTableItem(
+                                    ModBlocks.getArconiumTreeSapling(nextTier).asItem())))
+                        .when(
+                            BonusLevelTableCondition.bonusLevelFlatChance(
+                                registrylookup.getOrThrow(Enchantments.FORTUNE),
+                                NORMAL_LEAVES_SAPLING_CHANCES))))
+        .withPool(
+            LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1.0F))
+                .when(this.hasShears().or(this.hasSilkTouch()).invert())
+                .add(
+                    ((LootPoolSingletonContainer.Builder)
+                            this.applyExplosionCondition(
+                                pLeaves,
+                                LootItem.lootTableItem(
+                                    ModItems.getColoredBranch(leaves.getTier()))))
+                        .when(
+                            BonusLevelTableCondition.bonusLevelFlatChance(
+                                registrylookup.getOrThrow(Enchantments.FORTUNE),
+                                COLORED_STICK_CHANCES))));
+  }
+
+  private LootItemCondition.Builder hasSickle(RainbowColor color) {
+    HolderGetter<Item> items = this.registries.lookupOrThrow(Registries.ITEM);
+    return MatchTool.toolMatches(
+        ItemPredicate.Builder.item().of(items, ModItems.getArconiumSickle(color).get()));
+  }
 }

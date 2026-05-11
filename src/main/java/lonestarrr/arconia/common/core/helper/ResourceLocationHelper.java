@@ -4,7 +4,7 @@ import lonestarrr.arconia.common.Arconia;
 import net.minecraft.resources.Identifier;
 
 public class ResourceLocationHelper {
-    public static Identifier prefix(String path) {
-        return Identifier.fromNamespaceAndPath(Arconia.MOD_ID, path);
-    }
+  public static Identifier prefix(String path) {
+    return Identifier.fromNamespaceAndPath(Arconia.MOD_ID, path);
+  }
 }
