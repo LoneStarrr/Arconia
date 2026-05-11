@@ -1,3 +1,14 @@
+# 3.0.0-alpha
+
+## Changes
+
+ - Ported to 26.1.2 - Basic functionality all seems to work but not heavily tested yet
+ - Disabled patchouli / guide book as patchouli is not on 26.1.2 yet
+
+## Fixes
+
+ - Some minor rendering fixes discovered during porting
+
 # 2.0.0
 
 A 'major' release because item ids for roots (now: branches) has changed.
