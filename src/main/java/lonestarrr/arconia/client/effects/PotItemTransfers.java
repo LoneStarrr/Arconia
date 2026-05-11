@@ -2,12 +2,18 @@ package lonestarrr.arconia.client.effects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,12 +21,6 @@ import java.util.Set;
 
 /**
  * Renders animation of items being flung between blocks.
- *
- * <p>TODO 1.21.9 port: rendering disabled. The legacy implementation rendered ItemStacks via
- * {@code ItemRenderer.renderStatic} during a {@code RenderLevelStageEvent.AfterParticles} hook,
- * but that API is gone — items now render via the deferred submit pipeline (see
- * {@code SubmitNodeCollector}), which is not exposed during this event. The transfer state is
- * still tracked so that a future renderer rewrite can resume drawing without touching callers.
  */
 public class PotItemTransfers {
     private static final Set<ItemTransfer> transfers = new HashSet<>();
@@ -39,9 +39,10 @@ public class PotItemTransfers {
         transfers.add(transfer);
     }
 
-    public static void render(RenderLevelStageEvent.AfterTranslucentParticles event) {
-        Level world = Minecraft.getInstance().level;
-        if (world == null) {
+    public static void render(SubmitCustomGeometryEvent event) {
+        Level level = Minecraft.getInstance().level;
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (level == null || player == null) {
             return;
         }
 
@@ -54,15 +55,11 @@ public class PotItemTransfers {
                 continue;
             }
 
-            BlockPos playerPos = Minecraft.getInstance().player.blockPosition();
+            BlockPos playerPos = player.blockPosition();
             if (playerPos.distToCenterSqr(transfer.startPos.x, transfer.startPos.y, transfer.startPos.z) > 64 * 64) {
                 continue;
             }
-            // TODO 1.21.9: re-implement item rendering for in-flight transfers. The new submit-based
-            // render pipeline (SubmitNodeCollector) is not directly accessible during the
-            // RenderLevelStageEvent. Options: migrate the effect to a particle, or render via a
-            // BlockEntityRenderer that has access to a SubmitNodeCollector.
-            // renderItemTransfer(transfer, event.getPoseStack(), buffer, event.getPartialTick().getGameTimeDeltaPartialTick(false));
+            renderItemTransfer(transfer, level, event, partialTick);
         }
 
         for (ItemTransfer transfer : toRemove) {
@@ -70,20 +67,23 @@ public class PotItemTransfers {
         }
     }
 
-    /*
-    private static void renderItemTransfer(ItemTransfer transfer, PoseStack poseStack, MultiBufferSource buffer, float partialTicks) {
+    private static void renderItemTransfer(ItemTransfer transfer, @Nonnull Level level, SubmitCustomGeometryEvent event, float partialTicks) {
         double elapsedTicks = transfer.getTicksElapsed() + partialTicks;
         Vec3 itemPos = transfer.getPosition(elapsedTicks);
-        int light = LevelRenderer.getLightColor(Minecraft.getInstance().level, new BlockPos((int)itemPos.x, (int)itemPos.y, (int)itemPos.z));
+        Vec3 cameraPos = event.getLevelRenderState().cameraRenderState.pos;
+        itemPos.subtract(cameraPos);
+        PoseStack poseStack = event.getPoseStack();
+
+//        int light = level.getLightEmission(new BlockPos((int)itemPos.x, (int)itemPos.y, (int)itemPos.z));
+        int light = 15728880; // TODO fix me
         poseStack.pushPose();
         poseStack.translate(itemPos.x, itemPos.y, itemPos.z);
         ItemStack toRender = transfer.itemStack;
-        Minecraft.getInstance().getItemRenderer()
-                .renderStatic(toRender, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, Minecraft.getInstance().level,
-                        0);
+        ItemStackRenderState state = new ItemStackRenderState();
+        Minecraft.getInstance().getItemModelResolver().updateForTopItem(state, toRender, ItemDisplayContext.GROUND, level, null, 0);
+        state.submit(poseStack, event.getSubmitNodeCollector(), light, OverlayTexture.NO_OVERLAY, 0);
         poseStack.popPose();
     }
-    */
 }
 
 class ItemTransfer {
