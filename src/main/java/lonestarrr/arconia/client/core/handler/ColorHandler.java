@@ -2,7 +2,11 @@ package lonestarrr.arconia.client.core.handler;
 
 import java.util.List;
 import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.block.*;
+import lonestarrr.arconia.common.block.ArconiumBlock;
+import lonestarrr.arconia.common.block.ArconiumTreeLeaves;
+import lonestarrr.arconia.common.block.ArconiumTreeSapling;
+import lonestarrr.arconia.common.block.ModBlocks;
+import lonestarrr.arconia.common.block.RainbowGrassBlock;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.client.color.block.BlockTintSources;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;

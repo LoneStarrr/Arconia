@@ -1,6 +1,8 @@
 package lonestarrr.arconia.client.core.handler;
 
-import lonestarrr.arconia.client.effects.*;
+import lonestarrr.arconia.client.effects.CenterPedestalRenderer;
+import lonestarrr.arconia.client.effects.PedestalRenderer;
+import lonestarrr.arconia.client.effects.PotRenderer;
 import lonestarrr.arconia.common.block.entities.ModBlockEntities;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 

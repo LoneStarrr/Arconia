@@ -262,8 +262,7 @@ spotless {
         target 'src/**/*.java'
         googleJavaFormat('1.35.0')
         removeUnusedImports()
-        // TODO replace with forbidWildcardImports once all has been expanded
-        // expandWildcardImports()
+        forbidWildcardImports()
         forbidModuleImports()
         trimTrailingWhitespace()
         endWithNewline()
