@@ -87,16 +87,6 @@ public class ColoredBranch extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext ctx, @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, ctx, display, tooltipAdder, tooltipFlag);
-        ItemStack resource = getResourceItem(stack);
-        if (!resource.isEmpty()) {
-            tooltipAdder.accept(resource.getItem().getName(resource));
-        }
-    }
-
-
-    @Override
     public @NotNull InteractionResult useOn(UseOnContext context) {
         BlockPos pos = context.getClickedPos();
         Level level = context.getLevel();
