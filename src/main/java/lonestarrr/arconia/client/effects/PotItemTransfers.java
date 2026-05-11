@@ -118,7 +118,7 @@ class ItemTransfer {
     public Vec3 getPosition(double elapsedTicks) {
         Vec3 velocity = getVelocity();
         double itemX = endPos.x + velocity.x * elapsedTicks;
-        double itemY = endPos.y + velocity.y * elapsedTicks - (ItemTransfer.GRAVITY * elapsedTicks * elapsedTicks) / 2d;
+        double itemY = endPos.y + velocity.y * elapsedTicks - (gravity * elapsedTicks * elapsedTicks) / 2d;
         double itemZ = endPos.z + velocity.z * elapsedTicks;
         return new Vec3(itemX, itemY, itemZ);
     }
