@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -61,7 +62,7 @@ public class CenterPedestalRenderer implements BlockEntityRenderer<CenterPedesta
         poseStack.pushPose();
         // BERs have the block entity at (0, 0, 0), compensate
         poseStack.translate(-bePos.getX(), -bePos.getY(), -bePos.getZ());
-        ItemProjector.projectItem(stack, itemPos, poseStack, nodeCollector, state.lightCoords, 0, false);
+        ItemProjector.projectItem(stack, itemPos, poseStack, nodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, false);
         poseStack.popPose();
     }
 

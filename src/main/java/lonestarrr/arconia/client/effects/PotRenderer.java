@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -95,17 +96,18 @@ public class PotRenderer implements BlockEntityRenderer<PotMultiBlockPrimaryBloc
 
         // If for any reason items cannot be produced, visualize this by showing an icon above the pot
         BlockPos statePos = new BlockPos(0, 2, 0); // BER are always at 0, 0, 0
-        int light = state.lightCoords;
+        int lightCoords = state.lightCoords;
+        int overlayCoords = OverlayTexture.NO_OVERLAY;
 
         if (!state.hasStorage) {
-            ItemProjector.projectItem(Items.CHEST.getDefaultInstance(), statePos, poseStack, nodeCollector, light, 0, true);
-            ItemProjector.projectItem(Items.BARRIER.getDefaultInstance(), statePos, poseStack, nodeCollector, light, 0, true);
+            ItemProjector.projectItem(Items.CHEST.getDefaultInstance(), statePos, poseStack, nodeCollector, lightCoords, overlayCoords, true);
+            ItemProjector.projectItem(Items.BARRIER.getDefaultInstance(), statePos, poseStack, nodeCollector, lightCoords, overlayCoords, true);
         } else if (state.detectedTier == null) {
-            ItemProjector.projectItem(ModBlocks.getArconiumTreeLeaves(RainbowColor.RED).asItem().getDefaultInstance(), statePos, poseStack, nodeCollector, light, 0, true);
+            ItemProjector.projectItem(ModBlocks.getArconiumTreeLeaves(RainbowColor.RED).asItem().getDefaultInstance(), statePos, poseStack, nodeCollector, lightCoords, overlayCoords, true);
         } else if (state.storageFull) {
-            ItemProjector.projectItem(Items.CHEST.getDefaultInstance(), statePos, poseStack, nodeCollector, light, 0, true);
+            ItemProjector.projectItem(Items.CHEST.getDefaultInstance(), statePos, poseStack, nodeCollector, lightCoords, overlayCoords, true);
         } else if (state.itemGenerationCredits <= 0) {
-            ItemProjector.projectItem(ModBlocks.getArconiumTreeLeaves(state.detectedTier).asItem().getDefaultInstance(), statePos, poseStack, nodeCollector, light, 0, true);
+            ItemProjector.projectItem(ModBlocks.getArconiumTreeLeaves(state.detectedTier).asItem().getDefaultInstance(), statePos, poseStack, nodeCollector, lightCoords, overlayCoords, true);
         }
     }
 

@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -26,12 +27,12 @@ public class ItemProjector {
      * @param itemPos position (in block coords) of the item
      * @param poseStack matrix stack
      * @param nodeCollector node collector to submit draw calls into
-     * @param combinedLight packed light coordinates
-     * @param combinedOverlay packed overlay coordinates
+     * @param lightCoords packed light coordinates
+     * @param overlayCoords packed overlay coordinates
      * @param forceShow attempt to show item, even in case of collisions
      */
-    public static void projectItem(ItemStack stack, BlockPos itemPos, PoseStack poseStack, SubmitNodeCollector nodeCollector, int combinedLight,
-                                    int combinedOverlay, boolean forceShow) {
+    public static void projectItem(ItemStack stack, BlockPos itemPos, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
+                                    int overlayCoords, boolean forceShow) {
         // Don't draw the item if something's in the way
         Level level = Minecraft.getInstance().level;
         if (level == null) {
@@ -48,7 +49,6 @@ public class ItemProjector {
         poseStack.translate(itemPos.getX(), itemPos.getY(), itemPos.getZ());
         poseStack.translate(0.5, 0.1, 0.5);
         Vector3f rotationVector = new Vector3f(0, 1, 0);
-        int light = LevelRenderer.getLightCoords(level, itemPos);
         long ticks = level.getGameTime();
 
         // rotation animation
@@ -63,7 +63,7 @@ public class ItemProjector {
         scale = 0.75f + 0.25f * scale;
         poseStack.scale(scale, scale, scale);
 
-        submitItemStack(stack, poseStack, nodeCollector, light, combinedOverlay);
+        submitItemStack(stack, poseStack, nodeCollector, lightCoords, overlayCoords);
         poseStack.popPose();
     }
 
@@ -72,14 +72,14 @@ public class ItemProjector {
       * @param items items to display in carousel
      * @param poseStack matrix stack
      * @param nodeCollector node collector to submit draw calls into
-     * @param light packed light
+     * @param lightCoords packed lightCoords
      * @param ticksPerRotation How fast to rotate
      * @param distanceFromCenter How far from the center should the items render (e.g. radius)
      * @param scale Item display scale factor
      * @param itemsPerLevel How many items to display per y layer. If there are more items, a new y layer will be rendered above
      * @param levelOffset Additional render offset (x+y) for each extra y layer
      */
-    public static void projectItemCarousel(List<ItemStack> items, PoseStack poseStack, SubmitNodeCollector nodeCollector, int light, int ticksPerRotation, float distanceFromCenter, float scale, int itemsPerLevel, float levelOffset) {
+    public static void projectItemCarousel(List<ItemStack> items, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, int ticksPerRotation, float distanceFromCenter, float scale, int itemsPerLevel, float levelOffset) {
         final Vector3f yAxis = new Vector3f(0f, 1f, 0f);
 
         Level level = Minecraft.getInstance().level;
@@ -103,17 +103,18 @@ public class ItemProjector {
             poseStack.mulPose(new Quaternionf().fromAxisAngleDeg(yAxis, rotation));
             poseStack.translate(xOffset, yOffset, 0.0f);
             poseStack.scale(scale, scale, scale);
-            submitItemStack(item, poseStack, nodeCollector, light, 0);
+            int overlayCoords = OverlayTexture.NO_OVERLAY;
+            submitItemStack(item, poseStack, nodeCollector, lightCoords, overlayCoords);
             poseStack.popPose();
         }
 
         poseStack.popPose();
     }
 
-    private static void submitItemStack(ItemStack stack, PoseStack poseStack, SubmitNodeCollector nodeCollector, int packedLight, int packedOverlay) {
+    private static void submitItemStack(ItemStack stack, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, int overlayCoords) {
         Minecraft minecraft = Minecraft.getInstance();
         ItemStackRenderState state = new ItemStackRenderState();
         minecraft.getItemModelResolver().updateForTopItem(state, stack, ItemDisplayContext.GROUND, minecraft.level, null, 0);
-        state.submit(poseStack, nodeCollector, packedLight, packedOverlay, 0);
+        state.submit(poseStack, nodeCollector, lightCoords, overlayCoords, 0);
     }
 }
