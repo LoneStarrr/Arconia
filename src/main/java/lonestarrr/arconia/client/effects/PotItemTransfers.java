@@ -71,7 +71,7 @@ public class PotItemTransfers {
         double elapsedTicks = transfer.getTicksElapsed() + partialTicks;
         Vec3 itemPos = transfer.getPosition(elapsedTicks);
         Vec3 cameraPos = event.getLevelRenderState().cameraRenderState.pos;
-        itemPos.subtract(cameraPos);
+        itemPos = itemPos.subtract(cameraPos);
         PoseStack poseStack = event.getPoseStack();
 
 //        int light = level.getLightEmission(new BlockPos((int)itemPos.x, (int)itemPos.y, (int)itemPos.z));
