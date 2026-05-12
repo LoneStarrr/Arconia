@@ -1,0 +1,113 @@
+// SPDX-FileCopyrightText: 2024 klikli-dev
+//
+// SPDX-License-Identifier: MIT
+
+package lonestarrr.arconia.data.modonomicon.guide_book.formatting;
+
+import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
+import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
+import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
+import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
+import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
+import lonestarrr.arconia.data.modonomicon.guide_book.FeaturesCategory;
+import lonestarrr.arconia.data.modonomicon.guide_book.FormattingCategory;
+import lonestarrr.arconia.data.modonomicon.guide_book.features.ConditionLevel1Entry;
+import lonestarrr.arconia.data.modonomicon.guide_book.features.MultiblockEntry;
+import net.minecraft.world.item.Items;
+
+public class LinkFormattingEntry extends EntryProvider {
+  public static final String ID = "link";
+
+  public LinkFormattingEntry(CategoryProvider parent) {
+    super(parent);
+  }
+
+  @Override
+  protected void generatePages() {
+
+    this.page(
+        "page1",
+        () ->
+            BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
+    this.pageTitle("Http Links");
+    this.pageText(
+        """
+                [Click me!](https://klikli-dev.github.io/modonomicon/) \\
+                [Or me!](https://github.com/klikli-dev/modonomicon)
+                """);
+
+    this.page(
+        "page2",
+        () ->
+            BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
+    this.pageTitle("Book Links");
+    this.pageText(
+        """
+                        {0} \\
+                        {1} \\
+                        {2} \\
+                        [Link without book id](entry://formatting/basic) \\
+                        {3} \\
+                        {4}
+                        """,
+        this.entryLink("View a Multiblock", FeaturesCategory.ID, MultiblockEntry.ID),
+        this.entryLink("View a Condition", FeaturesCategory.ID, ConditionLevel1Entry.ID),
+        this.entryLink("View basic formatting", FormattingCategory.ID, BasicFormattingEntry.ID),
+        this.entryLink("Always locked", FormattingCategory.ID, AlwaysLockedEntry.ID),
+        this.categoryLink("View Features Category", FeaturesCategory.ID));
+
+    //        this.page("page3", () -> BookTextPageModel.create()
+    //                .withTitle(this.context().pageTitle())
+    //                .withText(this.context().pageText())
+    //        );
+    //        this.pageTitle("Patchouli Links");
+    //        this.pageText("""
+    //                [Link to a Patchouli
+    // Entry](patchouli://occultism:dictionary_of_spirits//misc/books_of_calling)
+    //                """
+    //        );
+
+    this.page(
+        "invalidLink",
+        () ->
+            BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
+    this.pageTitle("Invalid Link");
+    this.pageText(
+        """
+                {0}
+                """,
+        this.entryLink("It has an invalid Link", "a_cat", "an_entry"));
+  }
+
+  @Override
+  protected String entryName() {
+    return "Link Formatting Entry";
+  }
+
+  @Override
+  protected String entryDescription() {
+    return "An entry showcasing link formatting.";
+  }
+
+  @Override
+  protected GuiSprite entryBackground() {
+    return EntryBackground.LINK;
+  }
+
+  @Override
+  protected BookIconModel entryIcon() {
+    return BookIconModel.create(Items.WRITABLE_BOOK);
+  }
+
+  @Override
+  protected String entryId() {
+    return ID;
+  }
+}

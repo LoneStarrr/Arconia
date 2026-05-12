@@ -141,6 +141,14 @@ repositories {
         }
     }
 
+    // Modonomicon repo, from https://klikli-dev.github.io/modonomicon/docs/getting-started/maven-dependencies/
+    maven {
+        url "https://dl.cloudsmith.io/public/klikli-dev/mods/maven/"
+        content {
+            includeGroup "com.klikli_dev"
+        }
+    }
+
     // Patchouli - for the guide book
     maven {
         name = "Patchouli"
@@ -191,6 +199,9 @@ dependencies {
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
     // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it
     localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+
+    // Modonomicon
+    implementation ("com.klikli_dev:modonomicon-${minecraft_version}-neoforge:${modonomicon_version}"){transitive=false}
 
     // Patchouli
     // compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}:api"
