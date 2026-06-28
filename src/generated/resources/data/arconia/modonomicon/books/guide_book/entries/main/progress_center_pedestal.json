@@ -1,0 +1,65 @@
+{
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "main",
+  "condition": {
+    "type": "modonomicon:advancement",
+    "advancement_id": "arconia:pedestal"
+  },
+  "description": "book.arconia.guide_book.main.progress_center_pedestal.description",
+  "hide_while_locked": false,
+  "icon": {
+    "id": "arconia:center_pedestal"
+  },
+  "name": "book.arconia.guide_book.main.progress_center_pedestal.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.progress_center_pedestal.page1.text",
+      "title": "book.arconia.guide_book.main.progress_center_pedestal.page1.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:crafting_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "recipe_id_1": "arconia:center_pedestal",
+      "text": "",
+      "title1": "Center Pedestal",
+      "title2": ""
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.progress_center_pedestal.page3.text",
+      "title": "",
+      "use_markdown_in_title": false
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "main/progress_pedestals",
+      "line_enabled": true,
+      "line_reversed": true
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 13,
+  "x": 2,
+  "y": -1
+}

@@ -1,0 +1,71 @@
+{
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "main",
+  "condition": {
+    "type": "modonomicon:advancement",
+    "advancement_id": "arconia:clover_staff"
+  },
+  "description": "book.arconia.guide_book.main.progress_pot_of_gold.description",
+  "hide_while_locked": false,
+  "icon": {
+    "id": "minecraft:cauldron"
+  },
+  "name": "book.arconia.guide_book.main.progress_pot_of_gold.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.progress_pot_of_gold.page1.text",
+      "title": "book.arconia.guide_book.main.progress_pot_of_gold.page1.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.progress_pot_of_gold.page2.text",
+      "title": "",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "pot_of_gold",
+      "multiblock_name": "",
+      "show_visualize_button": true,
+      "text": ""
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "main/progress_colored_grass",
+      "line_enabled": true,
+      "line_reversed": true
+    },
+    {
+      "draw_arrow": true,
+      "entry": "main/progress_staff",
+      "line_enabled": true,
+      "line_reversed": true
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 14,
+  "x": -2,
+  "y": 1
+}

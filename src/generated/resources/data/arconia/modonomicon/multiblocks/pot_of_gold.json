@@ -1,0 +1,48 @@
+{
+  "type": "modonomicon:dense",
+  "mapping": {
+    "*": {
+      "type": "modonomicon:display",
+      "display": "minecraft:basalt"
+    },
+    "+": {
+      "type": "modonomicon:display",
+      "display": "minecraft:stone"
+    },
+    "0": {
+      "type": "modonomicon:block",
+      "block": "minecraft:cauldron"
+    },
+    "C": {
+      "type": "modonomicon:block",
+      "block": "minecraft:cauldron"
+    },
+    "G": {
+      "type": "modonomicon:block",
+      "block": "minecraft:gold_block"
+    }
+  },
+  "pattern": [
+    [
+      "_____",
+      "_CCC_",
+      "_CGC_",
+      "_CCC_",
+      "_____"
+    ],
+    [
+      "_____",
+      "_CCC_",
+      "_C0C_",
+      "_CCC_",
+      "_____"
+    ],
+    [
+      "*+*+*",
+      "+*+*+",
+      "*+*+*",
+      "+*+*+",
+      "*+*+*"
+    ]
+  ]
+}

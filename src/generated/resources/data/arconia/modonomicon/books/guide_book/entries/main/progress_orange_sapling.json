@@ -1,0 +1,53 @@
+{
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "main",
+  "condition": {
+    "type": "modonomicon:advancement",
+    "advancement_id": "arconia:red_arconium_sickle"
+  },
+  "description": "book.arconia.guide_book.main.progress_orange_sapling.description",
+  "hide_while_locked": false,
+  "icon": {
+    "id": "arconia:orange_arconium_tree_sapling"
+  },
+  "name": "book.arconia.guide_book.main.progress_orange_sapling.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.progress_orange_sapling.page1.text",
+      "title": "book.arconia.guide_book.main.progress_orange_sapling.page1.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:spotlight",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "item": "arconia:orange_arconium_tree_sapling",
+      "text": "",
+      "title": "book.arconia.guide_book.main.progress_orange_sapling.page2.title"
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "main/progress_red_arconium_sickle",
+      "line_enabled": true,
+      "line_reversed": true
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 19,
+  "x": 5,
+  "y": 2
+}

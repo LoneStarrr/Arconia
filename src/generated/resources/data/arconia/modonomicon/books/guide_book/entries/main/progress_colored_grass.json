@@ -1,0 +1,53 @@
+{
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "main",
+  "condition": {
+    "type": "modonomicon:advancement",
+    "advancement_id": "arconia:red_tree_branch"
+  },
+  "description": "book.arconia.guide_book.main.progress_colored_grass.description",
+  "hide_while_locked": false,
+  "icon": {
+    "id": "arconia:red_rainbow_grass_block"
+  },
+  "name": "book.arconia.guide_book.main.progress_colored_grass.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.progress_colored_grass.page1.text",
+      "title": "book.arconia.guide_book.main.progress_colored_grass.page1.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:spotlight",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "item": "arconia:red_rainbow_grass_block",
+      "text": "",
+      "title": ""
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "main/progress_tree_branches",
+      "line_enabled": true,
+      "line_reversed": true
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 10,
+  "x": -4,
+  "y": 3
+}

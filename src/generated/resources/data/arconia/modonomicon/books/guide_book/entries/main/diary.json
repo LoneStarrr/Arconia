@@ -1,0 +1,31 @@
+{
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/star_gold",
+    "width": 26
+  },
+  "category": "main",
+  "description": "book.arconia.guide_book.main.diary.description",
+  "hide_while_locked": false,
+  "icon": {
+    "id": "minecraft:written_book"
+  },
+  "name": "book.arconia.guide_book.main.diary.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.diary.lore.text",
+      "title": "book.arconia.guide_book.main.diary.lore.title",
+      "use_markdown_in_title": false
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 0,
+  "x": -8,
+  "y": -3
+}

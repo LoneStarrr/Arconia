@@ -1,0 +1,54 @@
+{
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "main",
+  "condition": {
+    "type": "modonomicon:advancement",
+    "advancement_id": "arconia:clover_staff"
+  },
+  "description": "book.arconia.guide_book.main.progress_pedestals.description",
+  "hide_while_locked": false,
+  "icon": {
+    "id": "arconia:pedestal"
+  },
+  "name": "book.arconia.guide_book.main.progress_pedestals.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.progress_pedestals.page1.text",
+      "title": "book.arconia.guide_book.main.progress_pedestals.page1.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:crafting_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "recipe_id_1": "arconia:pedestal",
+      "text": "",
+      "title1": "Pedestal",
+      "title2": ""
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "main/progress_staff",
+      "line_enabled": true,
+      "line_reversed": true
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 12,
+  "x": -2,
+  "y": -1
+}

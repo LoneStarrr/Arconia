@@ -9,6 +9,7 @@ import lonestarrr.arconia.data.client.ArconiaModelProvider;
 import lonestarrr.arconia.data.client.ModLanguageProvider;
 import lonestarrr.arconia.data.loot.ArconiaLootTableProvider;
 import lonestarrr.arconia.data.modonomicon.GuideBook;
+import lonestarrr.arconia.data.modonomicon.MultiBlockProvider;
 import lonestarrr.arconia.data.recipes.ModRecipeProvider;
 import lonestarrr.arconia.data.world.BiomeModifiers;
 import net.minecraft.data.advancements.AdvancementProvider;
@@ -23,7 +24,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
  * <p>1.21.4 NeoForge splits {@code GatherDataEvent} into {@code Server} and {@code Client}
  * subclasses. Per the 21.4 release-notes recommendation, we generate everything in a single {@code
  * clientData} run (configured in {@code build.gradle}) and listen only on the {@code Client}
- * variant — the {@code Server} variant is never fired in this build.
+ * variant. The {@code Server} variant is never fired in this build.
  */
 public class DataGenerators {
   public static void gatherClientData(GatherDataEvent.Client event) {
@@ -59,6 +60,7 @@ public class DataGenerators {
                 event.getGenerator().getPackOutput(),
                 enUsCache)); // E: error: cannot find symbol: EnUsProvider
 
+    event.getGenerator().addProvider(true, new MultiBlockProvider(event.getGenerator().getPackOutput(), Arconia.MOD_ID));
     Arconia.logger.info(
         "**** DataGenerators executed (event class: {})", event.getClass().getSimpleName());
   }

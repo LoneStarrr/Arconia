@@ -1,0 +1,93 @@
+{
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "main",
+  "condition": {
+    "type": "modonomicon:advancement",
+    "advancement_id": "arconia:pot_of_gold"
+  },
+  "description": "book.arconia.guide_book.main.progress_pot_of_gold_trees.description",
+  "hide_while_locked": false,
+  "icon": {
+    "id": "arconia:red_arconium_tree_sapling"
+  },
+  "name": "book.arconia.guide_book.main.progress_pot_of_gold_trees.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.progress_pot_of_gold_trees.page1.text",
+      "title": "book.arconia.guide_book.main.progress_pot_of_gold_trees.page1.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:image",
+      "anchor": "",
+      "border": true,
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "images": [
+        "arconia:textures/gui/guide_book/potofgold_trees_positions.png"
+      ],
+      "text": "",
+      "title": "",
+      "use_legacy_rendering": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.progress_pot_of_gold_trees.page3.text",
+      "title": "",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:image",
+      "anchor": "",
+      "border": true,
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "images": [
+        "arconia:textures/gui/guide_book/potofgold_trees_1_red.png"
+      ],
+      "text": "",
+      "title": "",
+      "use_legacy_rendering": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.progress_pot_of_gold_trees.page5.text",
+      "title": "",
+      "use_markdown_in_title": false
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "main/progress_pot_of_gold",
+      "line_enabled": true,
+      "line_reversed": true
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 15,
+  "x": 0,
+  "y": 1
+}

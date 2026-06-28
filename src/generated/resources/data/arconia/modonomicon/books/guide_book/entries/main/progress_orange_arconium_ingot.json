@@ -1,0 +1,57 @@
+{
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "main",
+  "condition": {
+    "type": "modonomicon:advancement",
+    "advancement_id": "arconia:orange_arconium_tree_sapling"
+  },
+  "description": "book.arconia.guide_book.main.progress_orange_arconium_ingot.description",
+  "hide_while_locked": false,
+  "icon": {
+    "id": "arconia:orange_arconium_ingot"
+  },
+  "name": "book.arconia.guide_book.main.progress_orange_arconium_ingot.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.progress_orange_arconium_ingot.page1.text",
+      "title": "book.arconia.guide_book.main.progress_orange_arconium_ingot.page1.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:image",
+      "anchor": "",
+      "border": true,
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "images": [
+        "arconia:textures/gui/guide_book/potofgold_trees_orange.png"
+      ],
+      "text": "",
+      "title": "",
+      "use_legacy_rendering": false
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "main/progress_orange_sapling",
+      "line_enabled": true,
+      "line_reversed": true
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 20,
+  "x": 5,
+  "y": 0
+}

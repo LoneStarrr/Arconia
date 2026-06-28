@@ -1,0 +1,53 @@
+{
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "main",
+  "condition": {
+    "type": "modonomicon:advancement",
+    "advancement_id": "arconia:yellow_arconium_ingot"
+  },
+  "description": "book.arconia.guide_book.main.progress_green_arconium_ingot.description",
+  "hide_while_locked": false,
+  "icon": {
+    "id": "arconia:green_arconium_ingot"
+  },
+  "name": "book.arconia.guide_book.main.progress_green_arconium_ingot.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.progress_green_arconium_ingot.page1.text",
+      "title": "book.arconia.guide_book.main.progress_green_arconium_ingot.page1.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:spotlight",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "item": "arconia:green_arconium_ingot",
+      "text": "",
+      "title": ""
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "main/progress_yellow_arconium_ingot",
+      "line_enabled": true,
+      "line_reversed": true
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 22,
+  "x": 7,
+  "y": -2
+}

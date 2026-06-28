@@ -1,0 +1,45 @@
+{
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/star_gold",
+    "width": 26
+  },
+  "category": "main",
+  "description": "book.arconia.guide_book.main.infinite_riches.description",
+  "hide_while_locked": false,
+  "icon": {
+    "id": "minecraft:diamond"
+  },
+  "name": "book.arconia.guide_book.main.infinite_riches.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.infinite_riches.page1.text",
+      "title": "book.arconia.guide_book.main.infinite_riches.page1.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:image",
+      "anchor": "",
+      "border": true,
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "images": [
+        "arconia:textures/gui/guide_book/potofgold_example_setup.png"
+      ],
+      "text": "",
+      "title": "",
+      "use_legacy_rendering": false
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 7,
+  "x": -8,
+  "y": 1
+}

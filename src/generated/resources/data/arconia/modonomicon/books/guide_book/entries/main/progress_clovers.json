@@ -1,0 +1,49 @@
+{
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "main",
+  "description": "book.arconia.guide_book.main.progress_clovers.description",
+  "hide_while_locked": false,
+  "icon": {
+    "id": "arconia:four_leaf_clover"
+  },
+  "name": "book.arconia.guide_book.main.progress_clovers.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.progress_clovers.page1.text",
+      "title": "book.arconia.guide_book.main.progress_clovers.page1.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:spotlight",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "item": "arconia:four_leaf_clover",
+      "text": "",
+      "title": ""
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "main/infinite_riches",
+      "line_enabled": true,
+      "line_reversed": true
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 8,
+  "x": -6,
+  "y": -1
+}

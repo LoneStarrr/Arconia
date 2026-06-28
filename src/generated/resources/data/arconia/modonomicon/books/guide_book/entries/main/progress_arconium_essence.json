@@ -1,0 +1,70 @@
+{
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "main",
+  "condition": {
+    "type": "modonomicon:advancement",
+    "advancement_id": "arconia:center_pedestal"
+  },
+  "description": "book.arconia.guide_book.main.progress_arconium_essence.description",
+  "hide_while_locked": false,
+  "icon": {
+    "id": "arconia:red_arconium_essence"
+  },
+  "name": "book.arconia.guide_book.main.progress_arconium_essence.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.progress_arconium_essence.page1.text",
+      "title": "book.arconia.guide_book.main.progress_arconium_essence.page1.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:spotlight",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "item": "arconia:red_arconium_essence",
+      "text": "",
+      "title": ""
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.arconia.guide_book.main.progress_arconium_essence.page3.text",
+      "title": "",
+      "use_markdown_in_title": false
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "main/progress_pot_of_gold_trees",
+      "line_enabled": true,
+      "line_reversed": true
+    },
+    {
+      "draw_arrow": true,
+      "entry": "main/progress_center_pedestal",
+      "line_enabled": true,
+      "line_reversed": true
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 16,
+  "x": 2,
+  "y": 1
+}
