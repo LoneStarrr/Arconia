@@ -30,13 +30,13 @@ public class DiaryChapter2 extends EntryProvider {
         that always seem to find me.
         """);
     this.page(
-            "page2",
-            () ->
-                    BookTextPageModel.create()
-                            .withTitle(this.context().pageTitle())
-                            .withText(this.context().pageText()));
+        "page2",
+        () ->
+            BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
     this.pageText(
-            """
+        """
             For as dense as this forest is, it seems to be strangely devoid of your typical nasty creatures that lurk in
             the shadows. I can only hope that this is a positive sign.
             """);

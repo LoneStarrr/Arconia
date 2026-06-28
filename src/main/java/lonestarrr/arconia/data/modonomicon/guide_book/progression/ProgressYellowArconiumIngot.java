@@ -5,7 +5,6 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
-import com.klikli_dev.modonomicon.api.datagen.book.page.BookImagePageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookSpotlightPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
@@ -22,23 +21,18 @@ public class ProgressYellowArconiumIngot extends EntryProvider {
 
   @Override
   protected void generatePages() {
-    this.page(
-                    "page1",
-                    () ->
-                            BookTextPageModel.create()
-                                    .withText(this.context().pageText()))
-            .withTitle(this.context.pageTitle());
+    this.page("page1", () -> BookTextPageModel.create().withText(this.context().pageText()))
+        .withTitle(this.context.pageTitle());
     this.pageTitle("Yellow arconium ingot");
     this.pageText(
         """
         I know the drill by now. Sickle, sapling, essence, new ingot!!
         """);
     this.page(
-            "page2",
-            () ->
-                    BookSpotlightPageModel.create()
-                            .withItem(Ingredient.of(ModItems.getArconiumIngot(RainbowColor.YELLOW))));
-
+        "page2",
+        () ->
+            BookSpotlightPageModel.create()
+                .withItem(Ingredient.of(ModItems.getArconiumIngot(RainbowColor.YELLOW))));
   }
 
   @Override
@@ -63,8 +57,8 @@ public class ProgressYellowArconiumIngot extends EntryProvider {
 
   @Override
   protected BookEntryModel additionalSetup(BookEntryModel entry) {
-    var advancementCondition = this.condition().advancement(ResourceLocationHelper.prefix("orange_arconium_ingot"));
+    var advancementCondition =
+        this.condition().advancement(ResourceLocationHelper.prefix("orange_arconium_ingot"));
     return entry.withCondition(advancementCondition);
   }
-
 }

@@ -30,24 +30,20 @@ public class ProgressArconiumEssence extends EntryProvider {
     this.pageTitle("Arconium Essence");
     this.pageText(
         """
-        Now that I have my pot of gold setup and rituals ready to go, let's extract our first piece of treasure: 
+        Now that I have my pot of gold setup and rituals ready to go, let's extract our first piece of treasure:
         arconium essence!
-        I observed in detail one of the Leprechauns performing a ritual to imbue a red tree branch with this magical 
+        I observed in detail one of the Leprechauns performing a ritual to imbue a red tree branch with this magical
         essence. Once imbued, he used it on the pot of gold, which then displayed an apparition of the item above it.
         Soon after, that very same item popped out of the pot as if created out of thin air! With a chest placed
         nearby, the item was captured automatically.
         """);
     this.page(
-            "page2",
-            () ->
-                    BookSpotlightPageModel.create()
-                            .withItem(Ingredient.of(ModItems.getArconiumEssence(RainbowColor.RED))));
+        "page2",
+        () ->
+            BookSpotlightPageModel.create()
+                .withItem(Ingredient.of(ModItems.getArconiumEssence(RainbowColor.RED))));
 
-    this.page(
-            "page3",
-            () ->
-                    BookTextPageModel.create()
-                            .withText(this.context().pageText()));
+    this.page("page3", () -> BookTextPageModel.create().withText(this.context().pageText()));
     this.pageText(
         """
         I wrote down the exact ingredients needed to perform the ritual, and they can be found by looking up the
@@ -80,9 +76,10 @@ public class ProgressArconiumEssence extends EntryProvider {
 
   @Override
   protected BookEntryModel additionalSetup(BookEntryModel entry) {
-    var advancementCondition = this.condition().advancement(ResourceLocationHelper.prefix("pot_of_gold"));
-    var advancementCondition2 = this.condition().advancement(ResourceLocationHelper.prefix("center_pedestal"));
+    var advancementCondition =
+        this.condition().advancement(ResourceLocationHelper.prefix("pot_of_gold"));
+    var advancementCondition2 =
+        this.condition().advancement(ResourceLocationHelper.prefix("center_pedestal"));
     return entry.withCondition(advancementCondition).withCondition(advancementCondition2);
   }
-
 }

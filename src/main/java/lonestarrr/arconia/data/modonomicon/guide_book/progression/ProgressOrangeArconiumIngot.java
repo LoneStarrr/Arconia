@@ -6,13 +6,11 @@ import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookImagePageModel;
-import com.klikli_dev.modonomicon.api.datagen.book.page.BookSpotlightPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import lonestarrr.arconia.common.core.RainbowColor;
 import lonestarrr.arconia.common.core.helper.ResourceLocationHelper;
 import lonestarrr.arconia.common.item.ModItems;
-import net.minecraft.world.item.crafting.Ingredient;
 
 public class ProgressOrangeArconiumIngot extends EntryProvider {
 
@@ -22,12 +20,8 @@ public class ProgressOrangeArconiumIngot extends EntryProvider {
 
   @Override
   protected void generatePages() {
-    this.page(
-                    "page1",
-                    () ->
-                            BookTextPageModel.create()
-                                    .withText(this.context().pageText()))
-            .withTitle(this.context.pageTitle());
+    this.page("page1", () -> BookTextPageModel.create().withText(this.context().pageText()))
+        .withTitle(this.context.pageTitle());
     this.pageTitle("Orange arconium ingot");
     this.pageText(
         """
@@ -36,12 +30,13 @@ public class ProgressOrangeArconiumIngot extends EntryProvider {
         tree planted in one of the 8 positions surrounding it. The colored grass around the tree needs to match the
         color of the tree as well. If planted successfully, the pot will show orange rainbow particles.
         """);
-    this.page("page2", () ->
-                    BookImagePageModel.create()
-                            .withImages(
-                                    ResourceLocationHelper.prefix("textures/gui/guide_book/potofgold_trees_orange.png")
-                            )
-    );
+    this.page(
+        "page2",
+        () ->
+            BookImagePageModel.create()
+                .withImages(
+                    ResourceLocationHelper.prefix(
+                        "textures/gui/guide_book/potofgold_trees_orange.png")));
   }
 
   @Override
@@ -66,8 +61,8 @@ public class ProgressOrangeArconiumIngot extends EntryProvider {
 
   @Override
   protected BookEntryModel additionalSetup(BookEntryModel entry) {
-    var advancementCondition = this.condition().advancement(ResourceLocationHelper.prefix("orange_arconium_tree_sapling"));
+    var advancementCondition =
+        this.condition().advancement(ResourceLocationHelper.prefix("orange_arconium_tree_sapling"));
     return entry.withCondition(advancementCondition);
   }
-
 }

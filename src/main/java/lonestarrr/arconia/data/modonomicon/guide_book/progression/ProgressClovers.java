@@ -9,7 +9,6 @@ import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Blocks;
 
 public class ProgressClovers extends EntryProvider {
 
@@ -34,11 +33,8 @@ public class ProgressClovers extends EntryProvider {
         blessed with good fortune.
         """);
     this.page(
-            "page2",
-            () ->
-                    BookSpotlightPageModel.create()
-                            .withItem(Ingredient.of(ModItems.fourLeafClover)));
-
+        "page2",
+        () -> BookSpotlightPageModel.create().withItem(Ingredient.of(ModItems.fourLeafClover)));
   }
 
   @Override

@@ -31,15 +31,14 @@ public class ProgressStaff extends EntryProvider {
         """
         The clover staff will prove very useful for our plans. For once, using it to break clovers found in the world
         increases the odds of getting four-leaf clovers. That should save me some time exploring!
-        Enchanting it with fortune will increase the odds even more, so I should make sure to do this first change I 
+        Enchanting it with fortune will increase the odds even more, so I should make sure to do this first change I
         get.
         """);
     this.page(
-            "page2",
-            () ->
-                    BookCraftingRecipePageModel.create()
-                            .withRecipeId1(ResourceLocationHelper.prefix("clover_staff")));
-
+        "page2",
+        () ->
+            BookCraftingRecipePageModel.create()
+                .withRecipeId1(ResourceLocationHelper.prefix("clover_staff")));
   }
 
   @Override
@@ -64,13 +63,14 @@ public class ProgressStaff extends EntryProvider {
 
   @Override
   protected BookEntryModel additionalSetup(BookEntryModel entry) {
-    var advancementCondition = this.condition().advancement(ResourceLocationHelper.prefix("four_leaf_clover"));
-    this.lang().add(
-            Util.makeDescriptionId("advancement", advancementCondition.getAdvancementId()) + ".title",
-            "Find a four-leaf clover"
-    );
+    var advancementCondition =
+        this.condition().advancement(ResourceLocationHelper.prefix("four_leaf_clover"));
+    this.lang()
+        .add(
+            Util.makeDescriptionId("advancement", advancementCondition.getAdvancementId())
+                + ".title",
+            "Find a four-leaf clover");
 
     return entry.withCondition(advancementCondition);
-
   }
 }

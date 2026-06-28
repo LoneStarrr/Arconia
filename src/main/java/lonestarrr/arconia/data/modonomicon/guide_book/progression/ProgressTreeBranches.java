@@ -33,11 +33,10 @@ public class ProgressTreeBranches extends EntryProvider {
         the next steps towards a life of peaceful luxury.
         """);
     this.page(
-            "page2",
-            () ->
-                    BookSpotlightPageModel.create()
-                            .withItem(Ingredient.of(ModItems.getColoredBranch(RainbowColor.RED))));
-
+        "page2",
+        () ->
+            BookSpotlightPageModel.create()
+                .withItem(Ingredient.of(ModItems.getColoredBranch(RainbowColor.RED))));
   }
 
   @Override

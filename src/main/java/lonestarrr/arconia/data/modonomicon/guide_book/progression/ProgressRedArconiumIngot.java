@@ -5,7 +5,6 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
-import com.klikli_dev.modonomicon.api.datagen.book.page.BookCraftingRecipePageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookSpotlightPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
@@ -23,26 +22,25 @@ public class ProgressRedArconiumIngot extends EntryProvider {
   @Override
   protected void generatePages() {
     this.page(
-            "page1",
-            () ->
-                    BookTextPageModel.create()
-                            .withTitle(this.context().pageTitle())
-                            .withText(this.context().pageText()));
+        "page1",
+        () ->
+            BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
     this.pageTitle("Red arconium ingot");
     this.pageText(
         """
-        One of the first things I'll want to make using the red arconium essence is a magical red metal, which will 
+        One of the first things I'll want to make using the red arconium essence is a magical red metal, which will
         prove very useful to unlock more treasure to steal, I mean, borrow. I can once
         again use the ritual to craft it, assuming the particular universe I'm in today didn't sneakily alter it.
         Either way, looking up the recipe for red arconium ingots should provide me with the exact ingredients and
         method needed.
         """);
     this.page(
-            "page2",
-            () ->
-                    BookSpotlightPageModel.create()
-                            .withItem(Ingredient.of(ModItems.getArconiumIngot(RainbowColor.RED))));
-
+        "page2",
+        () ->
+            BookSpotlightPageModel.create()
+                .withItem(Ingredient.of(ModItems.getArconiumIngot(RainbowColor.RED))));
   }
 
   @Override
@@ -67,8 +65,8 @@ public class ProgressRedArconiumIngot extends EntryProvider {
 
   @Override
   protected BookEntryModel additionalSetup(BookEntryModel entry) {
-    var advancementCondition = this.condition().advancement(ResourceLocationHelper.prefix("red_arconium_essence"));
+    var advancementCondition =
+        this.condition().advancement(ResourceLocationHelper.prefix("red_arconium_essence"));
     return entry.withCondition(advancementCondition);
   }
-
 }

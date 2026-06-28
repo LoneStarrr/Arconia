@@ -60,7 +60,10 @@ public class DataGenerators {
                 event.getGenerator().getPackOutput(),
                 enUsCache)); // E: error: cannot find symbol: EnUsProvider
 
-    event.getGenerator().addProvider(true, new MultiBlockProvider(event.getGenerator().getPackOutput(), Arconia.MOD_ID));
+    event
+        .getGenerator()
+        .addProvider(
+            true, new MultiBlockProvider(event.getGenerator().getPackOutput(), Arconia.MOD_ID));
     Arconia.logger.info(
         "**** DataGenerators executed (event class: {})", event.getClass().getSimpleName());
   }

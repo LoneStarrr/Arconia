@@ -25,19 +25,15 @@ public class DiaryChapter4 extends EntryProvider {
     this.pageTitle("Discovery");
     this.pageText(
         """
-        Dear diary. The noises came back last night, and this time I was able to discover a bit more. 
-        Remember those stories from over-imaginative travellers at taverns around the world? 
-        About the little green Leprechauns hoarding their riches, only to have their stashes disclosed 
+        Dear diary. The noises came back last night, and this time I was able to discover a bit more.
+        Remember those stories from over-imaginative travellers at taverns around the world?
+        About the little green Leprechauns hoarding their riches, only to have their stashes disclosed
         by giant multicolored arches in the sky?
         """);
-    this.page(
-            "page2",
-            () ->
-                    BookTextPageModel.create()
-                            .withText(this.context().pageText()));
+    this.page("page2", () -> BookTextPageModel.create().withText(this.context().pageText()));
     this.pageText(
-            """
-            Yeah, they might have been on to something, because what I just witnessed struck an uncanny resemblance 
+        """
+            Yeah, they might have been on to something, because what I just witnessed struck an uncanny resemblance
             to those tales. I am safe for now, but I have to be careful not to make any noises.
             """);
   }

@@ -33,15 +33,14 @@ public class ProgressPedestals extends EntryProvider {
         circular fashion. One needs to utter some hard to pronounce wordsm and then smack things with a wand or staff.
         The Leprechauns clearly were not going to stray from this seemingly imposed doctrine, and invented
         a ritual of their own. Firstly, we're going to need several pedestals made from wood to make the circle.
-        Eight will do. 
+        Eight will do.
         """);
     this.page(
-            "page2",
-            () ->
-                    BookCraftingRecipePageModel.create()
-                            .withRecipeId1(ResourceLocationHelper.prefix("pedestal"))
-                            .withTitle1("Pedestal"));
-
+        "page2",
+        () ->
+            BookCraftingRecipePageModel.create()
+                .withRecipeId1(ResourceLocationHelper.prefix("pedestal"))
+                .withTitle1("Pedestal"));
   }
 
   @Override
@@ -66,14 +65,14 @@ public class ProgressPedestals extends EntryProvider {
 
   @Override
   protected BookEntryModel additionalSetup(BookEntryModel entry) {
-    var advancementCondition = this.condition().advancement(ResourceLocationHelper.prefix("clover_staff"));
-    this.lang().add(
-            Util.makeDescriptionId("advancement", advancementCondition.getAdvancementId()) + ".title",
-            "Make a clover staff"
-    );
+    var advancementCondition =
+        this.condition().advancement(ResourceLocationHelper.prefix("clover_staff"));
+    this.lang()
+        .add(
+            Util.makeDescriptionId("advancement", advancementCondition.getAdvancementId())
+                + ".title",
+            "Make a clover staff");
 
     return entry.withCondition(advancementCondition);
-
   }
-
 }

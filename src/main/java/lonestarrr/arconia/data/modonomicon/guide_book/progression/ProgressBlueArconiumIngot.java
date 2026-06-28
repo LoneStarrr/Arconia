@@ -21,23 +21,18 @@ public class ProgressBlueArconiumIngot extends EntryProvider {
 
   @Override
   protected void generatePages() {
-    this.page(
-                    "page1",
-                    () ->
-                            BookTextPageModel.create()
-                                    .withText(this.context().pageText()))
-            .withTitle(this.context.pageTitle());
+    this.page("page1", () -> BookTextPageModel.create().withText(this.context().pageText()))
+        .withTitle(this.context.pageTitle());
     this.pageTitle("Blue arconium ingot");
     this.pageText(
         """
         I know the drill by now. Sickle, sapling, essence, new ingot!!
         """);
     this.page(
-            "page2",
-            () ->
-                    BookSpotlightPageModel.create()
-                            .withItem(Ingredient.of(ModItems.getArconiumIngot(RainbowColor.BLUE))));
-
+        "page2",
+        () ->
+            BookSpotlightPageModel.create()
+                .withItem(Ingredient.of(ModItems.getArconiumIngot(RainbowColor.BLUE))));
   }
 
   @Override
@@ -62,8 +57,8 @@ public class ProgressBlueArconiumIngot extends EntryProvider {
 
   @Override
   protected BookEntryModel additionalSetup(BookEntryModel entry) {
-    var advancementCondition = this.condition().advancement(ResourceLocationHelper.prefix("light_blue_arconium_ingot"));
+    var advancementCondition =
+        this.condition().advancement(ResourceLocationHelper.prefix("light_blue_arconium_ingot"));
     return entry.withCondition(advancementCondition);
   }
-
 }
