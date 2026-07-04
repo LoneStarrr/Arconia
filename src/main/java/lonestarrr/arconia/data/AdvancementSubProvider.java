@@ -1,5 +1,6 @@
 package lonestarrr.arconia.data;
 
+import com.klikli_dev.modonomicon.registry.DataComponentRegistry;
 import java.util.Optional;
 import java.util.function.Consumer;
 import lonestarrr.arconia.common.advancements.ModCriteriaTriggers;
@@ -7,7 +8,7 @@ import lonestarrr.arconia.common.advancements.PotOfGoldTrigger;
 import lonestarrr.arconia.common.advancements.TouchGrassTrigger;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
-import lonestarrr.arconia.common.core.helper.PatchouliHelper;
+import lonestarrr.arconia.common.core.helper.ModonomiconHelper;
 import lonestarrr.arconia.common.core.helper.ResourceLocationHelper;
 import lonestarrr.arconia.common.item.ColoredBranch;
 import lonestarrr.arconia.common.item.ModItems;
@@ -33,37 +34,26 @@ public class AdvancementSubProvider
   @Override
   public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver) {
     HolderGetter<Item> items = registries.lookupOrThrow(Registries.ITEM);
-    ItemStackTemplate guideBookTemplate = PatchouliHelper.createGuideBookTemplate();
-    // When Patchouli isn't on the classpath the guide book stack is empty (its Item resolves to
-    // air). 1.21.4's advancement validation rejects air-icon advancements outright, so fall back
-    // to the four-leaf clover as the visible icon and as the inventory-change criterion's match
-    // — players will still be able to "discover" the root advancement via that item.
-    boolean guideBookEmpty = guideBookTemplate == null;
-    ItemStackTemplate rootIconTemplate =
-        guideBookEmpty
-            ? new ItemStackTemplate(ModItems.fourLeafClover.get(), 1)
-            : guideBookTemplate;
+    ItemStackTemplate guideBookTemplate = ModonomiconHelper.createGuideBookTemplate();
     ItemPredicate.Builder rootCriterion =
-        guideBookEmpty
-            ? ItemPredicate.Builder.item().of(items, ModItems.fourLeafClover.get())
-            : ItemPredicate.Builder.item()
-                .of(items, guideBookTemplate.item().value())
-                .withComponents(
-                    DataComponentMatchers.Builder.components()
-                        .exact(
-                            DataComponentExactPredicate.allOf(
-                                DataComponentMap.builder()
-                                    .set(
-                                        PatchouliHelper.patchouliGuideBookComponent(),
-                                        ResourceLocationHelper.prefix("guide_book"))
-                                    .build()))
-                        .build());
+        ItemPredicate.Builder.item()
+            .of(items, guideBookTemplate.item().value())
+            .withComponents(
+                DataComponentMatchers.Builder.components()
+                    .exact(
+                        DataComponentExactPredicate.allOf(
+                            DataComponentMap.builder()
+                                .set(
+                                    DataComponentRegistry.BOOK_ID.get(),
+                                    ModonomiconHelper.GUIDE_BOOK_ID)
+                                .build()))
+                    .build());
     AdvancementHolder root =
         Advancement.Builder.advancement()
             .addCriterion(
                 "guide_book", InventoryChangeTrigger.TriggerInstance.hasItems(rootCriterion))
             .display(
-                rootIconTemplate,
+                guideBookTemplate,
                 Component.translatable("advancement.arconia.main.root.title"),
                 Component.translatable("advancement.arconia.main.root.desc"),
                 Identifier.withDefaultNamespace("gui/advancements/backgrounds/stone"),

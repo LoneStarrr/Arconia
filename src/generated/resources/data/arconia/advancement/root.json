@@ -4,7 +4,10 @@
       "conditions": {
         "items": [
           {
-            "items": "arconia:four_leaf_clover"
+            "components": {
+              "modonomicon:book_id": "arconia:guide_book"
+            },
+            "items": "modonomicon:modonomicon"
           }
         ]
       },
@@ -17,7 +20,10 @@
       "translate": "advancement.arconia.main.root.desc"
     },
     "icon": {
-      "id": "arconia:four_leaf_clover"
+      "components": {
+        "modonomicon:book_id": "arconia:guide_book"
+      },
+      "id": "modonomicon:modonomicon"
     },
     "title": {
       "translate": "advancement.arconia.main.root.title"

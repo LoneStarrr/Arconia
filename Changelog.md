@@ -1,3 +1,9 @@
+# 3.0.1-alpha
+
+## Changes
+
+ - Added modonomicon guide book, replacing the patchouli one
+
 # 3.0.0-alpha
 
 ## Changes

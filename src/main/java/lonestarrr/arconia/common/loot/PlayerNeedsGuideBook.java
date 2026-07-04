@@ -7,7 +7,7 @@ import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.Set;
 import lonestarrr.arconia.common.Arconia;
-import lonestarrr.arconia.common.core.helper.PatchouliHelper;
+import lonestarrr.arconia.common.core.helper.ModonomiconHelper;
 import lonestarrr.arconia.common.core.helper.ResourceLocationHelper;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.server.level.ServerLevel;
@@ -67,7 +67,7 @@ public class PlayerNeedsGuideBook implements LootItemCondition {
 
     for (ItemEntity itemEntity : items) {
       ItemStack itemStack = itemEntity.getItem();
-      if (PatchouliHelper.isGuideBook(itemStack)) {
+      if (ModonomiconHelper.isGuideBook(itemStack)) {
         return false;
       }
     }

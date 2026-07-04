@@ -3,7 +3,7 @@ package lonestarrr.arconia.common.loot;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import lonestarrr.arconia.common.core.helper.PatchouliHelper;
+import lonestarrr.arconia.common.core.helper.ModonomiconHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -28,7 +28,7 @@ public class DirtLootModifier extends LootModifier {
   @Override
   protected @NotNull ObjectArrayList<ItemStack> doApply(
       ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-    ItemStack bookStack = PatchouliHelper.createGuideBook();
+    ItemStack bookStack = ModonomiconHelper.createGuideBook();
     generatedLoot.add(bookStack);
     return generatedLoot;
   }
