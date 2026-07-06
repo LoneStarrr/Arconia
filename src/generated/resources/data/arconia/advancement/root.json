@@ -7,7 +7,7 @@
             "components": {
               "modonomicon:book_id": "arconia:guide_book"
             },
-            "items": "modonomicon:modonomicon"
+            "items": "arconia:guide_book"
           }
         ]
       },
@@ -23,7 +23,7 @@
       "components": {
         "modonomicon:book_id": "arconia:guide_book"
       },
-      "id": "modonomicon:modonomicon"
+      "id": "arconia:guide_book"
     },
     "title": {
       "translate": "advancement.arconia.main.root.title"

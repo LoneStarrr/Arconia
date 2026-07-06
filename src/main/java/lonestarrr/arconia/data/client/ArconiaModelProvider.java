@@ -165,7 +165,7 @@ public class ArconiaModelProvider extends ModelProvider {
   }
 
   private void registerStaticItems(ItemModelGenerators itemModels) {
-    // Items with a hand-authored model template — emit a plain ClientItem pointing at it.
+    // Items with a hand-authored model template
     itemModels.itemModelOutput.accept(
         ModItems.cloverStaff.get(), ItemModelUtils.plainModel(prefix("item/clover_staff")));
     itemModels.itemModelOutput.accept(
@@ -173,11 +173,12 @@ public class ArconiaModelProvider extends ModelProvider {
     itemModels.itemModelOutput.accept(
         ModItems.threeLeafClover.get(),
         ItemModelUtils.plainModel(prefix("item/three_leaf_clover")));
+    itemModels.itemModelOutput.accept(
+        ModItems.guideBook.get(), ItemModelUtils.plainModel(prefix("item/guide_book")));
   }
 
   private void registerTieredItems(ItemModelGenerators itemModels) {
-    // Per-tier items that share a single layered model — the per-tier color comes from the
-    // constant tint source on the relevant layer(s).
+    // Per-tier items that share a single layered model
     for (RainbowColor color : RainbowColor.values()) {
       ArconiumColorAssets assets = forColor(color);
       tintedFlatItem(
@@ -200,10 +201,6 @@ public class ArconiaModelProvider extends ModelProvider {
   }
 
   private void registerMagicInABottle(ItemModelGenerators itemModels) {
-    // Thresholds match the legacy 1.21.1 model overrides exactly: 8 sub-models across the
-    // 0..1 filled ratio, fallback (empty bottle) below the lowest threshold. Each sub-model
-    // (and the fallback) is a layered model whose layer1 is the "swirl" overlay — tinted by
-    // MagicInABottleTintSource so the swirl colour matches the bottle's stored tier.
     ItemTintSource layer0Untinted = ItemModelUtils.constantTint(-1);
     ItemTintSource swirlTint = new MagicInABottleTintSource();
     ItemModel.Unbaked fallback =
@@ -261,8 +258,6 @@ public class ArconiaModelProvider extends ModelProvider {
     }
   }
 
-  // ---------- helpers ----------
-
   private void simpleBlockState(
       BlockModelGenerators blockModels, Block block, Identifier modelLocation) {
     blockModels.blockStateOutput.accept(
@@ -279,12 +274,12 @@ public class ArconiaModelProvider extends ModelProvider {
   }
 
   private static ItemTintSource saplingOverlayTint() {
-    // Layer1 of the sapling model is the speckles overlay — kept un-tinted (white).
+    // Layer1 of the sapling model is the speckles overlay (un-tinted).
     return ItemModelUtils.constantTint(-1);
   }
 
   private static ItemTintSource sickleHandleTint() {
-    // Layer0 of the sickle is the wooden handle — kept un-tinted (white).
+    // Layer0 of the sickle is the wooden handle (untinted)
     return ItemModelUtils.constantTint(-1);
   }
 
@@ -298,12 +293,12 @@ public class ArconiaModelProvider extends ModelProvider {
     }
 
     // For block items the in-inventory icon is a flat 3D render of the block model itself,
-    // tinted per-tier — no separate per-color item model needed.
+    // tinted per-tier.
     Identifier itemModelLeaves() {
       return prefix("block/arconium_tree_leaves");
     }
 
-    // Saplings are an exception — they render as flat sprites (not the 3D cross), so they
+    // Saplings are an exception. They render as flat sprites (not the 3D cross), so they
     // reference the shared flat item template emitted by registerSharedItemModels().
     Identifier itemModelSapling() {
       return prefix("item/arconium_tree_sapling");

@@ -1,11 +1,13 @@
 package lonestarrr.arconia.common.item;
 
+import com.klikli_dev.modonomicon.item.ModonomiconCustomItemBase;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import lonestarrr.arconia.common.Arconia;
 import lonestarrr.arconia.common.core.ItemNames;
 import lonestarrr.arconia.common.core.RainbowColor;
+import lonestarrr.arconia.common.core.helper.ModonomiconHelper;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
@@ -25,6 +27,13 @@ public final class ModItems {
       ITEMS.registerSimpleItem(ItemNames.THREE_LEAF_CLOVER);
   public static final DeferredItem<MagicInABottle> magicInABottle =
       ITEMS.registerItem(ItemNames.MAGIC_IN_A_BOTTLE, MagicInABottle::new);
+  // ModonomiconCustomItemBase is modonomicon's documented base class for a book's own dedicated
+  // item (see docs/advanced/item-properties): it auto-assigns the BOOK_ID component for us.
+  public static final DeferredItem<ModonomiconCustomItemBase> guideBook =
+      ITEMS.registerItem(
+          ItemNames.GUIDE_BOOK,
+          props ->
+              new ModonomiconCustomItemBase(ModonomiconHelper.GUIDE_BOOK_ID, props.stacksTo(1)));
 
   private static final Map<RainbowColor, DeferredItem<ArconiumEssence>> arconiumEssences =
       new HashMap<>();
@@ -73,6 +82,7 @@ public final class ModItems {
     if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
       event.accept(cloverStaff.get());
       event.accept(magicInABottle.get());
+      event.accept(guideBook.get());
       for (RainbowColor color : RainbowColor.values()) {
         event.accept(arconiumSickles.get(color).get());
       }

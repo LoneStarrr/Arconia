@@ -9,4 +9,5 @@ public final class ItemNames {
   public static final String COLORED_TREE_BRANCH_SUFFIX = "_colored_tree_branch";
   public static final String SICKLE_SUFFIX = "_arconium_sickle";
   public static final String MAGIC_IN_A_BOTTLE = "magic_in_a_bottle";
+  public static final String GUIDE_BOOK = "guide_book";
 }

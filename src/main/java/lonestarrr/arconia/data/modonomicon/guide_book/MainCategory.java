@@ -8,6 +8,7 @@ import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCategoryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
+import lonestarrr.arconia.common.core.helper.ResourceLocationHelper;
 import lonestarrr.arconia.common.item.ModItems;
 import lonestarrr.arconia.data.modonomicon.guide_book.diary.*;
 import lonestarrr.arconia.data.modonomicon.guide_book.progression.*;
@@ -152,7 +153,7 @@ public class MainCategory extends CategoryProvider {
 
   @Override
   protected BookCategoryModel additionalSetup(BookCategoryModel category) {
-    return category;
+    return super.additionalSetup(category).withBackground(ResourceLocationHelper.prefix("textures/gui/guide_book/bg_main.png"));
   }
 
   @Override
@@ -164,6 +165,7 @@ public class MainCategory extends CategoryProvider {
   protected BookIconModel categoryIcon() {
     return BookIconModel.create(ModItems.cloverStaff);
   }
+
 
   @Override
   public String categoryId() {

@@ -1116,6 +1116,12 @@ public class ModRecipeProvider extends RecipeProvider {
         .unlockedBy("has_item", has(Items.STICK)) // unlockedBy is required, URGH
         .save(output);
 
+    this.shapeless(RecipeCategory.MISC, ModItems.guideBook.get(), 1)
+        .requires(Items.BOOK)
+        .requires(ModItems.fourLeafClover)
+        .unlockedBy("has_item", has(ModItems.fourLeafClover))
+        .save(output);
+
     //        this.shapeless(RecipeCategory.MISC, )
     // Disabled for now, still available in creative for toying around with
     //        this.shaped(RecipeCategory.MISC, ModBlocks.worldBuilder.get())
