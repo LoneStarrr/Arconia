@@ -5,7 +5,18 @@
       "conditions": {
         "items": [
           {
-            "items": "arconia:red_colored_tree_branch"
+            "items": "arconia:red_colored_tree_branch",
+            "predicates": {
+              "minecraft:container": {
+                "items": {
+                  "contains": [
+                    {
+                      "items": "arconia:red_arconium_essence"
+                    }
+                  ]
+                }
+              }
+            }
           }
         ]
       },

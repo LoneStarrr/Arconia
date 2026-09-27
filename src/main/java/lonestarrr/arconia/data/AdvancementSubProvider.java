@@ -15,6 +15,8 @@ import lonestarrr.arconia.common.item.ModItems;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
+import net.minecraft.advancements.criterion.CollectionContentsPredicate;
+import net.minecraft.advancements.criterion.CollectionPredicate;
 import net.minecraft.advancements.criterion.DataComponentMatchers;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.advancements.criterion.ItemPredicate;
@@ -22,6 +24,8 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.predicates.ContainerPredicate;
+import net.minecraft.core.component.predicates.DataComponentPredicates;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -150,12 +154,34 @@ public class AdvancementSubProvider
             .save(saver, ResourceLocationHelper.prefix("clover_staff"));
 
     ItemStackTemplate colordBranch = ColoredBranch.getColoredBranchTemplate(RainbowColor.RED);
+    ItemPredicate.Builder imbuedBranchCriterion =
+        ItemPredicate.Builder.item()
+            .of(items, ModItems.getColoredBranch(RainbowColor.RED).get())
+            .withComponents(
+                // Partial container predicate: an exact match would need an ItemStack, which
+                // can't be created during datagen as item components aren't available yet.
+                DataComponentMatchers.Builder.components()
+                    .partial(
+                        DataComponentPredicates.CONTAINER,
+                        new ContainerPredicate(
+                            Optional.of(
+                                new CollectionPredicate<>(
+                                    Optional.of(
+                                        CollectionContentsPredicate.of(
+                                            ItemPredicate.Builder.item()
+                                                .of(
+                                                    items,
+                                                    ModItems.getArconiumEssence(RainbowColor.RED)
+                                                        .get())
+                                                .build())),
+                                    Optional.empty(),
+                                    Optional.empty()))))
+                    .build());
     AdvancementHolder redBranchOfEssence =
         Advancement.Builder.advancement()
             .addCriterion(
                 "red_branch_of_essence",
-                InventoryChangeTrigger.TriggerInstance.hasItems(
-                    ModItems.getColoredBranch(RainbowColor.RED)))
+                InventoryChangeTrigger.TriggerInstance.hasItems(imbuedBranchCriterion))
             .parent(centerPedestal)
             .display(
                 colordBranch,
