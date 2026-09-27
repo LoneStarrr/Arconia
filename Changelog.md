@@ -1,8 +1,13 @@
-# 3.0.1-alpha
+# 3.0.0
 
 ## Changes
 
  - Added modonomicon guide book, replacing the patchouli one
+ - Validated gameplay
+
+## Fixes
+
+ - Fix incorrect rendering of status item above the pot
 
 # 3.0.0-alpha
 

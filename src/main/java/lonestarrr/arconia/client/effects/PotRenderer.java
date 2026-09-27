@@ -124,10 +124,11 @@ public class PotRenderer
 
     // If for any reason items cannot be produced, visualize this by showing an icon above the pot
     BlockPos statePos = new BlockPos(0, 2, 0); // BER are always at 0, 0, 0
-    int lightCoords = state.lightCoords;
+    int lightCoords = state.itemsLight;
     int overlayCoords = OverlayTexture.NO_OVERLAY;
 
     if (!state.hasStorage) {
+      // No Storage
       ItemProjector.projectItem(
           Items.CHEST.getDefaultInstance(),
           statePos,
@@ -145,6 +146,7 @@ public class PotRenderer
           overlayCoords,
           true);
     } else if (state.detectedTier == null) {
+      // Failed to find the tree with surrounded colored grass
       ItemProjector.projectItem(
           ModBlocks.getArconiumTreeLeaves(RainbowColor.RED).asItem().getDefaultInstance(),
           statePos,
@@ -154,6 +156,7 @@ public class PotRenderer
           overlayCoords,
           true);
     } else if (state.storageFull) {
+      // Storage is full
       ItemProjector.projectItem(
           Items.CHEST.getDefaultInstance(),
           statePos,
@@ -163,6 +166,7 @@ public class PotRenderer
           overlayCoords,
           true);
     } else if (state.itemGenerationCredits <= 0) {
+      // Ran out of eaten leaves
       ItemProjector.projectItem(
           ModBlocks.getArconiumTreeLeaves(state.detectedTier).asItem().getDefaultInstance(),
           statePos,
