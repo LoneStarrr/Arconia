@@ -113,9 +113,12 @@ public class BiomeModifiers extends DatapackBuiltinEntriesProvider {
                       RandomOffsetPlacement.of(UniformInt.of(-6, 6), UniformInt.of(-3, 3)),
                       PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
                       BiomeFilter.biome(),
+                      // Only place in air, otherwise it may cause issues with snowy layers.
                       BlockPredicateFilter.forPredicate(
-                          BlockPredicate.matchesBlocks(
-                              Direction.DOWN.getUnitVec3i(), Blocks.GRASS_BLOCK)))));
+                          BlockPredicate.allOf(
+                              BlockPredicate.ONLY_IN_AIR_PREDICATE,
+                              BlockPredicate.matchesBlocks(
+                                  Direction.DOWN.getUnitVec3i(), Blocks.GRASS_BLOCK))))));
         });
 
     // Biome modifiers - these define where the placed features are to be placed

@@ -8,6 +8,7 @@
 ## Fixes
 
  - Fix incorrect rendering of status item above the pot
+ - Fix clover placement in snowy biomes
 
 # 3.0.0-alpha
 
