@@ -23,7 +23,9 @@ public class ModonomiconHelper {
 
   public static ItemStackTemplate createGuideBookTemplate() {
     DataComponentPatch patch =
-        DataComponentPatch.builder().set(DataComponentRegistry.BOOK_ID.get(), GUIDE_BOOK_ID).build();
+        DataComponentPatch.builder()
+            .set(DataComponentRegistry.BOOK_ID.get(), GUIDE_BOOK_ID)
+            .build();
     return new ItemStackTemplate(ModItems.guideBook.get(), 1, patch);
   }
 

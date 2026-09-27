@@ -153,7 +153,8 @@ public class MainCategory extends CategoryProvider {
 
   @Override
   protected BookCategoryModel additionalSetup(BookCategoryModel category) {
-    return super.additionalSetup(category).withBackground(ResourceLocationHelper.prefix("textures/gui/guide_book/bg_main.png"));
+    return super.additionalSetup(category)
+        .withBackground(ResourceLocationHelper.prefix("textures/gui/guide_book/bg_main.png"));
   }
 
   @Override
@@ -165,7 +166,6 @@ public class MainCategory extends CategoryProvider {
   protected BookIconModel categoryIcon() {
     return BookIconModel.create(ModItems.cloverStaff);
   }
-
 
   @Override
   public String categoryId() {
