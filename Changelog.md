@@ -4,6 +4,10 @@
 
  - Added modonomicon guide book, replacing the patchouli one
  - Validated gameplay
+ - Clover will now be placed on any `arconia:clover_patch_can_place_on` tagged blocks in worldgen (includes `#minecraft:grass_blocks` by default)
+ - Colored grass will now decay into dirt, and spread
+ - Reduce amount of clovers placed in worldgen, and place them in clusters
+
 
 ## Fixes
 

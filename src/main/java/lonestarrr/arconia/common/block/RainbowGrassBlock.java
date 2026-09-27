@@ -10,7 +10,7 @@ public class RainbowGrassBlock extends GrassBlock {
   private RainbowColor tier;
 
   public RainbowGrassBlock(BlockBehaviour.Properties props, RainbowColor color) {
-    super(props.mapColor(MapColor.GRASS).strength(0.6F).sound(SoundType.GRASS));
+    super(props.mapColor(MapColor.GRASS).randomTicks().strength(0.6F).sound(SoundType.GRASS));
     this.tier = color;
   }
 

@@ -39,6 +39,7 @@ import net.minecraft.world.level.levelgen.placement.CountPlacement;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.RandomOffsetPlacement;
+import net.minecraft.world.level.levelgen.placement.RarityFilter;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -108,17 +109,23 @@ public class BiomeModifiers extends DatapackBuiltinEntriesProvider {
                       .lookup(Registries.CONFIGURED_FEATURE)
                       .getOrThrow(ModFeatures.CLOVER_PATCH_CONFIGURED),
                   List.of(
-                      CountPlacement.of(3),
+                      // One small cluster in roughly every third chunk: pick a surface spot, then
+                      // scatter placement attempts around it (same pattern as vanilla patches).
+                      // Most attempts fail the filter below (wrong y, or same spot twice), so
+                      // 3-12 attempts in a 5x3x5 volume typically yield a cluster of 1-4 clovers.
+                      RarityFilter.onAverageOnceEvery(3),
                       InSquarePlacement.spread(),
-                      RandomOffsetPlacement.horizontal(UniformInt.of(-6, 6)),
-                      PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+                      PlacementUtils.HEIGHTMAP_NO_LEAVES,
                       BiomeFilter.biome(),
+                      CountPlacement.of(UniformInt.of(3, 12)),
+                      RandomOffsetPlacement.of(UniformInt.of(-2, 2), UniformInt.of(-1, 1)),
                       // Only place in air, otherwise it may cause issues with snowy layers.
                       BlockPredicateFilter.forPredicate(
                           BlockPredicate.allOf(
                               BlockPredicate.ONLY_IN_AIR_PREDICATE,
-                              BlockPredicate.matchesBlocks(
-                                  Direction.DOWN.getUnitVec3i(), Blocks.GRASS_BLOCK))))));
+                              BlockPredicate.matchesTag(
+                                  Direction.DOWN.getUnitVec3i(),
+                                  Tags.Blocks.CLOVER_PATCH_CAN_PLACE_ON))))));
         });
 
     // Biome modifiers - these define where the placed features are to be placed

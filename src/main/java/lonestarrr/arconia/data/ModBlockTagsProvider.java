@@ -2,6 +2,7 @@ package lonestarrr.arconia.data;
 
 import java.util.concurrent.CompletableFuture;
 import lonestarrr.arconia.common.Arconia;
+import lonestarrr.arconia.common.Tags;
 import lonestarrr.arconia.common.block.ModBlocks;
 import lonestarrr.arconia.common.core.RainbowColor;
 import net.minecraft.core.HolderLookup;
@@ -36,10 +37,13 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
       tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.pedestal.get());
 
       tag(BlockTags.MINEABLE_WITH_SHOVEL).add(ModBlocks.getRainbowGrassBlock(tier).get());
+      tag(BlockTags.GRASS_BLOCKS).add(ModBlocks.getRainbowGrassBlock(tier).get());
 
       tag(BlockTags.LEAVES).add(ModBlocks.getArconiumTreeLeaves(tier).get());
       tag(BlockTags.SAPLINGS).add(ModBlocks.getArconiumTreeSapling(tier).get());
     }
     tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.hat.get());
+
+    tag(Tags.Blocks.CLOVER_PATCH_CAN_PLACE_ON).addTag(BlockTags.GRASS_BLOCKS);
   }
 }
