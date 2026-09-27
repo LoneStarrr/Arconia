@@ -110,7 +110,7 @@ public class BiomeModifiers extends DatapackBuiltinEntriesProvider {
                   List.of(
                       CountPlacement.of(3),
                       InSquarePlacement.spread(),
-                      RandomOffsetPlacement.of(UniformInt.of(-6, 6), UniformInt.of(-3, 3)),
+                      RandomOffsetPlacement.horizontal(UniformInt.of(-6, 6)),
                       PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
                       BiomeFilter.biome(),
                       // Only place in air, otherwise it may cause issues with snowy layers.

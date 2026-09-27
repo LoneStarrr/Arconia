@@ -15,11 +15,7 @@
         "max_inclusive": 6,
         "min_inclusive": -6
       },
-      "y_spread": {
-        "type": "minecraft:uniform",
-        "max_inclusive": 3,
-        "min_inclusive": -3
-      }
+      "y_spread": 0
     },
     {
       "type": "minecraft:heightmap",
